@@ -16,5 +16,9 @@
     "accounts"
   ],
   "author": "Stormpath, Inc.",
-  "license": "Apache"
+  "license": "Apache",
+  "dependencies": {
+    "express": "^4.4.5",
+    "stormpath": "^0.4.0"
+  }
 }
