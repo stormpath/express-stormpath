@@ -13,16 +13,16 @@ var helpers = require('./helpers');
 function initClient(app) {
   return function(next) {
     if (app.get('stormpathApiKeyId') && app.get('stormpathApiKeySecret')) {
-      module.exports.client = new stormpath.Client({
+      app.set('stormpathClient', new stormpath.Client({
         apiKey: new stormpath.ApiKey(
           app.get('stormpathApiKeyId'),
           app.get('stormpathApiKeySecret')
         )
-      });
+      }));
       next();
     } else if (app.get('stormpathApiKeyFile')) {
       stormpath.loadApiKey(app.get('stormpathApiKeyFile'), function(err, apiKey) {
-        module.exports.client = new stormpath.Client({apiKey: apiKey});
+        app.set('stormpathClient', new stormpath.Client({apiKey: apiKey}));
         next();
       });
     }
@@ -32,41 +32,14 @@ function initClient(app) {
 
 function initApplication(app) {
   return function(next) {
-    module.exports.client.getApplication(app.get('stormpathApplication'), function(err, application) {
+    app.get('stormpathClient').getApplication(app.get('stormpathApplication'), function(err, application) {
       if (err) {
         throw new Error("ERROR: Couldn't find Stormpath application.");
       }
 
-      module.exports.application = application;
+      app.set('stormpathApplication', application);
       next();
     });
-  };
-}
-
-
-function initMiddleware(app) {
-  return function(next) {
-    // Initialize session middleware.
-    app.use(session({
-      cookieName: 'stormpathSession',
-      requestKey: 'session',
-      secret: app.get('stormpathSecretKey'),
-      duration: app.get('stormpathSessionDuration'),
-      cookie: {
-        httpOnly: true,
-        secure: app.get('stormpathEnableHttps'),
-      }
-    }));
-
-    // Parse the request body.
-    app.use(bodyParser.urlencoded({
-      extended: true,
-    }));
-
-    // Initialize CSRF middleware.
-    app.use(csrf());
-
-    next();
   };
 }
 
@@ -79,8 +52,27 @@ module.exports.init = function(app, opts) {
     helpers.checkSettings(app),
     initClient(app),
     initApplication(app),
-    initMiddleware(app),
   ]);
+
+  // Initialize session middleware.
+  app.use(session({
+    cookieName: 'stormpathSession',
+    requestKey: 'session',
+    secret: app.get('stormpathSecretKey'),
+    duration: app.get('stormpathSessionDuration'),
+    cookie: {
+      httpOnly: true,
+      secure: app.get('stormpathEnableHttps'),
+    }
+  }));
+
+  // Parse the request body.
+  app.use(bodyParser.urlencoded({
+    extended: true,
+  }));
+
+  // Initialize CSRF middleware.
+  app.use(csrf());
 
   return function(req, res, next) {
     async.series([
@@ -88,12 +80,12 @@ module.exports.init = function(app, opts) {
         helpers.getUser(req, res, callback);
       }
     ], function() {
-      if (req.url === '/register' && req.app.get('stormpathEnableRegistration')) {
-        controllers.register(req, res, next);
-      } else if (req.url === '/login' && req.app.get('stormpathEnableLogin')) {
-        controllers.login(req, res, next);
-      } else if (req.url === '/logout' && req.app.get('stormpathEnableLogout')) {
-        controllers.logout(req, res, next);
+      if (req.url.indexOf(req.app.get('stormpathRegistrationUrl')) === 0 && req.app.get('stormpathEnableRegistration')) {
+        controllers.register(req, res);
+      } else if (req.url.indexOf(req.app.get('stormpathLoginUrl')) === 0 && req.app.get('stormpathEnableLogin')) {
+        controllers.login(req, res);
+      } else if (req.url.indexOf(req.app.get('stormpathLogoutUrl')) === 0 && req.app.get('stormpathEnableLogout')) {
+        controllers.logout(req, res);
       } else {
         next();
       }
