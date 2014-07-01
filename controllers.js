@@ -32,7 +32,7 @@ module.exports.login = function(req, res) {
 
     // If we get here, it means the user didn't supply required form fields.
     error: function(form) {
-      res.render('login', { error: 'Required fields missing.', form: form });
+      res.render('login', { form: form });
     },
 
     // If we get here, it means the user is doing a simple GET request, so we
