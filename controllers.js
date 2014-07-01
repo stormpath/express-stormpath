@@ -54,6 +54,7 @@ module.exports.logout = function(req, res, next) {
   if (req.session) {
     req.session.reset();
   }
+
   res.redirect('/');
   next();
 };
