@@ -20,13 +20,40 @@ module.exports.getUser = function(req, res, callback) {
 
 module.exports.initSettings = function(app, opts) {
   return function(next) {
-    app.set('stormpathSecretKey', opts.secretKey || process.env.STORMPATH_SECRET_KEY);
-    app.set('stormpathEnableHttps', opts.enableHttps || process.env.STORMPATH_ENABLE_HTTPS || false);
-    app.set('stormpathSessionDuration', opts.sessionDuration || parseInt(process.env.STORMPATH_SESSION_DURATION) || 1000 * 60 * 60 * 24 * 30);
+    // Basic credentials and configuration.
     app.set('stormpathApiKeyId', opts.apiKeyId || process.env.STORMPATH_API_KEY_ID);
     app.set('stormpathApiKeySecret', opts.apiKeySecret || process.env.STORMPATH_API_KEY_SECRET);
     app.set('stormpathApiKeyFile', opts.apiKeyFile || process.env.STORMPATH_API_KEY_FILE);
     app.set('stormpathApplication', opts.application || process.env.STORMPATH_APPLICATION);
+
+    // Session configuration.
+    app.set('stormpathSecretKey', opts.secretKey || process.env.STORMPATH_SECRET_KEY);
+    app.set('stormpathEnableHttps', opts.enableHttps || process.env.STORMPATH_ENABLE_HTTPS || false);
+    app.set('stormpathSessionDuration', opts.sessionDuration || parseInt(process.env.STORMPATH_SESSION_DURATION) || 1000 * 60 * 60 * 24 * 30);
+
+    // Which fields should we display when registering new users?
+    app.set('stormpathEnableUsername', opts.enableUsername || (process.env.STORMPATH_ENABLE_USERNAME === 'true') || false);
+    app.set('stormpathEnableEmail', opts.enableEmail || (process.env.STORMPATH_ENABLE_EMAIL === 'true') || true);
+    app.set('stormpathEnablePassword', opts.enablePassword || (process.env.STORMPATH_ENABLE_EMAIL === 'true') || true);
+    app.set('stormpathEnableGivenName', opts.enableGivenName || (process.env.STORMPATH_ENABLE_GIVEN_NAME === 'true') || true);
+    app.set('stormpathEnableSurname', opts.enableSurname || (process.env.STORMPATH_ENABLE_SURNAME === 'true') || true);
+
+    // Which fields should we require when creating new users?
+    app.set('stormpathRequireUsername', opts.requireUsername || (process.env.STORMPATH_REQUIRE_USERNAME === 'true') || false);
+    app.set('stormpathRequireEmail', opts.requireEmail || (process.env.STORMPATH_REQUIRE_EMAIL === 'true') || true);
+    app.set('stormpathRequirePassword', opts.requirePassword || (process.env.STORMPATH_REQUIRE_PASSWORD === 'true') || true);
+    app.set('stormpathRequireGivenName', opts.requireGivenName || (process.env.STORMPATH_REQUIRE_GIVEN_NAME === 'true') || true);
+    app.set('stormpathRequireSurname', opts.requireSurname || (process.env.STORMPATH_REQUIRE_SURNAME === 'true') || true);
+
+    // Which controllers should we enable?
+    app.set('stormpathEnableRegistration', opts.enableRegistration || (process.env.STORMPATH_ENABLE_REGISTRATION === 'true') || true);
+    app.set('stormpathEnableLogin', opts.enableLogin || (process.env.STORMPATH_ENABLE_LOGIN === 'true') || true);
+    app.set('stormpathEnableLogout', opts.enableLogout || (process.env.STORMPATH_ENABLE_LOGOUT === 'true') || true);
+
+    // Routing configuration.
+    app.set('stormpathRegistrationUrl', opts.registrationUrl || process.env.STORMPATH_REGISTRATION_URL || '/register');
+    app.set('stormpathLoginUrl', opts.loginUrl || process.env.STORMPATH_LOGIN_URL || '/login');
+    app.set('stormpathLogoutUrl', opts.logoutUrl || process.env.STORMPATH_LOGOUT_URL || '/logout');
     app.set('stormpathRedirectUrl', opts.redirectUrl || process.env.STORMPATH_REDIRECT_URL || '/');
 
     next();
