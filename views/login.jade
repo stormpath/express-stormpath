@@ -5,12 +5,12 @@ extends base
 - var bodytag = 'login'
 
 block body
-  div.container.custom-container
-    div.va-wrapper
-      div.view.login-view.container
-        div.box.row
-          div.email-password-area.col-xs-12.large.col-sm-12
-            div.header
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
               span.
                 Log In or <a href='/register'>Create Account</a>
 
@@ -21,13 +21,13 @@ block body
             form.login-form.form-horizontal(method='post', role='form')
               input(name='_csrf', type='hidden', value=csrfToken)
 
-              div.form-group.group-email
+              .form-group.group-email
                 label.col-sm-4 Email
                 div.col-sm-8
                   - var data = (form.fields.login.value ? form.fields.login.value : '')
                   input.form-control(autofocus='true', placeholder='Email', required='true', name='login', type='text', value=data)
 
-              div.form-group.group-password
+              .form-group.group-password
                 label.col-sm-4 Password
                 div.col-sm-8
                   input.form-control(placeholder='Password', required='true', type='password', name='password')
