@@ -23,7 +23,9 @@ module.exports.login = function(req, res) {
             } else {
               req.session.user = account;
               res.locals.user = account;
-              res.redirect(302, req.app.get('stormpathRedirectUrl'));
+
+              var url = req.query.next || req.app.get('stormpathRedirectUrl');
+              res.redirect(302, url);
             }
           });
         }
