@@ -87,7 +87,7 @@ module.exports.init = function(app, opts) {
       function(callback) {
         helpers.getUser(req, res, callback);
       }
-    ], function(err) {
+    ], function() {
       if (req.url === '/register' && req.app.get('stormpathEnableRegistration')) {
         controllers.register(req, res, next);
       } else if (req.url === '/login' && req.app.get('stormpathEnableLogin')) {
