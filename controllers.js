@@ -46,6 +46,8 @@ module.exports.login = function(req, res) {
 
 
 module.exports.logout = function(req, res) {
-  req.session.reset();
+  if (req.session) {
+    req.session.reset();
+  }
   res.redirect('/');
 }
