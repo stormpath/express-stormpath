@@ -98,7 +98,7 @@ module.exports.init = function(app, opts) {
         next();
       }
     });
-  }
+  };
 };
 
 
