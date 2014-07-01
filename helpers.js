@@ -14,6 +14,8 @@ module.exports.getUser = function(req, res, callback) {
       }
       callback();
     });
+  } else {
+    callback();
   }
 };
 
