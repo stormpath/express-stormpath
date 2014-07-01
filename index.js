@@ -41,7 +41,7 @@ function initApplication(app) {
       next();
     });
   };
-};
+}
 
 
 function initMiddleware(app) {
