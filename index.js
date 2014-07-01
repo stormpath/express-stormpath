@@ -86,20 +86,18 @@ module.exports.init = function(app, opts) {
     async.series([
       function(callback) {
         helpers.getUser(req, res, callback);
-      },
-      function(callback) {
-        if (req.url === '/register' && req.app.get('stormpathEnableRegistration')) {
-          controllers.register(req, res, next);
-        } else if (req.url === '/login' && req.app.get('stormpathEnableLogin')) {
-          controllers.login(req, res, next);
-        } else if (req.url === '/logout' && req.app.get('stormpathEnableLogout')) {
-          controllers.logout(req, res, next);
-        } else {
-          next();
-        }
-        callback();
       }
-    ]);
+    ], function(err) {
+      if (req.url === '/register' && req.app.get('stormpathEnableRegistration')) {
+        controllers.register(req, res, next);
+      } else if (req.url === '/login' && req.app.get('stormpathEnableLogin')) {
+        controllers.login(req, res, next);
+      } else if (req.url === '/logout' && req.app.get('stormpathEnableLogout')) {
+        controllers.logout(req, res, next);
+      } else {
+        next();
+      }
+    });
   }
 };
 
