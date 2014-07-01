@@ -44,6 +44,33 @@ function initApplication(app) {
 };
 
 
+function initMiddleware(app) {
+  return function(next) {
+    // Initialize session middleware.
+    app.use(session({
+      cookieName: 'stormpathSession',
+      requestKey: 'session',
+      secret: app.get('stormpathSecretKey'),
+      duration: app.get('stormpathSessionDuration'),
+      cookie: {
+        httpOnly: true,
+        secure: app.get('stormpathEnableHttps'),
+      }
+    }));
+
+    // Parse the request body.
+    app.use(bodyParser.urlencoded({
+      extended: true,
+    }));
+
+    // Initialize CSRF middleware.
+    app.use(csrf());
+
+    next();
+  };
+}
+
+
 module.exports.init = function(app, opts) {
   opts = opts || {};
 
@@ -52,27 +79,8 @@ module.exports.init = function(app, opts) {
     helpers.checkSettings(app),
     initClient(app),
     initApplication(app),
+    initMiddleware(app),
   ]);
-
-  // Initialize session middleware.
-  app.use(session({
-    cookieName: 'stormpathSession',
-    requestKey: 'session',
-    secret: app.get('stormpathSecretKey'),
-    duration: app.get('stormpathSessionDuration'),
-    cookie: {
-      httpOnly: true,
-      secure: app.get('stormpathEnableHttps'),
-    }
-  }));
-
-  // Parse the request body.
-  app.use(bodyParser.urlencoded({
-    extended: true,
-  }));
-
-  // Initialize CSRF middleware.
-  app.use(csrf());
 
   return function(req, res, next) {
     async.series([
@@ -93,7 +101,7 @@ module.exports.init = function(app, opts) {
       }
     ]);
   }
-}
+};
 
 
 module.exports.loginRequired = authentication.loginRequired;
