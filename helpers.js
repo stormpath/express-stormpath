@@ -22,7 +22,7 @@ module.exports.initSettings = function(app, opts) {
   return function(next) {
     app.set('stormpathSecretKey', opts.secretKey || process.env.STORMPATH_SECRET_KEY);
     app.set('stormpathEnableHttps', opts.enableHttps || process.env.STORMPATH_ENABLE_HTTPS || false);
-    app.set('stormpathSessionDuration', opts.sessionDuration || process.env.STORMPATH_SESSION_DURATION || null);
+    app.set('stormpathSessionDuration', opts.sessionDuration || parseInt(process.env.STORMPATH_SESSION_DURATION) || 1000 * 60 * 60 * 24 * 30);
     app.set('stormpathApiKeyId', opts.apiKeyId || process.env.STORMPATH_API_KEY_ID);
     app.set('stormpathApiKeySecret', opts.apiKeySecret || process.env.STORMPATH_API_KEY_SECRET);
     app.set('stormpathApiKeyFile', opts.apiKeyFile || process.env.STORMPATH_API_KEY_FILE);
