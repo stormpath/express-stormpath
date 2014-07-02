@@ -1,4 +1,17 @@
+var jade = require('jade');
+var mixin = require('utils-merge');
 var stormpath = require('stormpath');
+
+
+module.exports.render = function(view, res, options) {
+  options = options || {};
+  mixin(options, res.locals);
+
+  jade.renderFile(view, options, function(err, html) {
+    if (err) throw err;
+    res.send(html);
+  });
+};
 
 
 module.exports.getUser = function(req, res, callback) {
