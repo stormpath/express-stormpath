@@ -95,3 +95,4 @@ module.exports.init = function(app, opts) {
 
 
 module.exports.loginRequired = authentication.loginRequired;
+module.exports.groupsRequired = authentication.groupsRequired;
