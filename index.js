@@ -4,6 +4,6 @@
 /**
  * Expose the `stormpath` library.
  *
- * @property
+ * @property stormpath
  */
 module.exports = require('./lib/stormpath');
