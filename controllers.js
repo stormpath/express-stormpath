@@ -1,9 +1,10 @@
 var forms = require('./forms');
+var helpers = require('./helpers');
 
 
 module.exports.register = function(req, res) {
-  req.app.set('views', __dirname + '/views');
-  req.app.set('view engine', 'jade');
+  var view = req.app.get('stormpathRegistrationView');
+
   res.locals.app = req.app;
   res.locals.csrfToken = req.csrfToken();
 
@@ -14,22 +15,22 @@ module.exports.register = function(req, res) {
 
       // Validate required fields.
       if (req.app.get('stormpathRequireEmail') && !form.data.email) {
-        res.render('register', { error: 'Email required.', form: form });
+        helpers.render(view, res, { error: 'Email required.', form: form });
       }
       if (req.app.get('stormpathRequirePassword') && !form.data.password) {
-        res.render('register', { error: 'Password required.', form: form });
+        helpers.render(view, res, { error: 'Password required.', form: form });
       }
       if (req.app.get('stormpathRequireUsername') && !form.data.username) {
-        res.render('register', { error: 'Username required.', form: form });
+        helpers.render(view, res, { error: 'Username required.', form: form });
       }
       if (req.app.get('stormpathRequireGivenName') && !form.data.givenName) {
-        res.render('register', { error: 'First Name required.', form: form });
+        helpers.render(view, res, { error: 'First name required.', form: form });
       }
       if (req.app.get('stormpathRequireMiddleName') && !form.data.middleName) {
-        res.render('register', { error: 'Middle Name required.', form: form });
+        helpers.render(view, res, { error: 'Middle name required.', form: form });
       }
       if (req.app.get('stormpathRequireSurname') && !form.data.surname) {
-        res.render('register', { error: 'Last Name required.', form: form });
+        helpers.render(view, res, { error: 'Last name required.', form: form });
       }
 
       // Build account object from enabled fields.
@@ -56,7 +57,7 @@ module.exports.register = function(req, res) {
       // Create account with Stormpath.
       req.app.get('stormpathApplication').createAccount(acc, function(err, account) {
         if (err) {
-          res.render('register', { error: err.userMessage, form: form });
+          helpers.render(view, res, { error: err.userMessage, form: form });
         } else {
           req.session.user = account;
           res.locals.user = account;
@@ -69,21 +70,22 @@ module.exports.register = function(req, res) {
 
     // If we get here, it means the user didn't supply required form fields.
     error: function(form) {
-      res.render('register', { form: form });
+      helpers.render(view, res, { form: form });
     },
 
     // If we get here, it means the user is doing a simple GET request, so we
     // should just render the registration template.
     empty: function(form) {
-      res.render('register', { form: form });
+      helpers.render(view, res, { form: form });
     }
   });
 };
 
 
 module.exports.login = function(req, res) {
-  req.app.set('views', __dirname + '/views');
-  req.app.set('view engine', 'jade');
+  var view = req.app.get('stormpathLoginView');
+
+  res.locals.app = req.app;
   res.locals.csrfToken = req.csrfToken();
 
   forms.loginForm.handle(req, {
@@ -95,11 +97,11 @@ module.exports.login = function(req, res) {
         password: form.data.password
       }, function(err, result) {
         if (err) {
-          res.render('login', { error: err.userMessage, form: form });
+          helpers.render(view, res, { error: err.userMessage, form: form });
         } else {
           result.getAccount(function(err, account) {
             if (err) {
-              res.render('login', { error: err.userMessage, form: form });
+              helpers.render(view, res, { error: err.userMessage, form: form });
             } else {
               req.session.user = account;
               res.locals.user = account;
@@ -114,13 +116,13 @@ module.exports.login = function(req, res) {
 
     // If we get here, it means the user didn't supply required form fields.
     error: function(form) {
-      res.render('login', { form: form });
+      helpers.render(view, res, { form: form });
     },
 
     // If we get here, it means the user is doing a simple GET request, so we
     // should just render the login template.
     empty: function(form) {
-      res.render('login', { form: form });
+      helpers.render(view, res, { form: form });
     }
   });
 };
