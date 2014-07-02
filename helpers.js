@@ -46,24 +46,28 @@ module.exports.initSettings = function(app, opts) {
 
     // Which fields should we display when registering new users?
     app.set('stormpathEnableUsername', opts.enableUsername || (process.env.STORMPATH_ENABLE_USERNAME === 'true') || false);
-    app.set('stormpathEnableEmail', opts.enableEmail || (process.env.STORMPATH_ENABLE_EMAIL === 'true') || true);
-    app.set('stormpathEnablePassword', opts.enablePassword || (process.env.STORMPATH_ENABLE_EMAIL === 'true') || true);
     app.set('stormpathEnableGivenName', opts.enableGivenName || (process.env.STORMPATH_ENABLE_GIVEN_NAME === 'true') || true);
     app.set('stormpathEnableMiddleName', opts.enableMiddleName || (process.env.STORMPATH_ENABLE_MIDDLE_NAME === 'true') || false);
     app.set('stormpathEnableSurname', opts.enableSurname || (process.env.STORMPATH_ENABLE_SURNAME === 'true') || true);
+    app.set('stormpathEnableEmail', opts.enableEmail || (process.env.STORMPATH_ENABLE_EMAIL === 'true') || true);
+    app.set('stormpathEnablePassword', opts.enablePassword || (process.env.STORMPATH_ENABLE_EMAIL === 'true') || true);
 
     // Which fields should we require when creating new users?
     app.set('stormpathRequireUsername', opts.requireUsername || (process.env.STORMPATH_REQUIRE_USERNAME === 'true') || false);
-    app.set('stormpathRequireEmail', opts.requireEmail || (process.env.STORMPATH_REQUIRE_EMAIL === 'true') || true);
-    app.set('stormpathRequirePassword', opts.requirePassword || (process.env.STORMPATH_REQUIRE_PASSWORD === 'true') || true);
     app.set('stormpathRequireGivenName', opts.requireGivenName || (process.env.STORMPATH_REQUIRE_GIVEN_NAME === 'true') || true);
     app.set('stormpathRequireMiddleName', opts.requireMiddleName || (process.env.STORMPATH_REQUIRE_MIDDLE_NAME === 'true') || false);
     app.set('stormpathRequireSurname', opts.requireSurname || (process.env.STORMPATH_REQUIRE_SURNAME === 'true') || true);
+    app.set('stormpathRequireEmail', opts.requireEmail || (process.env.STORMPATH_REQUIRE_EMAIL === 'true') || true);
+    app.set('stormpathRequirePassword', opts.requirePassword || (process.env.STORMPATH_REQUIRE_PASSWORD === 'true') || true);
 
     // Which controllers should we enable?
     app.set('stormpathEnableRegistration', opts.enableRegistration || (process.env.STORMPATH_ENABLE_REGISTRATION === 'true') || true);
     app.set('stormpathEnableLogin', opts.enableLogin || (process.env.STORMPATH_ENABLE_LOGIN === 'true') || true);
     app.set('stormpathEnableLogout', opts.enableLogout || (process.env.STORMPATH_ENABLE_LOGOUT === 'true') || true);
+
+    // Which views should we render?
+    app.set('stormpathRegistrationView', opts.registrationView || process.env.STORMPATH_REGISTRATION_VIEW || __dirname + '/views/register.jade');
+    app.set('stormpathLoginView', opts.loginView || process.env.STORMPATH_LOGIN_VIEW || __dirname + '/views/login.jade');
 
     // Routing configuration.
     app.set('stormpathRegistrationUrl', opts.registrationUrl || process.env.STORMPATH_REGISTRATION_URL || '/register');
