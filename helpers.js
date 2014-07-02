@@ -16,7 +16,7 @@ module.exports.render = function(view, res, options) {
 
 module.exports.getUser = function(req, res, callback) {
   if (req.session && req.session.user) {
-    req.app.get('stormpathClient').getAccount(req.session.user.href, { expand: 'customData' }, function(err, account) {
+    req.app.get('stormpathClient').getAccount(req.session.user.href, { expand: 'customData,groups' }, function(err, account) {
       if (err) {
         req.session.reset();
       } else {
