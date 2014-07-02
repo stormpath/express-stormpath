@@ -26,12 +26,12 @@ block body
                 label.col-sm-4 Email
                 div.col-sm-8
                   - var data = (form.fields.login.value ? form.fields.login.value : '')
-                  input.form-control(autofocus='true', placeholder='Email', required='true', name='login', type='text', value=data)
+                  input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=data)
 
               .form-group.group-password
                 label.col-sm-4 Password
                 div.col-sm-8
-                  input.form-control(placeholder='Password', required='true', type='password', name='password')
+                  input.form-control(placeholder='Password', required=true, type='password', name='password')
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In

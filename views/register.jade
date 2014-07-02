@@ -25,37 +25,25 @@ block body
                 .form-group.group-username(form-group='true')
                   label.col-sm-4 Username
                   .col-sm-8
-                    if app.get('stormpathRequireUsername')
-                      input.form-control(placeholder='Username', name='username', required='true', type='text')
-                    else
-                      input.form-control(placeholder='Username', name='username', type='text')
+                    input.form-control(placeholder='Username', name='username', required=app.get('stormpathRequireUsername') ? true : false, type='text')
 
               if app.get('stormpathEnableGivenName')
                 .form-group.group-first-name(form-group='true')
                   label.col-sm-4 First Name
                   .col-sm-8
-                    if app.get('stormpathRequireGivenName')
-                      input.form-control(placeholder='First Name', name='givenName', required='true', type='text')
-                    else
-                      input.form-control(placeholder='First Name', name='givenName', type='text')
+                    input.form-control(placeholder='First Name', name='givenName', required=app.get('stormpathRequireGivenName') ? true : false, type='text')
 
               if app.get('stormpathEnableMiddleName')
                 .form-group.group-middle-name(form-group='true')
                   label.col-sm-4 Middle Name
                   .col-sm-8
-                    if app.get('stormpathRequireMiddleName')
-                      input.form-control(placeholder='Middle Name', name='middleName', required='true', type='text')
-                    else
-                      input.form-control(placeholder='Middle Name', name='middleName', type='text')
+                    input.form-control(placeholder='Middle Name', name='middleName', required=app.get('stormpathRequireMiddleName') ? true : false, type='text')
 
               if app.get('stormpathEnableSurname')
                 .form-group.group-last-name(form-group='true')
                   label.col-sm-4 Last Name
                   .col-sm-8
-                    if app.get('stormpathRequireSurname')
-                      input.form-control(placeholder='Last Name', name='surname', required='true', type='text')
-                    else
-                      input.form-control(placeholder='Last Name', name='surname', type='text')
+                    input.form-control(placeholder='Last Name', name='surname', required=app.get('stormpathRequireSurname') ? true : false, type='text')
 
               .form-group.group-email(form-group='true')
                 label.col-sm-4 Email
