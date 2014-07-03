@@ -1,5 +1,5 @@
 Express-Stormpath
-===============
+=================
 
 Express-Stormpath is an extension for `Express`_ that makes it *incredibly* simple
 to add users and user data to your application.  It aims to completely abstract
