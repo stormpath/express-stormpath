@@ -1,11 +1,7 @@
 {
   "name": "express-stormpath",
-  "version": "0.0.0",
-  "description": "Stormpath integration for express.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "version": "0.0.1",
+  "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
     "stormpath",
@@ -15,6 +11,7 @@
     "users",
     "accounts"
   ],
+  "repository": "stormpath/stormpath-express",
   "author": "Stormpath, Inc.",
   "license": "Apache",
   "dependencies": {
