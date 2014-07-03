@@ -12,14 +12,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from os import environ
-
-
-on_rtd = environ.get('READTHEDOCS') == 'True'
-
-if not on_rtd:
-    from sphinx_rtd_theme import get_html_theme_path
-
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -104,8 +96,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-if not on_rtd:
-    html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -113,8 +104,7 @@ if not on_rtd:
 html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-if not on_rtd:
-    html_theme_path = [get_html_theme_path()]
+html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -267,8 +257,3 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
-
-
-analytics = """
-<script type="text/javascript">var _gaq = _gaq || [];   _gaq.push(['_setAccount', 'UA-29159574-1']);   _gaq.push(['_setDomainName', 'stormpath.com']);   _gaq.push(['_trackPageview']);    (function() {     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;     ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);   })();</script><script type="text/javascript">var _kmq = _kmq || [];   var _kmk = _kmk || '684b854336bd3a6523260ebd991eec06b18b929a';   function _kms(u){     setTimeout(function(){       var d = document, f = d.getElementsByTagName('script')[0],       s = d.createElement('script');       s.type = 'text/javascript'; s.async = true; s.src = u;       f.parentNode.insertBefore(s, f);     }, 1);   }   _kms('//i.kissmetrics.com/i.js');   _kms('//doug1izaerwt3.cloudfront.net/' + _kmk + '.1.js');</script><script src="//cdn.optimizely.com/js/225847041.js"></script>
-"""
