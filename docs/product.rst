@@ -6,6 +6,42 @@ selectively jump around from topic-to-topic to discover all the neat features
 that Express-Stormpath provides!
 
 
+Configuration
+-------------
+
+There are two ways to configure Express-Stormpath -- you can list all of your
+settings manually when initializing the Stormpath middleware, or you can specify
+your settings via environment variables.
+
+If you want to specify settings via middleware, you can do so by specifying
+their names like so::
+
+    var stormpath = require('express-stormpath');
+
+
+    app.use(stormpath.init(app, {
+      secretKey: 'blah',
+      enableHttps: false,
+    }));
+
+As an alternative, you could specify these settings via environment variables,
+by using the same names, with a twist: each name must be in all caps, start with
+'stormpath', and use underscores instead of spaces.
+
+For instance, if I wanted to reproduce the above with environment variables, I
+could define the following variables::
+
+    $ export STORMPATH_SECRET_KEY=blah
+    $ export STORMPATH_ENABLE_HTTPS=false
+
+Then, when defining my middleware, I could simply write::
+
+    var stormpath = require('express-stormpath');
+
+
+    app.use(stormpath.init(app));
+
+
 Enforce User Authentication
 ---------------------------
 
