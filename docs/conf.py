@@ -137,6 +137,9 @@ if not on_rtd:
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+# Make the default syntax highlighting target Javascript code snippets.
+highlight_language = 'javascript'
+
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
