@@ -23,10 +23,17 @@ block body
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
-                label.col-sm-4 Email
+                if app.get('stormpathEnableUsername')
+                    label.col-sm-4 Username or Email
+                else
+                    label.col-sm-4 Email
+
                 div.col-sm-8
                   - var data = (form.fields.login.value ? form.fields.login.value : '')
-                  input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=data)
+                  if app.get('stormpathEnableUsername')
+                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=data)
+                  else
+                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=data)
 
               .form-group.group-password
                 label.col-sm-4 Password
