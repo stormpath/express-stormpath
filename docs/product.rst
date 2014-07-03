@@ -182,7 +182,7 @@ Let's say you want to change a user's ``givenName`` (*first name*).  You could
 easily accomplish this with the following code::
 
     // assuming we're inside of a request
-    res.locals.user.givenName = 'Randall'
+    res.locals.user.givenName = 'Randall';
     res.locals.user.save(function(err) {
       if (!err) {
         console.log('User change saved successfully.');
