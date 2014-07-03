@@ -82,11 +82,6 @@ Wasn't that easy?!
     you can do so easily by visiting the `Stormpath dashboard`_, navigating to
     your user Directory, then changing the "Password Strength Policy".
 
-Since everyone loves screenshots, here is what you should see on the
-registration page by default!
-
-.. image:: /_static/registration-page.png
-
 
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard
