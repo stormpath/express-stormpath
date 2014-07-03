@@ -47,6 +47,30 @@ The ``secretKey`` option should be a long, random string that is NOT checked
 into your source code.  This is used to secure user sessions.  Make sure this
 isn't guessable!
 
+If you'd prefer to specify your API credentials without using an
+``apiKey.properties`` file, you can also do that easily by setting the following
+two environment variables:
+
+- ``STORMPATH_API_KEY_ID=xxx`` (*your Stormpath API key ID*)
+- ``STORMPATH_API_KEY_SECRET=xxx`` (*your Stormpath API key secret*)
+
+If you do this, you don't have to specify any credential configuration when
+initializing the Stormpath middleware::
+
+    var express = require('express');
+    var stormpath = require('express-stormpath');
+
+
+    var app = express();
+    app.use(stormpath.init(app, {
+        application: 'https://api.stormpath.com/v1/applications/xxx',
+        secretKey: 'some_long_random_string',
+    }));
+
+
+    app.listen(3000);
+
+
 .. note::
     The Stormpath middleware **must** always be the last initialized middleware.
     If not, you may experience odd side effects.
