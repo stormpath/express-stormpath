@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.1
+-------------
+
+**Released on July 9, 2014.**
+
+- Fixing bug with credentials (*checking for `stormpathApiKeyId` instead of
+  `stormpathApiKeyID`*).
+
+
 Version 0.1.0
 -------------
 
