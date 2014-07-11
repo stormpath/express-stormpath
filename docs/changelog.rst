@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.4
+-------------
+
+**Released on July 11, 2014.**
+
+- Removing unnecessary dependency (express).
+- Requiring newer release of the stormpath library (*for proper user agent
+  support*).
+- Adding custom user agent to help with debugging / reporting issues.
+
+
 Version 0.1.3
 -------------
 
