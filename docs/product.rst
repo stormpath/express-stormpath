@@ -155,6 +155,62 @@ By default, sessions will not expire for one month (*out of convenience*).
     this number, your sessions will expire very quickly!
 
 
+Enable Caching
+--------------
+
+The best kind of websites are fast websites.  As of version **0.1.5**,
+Express-Stormpath includes built-in support for caching.  You can currently use
+either:
+
+- A local memory cache (*default*).
+- A `memcached`_ cache.
+- A `redis`_ cache.
+
+All can be easily configured using configuration variables.
+
+There are several configuration settings you can specify when initializing the
+Stormpath middleware:
+
+- ``cache`` - The type of cache to use: ``'memory'``, ``'memcached'``, or
+  ``'redis'``).  Defaults to ``'memory'``.  If you want to use local memory as a
+  cache, just set memory here and leave all other fields blank!
+- ``cacheHost`` - The hostname of the cache (*ex: '127.0.0.1'*).
+- ``cachePort`` - The port of the cache (*ex: 11211*).
+- ``cacheTTL`` - The amount of time (*in seconds*) to cache resources before
+  expiring them.  Defaults to ``300``.
+- ``cacheTTI`` - If this amount of time has passed (*in seconds*) since a
+  resource was last accessed, it will be expired.  Defaults to ``300``.
+- ``cacheOptions`` - An object which holds additional configuration options for
+  the cache (*like username, password, etc.*).
+
+Here's an example showing how to enable caching for a memcached server that is
+running locally with no username / password::
+
+    var stormpath = require('express-stormpath');
+
+
+    app.use(stormpath.init(app, {
+      cache: 'memcached',
+      cacheHost: '127.0.0.1',
+      cachePort: 11211,
+    }));
+
+Here's an example which shows how to enable caching for a redis server that is
+running locally with a required password::
+
+    var stormpath = require('express-stormpath');
+
+
+    app.use(stormpath.init(app, {
+      cache: 'redis',
+      cacheHost: '127.0.0.1',
+      cachePort: 6379,
+      cacheOptions: {
+        auth_pass: 'xxx',
+      },
+    }));
+
+
 Access User Data
 ----------------
 
@@ -509,3 +565,5 @@ following::
 .. _Account: http://docs.stormpath.com/rest/product-guide/#accounts
 .. _bootstrap: http://getbootstrap.com/
 .. _Jade: http://jade-lang.com/
+.. _memcached: http://memcached.org/
+.. _redis: http://redis.io/
