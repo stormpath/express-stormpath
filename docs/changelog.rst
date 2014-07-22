@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.5
+-------------
+
+**Released on July 22, 2014.**
+
+- Adding cache support (*local memory, memcached, redis*).
+
+
 Version 0.1.4
 -------------
 
