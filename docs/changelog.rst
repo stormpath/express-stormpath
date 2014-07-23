@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.7
+-------------
+
+**Released on July 22, 2014.**
+
+- Adding forgot password link to login page, if enabled.
+
+
 Version 0.1.6
 -------------
 
