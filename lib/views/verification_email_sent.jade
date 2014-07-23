@@ -1,0 +1,22 @@
+extends base
+
+block vars
+  - var title = 'Account Verification Email Sent'
+  - var description = 'Your account verification email has been sent!'
+  - var bodytag = 'login'
+
+block body
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
+              span.
+                Your account verification email has been sent!
+              p.
+                Before you can log into your account, you need to activate your
+                account by clicking the link we sent to you at your email
+                address: <b>#{email}</b>.
+              p.
+                Please check your inbox to continue.
