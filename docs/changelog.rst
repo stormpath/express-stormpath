@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.6
+-------------
+
+**Released on July 22, 2014.**
+
+- Fixing dependency issue (*we need express as a dependency*).
+- Adding in password reset functionality!
+
+
 Version 0.1.5
 -------------
 
