@@ -42,3 +42,6 @@ block body
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
+
+        if app.get('stormpathEnableForgotPassword')
+          a.forgot(href="#{app.get('stormpathForgotPasswordUrl')}") Forgot Password?
