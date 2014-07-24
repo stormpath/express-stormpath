@@ -560,6 +560,115 @@ following::
     }));
 
 
+Use Account Verification
+------------------------
+
+As of Express-Stormpath **0.1.8**, it is now possible to easily enable an
+"Account Verification Workflow", which makes newly registered users click a link
+in in their email inbox before completing user the user registration process.
+
+If you'd like to ensure your users are registering with legitimate email
+addresses, this feature makes the process as painless as possible =)
+
+
+Configure the Workflow
+......................
+
+The first thing you need to do to enable "Account Verification" functionality
+in your Express app is visit the `Directory Dashboard`_ and select your default
+user directory.
+
+Next, you should see several options in a tab.  You will want to click the
+"Workflows" button.  Once you've landed on this page, you'll then want to click
+the "show" link to the right of the "Account Registration and Verification"
+header.  This section allows you to configure your "Account Verification"
+settings.
+
+On this page, the only thing you **need** to change is the "Account Verification
+Base URL" setting at the top.  You need to set this to be:
+``https://mysite.com/verified``, substituting in your own website address.
+
+For instance, if your site lives at ``https://www.mysite.com``, you'll want to
+set "Account Verification Base URL" to ``https://www.mysite.com/verified``.
+
+This URL determines where a user will be redirected after clicking the
+verification link in the email we send them.  If you're testing things out
+locally, you can also set this to a local URL (eg:
+``http://localhost:3000/verified``).
+
+After setting "Account Verification Base URL", you can also adjust any of the
+other settings below -- you can customize the email templates that are used to
+email the user, and a variety of other options.
+
+When you're finished customizing the "Account Verification Workflow", be sure
+to hit the "Update" button at the bottom of the page.
+
+
+Enable Account Verification in Your App
+.......................................
+
+Now that you've configured the "Account Verification" settings on Stormpath's
+side, you need to configure your Express application to enable account
+verification.
+
+You can do this easily by modifying your application config like so::
+
+    app.use(stormpath.init(app, {
+      enableAccountVerification: true,
+    }));
+
+And...  That's all you have to do!
+
+
+Test it Out
+...........
+
+Now that you've fully enabled account verification functionality in your app,
+open up the registration page in your Express app and check it out!  After
+creating a new user account, you'll be greeted by a message informing you that
+before you can continue you need to click the verification link in your inbox.
+This page looks like this:
+
+.. image:: /_static/verification.png
+
+Then, depending on your "Account Verification Workflow" configuration, the user
+will see an email that looks like the following:
+
+.. image:: /_static/verification-email.png
+
+When a user clicks the link in their email, they'll reach a success page that
+looks like this:
+
+.. image:: /_static/verification-complete.png
+
+And lastly, once a user clicks the verification link, they'll be automatically
+logged into their account, then redirected to the main page of your site
+(whatever URL is set as ``redirectUrl`` in your configuration).  They'll also
+be shown this page for a few seconds to let them know the change was successful.
+
+Not bad, right?
+
+
+Customization
+.............
+
+Much like all other Express-Stormpath features, the account verification feature is
+completely customizable.
+
+You can easily change the account verification templates by modifying the following
+configuration variables, respectively:
+
+- ``stormpathAccountVerificationEmailSentView`` - The view which is shown after
+  a new user creates an account.
+- ``stormpathAccountVerificationCompleteView`` - The view which is shown after
+  a user clicks the verification link in their email.
+
+If you'd like to override the default views, you should take a look at the
+ones included with Express-Stormpath here:
+https://github.com/stormpath/stormpath-express/tree/master/lib/views
+and use these as a base for your own views.
+
+
 Use Password Reset
 ------------------
 
