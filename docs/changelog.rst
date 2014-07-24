@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.8
+-------------
+
+**Released on July 24, 2014.**
+
+- Adding account verification feature!  You can now easily enable account
+  verification emails / confirmation for users.
+
+
 Version 0.1.7
 -------------
 
