@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.1.9
+-------------
+
+**Released on July 24, 2014.**
+
+- Upgrading the stormpath dependencies.  This fixes an issue with caching.  Now
+  all subsequent requests should be really, ridiculously fast (< 1ms).
+
+
 Version 0.1.8
 -------------
 
