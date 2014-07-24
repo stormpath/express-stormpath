@@ -1,0 +1,24 @@
+extends base
+
+block vars
+  - var title = 'Account Verification Complete'
+  - var description = 'You have successfully verified your account!'
+  - var bodytag = 'login'
+
+block head
+  meta(http-equiv='refresh' content="5; url=#{app.get('stormpathRedirectUrl')}")
+
+
+block body
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
+              span.
+                Account Verification Complete!
+              p.
+                Your account has been verified, and you have been logged into
+                your account.  You will be redirected back to the site in 5
+                seconds.
