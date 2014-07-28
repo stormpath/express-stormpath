@@ -8,6 +8,19 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 0.1.9 -> Version 0.2.0
+------------------------------
+
+If you were previously relying on the built-in CSRF validation in your pages,
+you'll need to include CSRF manually.  This release no longer includes CSRF
+token protection on *all* pages -- it only protects the Stormpath pages --
+this was done to be less confusing for users.
+
+To add CSRF protection to your site similar to what was included automatically
+before, you'll want to use the express-csurf library, which you can find on
+Github here: https://github.com/expressjs/csurf
+
+
 Version 0.1.8 -> Version 0.1.9
 ------------------------------
 

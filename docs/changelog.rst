@@ -7,6 +7,19 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.0
+-------------
+
+**Released on July 28, 2014.**
+
+- Fixing bug with CSRF.  In previous releases, this library included CSRF
+  protection on *every* page of a user's site -- even if they didn't want it.
+  In this release, we're now *only* including CSRF on the page that this library
+  generates.  This is less confusing for users.
+- Adding in API key / Oauth authentication support.  You can now secure your
+  REST API with Stormpath!
+
+
 Version 0.1.9
 -------------
 
