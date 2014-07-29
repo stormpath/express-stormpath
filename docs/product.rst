@@ -282,6 +282,215 @@ As you can see above -- storing custom information on a ``user`` account is
 extremely simple!
 
 
+API Authentication
+------------------
+
+In addition to handling user login, registration, etc. for web users -- you can
+also use Stormpath to secure your REST API.
+
+Typically, securing REST APIs is a lot of work:
+
+- You need to assign users API keys.
+- You need to cache the API keys for validation when users make requests
+  (*nobody likes a slow API!*).
+- You need to allow users to exchange their API keys for Oauth tokens (*if you
+  want to support Oauth*).
+
+With Stormpath, however, this process is greatly simplified.  Stormpath can
+create API keys for your users, store them securely, and completely handle API
+authentication / caching.
+
+
+Create API Keys
+...............
+
+Before you can secure your REST API, you'll need to provision an API key pair
+for one of your Stormpath users.
+
+To do this (*assuming you're inside of an Express route*), you can call the
+``createApiKey`` method on your user object like so::
+
+    // Create an API key pair for the current user.
+    app.post('/create', stormpath.loginRequired, function(req, res) {
+      res.locals.user.createApiKey(function(err, apiKey) {
+        if (err) {
+          res.json(503, { error: 'Something went wrong. Please try again.' });
+        } else {
+          res.json({ id: apiKey.id, secret: apiKey.secret });
+        }
+      });
+    });
+
+The above route will create a new API key for the logged in user, then return it
+as JSON.  Each API key pair has two parts:
+
+- ``id`` - An API key ID -- this is similar to a username.
+- ``secret`` - An API key secret -- this is similar to a password.
+
+Both the id and secret *must* be given to your user, as both will be needed for
+API authentication.
+
+Once you've created at least one API key pair for your user, you can then allow
+this user to authenticate using their API keys against your API service.
+
+
+Authenticating via Basic Auth
+.............................
+
+If you're building a REST API, the simplest way to secure your API is using HTTP
+basic authentication.
+
+Essentially what this means is that a developer will be able to access your API
+by specifying their API key ID and secret when making requests to your API.
+
+To allow a user to authenticate via basic authentication, all you need to use is
+the ``apiAuthenticationRequired`` middleware in your route::
+
+    // This API endpoint is *only* accessible to users with valid API keys.
+    app.get('/me', stormpath.apiAuthenticationRequired, function(req, res) {
+      var user = res.locals.user;
+      res.json({
+        givenName: user.givenName,
+        surname: user.surname,
+        email: user.email,
+      });
+    });
+
+Now, let's see how a developer can successfully use this API endpoint defined
+above.
+
+First, we'll use the `curl`_ command to make an API request to this endpoint
+*without specifying our API credentials*::
+
+    $ curl -v http://localhost:3000/me
+    {"error":"Invalid API credentials."}
+
+As you can see above, by hitting the API endpoint with no credentials, a JSON
+error is returned automatically (*along with an HTTP 401 UNAUTHORIZED status
+code*).
+
+Now, let's try this again by specifying our user's API credentials (*that we
+generated in the previous section*)::
+
+    $ curl -v --user id:secret http://localhost:3000/me
+    {"givenName":"Randall","surname":"Degges","email":"r@rdegges.com"}
+
+As you can see, by specifying my developer API credentials, I was able to
+successfully authenticate against the REST API!
+
+Using basic authentication, along with SSL, is an *excellent* way to secure
+your REST API.
+
+
+Authenticating via OAuth
+........................
+
+OAuth is another popular way to secure REST APIs.
+
+The way OAuth works is as follows:
+
+- You've built a REST API that you want to secure.
+- You've got developer accounts, and each developer account has an API key
+  pair.
+- A developer makes an HTTP POST request to your API service at the URL
+  ``/oauth``, and authenticates via HTTP basic authentication.
+- If the request to ``/oauth`` was successful, an OAuth token will be returned
+  to the developer.  This token is a long string that expires in a given amount
+  of time (*by default, OAuth tokens expire after one hour*).
+- After the developer has this OAuth token, they can use this to authenticate
+  future API requests instead of using their API key directly.
+
+OAuth serves to provide additional security over basic authentication if you'd
+like to give out more advanced / restricted access to your developers.
+
+Typically, if you're building a REST API, and aren't sure which form of
+authentication to offer -- it's a much better idea to simply use basic
+authentication (*covered in the previous section*).
+
+If you'd still like to use OAuth, continue reading!
+
+
+Configuring OAuth Token Settings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This library comes with OAuth support out-of-the box.  There are two
+configuration options you can specify when initializing the Stormpath middleware
+which control your OAuth flow:
+
+- ``getOauthTokenUrl`` - The URL at which OAuth tokens can be retrieved.
+  Defaults to ``/oauth``.
+- ``oauthTTL`` - The amount of time (*in seconds*) that OAuth tokens last.
+  Defaults to ``3600`` (*one hour*).
+
+Here's an example of how to set both of these attributes::
+
+    app.use(stormpath.init(app, {
+      getOauthTokenUrl: '/oauth',
+      oauthTTL: 3600,
+    }));
+
+
+Getting an OAuth Token
+^^^^^^^^^^^^^^^^^^^^^^
+
+Now that you've configured your OAuth settings, developers will be able to
+retrieve OAuth tokens by hitting your OAuth URL (*/oauth by default*) with
+their API credentials.
+
+Below is an example request using curl, which demonstrates the proper way to
+request an OAuth token::
+
+    $ curl -v --user id:secret http://localhost:3000/oauth?grant_type=client_credentials
+    {"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEUExSSTVUTEVNMjFTQzNER0xHUjBJOFpYIiwiaXNzIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hcHBsaWNhdGlvbnMvNWpvQVVKdFZONHNkT3dUVVJEc0VDNSIsImlhdCI6MTQwNjY1OTkxMCwiZXhwIjoxNDA2NjYzNTEwLCJzY29wZSI6IiJ9.ypDMDMMCRCtDhWPMMc9l_Q-O-rj5LATalHYa3droYkY","token_type":"bearer","expires_in":3600}
+
+.. note::
+    If you're wondering why the ``?grant_type=client_credentials`` querystring
+    exists -- it's part of the OAuth spec: http://tools.ietf.org/html/rfc6749
+
+The response is a JSON object which contains:
+
+- ``access_token`` - Your OAuth access token.  This can be used to authenticate
+  via subsequent requests.
+- ``token_type`` - This will always be ``'bearer'``.
+- ``expires_in`` - This is the amount of seconds (*as an integer*) for which
+  this token is valid.
+
+
+Making OAuth Requests
+^^^^^^^^^^^^^^^^^^^^^
+
+Now that you've got an OAuth access token, you can use this to make API requests
+securely to you REST API.
+
+Let's say you've defined the following API endpoint::
+
+    // This API endpoint is *only* accessible to users with a valid OAuth token.
+    app.get('/me', stormpath.apiAuthenticationRequired, function(req, res) {
+      var user = res.locals.user;
+      res.json({
+        givenName: user.givenName,
+        surname: user.surname,
+        email: user.email,
+      });
+
+By using the ``stormpath.apiAuthenticationRequired`` middleware, users will be
+authenticated automatically on your behalf.
+
+Here's a sample curl request to this endpoint without any credentials::
+
+    $ curl -v http://localhost:3000/me
+    {"error":"Invalid API credentials."}
+
+And here's a sample curl request to this endpoint with the Bearer token
+included::
+
+    $ curl -v -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEUExSSTVUTEVNMjFTQzNER0xHUjBJOFpYIiwiaXNzIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hcHBsaWNhdGlvbnMvNWpvQVVKdFZONHNkT3dUVVJEc0VDNSIsImlhdCI6MTQwNjY1OTkxMCwiZXhwIjoxNDA2NjYzNTEwLCJzY29wZSI6IiJ9.ypDMDMMCRCtDhWPMMc9l_Q-O-rj5LATalHYa3droYkY' http://localhost:3000/me
+    {"givenName":"Randall","surname":"Degges","email":"r@rdegges.com"}
+
+As you can see, by correctly specifying your OAuth token, you're able to
+authenticate against the API endpoint easily!
+
+
 Customize Redirect Logic
 ------------------------
 
@@ -801,3 +1010,4 @@ and use these as a base for your own views.
 .. _Google Developer Console: https://console.developers.google.com/project
 .. _Developer Console: https://console.developers.google.com/project
 .. _Console Dashboard: https://console.developers.google.com/project
+.. _curl: http://curl.haxx.se/
