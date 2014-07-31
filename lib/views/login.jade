@@ -10,7 +10,12 @@ block body
     .va-wrapper
       .view.login-view.container
         .box.row
-          .email-password-area.col-xs-12.large.col-sm-12
+          if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+            - var cls = 'small col-sm-8'
+          else
+            - var cls = 'large col-sm-12'
+
+          div(class='email-password-area col-xs-12 #{cls}')
             .header
               span.
                 Log In or <a href="#{app.get('stormpathRegistrationUrl')}">Create Account</a>
@@ -23,25 +28,55 @@ block body
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
-                if app.get('stormpathEnableUsername')
-                    label.col-sm-4 Username or Email
+                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                  - var cls = 'col-sm-12'
                 else
-                    label.col-sm-4 Email
+                  - var cls = 'col-sm-4'
 
-                div.col-sm-8
+                if app.get('stormpathEnableUsername')
+                  label(class='#{cls}') Username or Email
+                else
+                  label(class='#{cls}') Email
+
+                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                  - var cls = 'col-sm-12'
+                else
+                  - var cls = 'col-sm-8'
+
+                div(class='#{cls}')
                   - var data = (form.fields.login.value ? form.fields.login.value : '')
                   if app.get('stormpathEnableUsername')
                     input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=data)
                   else
                     input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=data)
 
+              if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                - var cls = 'col-sm-12'
+              else
+                - var cls = 'col-sm-4'
+
               .form-group.group-password
-                label.col-sm-4 Password
-                div.col-sm-8
+                label(class='#{cls}') Password
+
+                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                  - var cls = 'col-sm-12'
+                else
+                  - var cls = 'col-sm-8'
+
+                div(class='#{cls}')
                   input.form-control(placeholder='Password', required=true, type='password', name='password')
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
+
+          if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+            .social-area.col-xs-12.col-sm-4
+              .header &nbsp;
+              label Easy 1-click login:
+              //if app.get('stormpathEnableFacebook')
+              //  include facebook_login_form.jade
+              if app.get('stormpathEnableGoogle')
+                include google_login_form.jade
 
         if app.get('stormpathEnableForgotPassword')
           a.forgot(href="#{app.get('stormpathForgotPasswordUrl')}") Forgot Password?
