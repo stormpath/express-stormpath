@@ -1,0 +1,21 @@
+button.btn.btn-social.btn-google(onclick='googleLogin()') Google
+script(type='text/javascript').
+  function googleLogin() {
+    var clientId = '#{app.get("stormpathSocial").google.clientId}';
+    var googleScopes = '#{app.get("stormpathSocial").google.scopes}';
+    var scopes = [];
+
+    if (googleScopes.length) {
+      scopes = googleScopes.join('+');
+    } else {
+      scopes = '';
+    }
+
+    window.location.replace(
+        'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=' +
+        clientId +
+        '&scope=email' + scopes +
+        '&include_granted_scopes=true&redirect_uri=' +
+        '#{url}#{app.get("stormpathGoogleLoginUrl")}'
+    );
+  }
