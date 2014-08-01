@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.1
+-------------
+
+**Released on August 1, 2014.**
+
+- Adding support for social login via Google and Facebook.
+
+
 Version 0.2.0
 -------------
 
