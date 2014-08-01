@@ -73,8 +73,8 @@ block body
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              //if app.get('stormpathEnableFacebook')
-              //  include facebook_login_form.jade
+              if app.get('stormpathEnableFacebook')
+                include facebook_login_form.jade
               if app.get('stormpathEnableGoogle')
                 include google_login_form.jade
 
