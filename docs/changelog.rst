@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.2
+-------------
+
+**Released on August 4, 2014.**
+
+- Adding support for Stormpath's new ID site functionality: you can now enable
+  this feature and have Stormpath handle authentication 100%.
+
+
 Version 0.2.1
 -------------
 
