@@ -1289,6 +1289,101 @@ then immediately redirected back to your website at the URL specified by
 Simple, right?!
 
 
+Use Hosted Login
+----------------
+
+If you'd like to use Stormpath's new hosted login functionality (*known as ID
+Site*), you can now do so using Express-Stormpath 0.2.2+!
+
+Stormpath's ID Site functionality works as so:
+
+- If a user wants to register for your web site, they'll be redirected to your
+  ID site URL (*hosted by Stormpath*).  This can be something like:
+  https://login.mysite.com
+
+- Stormpath will then display a login / registration / forgot password page
+  automatically, depending on what the user wants to do, allowing the user to
+  register **without touching your Express application!**  These pages can be
+  completely customized however you like, of course.
+
+- Once Stormpath has registered or logged the user in, they'll be redirected
+  back to a route on your Express app (*which defaults to /redirect*).  This
+  route will then verify that the user was successfully logged in, and create a
+  user session.
+
+- Lastly, the user will be redirected back to whatever page on your site is
+  configured as the ``redirectUrl`` (*this defaults to /*).
+
+For more information on ID Site, please read the official documentation:
+http://docs.stormpath.com/guides/using-id-site/
+
+
+Enable ID Site
+..............
+
+The first step in getting hosted login working is enabling the ID Site
+functionality on Stormpath.
+
+To do this, you'll want to first visit your `ID Site dashboard`_.  This page is
+where you can configure your hosted login functionality.
+
+.. note::
+    These instructions will only cover using the built-in hosted login site --
+    if you'd like to customize your ID Site URL or theme, that will be covered
+    later.
+
+In the box labeled "Authorized Redirect URIs", enter your redirect URL -- this
+should be set to something like: ``https://www.mysite.com/redirect``.  If you're
+testing locally, you might want to set this to:
+``http://localhost:3000/redirect``.
+
+If you'd like to support *both* production and local environments, you can add
+multiple URLs (*just click the "Add another" button and enter as many URLs as
+you'd like*).
+
+Lastly, make sure to click the "Update" button at the bottom of the page to save
+your changes.
+
+In the end, it should look something like this:
+
+.. image:: /_static/id-site-settings.png
+
+
+Configure Your Express App
+..........................
+
+Now that we've configured Stormpath properly, let's configure our Express app!
+
+In your app's config, you'll want to add the following settings::
+
+    app.use(stormpath.init(app, {
+      enableIdSite: true,
+    }));
+
+This setting tells Express-Stormpath to use the hosted login functionality
+instead of the built-in local authentication functionality.
+
+
+Test it Out
+...........
+
+Now that you've configured hosted login, let's give it a test.
+
+If you start your Express server, then visit either the login or registration
+page (*/login or /registration, respectively*), you should be redirected to your
+hosted login site on Stormpath, where you can either create or log into your
+account.
+
+Once you've logged in, you'll be redirected back to your application in a logged
+in state!
+
+Here's a screenshot of the login page to show you what the hosted login site
+currently looks like:
+
+.. image:: /_static/id-site-login.png
+
+
+.. _ID Site dashboard: https://api.stormpath.com/v#!idSite
 .. _Application dashboard: https://api.stormpath.com/v#!applications
 .. _Directory dashboard: https://api.stormpath.com/v#!directories
 .. _createGroup: http://docs.stormpath.com/nodejs/api/application#createGroup
