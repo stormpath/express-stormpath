@@ -1,5 +1,4 @@
 extends base
-
 block vars
   - var title = 'Create an Account'
   - var description = 'Create a new account.'
@@ -25,30 +24,35 @@ block body
                 .form-group.group-username(form-group='true')
                   label.col-sm-4 Username
                   .col-sm-8
-                    input.form-control(placeholder='Username', name='username', required=app.get('stormpathRequireUsername') ? true : false, type='text')
+                    - var value = form.data ? form.data.username : '';
+                    input.form-control(placeholder='Username', name='username', value=value, required=app.get('stormpathRequireUsername') ? true : false, type='text')
 
               if app.get('stormpathEnableGivenName')
                 .form-group.group-first-name(form-group='true')
                   label.col-sm-4 First Name
                   .col-sm-8
-                    input.form-control(placeholder='First Name', name='givenName', required=app.get('stormpathRequireGivenName') ? true : false, type='text')
+                    - var value = form.data ? form.data.givenName : '';
+                    input.form-control(placeholder='First Name', name='givenName', value=value, required=app.get('stormpathRequireGivenName') ? true : false, type='text')
 
               if app.get('stormpathEnableMiddleName')
                 .form-group.group-middle-name(form-group='true')
                   label.col-sm-4 Middle Name
                   .col-sm-8
-                    input.form-control(placeholder='Middle Name', name='middleName', required=app.get('stormpathRequireMiddleName') ? true : false, type='text')
+                    - var value = form.data ? form.data.middleName : '';
+                    input.form-control(placeholder='Middle Name', name='middleName', value=value, required=app.get('stormpathRequireMiddleName') ? true : false, type='text')
 
               if app.get('stormpathEnableSurname')
                 .form-group.group-last-name(form-group='true')
                   label.col-sm-4 Last Name
                   .col-sm-8
-                    input.form-control(placeholder='Last Name', name='surname', required=app.get('stormpathRequireSurname') ? true : false, type='text')
+                    - var value = form.data ? form.data.surname : '';
+                    input.form-control(placeholder='Last Name', name='surname', value=value, required=app.get('stormpathRequireSurname') ? true : false, type='text')
 
               .form-group.group-email(form-group='true')
                 label.col-sm-4 Email
                 .col-sm-8
-                  input.form-control(placeholder='Email', name='email', required='true', type='text')
+                  - var value = form.data ? form.data.email : '';
+                  input.form-control(placeholder='Email', name='email', value=value, required='true', type='text')
 
               .form-group.group-password(form-group='true')
                 label.col-sm-4 Password
