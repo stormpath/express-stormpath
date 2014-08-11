@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.3
+-------------
+
+**Released on August 11, 2014.**
+
+- Fixing a bug in which on the registration page, if you incorrectly filled out
+  the registration form, all previous field values would be wiped.
+
+
 Version 0.2.2
 -------------
 
