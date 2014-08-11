@@ -44,11 +44,11 @@ block body
                   - var cls = 'col-sm-8'
 
                 div(class='#{cls}')
-                  - var data = (form.fields.login.value ? form.fields.login.value : '')
+                  - var value = form.data ? form.data.login : '';
                   if app.get('stormpathEnableUsername')
-                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=data)
+                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
                   else
-                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=data)
+                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
 
               if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
                 - var cls = 'col-sm-12'
