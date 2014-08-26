@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.4
+-------------
+
+**Released on August 26, 2014.**
+
+- Fixing a bug which masked errors when starting up!  Thanks @robertjd!
+
+
 Version 0.2.3
 -------------
 
