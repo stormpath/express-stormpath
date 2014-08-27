@@ -509,15 +509,13 @@ This allows you to build nicer apps as you can do stuff like redirect newly
 registered users to a tutorial, dashboard, or something similar.
 
 What if someone visits the login route when they are logged in?  By default
-they will see the login screen again, but you can configure an alternate
-URL to redirect hem to:
+they will see the login screen again, but, but enabling the ``enableAutoLogin``
+feature, users who are already logged in will be automatically redirected to
+your ``redirectUrl`` -- skipping the login page all together!
 
     app.use(stormpath.init(app, {
-      loginRedirectUrl: '/',
+      enableAutoLogin: true,
     }));
-
-With this ``loginRedirectUrl`` setting, the user will be sent to `/` if they
-try to visit the login page while logged in.
 
 .. note::
     If a user visits a page which has restricted access, they'll be redirected
