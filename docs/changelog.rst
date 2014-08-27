@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.5
+-------------
+
+**Released on August 27, 2014.**
+
+- Adding a new optional feature: ``enableAutoLogin``.  If this feature is
+  enabled, then if a logged-in user visits the login page, they'll be
+  automatically redirected to your application's ``redirectUrl`` route.
+
+
 Version 0.2.4
 -------------
 
