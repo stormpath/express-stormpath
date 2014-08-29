@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.7
+-------------
+
+**Released on August 28, 2014.**
+
+- Fixing bug with certain boolean options.  If you had specified a false value
+  for an option that defaulted to true -- your false value would not have taken
+  effect.
+
+
 Version 0.2.6
 -------------
 
