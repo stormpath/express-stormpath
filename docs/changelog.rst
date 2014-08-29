@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.8
+-------------
+
+**Released on August 29, 2014.**
+
+- Adding a ``postRegistrationHandler``.  This new functionality allows users to
+  perform actions after a user has registered.
+
+
 Version 0.2.7
 -------------
 
