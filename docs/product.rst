@@ -249,6 +249,58 @@ As you can see above, you can directly modify ``user`` attributes, then
 persist any changes by running ``res.locals.user.save()``.
 
 
+Handling Events
+---------------
+
+As of Express-Stormpath **0.2.8**, it is now possible to handle specific events!
+This means you can run your own custom code when a specific event happens.
+
+All supported events are listed below.
+
+
+Post Registration
+.................
+
+Want to run some custom code after a user registers for your site?  If so, this
+is the event you want to handle!
+
+By defining a ``postRegistrationHandler`` you're able to do stuff like:
+
+- Send a new user a welcome email.
+- Generate API keys for all new users.
+- Setup Stripe billing.
+- etc.
+
+To use a ``postRegistrationHandler``, you need to define your handler function
+in the Stormpath middleware setup::
+
+    app.use(stormpath.init(app, {
+      postRegistrationHandler: function(account, res, next) {
+        console.log('User:', account.email, 'just registered!');
+        next();
+      },
+    }));
+
+As you can see in the example above, the ``postRegistrationHandler`` function
+takes in three parameters:
+
+- ``account``: The new, successfully created, user account.
+- ``res``: The Express response object.  This can be used to modify the HTTP
+  response directly.
+- ``next``: The callback to call when you're done doing whatever it is you want
+  to do.  If you call this, execution will continue on normally.  If you don't
+  call this, you're responsible for handling the response.
+
+In the example below, we'll use the ``postRegistrationHandler`` to redirect the
+user to a special page (*instead of the normal registration flow*)::
+
+    app.use(stormpath.init(app, {
+      postRegistrationHandler: function(account, res, next) {
+        res.redirect(302, '/secretpage').end();
+      },
+    }));
+
+
 Working With Custom User Data
 -----------------------------
 
@@ -511,7 +563,7 @@ registered users to a tutorial, dashboard, or something similar.
 What if someone visits the login route when they are logged in?  By default
 they will see the login screen again, but, but enabling the ``enableAutoLogin``
 feature, users who are already logged in will be automatically redirected to
-your ``redirectUrl`` -- skipping the login page all together!
+your ``redirectUrl`` -- skipping the login page all together::
 
     app.use(stormpath.init(app, {
       enableAutoLogin: true,
