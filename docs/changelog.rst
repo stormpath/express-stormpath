@@ -17,6 +17,8 @@ Version 0.2.8
   displayed in a human-readable way.
 - Improving ``enableAutoLogin`` behavior: it now successfully redirects to the
   URL specified by the ``next`` querystring (*if it exists*).
+- Fixing issue with session max duration.  Adding in workaround to get around
+  the mozilla bug.
 
 
 Version 0.2.8
