@@ -20,7 +20,7 @@ block body
             if formErrors
               .alert.alert-danger
                 each error in formErrors
-                  p #{error}
+                  p #{error.error}
 
             form.registration-form.form-horizontal.sp-form(method='post', role='form')
               input(name='_csrf', type='hidden', value=csrfToken)
