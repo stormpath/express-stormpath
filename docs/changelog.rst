@@ -10,6 +10,14 @@ All library changes, in descending order.
 Version 0.2.8
 -------------
 
+**Not yet released.**
+
+- Fixing style issue for default authentication pages in IE.
+
+
+Version 0.2.8
+-------------
+
 **Released on August 29, 2014.**
 
 - Adding a ``postRegistrationHandler``.  This new functionality allows users to
