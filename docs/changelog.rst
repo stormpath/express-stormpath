@@ -13,6 +13,8 @@ Version 0.2.8
 **Not yet released.**
 
 - Fixing style issue for default authentication pages in IE.
+- Fixing the rendering issue with form errors -- they were previously not
+  displayed in a human-readable way.
 
 
 Version 0.2.8
