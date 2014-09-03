@@ -15,6 +15,8 @@ Version 0.2.8
 - Fixing style issue for default authentication pages in IE.
 - Fixing the rendering issue with form errors -- they were previously not
   displayed in a human-readable way.
+- Improving ``enableAutoLogin`` behavior: it now successfully redirects to the
+  URL specified by the ``next`` querystring (*if it exists*).
 
 
 Version 0.2.8
