@@ -7,10 +7,10 @@ Change Log
 All library changes, in descending order.
 
 
-Version 0.2.8
+Version 0.2.9
 -------------
 
-**Not yet released.**
+**Released on September 3, 2014.**
 
 - Fixing style issue for default authentication pages in IE.
 - Fixing the rendering issue with form errors -- they were previously not
