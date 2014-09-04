@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.3.0
+-------------
+
+**Released on September 4, 2014.**
+
+- Adding in a simpler way to access users: ``req.user``.
+
+
 Version 0.2.9
 -------------
 
