@@ -131,6 +131,31 @@ The view above lists three groups, and sets the ``all`` parameter to ``false``
 groups in order to gain access.
 
 
+Session management
+------------------
+
+By default, a session middleware ( `client-sessions`_ ) is initialized in the scope of Express-Stormpath and will not interfere with an existing session middleware you might have since it is initialized behind a `router`_. However, if you want to use your own session middleware, you can always pass it at the module initialization. The only requirement is that your request key for the session is ``session``.
+
+You can do it this way::
+
+    var session = require('express-session');
+
+    // using a redis store for instance
+    var RedisStore = require('connect-redis')(session);
+
+    var sessionMiddleware = session({
+        store: new RedisStore(options),
+        secret: 'this is very secret'
+    });
+
+    // make your app use it
+    app.use(sessionMiddleware);
+
+    app.use(stormpath.init(app, {
+      sessionMiddleware: sessionMiddleware // Initialize Express-stormpath and use existing middleware
+    }));
+
+
 Restrict Session Duration / Expiration
 --------------------------------------
 
@@ -1459,3 +1484,5 @@ currently looks like:
 .. _Developer Console: https://console.developers.google.com/project
 .. _Console Dashboard: https://console.developers.google.com/project
 .. _curl: http://curl.haxx.se/
+.. _client-sessions: https://github.com/mozilla/node-client-sessions
+.. _router: http://expressjs.com/api#router
