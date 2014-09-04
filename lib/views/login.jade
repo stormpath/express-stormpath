@@ -27,7 +27,7 @@ block body
             if formErrors
               .alert.alert-danger.bad-login
                 each error in formErrors
-                  p #{error}
+                  p #{error.error}
 
             form.login-form.form-horizontal(method='post', role='form')
               input(name='_csrf', type='hidden', value=csrfToken)

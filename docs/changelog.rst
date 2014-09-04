@@ -7,6 +7,20 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.2.9
+-------------
+
+**Released on September 3, 2014.**
+
+- Fixing style issue for default authentication pages in IE.
+- Fixing the rendering issue with form errors -- they were previously not
+  displayed in a human-readable way.
+- Improving ``enableAutoLogin`` behavior: it now successfully redirects to the
+  URL specified by the ``next`` querystring (*if it exists*).
+- Fixing issue with session max duration.  Adding in workaround to get around
+  the mozilla bug.
+
+
 Version 0.2.8
 -------------
 
