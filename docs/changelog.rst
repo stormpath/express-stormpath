@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.3.2
+-------------
+
+**Released on September 5, 2014.**
+
+- Making behavior for unauthorized users a bit nicer. Instead of logging a user
+  out unexpectedly, we instead redirect them to the login page with the
+  ``?next`` querystring set.
+
+
 Version 0.3.1
 -------------
 
