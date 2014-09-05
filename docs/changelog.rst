@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.3.1
+-------------
+
+**Released on September 5, 2014.**
+
+- Changing the priority of authentication in ``helpers.getUser`` -- this fixes
+  odd browser behavior when using frontend tools like Angular, which may set an
+  HTTP Authorization header.
+
+
 Version 0.3.0
 -------------
 
