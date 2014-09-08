@@ -1,11 +1,16 @@
-.. _upgrading:
-
+.. _upgrading: 
 
 Upgrade Guide
 =============
 
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
+
+
+Version 0.3.2 -> Version 0.3.3
+------------------------------
+
+**No changes needed!**
 
 
 Version 0.3.1 -> Version 0.3.2
