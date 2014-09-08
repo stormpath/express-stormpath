@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.3.3
+-------------
+
+**Released on September 8, 2014.**
+
+- Fixing a subtle bug with user sessions and the account verification workflow.
+  When a user verified their email address, the first request wouldn't contain
+  the user's session data.
+
+
 Version 0.3.2
 -------------
 
