@@ -15,6 +15,8 @@ Version 0.3.3
 - Fixing a subtle bug with user sessions and the account verification workflow.
   When a user verified their email address, the first request wouldn't contain
   the user's session data.
+- Making the `postRegistrationHandler` work with the account verification
+  workflow.
 
 
 Version 0.3.2
