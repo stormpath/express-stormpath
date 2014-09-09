@@ -7,6 +7,46 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.3.3
+-------------
+
+**Released on September 8, 2014.**
+
+- Fixing a subtle bug with user sessions and the account verification workflow.
+  When a user verified their email address, the first request wouldn't contain
+  the user's session data.
+- Making the `postRegistrationHandler` work with the account verification
+  workflow.
+
+
+Version 0.3.2
+-------------
+
+**Released on September 5, 2014.**
+
+- Making behavior for unauthorized users a bit nicer. Instead of logging a user
+  out unexpectedly, we instead redirect them to the login page with the
+  ``?next`` querystring set.
+
+
+Version 0.3.1
+-------------
+
+**Released on September 5, 2014.**
+
+- Changing the priority of authentication in ``helpers.getUser`` -- this fixes
+  odd browser behavior when using frontend tools like Angular, which may set an
+  HTTP Authorization header.
+
+
+Version 0.3.0
+-------------
+
+**Released on September 4, 2014.**
+
+- Adding in a simpler way to access users: ``req.user``.
+
+
 Version 0.2.9
 -------------
 
