@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.2
+-------------
+
+**Released on September 11, 2014.**
+
+- Hotfix release -- contains patch to node-client-sessions library to fix an API
+  issue.
+
+
 Version 0.4.1
 -------------
 
