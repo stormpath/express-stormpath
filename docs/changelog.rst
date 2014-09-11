@@ -7,6 +7,23 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.0
+-------------
+
+**Released on September 11, 2014.**
+
+- Adding support for ``postLogoutRedirectUrl``.  This setting allows a user to
+  specify the URL which users are directed to after logging out.  It defaults to
+  ``/``.
+- Adding support for swappable session middlewares -- users can now use their
+  *own* session middleware by setting the ``stormpathSessionMiddleware``
+  variable when initializing their Stormpath middleware.  This allows for more
+  flexible behavior if a user wants to store their session state on the
+  server-side.
+- Adding docs for the new session middleware config.
+- Upgrading the Stormpath dependency.
+
+
 Version 0.3.4
 -------------
 
