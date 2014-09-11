@@ -135,7 +135,7 @@ Session Management
 ------------------
 
 Express-Stormpath ships with a default, pre-configured session middleware by
-deafult.  This middleware library, `client-sessions`_, is preconfigured for
+default.  This middleware library, `client-sessions`_, is preconfigured for
 security and statelessness.
 
 If, for some reason, you'd like to store your session state in a database or
