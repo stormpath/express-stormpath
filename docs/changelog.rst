@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.1
+-------------
+
+**Released on September 11, 2014.**
+
+- Hotfix release: fixing critical bug in client-sessions dependency.  Linking to
+  specific Git commit hash as a temporary workaround until mozilla cuts a
+  release.
+
+
 Version 0.4.0
 -------------
 
