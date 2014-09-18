@@ -385,6 +385,118 @@ As you can see above -- storing custom information on a ``user`` account is
 extremely simple!
 
 
+Automatic Expansion
+-------------------
+
+As of Express-Stormpath **0.4.3**, you can now take advantage of automatic
+expansion.  Automatic expansion allows you to more easily work with user data.
+
+Let's say you're working on an app which makes use of the ``customData``
+property.  As mentioned in the previous section, you could always work with this
+data in each route by requesting it like so::
+
+    app.get('/', stormpath.loginRequired, function(req, res) {
+      req.user.getCustomData(function(err, data) {
+        res.json(data);
+      });
+    });
+
+However -- this is a bit nasty, right?  If you know that you always want to use
+``customData`` -- then having to repeatedly call ``req.user.getCustomData`` over
+and over again is going to get boring!
+
+With automatic expansion, you can pass in a configuration option when setting up
+your middleware, and tell it you want a particular property to be expanded
+automatically -- for instance::
+
+    app.use(stormpath.init(app, {
+      expandCustomData: true,
+    });
+
+Now, inside of *any* route, you could do the following::
+
+    app.get('/', stormpath.loginRequired, function(req, res) {
+      res.json(req.user.customData);
+    });
+
+As you can see above, by automatically expanding the ``customData`` property, it
+means you don't have to make any additional Stormpath calls -- it will happen
+automatically on each request!
+
+You can expand any of the *"linked resources"* below:
+
+- ``apiKeys`` - A user's API keys.
+- ``customData`` - A user's custom data.
+- ``directory`` - A user's directory data.
+- ``groups`` - A user's group data.
+- ``groupMemberships`` - A user's group membership data.
+- ``providerData`` - A user's provider data (*for social login providers*).
+- ``tenant`` - A user's tenant data.
+
+Now, some of the linked resources above are simple JSON objects:
+
+- ``customData``
+- ``directory``
+- ``providerData``
+- ``tenant``
+
+Each of the above objects contains some fields, and can be referenced like a
+normal JSON object.
+
+The other fields, however:
+
+- ``apiKeys``
+- ``groups``
+- ``groupMemberships``
+
+Are collections -- and they can't be queried in a single request.
+
+Take ``groups``, for instance, if your account is a member of 1,000 groups, you
+won't be able to squeeze all 1,000 groups into a single object (*it's just not
+efficient*) -- so instead, you have to iterate over the collection.
+
+Below is an example which shows how you can iterate over a collection resource
+(*groups, in this case*)::
+
+    app.get('/', stormpath.loginRequired, function(req, res) {
+      req.user.groups.each(function(group, callback) {
+        console.log('group:', group);
+        callback();
+      }, function() {
+        res.send('Finished logging all groups to the console!')
+      });
+    });
+
+Each collection resource has an ``each`` method which takes in two functions
+with signature: ``function(data, callback), function()``.  The first function
+will be called for each resource in the collection.  The second function will be
+called when you've finished iterating through all of the available resources.
+
+So, given the example above, we could just as easily iterate over all of a
+user's ``apiKeys``::
+
+    app.get('/', stormpath.loginRequired, function(req, res) {
+      req.user.apiKeys.each(function(apiKey, callback) {
+        console.log('apiKey:', apiKey);
+        callback();
+      }, function() {
+        res.send('Finished logging all apiKeys to the console!')
+      });
+    });
+
+Below is a full list of the available expansion options that you'll need to
+enable in your middleware if you'd like to turn expansion on (*each field can be
+enabled by setting its value to true*):
+
+- ``expandApiKeys``
+- ``expandCustomData``
+- ``expandDirectory``
+- ``expandGroups``
+- ``expandGroupMemberships``
+- ``expandProviderData``
+- ``expandTenant``
+
+
 API Authentication
 ------------------
 
