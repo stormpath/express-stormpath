@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.3
+-------------
+
+**Released on September 18, 2014.**
+
+- Adding auto-expansion options for accounts.  This allows you to expand
+  account fields like ``customData``, ``groups``, etc. -- automatically!
+- Upgrading dependencies.
+
+
 Version 0.4.2
 -------------
 
