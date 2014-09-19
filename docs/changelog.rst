@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.4
+-------------
+
+**Released on September 19, 2014.**
+
+- Fixing critical bug with middleware requests -- any requests made WITHOUT
+  expansion were failing for asserted permissions.
+
+
 Version 0.4.3
 -------------
 
