@@ -7,10 +7,17 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
-Version 0.4.2 -> Version 0.4.3
+Version 0.4.3 -> Version 0.4.4
 ------------------------------
 
 **No changes needed!**
+
+
+Version 0.4.2 -> Version 0.4.3
+------------------------------
+
+- Please upgrade to version 0.4.4 -- this version contains a bug with our user
+  middleware which causes permission assertion to always fail.
 
 
 Version 0.4.1 -> Version 0.4.2
