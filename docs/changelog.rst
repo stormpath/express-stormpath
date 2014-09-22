@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.5
+-------------
+
+**Released on September 22, 2014.**
+
+- Adding better error messages for forms.
+
+
 Version 0.4.4
 -------------
 
