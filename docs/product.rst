@@ -1445,6 +1445,11 @@ button, then on the following screen enter your Google app information:
   in the previous steps.
 - For the "Google Client Secret" field, insert your Google Client Secret
   which you got in the previous steps.
+- For the "Google Authorized Redirect URI" field, insert your Google Redirect
+  URL from the previous section. Be sure to *only enter the URI you're currently
+  using*.  EG: If you're running your app in development mode, set it to your
+  local URL, if you're running your app in production mode, set it to your
+  production URL.
 
 Lastly, be sure to click the "Save" button at the bottom of the page.
 
