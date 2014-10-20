@@ -7,6 +7,18 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.6
+-------------
+
+**Released on October 20, 2014.**
+
+- Fixing issue where the stormpath middleware would run twice when a route was
+  loaded.
+- Fixing issue where the password reset page would display a generic error
+  message even though no error had been generated.
+- Slightly improving Google login documentation.  Including information on
+  required fields.
+
 Version 0.4.5
 -------------
 
