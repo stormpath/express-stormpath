@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.7
+-------------
+
+**Released on October 20, 2014.**
+
+- Making our unauthorized flow a lot better.
+
+
 Version 0.4.6
 -------------
 
