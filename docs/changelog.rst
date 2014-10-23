@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.8
+-------------
+
+**Released on October 23, 2014.**
+
+- Fixing bug in `accountVerificationEmailSentView` settings!  Thanks @lemieux!
+
+
 Version 0.4.7
 -------------
 
