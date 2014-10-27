@@ -885,7 +885,80 @@ If you were to modify your config such that::
 Then visit ``/welcome``, you'd see your registration page there, instead!
 
 
-Customize the Views
+Custom Views & Routes
+-------------------
+
+Now that your website is fully functioning with login and registration,
+you'll want to add your own pages to the site!  In Express these are
+referred to as views that are served by routes.
+
+You  need to tell Express which templating engine you'd like to use.
+While we use Jade for the built-in views you are free to use your engine
+of choice when creating your own pages.
+
+Using Jade
+.................
+
+If you wish to use Jade, you'll need to add the Jade package to your project::
+
+    npm install --save jade
+
+Then declare this in your configuration::
+
+    app.set('views', './views');
+    app.set('view engine', 'jade');
+
+With that you're good to go!  Going back to our previous example, let's say
+we had a page that we wanted to serve at ``/secret``.  We'll create a file
+``views/secret.jade`` and put this template in it::
+
+    html
+      head
+        title=title
+      body
+        p Hello, #{user.username}
+        p You are permitted to see the secrets
+
+Then create a route handler for this page::
+
+    app.get('/secret', stormpath.loginRequired, function(req, res) {
+      res.render('secret', {
+        title: 'Top Secret HQ'
+      });
+    });
+
+Using EJS
+.................
+
+Jade not your thing?  No problem!  EJS is just as easy to configure.
+
+Just install the package::
+
+    npm install --save ejs
+
+Then configure your app like this::
+
+    app.set('views', './views');
+    app.engine('html', require('ejs').renderFile);
+    app.set('view engine', 'html');
+
+EJS uses HTML, so your file will now be named ``views/secret.html`` and will
+look like this::
+
+    <html>
+      <head>
+        <title><%= title %></title>
+      </head>
+      <body>
+        <p>Hello, <%= user.username %></p>
+        <p>You are permitted to see the secrets</p>
+      </body>
+    </html>
+
+The route handler will look exactly the same as the Jade example above.  That
+is the beauty of the templating layer in Express!
+
+Customize the Built-in Views
 -------------------
 
 Although I personally find our registration and login pages to be incredibly
