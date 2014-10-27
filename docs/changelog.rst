@@ -15,6 +15,7 @@ Version 0.4.9
 - Adding the ability to pass in extra template context into all Stormpath
   templates (*courtesy of @lemieux*).
 - Including docs on new template context stuff!
+- Adding contributor docs.
 
 
 Version 0.4.8
