@@ -22,6 +22,7 @@ Express-Stormpath.  If you're a new Express-Stormpath user, start here!
    quickstart
    product
    help
+   contributors
 
 
 Additional Notes
