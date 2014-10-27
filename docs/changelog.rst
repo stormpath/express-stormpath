@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.4.9
+-------------
+
+**Released on October 27, 2014.**
+
+- Adding the ability to pass in extra template context into all Stormpath
+  templates (*courtesy of @lemieux*).
+- Including docs on new template context stuff!
+
+
 Version 0.4.8
 -------------
 
