@@ -355,7 +355,7 @@ user to a special page (*instead of the normal registration flow*)::
 Working With Custom User Data
 -----------------------------
 
-In addition to managing basic user fields, Stomrpath also allows you to store
+In addition to managing basic user fields, Stormpath also allows you to store
 up to 10MB of JSON information with each user account!
 
 Instead of defining a database table for users, and another database table for
@@ -384,6 +384,28 @@ model::
 As you can see above -- storing custom information on a ``user`` account is
 extremely simple!
 
+Extra Context For Templates
+------------------------------------
+
+Your app might need to add custom data like analytics code to the templates. This
+data will most likely change depending of the environment you are running on and you
+can't hardcode it in the template.
+
+To fix that you can pass extra context to Express-Stormpath like so::
+
+    var stormpath = require('express-stormpath');
+
+    app.use(stormpath.init(app, {
+      templateContext: {
+        extraData: 'This is extra data.',
+        googleAnalyticsID: 'UA-0000000-1',
+        mixpanelID: '123456'
+      }
+    }));
+
+And in each template, you'll have access to ``extraData`` and the other variables
+you defined. Keep in mind that thosevalues might override the ones from 
+Express-Stormpath. If you experience clashes, you might need to check your variable names first.
 
 Automatic Expansion
 -------------------
