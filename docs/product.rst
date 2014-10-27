@@ -1015,6 +1015,62 @@ following::
     }));
 
 
+Passing Extra Variables to the Built-in Templates
+-------------------------------------------------
+
+If you've started to customize the base Stormpath templates that render the
+registration and login pages (*as well as many others*), you might have been
+wondering how you can pass extra information into each template -- stuff like
+your Google Analytics tracking code, social sharing stuff, etc.
+
+As of Express-Stormpath **0.4.9**, you're now able to define a JSON object that
+will be automatically available to all of the Stormpath templates!
+
+The way this works is simple.
+
+Firstly, you can you specify your template variables during the middleware
+initialization process or via an environment variable::
+
+    app.use(stormpath.init(app, {
+      templateContext: {
+        googleAnalyticsCode: 'UA-XXX-XX',
+        intercomId: 'xxx',
+      },
+    }));
+
+Or, if you prefer environment variables::
+
+    $ export STORMPATH_TEMPLATE_CONTEXT='{"googleAnalyticsCode": "UA-XXX-XX", "intercomId": "xxx"}'
+
+Now that you've defined your variables, you can use them freely inside of your
+customized Stormpath templates!  For example, if you wanted to customize the
+built-in ``registration.jade`` template, you could create a new Jade file that
+looks like this::
+
+    html
+      body
+        script(type="text/javascript").
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', '#{googleAnalyticsCode}', 'auto');
+          ga('send', 'pageview');
+
+See how the template above now has the Google Analytics Tracking code embedded
+in it?  This is working because the ``#{googleAnalyticsCode}`` variable is being
+made available to your templates automatically.
+
+Lastly, in order to activate your new template, you need to activate it::
+
+    app.use(stormpath.init(app, {
+      registrationView: __dirname + '/views/register.jade',
+    }))
+
+Once you've done that, you'll be good to go!
+
+
 Use Account Verification
 ------------------------
 
