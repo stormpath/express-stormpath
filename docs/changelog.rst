@@ -14,6 +14,7 @@ Version 0.5.0
 
 - Adding redirects after confirmation of submitted forms.  This prevents 'form
   submission' browser errors if a user refreshes their confirmation page.
+- Adding docs explaining how to create custom views.
 
 
 Version 0.4.9
