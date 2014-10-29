@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.1
+-------------
+
+**Released on October 29, 2014.**
+
+- Adding better error handling for controllers -- some of the old controllers
+  would simply display an empty 400 or 500 page when unexpected things happen --
+  this is no longer the case.  We'll now display user friendly error pages.
+
+
 Version 0.5.0
 -------------
 
