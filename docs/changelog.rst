@@ -10,7 +10,7 @@ All library changes, in descending order.
 Version 0.5.0
 -------------
 
-**Not yet released.**
+**Released on October 29, 2014.**
 
 - Adding redirects after confirmation of submitted forms.  This prevents 'form
   submission' browser errors if a user refreshes their confirmation page.
