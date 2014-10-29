@@ -37,5 +37,13 @@ project.
 - Twitter: https://twitter.com/marcantoinelem
 
 
+Elodie Mercure
+**************
+
+Elodie Mercure has contributed a large feature to the project.
+
+- Github: https://github.com/elomerc
+
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
