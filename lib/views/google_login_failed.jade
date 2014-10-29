@@ -1,0 +1,22 @@
+extends base
+
+block vars
+  - var title = 'Google Login Failed'
+  - var description = "Your Google login attempt has failed!"
+  - var bodytag = 'login'
+
+block body
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
+              span.
+                Google Login Failed
+              p.
+                Your Google login attempt has failed.  This might happen for
+                several reasons: your verification token might be expired, it
+                might be invalid, or we may just be having issues right now!
+                Please try again, and if you're still having problems, contact
+                the site administrator for help!
