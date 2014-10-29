@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.0
+-------------
+
+**Not yet released.**
+
+- Adding redirects after confirmation of submitted forms.  This prevents 'form
+  submission' browser errors if a user refreshes their confirmation page.
+
+
 Version 0.4.9
 -------------
 
