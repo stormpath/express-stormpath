@@ -1,0 +1,22 @@
+extends base
+
+block vars
+  - var title = 'Verification Failed'
+  - var description = "Your verification token is invalid!"
+  - var bodytag = 'login'
+
+block body
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
+              span.
+                Verification Failed
+              p.
+                Your account verification has failed.  This might happen for
+                several reasons: your verification token might be expired, it
+                might have already been used, or we may just be having issues
+                right now!  Please try again, and if you're still having
+                problems, contact the site administrator for help!
