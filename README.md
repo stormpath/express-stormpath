@@ -2,7 +2,7 @@
 
 [Stormpath](http://stormpath.com/) is a User Management API that reduces development time with instant-on, scalable user infrastructure. Stormpath's intuitive API and expert support make it easy for developers to authenticate, manage, and secure users and roles in any application.
 
-Express-Stormpath is an extension for Express.js that makes it incredibly simple to add users and user data to your application. It aims to completely abstract away all user registration, login, authentication, and authorization problems, and make building secure websites painless. And the best part? 
+Express-Stormpath is an extension for Express.js that makes it incredibly simple to add users and user data to your application. It aims to completely abstract away all user registration, login, authentication, and authorization problems, and make building secure websites painless. And the best part?
 
 **NOTE**: This library is an early release.  It's currently lacking many
 features, and only handles basic use cases.  We're working on adding features - If you
@@ -17,9 +17,9 @@ have feedback, please get in touch and share your thoughts!
 + [Stormpath website](http://stormpath.com/)
 
 ## Install
-Check out the [Quickstart Instructions](http://docs.stormpath.com/nodejs/express/quickstart.html#initialize-express-stormpath) to init the Stormpath in under a minute. 
+Check out the [Quickstart Instructions](http://docs.stormpath.com/nodejs/express/quickstart.html#initialize-express-stormpath) to init the Stormpath in under a minute.
 
-### Contributing 
+### Contributing
 
 You can make your own contributions by forking the <code>development</code> branch, making your changes, and issuing pull-requests on the <code>development</code> branch.
 
