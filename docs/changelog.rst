@@ -15,6 +15,8 @@ Version 0.5.1
 - Adding better error handling for controllers -- some of the old controllers
   would simply display an empty 400 or 500 page when unexpected things happen --
   this is no longer the case.  We'll now display user friendly error pages.
+- Adding the ability to specify cookie domains -- this allows developers to make
+  the session cookie work across all subdomains.
 
 
 Version 0.5.0
