@@ -43,8 +43,8 @@ Below are some resources you might find useful!
 You can make your own contributions by forking the `develop` branch of this
 repository, making your changes, and issuing pull request on the `develop` branch.
 
-We regularly maintain our this repostiory, and are quick to review pull
-requests and accept changes!
+We regularly maintain this repository, and are quick to review pull requests
+and accept changes!
 
 We <333 contributions!
 
