@@ -206,6 +206,32 @@ By default, sessions will not expire for one month (*out of convenience*).
     this number, your sessions will expire very quickly!
 
 
+Making Session Cookies Work on Subdomains
+-----------------------------------------
+
+If your application and users are going to be accessing multiple subdomains --
+you will most likely want to provide a seamless user experience -- you don't
+want to force users to log in each time they visit a new subdomain -- right?
+
+In order to make this work, you need to modify the ``sessionDomain`` middleware
+setting::
+
+    var stormpath = require('express-stormpath');
+
+
+    app.use(stormpath.init(app, {
+      sessionDomain: 'mysite.com', // Make the session cookie work on all mysite.com subdomains.
+    }));
+
+By default, sessions will *only* work on the subdomain in which the user
+initially logged in.
+
+.. note::
+    If you explicitly set a domain as shown above -- things will NOT work
+    locally.  Once you've set the domain option, users will only be able to log
+    in when accessing that domain directly.
+
+
 Enable Caching
 --------------
 
