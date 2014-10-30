@@ -912,7 +912,7 @@ Then visit ``/welcome``, you'd see your registration page there, instead!
 
 
 Custom Views & Routes
--------------------
+---------------------
 
 Now that your website is fully functioning with login and registration,
 you'll want to add your own pages to the site!  In Express these are
