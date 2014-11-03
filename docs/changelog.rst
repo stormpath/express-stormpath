@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.2
+-------------
+
+**Released on November 3, 2014.**
+
+- Reducing session size by changing what data is stored in cookies.  We now
+  *only* store an account's href in order to reduce the payload size.
+- Various style fixes.
+
+
 Version 0.5.1
 -------------
 
