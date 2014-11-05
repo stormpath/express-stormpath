@@ -912,7 +912,7 @@ Then visit ``/welcome``, you'd see your registration page there, instead!
 
 
 Custom Views & Routes
--------------------
+---------------------
 
 Now that your website is fully functioning with login and registration,
 you'll want to add your own pages to the site!  In Express these are
@@ -984,8 +984,9 @@ look like this::
 The route handler will look exactly the same as the Jade example above.  That
 is the beauty of the templating layer in Express!
 
+
 Customize the Built-in Views
--------------------
+----------------------------
 
 Although I personally find our registration and login pages to be incredibly
 good looking -- I realize that you might not share my same design passion!

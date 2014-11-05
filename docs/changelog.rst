@@ -7,6 +7,19 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.2
+-------------
+
+**Released on November 3, 2014.**
+
+- Reducing session size by changing what data is stored in cookies.  We now
+  *only* store an account's href in order to reduce the payload size.
+- Various style fixes.
+- Making minor upgrades to internal API to be express 4.x compatible.
+- Fixing our OAuth get token endpoint (``/oauth``) -- this was broken due to
+  router upgrade issues.
+
+
 Version 0.5.1
 -------------
 
