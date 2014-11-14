@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.3
+-------------
+
+**Released on November 12, 2014.**
+
+- Not displaying required field errors for users who are forcibly redirected to
+  the login page.
+
+
 Version 0.5.2
 -------------
 
