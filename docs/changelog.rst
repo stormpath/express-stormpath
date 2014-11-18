@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.4
+-------------
+
+**Released on November 18, 2014.**
+
+- Adding the ability to automatically log a user in after a password reset has
+  been performed.  This new setting is called
+  ``enableForgotPasswordChangeAutoLogin``.
+- Upgrading Node dependencies to latest releases.
+
+
 Version 0.5.3
 -------------
 
