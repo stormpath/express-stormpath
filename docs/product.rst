@@ -1393,6 +1393,10 @@ configuration variables, respectively:
   change their password.
 - ``forgotPasswordCompleteView`` - The view which is shown after the user has
   successfully reset their account password.
+- ``enableForgotPasswordChangeAutoLogin`` - This setting determines whether or
+  not you want a user who has just changed their password to be automatically
+  logged into their account or not.  The default behavior is to log the user out
+  and force them to re-authenticate manually.
 
 If you'd like to override the default views, you should take a look at the
 ones included with Express-Stormpath here:
