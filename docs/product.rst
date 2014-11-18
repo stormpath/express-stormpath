@@ -954,7 +954,7 @@ Then create a route handler for this page::
     });
 
 Using EJS
-.................
+.........
 
 Jade not your thing?  No problem!  EJS is just as easy to configure.
 
