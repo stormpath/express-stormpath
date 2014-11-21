@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.5
+-------------
+
+**Released on November 20, 2014.**
+
+- Refactoring the way we insert ``app`` into locals.  This fixes a bug where the
+  unauthorized page wouldn't work in certain situations.
+
+
 Version 0.5.4
 -------------
 
