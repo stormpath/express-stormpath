@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.6
+-------------
+
+**Not yet released.**
+
+- Upgrading our use of ``res.json`` for the latest version of Express.
+
+
 Version 0.5.5
 -------------
 
