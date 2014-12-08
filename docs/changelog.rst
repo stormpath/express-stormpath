@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.7
+-------------
+
+**Released on December 8, 2014.**
+
+- Fixing version release info.
+
+
 Version 0.5.6
 -------------
 
