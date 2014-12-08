@@ -3,6 +3,7 @@ script(type='text/javascript').
   function googleLogin() {
     var clientId = '#{app.get("stormpathSocial").google.clientId}';
     var googleScopes = '#{app.get("stormpathSocial").google.scopes}';
+    var hd = '#{app.get("stormpathSocial").google.hd}';
     var scopes = [];
 
     if (googleScopes.length) {
@@ -11,11 +12,15 @@ script(type='text/javascript').
       scopes = '';
     }
 
-    window.location.replace(
-        'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=' +
-        clientId +
-        '&scope=email' + scopes +
-        '&include_granted_scopes=true&redirect_uri=' +
-        '#{url}#{app.get("stormpathGoogleLoginUrl")}'
-    );
+    var finalUrl = 'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=' +
+      clientId +
+      '&scope=email' + scopes +
+      '&include_granted_scopes=true&redirect_uri=' +
+      '#{url}#{app.get("stormpathGoogleLoginUrl")}';
+
+    if (hd) {
+      finalUrl = finalUrl + '&hd=' + hd;
+    }
+
+    window.location.replace(finalUrl);
   }
