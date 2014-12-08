@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.8
+-------------
+
+**Released on December 8, 2014.**
+
+- Adding support for Google's hd attribute.
+
+
 Version 0.5.7
 -------------
 
