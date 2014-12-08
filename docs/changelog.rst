@@ -10,9 +10,12 @@ All library changes, in descending order.
 Version 0.5.6
 -------------
 
-**Not yet released.**
+**Released on December 8, 2014.**
 
 - Upgrading our use of ``res.json`` for the latest version of Express.
+- Upgrading the Stormpath library dependency.
+- Fixing an issue with the login route's auto login functionality. It will now
+  work as expected.
 
 
 Version 0.5.5
