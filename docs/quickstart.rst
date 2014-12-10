@@ -21,7 +21,6 @@ initialize the Stormpath middleware::
     var express = require('express');
     var stormpath = require('express-stormpath');
 
-
     var app = express();
     app.use(stormpath.init(app, {
         apiKeyFile: '/path/to/apiKey.properties',
@@ -37,15 +36,21 @@ information, and manages sessions / user state.  It is the base of all
 Express-Stormpath functionality.
 
 The ``apiKeyFile`` option takes an absolute path to the ``apiKey.properties``
-file you downloaded in the previous section.
+file you downloaded in the previous section.  If you don't specify this setting,
+the library will try to load this file automatically from your current
+directory, as well as from ``~/.stormpath/apiKey.properties``.
 
 The ``application`` option requires you to specify your Stormpath Application
 href, which can be found under your Application on the `Stormpath Applications`_
-dashboard page.
+dashboard page.  If you have created a Stormpath application previously, you
+don't need to specify this at all -- it will use your application automatically.
 
 The ``secretKey`` option should be a long, random string that is NOT checked
 into your source code.  This is used to secure user sessions.  Make sure this
-isn't guessable!
+isn't guessable!  If you don't set this value, a random key will be generated
+for you.  Please note that this is a BAD idea for production apps, as each time
+your web server restarts your users will be forced to re-log into their
+accounts.
 
 If you'd prefer to specify your API credentials without using an
 ``apiKey.properties`` file, you can also do that easily by setting the following
@@ -72,8 +77,13 @@ initializing the Stormpath middleware::
 
 
 .. note::
-    The Stormpath middleware **must** always be the last initialized middleware.
-    If not, you may experience odd side effects.
+    The Stormpath middleware **must** always be the last initialized middleware,
+    but must come **before** any custom route code.  If not, you may experience
+    odd side effects.
+
+Lastly, as of version **0.5.9** of this library -- if you're using Heroku you
+don't need to specify your credentials or application at all -- these values
+will be automatically populated for you.
 
 
 Testing It Out
