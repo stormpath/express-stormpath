@@ -7,6 +7,27 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.5.9
+-------------
+
+**Not yet released.**
+
+- Making API key files get automatically detected if not specified in the user's
+  middleware configuration.  By default we'll look for an ``apiKey.properties``
+  file in the current directory, and as a backup, we'll check for
+  ``~/.stormpath/apiKey.properties`` (*platform independent*).
+- Making ``secretKey`` configuration optional.  If no ``secretKey`` is specified
+  when the Stormpath middleware is initialized, we'll create on automatically.
+  This makes it easy to do test apps without hard coding a secret key value.
+  This is a very bad idea for production apps, though.
+- Making ``application`` an optional field -- if no application href is
+  specified, and the user has a single application created on Stormpath, we'll
+  go ahead and use that application by default. This makes configuration even
+  simpler as *no fields* are required by default.
+- Making ``application`` get auto-loaded for Heroku apps =)
+- Updating docs to show simpler ``req.user`` usage for account access.
+
+
 Version 0.5.8
 -------------
 
