@@ -10,7 +10,7 @@ All library changes, in descending order.
 Version 0.5.9
 -------------
 
-**Not yet released.**
+**Released on December 10, 2014.**
 
 - Making API key files get automatically detected if not specified in the user's
   middleware configuration.  By default we'll look for an ``apiKey.properties``
