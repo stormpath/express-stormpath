@@ -28,7 +28,6 @@ initialize the Stormpath middleware::
         secretKey: 'some_long_random_string',
     }));
 
-
     app.listen(3000);
 
 The Stormpath middleware is what initializes Stormpath, grabs configuration
@@ -65,13 +64,11 @@ initializing the Stormpath middleware::
     var express = require('express');
     var stormpath = require('express-stormpath');
 
-
     var app = express();
     app.use(stormpath.init(app, {
         application: 'https://api.stormpath.com/v1/applications/xxx',
         secretKey: 'some_long_random_string',
     }));
-
 
     app.listen(3000);
 
