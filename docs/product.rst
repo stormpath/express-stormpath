@@ -18,7 +18,6 @@ their names like so::
 
     var stormpath = require('express-stormpath');
 
-
     app.use(stormpath.init(app, {
       secretKey: 'blah',
       enableHttps: false,
@@ -38,7 +37,6 @@ Then, when defining my middleware, I could simply write::
 
     var stormpath = require('express-stormpath');
 
-
     app.use(stormpath.init(app));
 
 
@@ -53,7 +51,6 @@ have logged in.  Below is a code sample which shows how easy it is to restrict
 access to your view::
 
     var stormpath = require('express-stormpath');
-
 
     app.get('/secret', stormpath.loginRequired, function(req, res) {
       res.send("If you're seeing this page, you must be logged in!");
@@ -98,7 +95,6 @@ our user using the ``groupsRequired`` middleware::
 
     var stormpath = require('express-stormpath');
 
-
     app.get('/admins', stormpath.groupsRequired(['admins']), function(req, res) {
       res.send('If you can see this page, you must be in the `admins` group!');
     });
@@ -111,7 +107,6 @@ users and admins?  In this case we could just list both required groups::
 
     var stormpath = require('express-stormpath');
 
-
     app.get('/free_users_and_admins', stormpath.groupsRequired(['free users', 'admins']), function(req, res) {
       res.send('If you can see this page, you must be in the `free users` and `admins` group!');
     });
@@ -120,7 +115,6 @@ Now that you've seen how you can require a user to be a member of multiple
 groups, let's take a look at how you can enforce selective group membership::
 
     var stormpath = require('express-stormpath');
-
 
     app.get('/any_user', stormpath.groupsRequired(['free users', 'paid users', 'admins'], false), function(req, res) {
       res.send('If you can see this page, you must be in at least one of the specified groups!');
@@ -193,7 +187,6 @@ You can easily change the default session / cookie expiration by modifying the
 
     var stormpath = require('express-stormpath');
 
-
     app.use(stormpath.init(app, {
       sessionDuration: 1000 * 60 * 15, // Make sessions expire after 15 minutes.
     }));
@@ -217,7 +210,6 @@ In order to make this work, you need to modify the ``sessionDomain`` middleware
 setting::
 
     var stormpath = require('express-stormpath');
-
 
     app.use(stormpath.init(app, {
       sessionDomain: 'mysite.com', // Make the session cookie work on all mysite.com subdomains.
@@ -265,7 +257,6 @@ running locally with no username / password::
 
     var stormpath = require('express-stormpath');
 
-
     app.use(stormpath.init(app, {
       cache: 'memcached',
       cacheHost: '127.0.0.1',
@@ -276,7 +267,6 @@ Here's an example which shows how to enable caching for a redis server that is
 running locally with a required password::
 
     var stormpath = require('express-stormpath');
-
 
     app.use(stormpath.init(app, {
       cache: 'redis',
@@ -294,17 +284,16 @@ Access User Data
 Let's take a quick look at how we can access user data from a custom view.
 
 Let's say we've defined a simple view that should simply display a user's email
-address.  We can make use of the magical ``res.locals.user`` context variable to
+address.  We can make use of the magical ``req.user`` context variable to
 do this::
 
     var stormpath = require('express-stormpath');
 
-
     app.get('/email', stormpath.loginRequired, function(req, res) {
-      res.send('Your email address is:', res.locals.user);
+      res.send('Your email address is:', req.user.email);
     });
 
-The ``res.locals.user`` context allows you to directly interact with the current
+The ``req.user`` context allows you to directly interact with the current
 ``user`` object.  This means you can perform *any* action on the ``user`` object
 directly.
 
@@ -315,15 +304,15 @@ Let's say you want to change a user's ``givenName`` (*first name*).  You could
 easily accomplish this with the following code::
 
     // assuming we're inside of a request
-    res.locals.user.givenName = 'Randall';
-    res.locals.user.save(function(err) {
+    req.user.givenName = 'Randall';
+    req.user.save(function(err) {
       if (!err) {
         console.log('User change saved successfully.');
       }
     });
 
 As you can see above, you can directly modify ``user`` attributes, then
-persist any changes by running ``res.locals.user.save()``.
+persist any changes by running ``req.user.save()``.
 
 
 Handling Events
@@ -391,10 +380,10 @@ Let's take a look at how easy it is to store custom data on a ``user``
 model::
 
     // assuming we're inside of a request
-    res.locals.user.customData.somefield = 'somevalue';
-    res.locals.user.customData['anotherfield'] = {'json': 'data'};
-    res.locals.user.customData['woot'] = 10.202223;
-    res.locals.user.save();
+    req.user.customData.somefield = 'somevalue';
+    req.user.customData['anotherfield'] = {'json': 'data'};
+    req.user.customData['woot'] = 10.202223;
+    req.user.save();
 
     user.customData['woot'];
     // 10.202223
@@ -432,6 +421,7 @@ To fix that you can pass extra context to Express-Stormpath like so::
 And in each template, you'll have access to ``extraData`` and the other variables
 you defined. Keep in mind that thosevalues might override the ones from 
 Express-Stormpath. If you experience clashes, you might need to check your variable names first.
+
 
 Automatic Expansion
 -------------------
@@ -575,7 +565,7 @@ To do this (*assuming you're inside of an Express route*), you can call the
 
     // Create an API key pair for the current user.
     app.post('/create', stormpath.loginRequired, function(req, res) {
-      res.locals.user.createApiKey(function(err, apiKey) {
+      req.user.createApiKey(function(err, apiKey) {
         if (err) {
           res.json(503, { error: 'Something went wrong. Please try again.' });
         } else {
@@ -611,7 +601,7 @@ the ``apiAuthenticationRequired`` middleware in your route::
 
     // This API endpoint is *only* accessible to users with valid API keys.
     app.get('/me', stormpath.apiAuthenticationRequired, function(req, res) {
-      var user = res.locals.user;
+      var user = req.user;
       res.json({
         givenName: user.givenName,
         surname: user.surname,
@@ -729,7 +719,7 @@ Let's say you've defined the following API endpoint::
 
     // This API endpoint is *only* accessible to users with a valid OAuth token.
     app.get('/me', stormpath.apiAuthenticationRequired, function(req, res) {
-      var user = res.locals.user;
+      var user = req.user;
       res.json({
         givenName: user.givenName,
         surname: user.surname,
