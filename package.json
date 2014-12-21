@@ -1,6 +1,7 @@
 {
   "name": "express-stormpath",
-  "version": "0.5.9",
+  "private": true,
+  "version": "0.5.9-cguy",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
@@ -24,6 +25,7 @@
     "express": "^4.10.4",
     "forms": "^1.0.0",
     "jade": "^1.8.1",
+    "node-rest-client": "latest",
     "stormpath": "^0.7.4",
     "utils-merge": "^1.0.0"
   }
