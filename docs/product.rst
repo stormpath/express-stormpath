@@ -913,7 +913,7 @@ While we use Jade for the built-in views you are free to use your engine
 of choice when creating your own pages.
 
 Using Jade
-.................
+..........
 
 If you wish to use Jade, you'll need to add the Jade package to your project::
 
