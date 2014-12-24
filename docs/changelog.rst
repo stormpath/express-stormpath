@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.0
+-------------
+
+**Released on December 24, 2014.**
+
+- Adding a new middleware: ``authenticationRequired`` -- this lets you require
+  *any form* of authentication: sessions, API key, oauth, etc.  Any will be
+  accepted.  This is useful when building things like single page apps =)
+
+
 Version 0.5.9
 -------------
 
