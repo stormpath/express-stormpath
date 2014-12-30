@@ -11,6 +11,9 @@
     "users",
     "accounts"
   ],
+  "scripts": {
+    "test": "mocha"
+  },
   "repository": "stormpath/stormpath-express",
   "author": "Stormpath, Inc.",
   "license": "Apache",
