@@ -2,7 +2,7 @@
 
 var assert = require('assert');
 
-var forms = require('../lib/forms.js');
+var forms = require('../lib/forms');
 
 describe('registrationForm', function() {
   it('should require an email address', function() {
