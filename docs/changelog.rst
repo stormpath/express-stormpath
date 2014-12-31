@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.1
+-------------
+
+**Not yet released.**
+
+- Adding integration tests, yey!
+- Fixing broken Travis CI badge in the README.
+- Refactoring the way our settings are initialized into their own little
+  Javascript file.
+
+
 Version 0.6.0
 -------------
 
