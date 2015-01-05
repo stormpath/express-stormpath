@@ -1,6 +1,8 @@
 'use strict';
 
 var assert = require('assert');
+var fs = require('fs');
+var path = require('path');
 
 var express = require('express');
 
@@ -143,5 +145,118 @@ describe('init', function() {
   });
 });
 
+describe('prep', function() {
+  it('should generate a secret key if one isn\'t supplied', function() {
+    var app = express();
+
+    settings.init(app);
+    settings.prep(app);
+
+    assert(app.get('stormpathSecretKey'));
+  });
+
+  it('should not do anything if api keys are present', function() {
+    var app = express();
+
+    settings.init(app, { apiKeyId: 'xxx', apiKeySecret: 'xxx' });
+    settings.prep(app);
+
+    assert.equal(app.get('stormpathApiKeyId'), 'xxx');
+    assert.equal(app.get('stormpathApiKeySecret'), 'xxx');
+    assert.equal(app.get('stormpathApiKeyFile'), undefined);
+  });
+
+  it('should not do anything if an api key file is specified', function() {
+    var app = express();
+
+    settings.init(app, { apiKeyFile: 'blah.properties' });
+    settings.prep(app);
+
+    assert.equal(app.get('stormpathApiKeyId'), undefined);
+    assert.equal(app.get('stormpathApiKeySecret'), undefined);
+    assert.equal(app.get('stormpathApiKeyFile'), 'blah.properties');
+  });
+
+  it('should try to use the local apiKey.properties file if no settings are specified', function() {
+    var fd = fs.openSync('apiKey.properties', 'w');
+    fs.writeSync(fd, new Buffer('hi there'));
+    fs.closeSync(fd);
+
+    var app = express();
+
+    settings.init(app);
+    settings.prep(app);
+
+    fs.unlinkSync('apiKey.properties');
+
+    assert.equal(app.get('stormpathApiKeyFile'), 'apiKey.properties');
+  });
+
+  it('should try to use ~/.stormpath/apiKey.properties file if no settings are specified and apiKey.properties doesn\'t exist', function() {
+    var homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+    var apiKeyFile = path.join(homeDir, '.stormpath', 'apiKey.properties');
+    var apiKeyFileBackup = apiKeyFile + '.backup';
+
+    if (fs.existsSync(apiKeyFile)) {
+      fs.renameSync(apiKeyFile, apiKeyFileBackup);
+    }
+
+    var fd = fs.openSync(apiKeyFile, 'w');
+    fs.writeSync(fd, new Buffer('hi there'));
+    fs.closeSync(fd);
+
+    var app = express();
+
+    settings.init(app);
+    settings.prep(app);
+
+    fs.unlinkSync(apiKeyFile);
+
+    if (fs.existsSync(apiKeyFileBackup)) {
+      fs.renameSync(apiKeyFileBackup, apiKeyFile);
+    }
+
+    assert.equal(app.get('stormpathApiKeyFile'), apiKeyFile);
+  });
+});
+
 describe('validate', function() {
+  it('should throw an error if no api key is specified', function() {
+    var app = express();
+
+    settings.init(app, { apiKeyId: 'xxx' });
+
+    assert.throws(
+      function() {
+        settings.validate(app);
+      },
+      Error
+    );
+  });
+
+  it('should throw an error if no api key file is specified', function() {
+    var app = express();
+
+    settings.init(app, { apiKeySecret: 'xxx' });
+
+    assert.throws(
+      function() {
+        settings.validate(app);
+      },
+      Error
+    );
+  });
+
+  it('should throw an error if an invalid api key file is specified', function() {
+    var app = express();
+
+    settings.init(app, { apiKeyFile: 'woooo' });
+
+    assert.throws(
+      function() {
+        settings.validate(app);
+      },
+      Error
+    );
+  });
 });
