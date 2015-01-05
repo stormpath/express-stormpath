@@ -201,7 +201,7 @@ describe('prep', function() {
       fs.renameSync(apiKeyFile, apiKeyFileBackup);
     }
 
-    if (!fs.existsSync(path.join(homeDir, '.stormpath')) {
+    if (!fs.existsSync(path.join(homeDir, '.stormpath'))) {
       fs.mkdirSync(path.join(homeDir, '.stormpath'));
     }
 
