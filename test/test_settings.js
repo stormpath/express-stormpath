@@ -201,6 +201,10 @@ describe('prep', function() {
       fs.renameSync(apiKeyFile, apiKeyFileBackup);
     }
 
+    if (!fs.existsSync(path.join(homeDir, '.stormpath')) {
+      fs.mkdirSync(path.join(homeDir, '.stormpath'));
+    }
+
     var fd = fs.openSync(apiKeyFile, 'w');
     fs.writeSync(fd, new Buffer('hi there'));
     fs.closeSync(fd);
