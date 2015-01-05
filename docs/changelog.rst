@@ -16,6 +16,9 @@ Version 0.6.1
 - Fixing broken Travis CI badge in the README.
 - Refactoring the way our settings are initialized into their own little
   Javascript file.
+- Renaming ``stormpathIDSiteVerificationFailedView`` ->
+  ``stormpathIdSiteVerificationFailedView`` to be consistent with naming
+  conventions.
 
 
 Version 0.6.0
