@@ -28,7 +28,8 @@
     "forms": "^1.1.0",
     "jade": "^1.8.2",
     "stormpath": "^0.8.0",
-    "utils-merge": "^1.0.0"
+    "utils-merge": "^1.0.0",
+    "winston": "^0.8.3"
   },
   "devDependencies": {
     "mocha": "^2.1.0"
