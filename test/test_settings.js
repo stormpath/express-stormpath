@@ -14,6 +14,7 @@ describe('init', function() {
     'apiKeySecret',
     'apiKeyFile',
     'application',
+    'debug',
     'secretKey',
     'enableHttps',
     'sessionDuration',
