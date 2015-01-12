@@ -19,6 +19,12 @@ Version 0.6.1
 - Renaming ``stormpathIDSiteVerificationFailedView`` ->
   ``stormpathIdSiteVerificationFailedView`` to be consistent with naming
   conventions.
+- Adding a new option, ``stormpathDebug`` (*which defaults to false*), that
+  allows users to enable extra debugging on the console.  This makes figuring
+  out what's going on a lot simpler for developers.
+- Adding all sorts of custom debugging messages to make working with the library
+  easier.
+- Using the winston library for logging across the library.
 
 
 Version 0.6.0
