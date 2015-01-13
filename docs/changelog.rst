@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.2
+-------------
+
+**Released on January 13, 2015.**
+
+- Fixing issue with the login page template when the
+  ``stormpathEnableRegistration`` setting is disabled.  It now no longer renders
+  a "Create Account" link when this option is disabled.
+
+
 Version 0.6.1
 -------------
 
