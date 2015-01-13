@@ -10,7 +10,7 @@ All library changes, in descending order.
 Version 0.6.1
 -------------
 
-**Not yet released.**
+**Released on January 12, 2015.**
 
 - Adding integration tests, yey!
 - Fixing broken Travis CI badge in the README.
