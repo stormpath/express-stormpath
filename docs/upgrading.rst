@@ -11,7 +11,9 @@ Express-Stormpath releases.
 Version 0.6.0 -> Version 0.6.1
 ------------------------------
 
-**No changes needed!**
+If you were previously specifying a value for the
+``stormpathIDSiteVerificationFailedView`` setting, you'll need to rename that
+field to ``stormpathIdSiteVerificationFailedView``.
 
 
 Version 0.5.9 -> Version 0.6.0
