@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.3
+-------------
+
+**Released on January 21, 2015.**
+
+- Fixing slow custom data expansion issue due to old expansion implementation!
+
+
 Version 0.6.2
 -------------
 
