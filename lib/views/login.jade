@@ -17,8 +17,9 @@ block body
 
           div(class='email-password-area col-xs-12 #{cls}')
             .header
-              span.
-                Log In or <a href="#{app.get('stormpathRegistrationUrl')}">Create Account</a>
+              if app.get('stormpathEnableRegistration')
+                span.
+                  Log In or <a href="#{app.get('stormpathRegistrationUrl')}">Create Account</a>
 
             if error
               .alert.alert-danger.bad-login

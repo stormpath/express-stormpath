@@ -65,6 +65,13 @@ redirected to: ``/login?next=%2Fsecret``.  If you then enter your credentials
 and log in -- you'll be immediately redirected back to the page you were trying
 to access: ``/secret``.
 
+As of Express-Stormpath **0.6.0**, there's now another middleware you can use
+here: ``stormpath.authenticationRequired``.  It works *exactly* like
+``stormpath.loginRequired``, but *also* accepts API authentication.
+
+This is useful if you'd like to build a route which can be accessed both through
+the browser using sessions, as well as via a REST API.
+
 
 Enforce User Authorization
 --------------------------
@@ -913,7 +920,7 @@ While we use Jade for the built-in views you are free to use your engine
 of choice when creating your own pages.
 
 Using Jade
-.................
+..........
 
 If you wish to use Jade, you'll need to add the Jade package to your project::
 
@@ -942,6 +949,7 @@ Then create a route handler for this page::
         title: 'Top Secret HQ'
       });
     });
+
 
 Using EJS
 .........

@@ -2,7 +2,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/express-stormpath.svg?style=flat)](https://npmjs.org/package/express-stormpath)
 [![NPM Downloads](http://img.shields.io/npm/dm/express-stormpath.svg?style=flat)](https://npmjs.org/package/express-stormpath)
-[![Build Status](https://img.shields.io/travis/stormpath/express-stormpath.svg?style=flat)](https://travis-ci.org/stormpath/express-stormpath)
+[![Build Status](https://img.shields.io/travis/stormpath/stormpath-express.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-express)
 
 Express-Stormpath is an extension for Express.js that makes it incredibly
 simple to add users and user data to your application.  It aims to completely

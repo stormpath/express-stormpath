@@ -8,6 +8,32 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 0.6.2 -> Version 0.6.3
+------------------------------
+
+**No changes needed!**
+
+
+Version 0.6.1 -> Version 0.6.2
+------------------------------
+
+**No changes needed!**
+
+
+Version 0.6.0 -> Version 0.6.1
+------------------------------
+
+If you were previously specifying a value for the
+``stormpathIDSiteVerificationFailedView`` setting, you'll need to rename that
+field to ``stormpathIdSiteVerificationFailedView``.
+
+
+Version 0.5.9 -> Version 0.6.0
+------------------------------
+
+**No changes needed!**
+
+
 Version 0.5.8 -> Version 0.5.9
 ------------------------------
 
