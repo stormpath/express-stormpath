@@ -1,0 +1,29 @@
+{
+  "name": "stormpath-sdk-angular",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stormpath, Inc.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/stormpath/stormpath-sdk-angular",
+  "devDependencies": {
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt": "^0.4.5",
+    "load-grunt-tasks": "^3.1.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-ngdocs": "^0.2.6",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-express-server": "^0.4.19",
+    "express": "^4.11.1",
+    "stormpath-sdk-express": "0.0.2",
+    "body-parser": "^1.11.0",
+    "connect-livereload": "^0.5.2",
+    "open": "0.0.5",
+    "grunt-open": "^0.2.3"
+  }
+}

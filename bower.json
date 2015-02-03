@@ -1,0 +1,14 @@
+{
+  "name": "stormpath-sdk-angular",
+  "version": "0.0.1",
+  "main": "dist/stormpath-sdk-angular.min.js",
+  "keywords": ["stormpath","jwt","token","user"],
+  "ignore": [
+    "example",
+    "ngdoc_assets",
+    "src"
+  ],
+  "dependencies": {
+    "angular": ">=1.2.*"
+  }
+}
