@@ -34,7 +34,7 @@ bower install --save stormpath-angular-sdk
 If you want to manually load the minified script you can get it from the `build`
 folder in this repo.
 
-## Quickstart
+## Quickstart - Example application
 
 Please see the example that is in the `example` folder.  This is a fully
 functional frontend & backend that uses stormpath.  To run the server
@@ -46,16 +46,26 @@ You will need Grunt on your system, you can install it with this command:
 npm install -g grunt-cli
 ```
 
-Then you will need to install the dependencies for this repo:
+After you clone this repo you run run this inside of it, this will install
+the dependencies:
 
 ```bash
 npm install
 ```
+
+You should then edit the file `example/server.js` and replace the default
+credentials with your Stormpath API Key and Secret and application href.
 
 Then run this command to start the server and view the application:
 
 ```
 grunt serve
 ```
+
+## Documentation
+
+Once you have the demo app running (previous section) you will see a link
+inside the demo to Docs - this will show you the current documentation for
+the project
 
 [Angular.js]: https://angularjs.org "Angular.js"
