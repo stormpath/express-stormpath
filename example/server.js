@@ -1,10 +1,13 @@
 'use strict';
 
 /*
-  This server will serve the client assets for the demo angular
-  application.  It also serves as a backend server for the
-  angular application, you will need to set your Stormpath
-  api keys and href below
+  This Express.js app will serve the client assets for the demo
+  Angular app.  It also serves as a backend API for the
+  Angular app.  You will need to set your Stormpath API Keys
+  and application href below.
+
+  We take advantage of Routers in Express 4.x, they are a great
+  way of organizing the differnt partsof your server.
  */
 
 var bodyParser = require('body-parser');
@@ -24,10 +27,10 @@ var spMiddleware = stormpathSdkExpress.createMiddleware({
 /*
   This router will serve the demo app, we pull those files from the build/
   directory and the example/app directory.  We will also attach the
-  storpath middleware to this router, so that we force authentication
+  storpath middleware to this router - this will force authentication
   on all the non-public routes. The order matters here: we hook up
-  the public assets for the angular app before we hook up the
-  expree middleware.
+  the public assets for the Angular app before we hook up the
+  stormpath middleware.
  */
 
 var demoRouter = express.Router();
