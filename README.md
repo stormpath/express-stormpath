@@ -13,9 +13,8 @@ manage, and secure users and roles in any application.
 
 This library provides services for [Angular.js] that will allow you to implement
 token authentication strategies in your Angular application.  This allows you
-to authenticate an account and receive an access token with configurable scope
-and TTL.  This token will be supplied by Angular on subsequent requests and will
-allow the user to stay logged in.
+to authenticate an account (via username and password) and receive an access token
+that can be used for subsequent requests.
 
 At the moment this library is focusing purely on authentication.  Authorization
 (aka access control) is left in your control.  A common use case with Stormpath
@@ -58,3 +57,5 @@ Then run this command to start the server and view the application:
 ```
 grunt serve
 ```
+
+[Angular.js]: https://angularjs.org "Angular.js"
