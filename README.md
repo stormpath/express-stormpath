@@ -1,7 +1,7 @@
 # Stormpath Angular.js SDK [BETA]
 
-[![NPM Version](https://img.shields.io/npm/v/stormpath-sdk-angular.svg?style=flat)](https://npmjs.org/package/stormpath-sdk-angular)
-[![NPM Downloads](http://img.shields.io/npm/dm/stormpath-sdk-angular.svg?style=flat)](https://npmjs.org/package/stormpath-sdk-angular)
+
+[![Bower Version](https://img.shields.io/bower/v/stormpath-sdk-angular.svg?style=flat)](https://bower.io)
 [![Build Status](https://img.shields.io/travis/stormpath/stormpath-sdk-angular.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-sdk-angular)
 
 *A simple user authentication library for Angular.js.*
