@@ -173,8 +173,8 @@ describe('prep', function() {
     settings.init(app, { apiKeyFile: 'blah.properties' });
     settings.prep(app);
 
-    assert.equal(app.get('stormpathApiKeyId'), undefined);
-    assert.equal(app.get('stormpathApiKeySecret'), undefined);
+    assert.equal(app.get('stormpathApiKeyId'), process.env.STORMPATH_API_KEY_ID);
+    assert.equal(app.get('stormpathApiKeySecret'), process.env.STORMPATH_API_KEY_SECRET);
     assert.equal(app.get('stormpathApiKeyFile'), 'blah.properties');
   });
 
@@ -226,19 +226,6 @@ describe('prep', function() {
 });
 
 describe('validate', function() {
-  it('should throw an error if no api key is specified', function() {
-    var app = express();
-
-    settings.init(app, { apiKeyId: 'xxx' });
-
-    assert.throws(
-      function() {
-        settings.validate(app);
-      },
-      Error
-    );
-  });
-
   it('should throw an error if no api key file is specified', function() {
     var app = express();
 
