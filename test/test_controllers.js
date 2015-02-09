@@ -35,28 +35,25 @@ describe('register', function() {
   beforeEach(function(done) {
     stormpathPrefix = uuid.v4();
 
-    var app = { name: stormpathPrefix };
+    var appData = { name: stormpathPrefix };
     var opts = { createDirectory: true };
 
-    stormpathClient.createApplication(app, opts, function(err, app) {
+    stormpathClient.createApplication(appData, opts, function(err, app) {
       if (err) {
         return done(err);
       }
 
       stormpathApplication = app;
-      console.log('Created app:', app.name);
       done();
     });
   });
 
   afterEach(function(done) {
-    var name = stormpathApplication.name;
     stormpathApplication.delete(function(err) {
       if (err) {
         return done(err);
       }
 
-      console.log('Deleted app:', name);
       done();
     });
   });
@@ -134,6 +131,7 @@ describe('register', function() {
 
   it('should not require givenName if requireGivenName is false', function(done) {
     var app = express();
+    var agent = request.agent(app);
 
     app.use(stormpath.init(app, {
       apiKeyId:         process.env.STORMPATH_API_KEY_ID,
@@ -141,8 +139,6 @@ describe('register', function() {
       application:      stormpathApplication.href,
       requireGivenName: false,
     }));
-
-    var agent = request.agent(app);
 
     agent
       .get('/register')
@@ -156,34 +152,92 @@ describe('register', function() {
         var csrfToken = $('input[name=_csrf]').val();
         var email = uuid.v4() + '@test.com';
 
-        agent
-          .post('/register')
-          .type('form')
-          .send({ email: email })
-          .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-          .send({ _csrf: csrfToken })
-          .expect(200)
-          .end(function(err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+        setTimeout(function() {
+          agent
+            .post('/register')
+            .type('form')
+            .send({ surname: uuid.v4() })
+            .send({ email: email })
+            .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
+            .send({ _csrf: csrfToken })
+            .end(function(err, res) {
               if (err) {
                 return done(err);
               }
 
-              accounts.each(function(account, cb) {
-                if (account.email === email) {
-                  return done();
+              stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+                if (err) {
+                  return done(err);
                 }
 
-                cb();
-              }, function() {
-                done(new Error('Account not created.'));
+                accounts.each(function(account, cb) {
+                  if (account.email === email) {
+                    return done();
+                  }
+
+                  cb();
+                }, function() {
+                  done(new Error('Account not created.'));
+                });
               });
             });
-          });
+        }, 5000);
+      });
+  });
+
+  it('should not require surname if requireSurname is false', function(done) {
+    var app = express();
+    var agent = request.agent(app);
+
+    app.use(stormpath.init(app, {
+      apiKeyId:         process.env.STORMPATH_API_KEY_ID,
+      apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
+      application:      stormpathApplication.href,
+      requireSurname:   false,
+    }));
+
+    agent
+      .get('/register')
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        var $ = cheerio.load(res.text);
+        var csrfToken = $('input[name=_csrf]').val();
+        var email = uuid.v4() + '@test.com';
+
+        setTimeout(function() {
+          agent
+            .post('/register')
+            .type('form')
+            .send({ givenName: uuid.v4() })
+            .send({ email: email })
+            .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
+            .send({ _csrf: csrfToken })
+            .end(function(err, res) {
+              if (err) {
+                return done(err);
+              }
+
+              stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+                if (err) {
+                  return done(err);
+                }
+
+                accounts.each(function(account, cb) {
+                  if (account.email === email) {
+                    return done();
+                  }
+
+                  cb();
+                }, function() {
+                  done(new Error('Account not created.'));
+                });
+              });
+            });
+        }, 5000);
       });
   });
 });
