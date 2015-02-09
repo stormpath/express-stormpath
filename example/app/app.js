@@ -6,7 +6,7 @@ angular.module('stormpathAngularDemo', [
 ]).config(function ($stateProvider,$urlRouterProvider) {
     $stateProvider.state('home', {
       url: '/',
-      templateUrl: 'home.html',
+      templateUrl: 'home.html'
     });
     $stateProvider.state('login', {
       url: '/login',
