@@ -1,5 +1,5 @@
 {
-  "name": "stormpath-sdk-angular",
+  "name": "stormpath-sdk-angularjs",
   "version": "0.0.1",
   "main": "dist/stormpath-sdk-angular.min.js",
   "keywords": ["stormpath","jwt","token","user"],
