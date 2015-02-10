@@ -7,6 +7,18 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.4
+-------------
+
+**Released on February 9, 2015.**
+
+- Fixing callback bug in middleware.
+- Adding tests for ``/register`` controller.
+- Fixing broken ``requireGivenName`` and ``requireSurname`` options.  These now
+  work as expected.
+- Removing clutter from the npm package.  Thanks @coreybutler for the PR!
+
+
 Version 0.6.3
 -------------
 
