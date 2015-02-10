@@ -41,7 +41,7 @@ demoRouter.use(cookieParser());
 
 demoRouter.use(express.static(path.join(__dirname, 'app')));
 
-demoRouter.use(express.static(path.join(__dirname, '..','build')));
+demoRouter.use(express.static(path.join(__dirname, '..','dist')));
 
 demoRouter.use(spMiddleware);
 
