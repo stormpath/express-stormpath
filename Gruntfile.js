@@ -128,6 +128,12 @@ module.exports = function (grunt) {
         title: 'Example',
         api: false
       }
+    },
+    copy: {
+      dist: {
+        src: 'build/*',
+        dest: 'dest/',
+      },
     }
   });
 
@@ -140,4 +146,6 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify','docs']);
+
+  grunt.registerTask('dist', 'Perform a distribution', ['build', 'copy:dist']);
 };

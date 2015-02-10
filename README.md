@@ -28,10 +28,10 @@ thoughts! support@stormpath.com
 If you are using Bower simply install it:
 
 ```bash
-bower install --save stormpath-angular-sdk
+bower install --save stormpath-sdk-angularjs
 ```
 
-If you want to manually load the minified script you can get it from the `build`
+If you want to manually load the minified script you can get it from the `dist`
 folder in this repo.
 
 ## Quickstart - Example application
