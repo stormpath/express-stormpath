@@ -1,9 +1,11 @@
 {
-  "name": "stormpath-sdk-angular",
-  "version": "0.0.1",
-  "main": "dist/stormpath-sdk-angular.min.js",
-  "keywords": ["stormpath","jwt","token","user"],
+  "name": "stormpath-sdk-angularjs",
+  "version": "0.0.2",
+  "main": "dist/stormpath-sdk-angularjs.min.js",
+  "keywords": ["stormpath","jwt","token","user","angular","token based authentication"],
   "ignore": [
+    ".tmp",
+    "build",
     "example",
     "ngdoc_assets",
     "src"

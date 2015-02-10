@@ -1,17 +1,17 @@
-# Stormpath Angular.js SDK [BETA]
+# Stormpath AngularJS SDK [BETA]
 
 
-[![Bower Version](https://img.shields.io/bower/v/stormpath-sdk-angular.svg?style=flat)](https://bower.io)
-[![Build Status](https://img.shields.io/travis/stormpath/stormpath-sdk-angular.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-sdk-angular)
+[![Bower Version](https://img.shields.io/bower/v/stormpath-sdk-angularjs.svg?style=flat)](https://bower.io)
+[![Build Status](https://img.shields.io/travis/stormpath/stormpath-sdk-angularjs.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-sdk-angularjs)
 
-*A simple user authentication library for Angular.js.*
+*A simple user authentication library for AngularJS.*
 
 [Stormpath](https://stormpath.com) is a User Management API that reduces
 development time with instant-on, scalable user infrastructure.  Stormpath's
 intuitive API and expert support make it easy for developers to authenticate,
 manage, and secure users and roles in any application.
 
-This library provides services for [Angular.js] that will allow you to implement
+This library provides services for [AngularJS] that will allow you to implement
 token authentication strategies in your Angular application.  This allows you
 to authenticate an account (via username and password) and receive an access token
 that can be used for subsequent requests.
@@ -28,10 +28,10 @@ thoughts! support@stormpath.com
 If you are using Bower simply install it:
 
 ```bash
-bower install --save stormpath-angular-sdk
+bower install --save stormpath-sdk-angularjs
 ```
 
-If you want to manually load the minified script you can get it from the `build`
+If you want to manually load the minified script you can get it from the `dist`
 folder in this repo.
 
 ## Quickstart - Example application
@@ -68,4 +68,4 @@ Once you have the demo app running (previous section) you will see a link
 inside the demo to Docs - this will show you the current documentation for
 the project
 
-[Angular.js]: https://angularjs.org "Angular.js"
+[AngularJS]: https://angularjs.org "AngularJS"
