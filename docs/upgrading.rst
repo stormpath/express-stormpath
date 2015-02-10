@@ -8,6 +8,12 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 0.6.3 -> Version 0.6.4
+------------------------------
+
+**No changes needed!**
+
+
 Version 0.6.2 -> Version 0.6.3
 ------------------------------
 
