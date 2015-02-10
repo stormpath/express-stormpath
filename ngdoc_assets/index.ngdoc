@@ -2,7 +2,7 @@
 @name API Documentation
 @description
 
-# `stormpath-sdk-angular` module for Angular.js [BETA]
+# `stormpath-sdk-angularjs` module for AngularJS [BETA]
 
 ## Overview
 
@@ -29,34 +29,15 @@ configure them using the {@link $stormpath} provider.
 
 ## Using with Express.js
 
-If your backed is written in Express, add the
-[Stormpath Express SDK][stormpath-sdk-express]
-module to your package dependencies then use Stormpath with your
-Express app:
-
-### Example
-<pre>
-var express = require('express');
-var stormpathSdkExpress = require('stormpath-sdk-express');
-
-var app = express();
-
-var spMiddleware = stormpathSdkExpress.createMiddleware({
-  appHref: 'YOUR_APP_HREF',
-  apiKeyId: 'YOUR_API_KEY_ID',
-  apiKeySecret: 'YOUR_API_KEY_SECRET'
-});
-
-app.use(spMiddleware);
-
-app.get('/api/users/current',function(req,res){
-  res.json(req.user);
-});
-
-</pre>
-
+We have an Express-based example application in the github repo for
+this project, see the <a href="#example">Example</a>
 
 ## How token authentication works
+
+We have written a comprehensive article about token authentication for
+Single Page Applications (SPAs).  Please find it here:
+
+<a href="https://stormpath.com/blog/token-auth-spa" target="_blank">https://stormpath.com/blog/token-auth-spa</a>
 
 ### Token creation and storage
 

@@ -3,10 +3,6 @@
  * @ngdoc overview
  * @name stormpath
  *
- * @requires stormpath.CONFIG
- * @requires stormpath.auth
- * @requires stormpath.userService
- *
  * @description
  *
  *
@@ -23,8 +19,8 @@
  * <html ng-app="myApp">
  * <head>
  *   <script src="js/angular.js"></script>
- *   <!-- Include the stormpath-angular script -->
- *   <script src="js/angular-stormpath-angular.min.js"></script>
+ *   <!-- Include the Stormpath AngularJS SDK -->
+ *   <script src="js/stormpath-sdk-angularjs.min.js"></script>
  *   <script>
  *     // ...and add 'stormpath' as a dependency
  *     var myApp = angular.module('myApp', ['stormpath']);

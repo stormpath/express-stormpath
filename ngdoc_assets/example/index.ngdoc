@@ -5,102 +5,10 @@
 
 ## Example
 
-In this example we create a home page and login page.  We are using [`ui-router`][ui-router]
-to define the routes for the homepage and the login page.
+We have a complete sample application which shows you how to create an
+Angularjs application with an Express backend.  Please see the example
+folder in the repo:
 
-When the user lands on the home page we wait until we know if they are
-logged in or not.  If they are not logged in we prompt them to go to the
-login page.  After they login we redirect them back to the home page
+<a href="https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/example" target="_blank">https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/example</a>
 
-**app.js**
-<pre>
-angular.module('myModule', [
-  'ui.router',
-  'stormpath'
-]).config(function ($stateProvider) {
-    $stateProvider.state('home', {
-      url: '/',
-      templateUrl: 'home.html',
-    });
-    $stateProvider.state('login', {
-      url: '/login',
-      templateUrl: 'login.html'
-    });
-  })
-  .controller('HomeCtrl', function ($scope,$user) {
-    $scope.ready = false;
-    $user.get().then(function(user){
-      $scope.user = user;
-      $scope.ready = true;
-    },function(){
-      $scope.ready = true;
-    });
-  })
-  .controller('LoginFormCtrl', function ($scope, $auth, $state) {
-    $scope.errorMessage = null;
-    $scope.formModel = {
-      username: 'robert@stormpath.com',
-      password: 'robert@stormpath.comA1'
-    };
 
-    $scope.submit = function submit() {
-      $scope.errorMessage = null;
-      $auth.authenticate($scope.formModel)
-        .then(function(){
-          $state.go('home');
-        })
-        .catch(function(response){
-          $scope.errorMessage = response.data.errorMessage;
-        });
-    };
-  });
-</pre>
-
-**home.html**
-<pre>
-  <div ng-controller="HomeCtrl">
-    <div ng-if="user">
-      <h4 ng-show="user">Welcome, {{user.fullName}}</h4>
-      &lt;pre&gt;ng-bind="user|json">&lt;/pre&gt;
-    </div>
-    <div ng-if="ready && !user">
-      <h4>Not logged in</h4>
-      <a ui-sref="login">Login now</a>
-    </div>
-  </div>
-</pre>
-
-**login.html**
-<pre>
-  <form class="form-horizontal" ng-controller="LoginFormCtrl" ng-submit="submit()">
-    <div class="form-group">
-      <label for="inputLogin3" class="col-sm-2 control-label">Login</label>
-      <div class="col-sm-6">
-        <input type="email" class="form-control" id="inputLogin3" placeholder="Login" ng-model="formModel.username">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-      <div class="col-sm-6">
-        <input type="password" class="form-control" id="inputPassword3" placeholder="Password" ng-model="formModel.password">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-6">
-        <div ng-show="errorMessage" ng-bind="errorMessage" class="text-danger"></div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox"> Remember me
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-6">
-        <button type="submit" class="btn btn-default">Sign in</button>
-      </div>
-    </div>
-  </form>
-</pre>
-
-[ui-router]: https://github.com/angular-ui/ui-router
