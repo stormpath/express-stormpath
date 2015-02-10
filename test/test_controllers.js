@@ -25,7 +25,6 @@ describe('register', function() {
   var stormpathPrefix;
 
   before(function() {
-    console.log('does it exist?', process.env.STORMPATH_API_KEY_ID);
     var apiKey = new stormpathRaw.ApiKey(
       process.env.STORMPATH_API_KEY_ID,
       process.env.STORMPATH_API_KEY_SECRET
