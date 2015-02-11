@@ -25,7 +25,7 @@ var spMiddleware = stormpathSdkExpress.createMiddleware({
 });
 
 /*
-  This router will serve the demo app, we pull those files from the build/
+  This router will serve the demo app, we pull those files from the .tmp/build/
   directory and the example/app directory.  We will also attach the
   storpath middleware to this router - this will force authentication
   on all the non-public routes. The order matters here: we hook up
@@ -41,7 +41,7 @@ demoRouter.use(cookieParser());
 
 demoRouter.use(express.static(path.join(__dirname, 'app')));
 
-demoRouter.use(express.static(path.join(__dirname, '..','dist')));
+demoRouter.use(express.static(path.join(__dirname, '..','.tmp','build')));
 
 demoRouter.use(spMiddleware);
 

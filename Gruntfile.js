@@ -7,7 +7,7 @@ module.exports = function (grunt) {
 
 
   grunt.initConfig({
-    builddir: 'build',
+    builddir: '.tmp/build',
     tmpdir: '.tmp',
     src: './src/**/*.js',
     pkg: grunt.file.readJSON('package.json'),
@@ -142,7 +142,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('serve', function () {
-    grunt.task.run(['express:dev','open','watch']);
+    grunt.task.run(['build','express:dev','open','watch']);
   });
 
   grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify','docs']);

@@ -65,7 +65,15 @@ grunt serve
 ## Documentation
 
 Once you have the demo app running (previous section) you will see a link
-inside the demo to Docs - this will show you the current documentation for
+inside the demo to Documentation - this will show you the current documentation for
 the project
+
+## Development
+
+The source of this library is in the `src` folder.  To build the library into a
+script that can be used by Angularjs you must run `grunt build`.  If you are
+running `grunt serve` this will be done for you automatically when you edit
+files in the `src` directory.  The angular app in the browser will be
+automatically reloaded as well.
 
 [AngularJS]: https://angularjs.org "AngularJS"
