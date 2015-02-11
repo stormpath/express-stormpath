@@ -115,7 +115,7 @@ module.exports = function (grunt) {
         styles: [ 'ngdoc_assets/stormpath-angular.css' ],
         html5Mode: false,
         title: 'stormpath-sdk-angularjs',
-        startPage: '/api/stormpath',
+        startPage: '/api',
         navTemplate: 'ngdoc_assets/nav.html'
       },
       api: {
