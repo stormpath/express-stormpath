@@ -32,6 +32,14 @@ angular.module('stormpathAngularDemo', [
     });
     $urlRouterProvider.otherwise('/');
   })
+  .run(function($user){
+    /*
+      This is an example of asking for the user at runtime
+      If the user is found it will be broadcased via $currentUser
+      This is how the MenuCtrl knows when the user exists
+     */
+    $user.get();
+  })
   .controller('MenuCtrl',function($scope,$rootScope,$auth,$state){
     /*
       This is an example of manually maintaining a local scope
