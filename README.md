@@ -50,7 +50,7 @@ After you clone this repo you run run this inside of it, this will install
 the dependencies:
 
 ```bash
-npm install --dev
+npm install
 ```
 
 You should then edit the file `example/server.js` and replace the default
