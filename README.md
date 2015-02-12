@@ -64,9 +64,13 @@ grunt serve
 
 ## Documentation
 
-Once you have the demo app running (previous section) you will see a link
-inside the demo to Documentation - this will show you the current documentation for
-the project
+The current SDK documentation can be found at:
+
+http://docs.stormpath.com/angularjs/sdk/
+
+Documentation is also available from the example application.
+While running `grunt serve` the documenation will be automatically
+updated if you edit the ngdoc directives in the source code.
 
 ## Development
 
