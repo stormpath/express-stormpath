@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.5
+-------------
+
+**Released on February 16, 2015.**
+
+- Modifying the behavior of our login view such that if a user has disabled the
+  registration page -- the login page will just say 'Log In' at the top instead
+  of nothing (*our old behavior*) -- this looks a lot nicer.  Big thanks to
+  `@KamalAman <https://github.com/KamalAman>`_ for pointing this out.
+
+
 Version 0.6.4
 -------------
 
