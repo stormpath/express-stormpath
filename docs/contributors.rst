@@ -45,5 +45,13 @@ Elodie Mercure has contributed a large feature to the project.
 - Github: https://github.com/elomerc
 
 
+jmls
+****
+
+jmls has contributed a large feature to the project.
+
+- Github: https://github.com/jmls
+
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
