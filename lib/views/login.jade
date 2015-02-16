@@ -20,6 +20,9 @@ block body
               if app.get('stormpathEnableRegistration')
                 span.
                   Log In or <a href="#{app.get('stormpathRegistrationUrl')}">Create Account</a>
+              else
+                span.
+                  Log In
 
             if error
               .alert.alert-danger.bad-login
