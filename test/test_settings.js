@@ -59,6 +59,7 @@ describe('init', function() {
     'expandTenant',
     'postRegistrationHandler',
     'templateContext',
+    'renderHandler',
     'registrationView',
     'loginView',
     'forgotPasswordView',
