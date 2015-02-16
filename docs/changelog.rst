@@ -16,6 +16,10 @@ Version 0.6.5
   registration page -- the login page will just say 'Log In' at the top instead
   of nothing (*our old behavior*) -- this looks a lot nicer.  Big thanks to
   `@KamalAman <https://github.com/KamalAman>`_ for pointing this out.
+- Adding support for custom template rendering.  Thanks to `@jmls
+  <https://github.com/jmls>`_!
+- Adding `@jmls <https://github.com/jmls>`_ to the contributors page, where he
+  will live forever!
 
 
 Version 0.6.4
