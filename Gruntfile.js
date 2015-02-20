@@ -46,7 +46,8 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          '<%= builddir %>/<%= pkg.name %>.min.js': ['<banner:meta.banner>', '<%= concat.build.dest %>']
+          '<%= builddir %>/<%= pkg.name %>.min.js': ['<banner:meta.banner>', '<%= concat.build.dest %>'],
+          '<%= builddir %>/<%= pkg.name %>.tpls.min.js': ['<banner:meta.banner>', '<%= builddir %>/<%= pkg.name %>.tpls.js']
         }
       }
     },
@@ -131,8 +132,31 @@ module.exports = function (grunt) {
     },
     copy: {
       dist: {
-        src: 'build/*',
-        dest: 'dest/',
+        files:[{
+          expand: true,
+          flatten: true,
+          src: '.tmp/build/*',
+          dest: 'dist/'
+        }]
+      },
+    },
+    html2js: {
+      options: {
+        module: 'stormpath.templates',
+        htmlmin: {
+          collapseBooleanAttributes: false,
+          collapseWhitespace: true,
+          removeAttributeQuotes: true,
+          removeComments: true,
+          removeEmptyAttributes: false,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: false,
+          removeStyleLinkTypeAttributes: false
+        }
+      },
+      main: {
+        src: ['src/**/*.tpl.html'],
+        dest: '<%= builddir %>/<%= pkg.name %>.tpls.js'
       },
     }
   });
@@ -145,7 +169,7 @@ module.exports = function (grunt) {
     grunt.task.run(['build','express:dev','open','watch']);
   });
 
-  grunt.registerTask('build', 'Perform a normal build', ['concat', 'uglify','docs']);
+  grunt.registerTask('build', 'Perform a normal build', ['concat', 'html2js','uglify','docs']);
 
   grunt.registerTask('dist', 'Perform a distribution', ['build', 'copy:dist']);
 };

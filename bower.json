@@ -1,7 +1,10 @@
 {
   "name": "stormpath-sdk-angularjs",
   "version": "0.0.2",
-  "main": "dist/stormpath-sdk-angularjs.min.js",
+  "main": [
+    "dist/stormpath-sdk-angularjs.min.js",
+    "dist/stormpath-sdk-angularjs.tpls.min.js"
+  ],
   "keywords": ["stormpath","jwt","token","user","angular","token based authentication"],
   "ignore": [
     ".tmp",
