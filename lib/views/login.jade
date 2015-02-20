@@ -87,5 +87,7 @@ block body
               if app.get('stormpathEnableGoogle')
                 include google_login_form.jade
 
+        if app.get('stormpathEnableAccountVerification')
+          a.forgot(style="float:left", href="#{app.get('stormpathResendAccountVerificationEmailUrl')}") Resend Verification Email?
         if app.get('stormpathEnableForgotPassword')
-          a.forgot(href="#{app.get('stormpathForgotPasswordUrl')}") Forgot Password?
+          a.forgot(style="float:right", href="#{app.get('stormpathForgotPasswordUrl')}") Forgot Password?
