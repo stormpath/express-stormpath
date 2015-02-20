@@ -7,6 +7,20 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.6
+-------------
+
+**Released on February 20, 2015.**
+
+- Adding a new feature: the ability for users to resend their account
+  verification email from the login page.  This was suggested by `@lemieux
+  <https://github.com/lemieux>`_.  Basically, the way it works is that if a user
+  has the account verification stuff turned on (*a new user gets an email with a
+  link they have to click to verify their account*), then we provide a built-in
+  link on the login page so that users who didn't receive this email can request
+  another one automatically.
+
+
 Version 0.6.5
 -------------
 
