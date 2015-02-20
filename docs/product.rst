@@ -407,7 +407,7 @@ As you can see above -- storing custom information on a ``user`` account is
 extremely simple!
 
 Extra Context For Templates
-------------------------------------
+---------------------------
 
 Your app might need to add custom data like analytics code to the templates. This
 data will most likely change depending of the environment you are running on and you
