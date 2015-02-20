@@ -1,0 +1,45 @@
+extends base
+
+block vars
+  - var title = 'Resend Account Verification Email?'
+  - var description = 'Didn\'t receive your account verification email? No worries!'
+  - var bodytag = 'login'
+
+block body
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
+              span.
+                Didn't receive your account verification email?
+              p.
+                Enter your email address below and we'll resend your account
+                verification email.  You will be sent an email which you will
+                need to open to continue. You may need to check your spam
+                folder.
+
+            if error
+              .alert.alert-danger.bad-login
+                p #{error}
+
+            if formErrors
+              .alert.alert-danger.bad-login
+                each error in formErrors
+                  p #{error}
+
+            form.login-form.form-horizontal(method='post', role='form')
+              input(name='_csrf', type='hidden', value=csrfToken)
+
+              .form-group.group-email
+                label.col-sm-4 Email
+
+                div.col-sm-8
+                  input.form-control(placeholder='Email', required=true, name='email', type='text')
+
+              div
+                button.login.btn.btn-login.btn-sp-green(type='submit') Submit
+
+        if app.get('stormpathEnableLogin')
+          a.forgot(href="#{app.get('stormpathLoginUrl')}") Back to Log In
