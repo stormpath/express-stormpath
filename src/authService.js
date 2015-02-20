@@ -51,7 +51,7 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
          *   $scope.errorMessage = null;
          *   $scope.formData = {
-         *     login: '',         // Expose to user as email/username field
+         *     username: '',         // Expose to user as email/username field
          *     password: '',
          *   };
          *
