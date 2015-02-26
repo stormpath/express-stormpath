@@ -7,11 +7,11 @@
 ## Welcome!  Let's get started
 
 You are reading the API documentation for the Stormpath AngularJS SDK,
-you are moments away from sovling all kinds of user management issues
-in your Angular application :)
+you are moments away from adding user login features to your Angular application :)
 
 If you're ready to dive in with code, see the [Getting Started](#quickstart) section.
-Then head back over here to learn about everything that this module has to offer!
+
+If you want a walkthrough tutorial, see the [In-Depth Guide](https://docs.stormpath.com/angularjs/guide/)
 
 
 ## Overview
@@ -22,9 +22,7 @@ Angular services which allow you to:
 * Authenticate username & password and get the Account object
 * Use tokens (JWTs) as a stateless session mechanism
 * Show or hide parts of your UI in response to the current user state
-* Use [`ui-router`][ui-router] or
-[`$routeProvider`](https://docs.angularjs.org/api/ngRoute/provider/$routeProvider)
-to declare rules at a global level
+* Use [`ui-router`][ui-router] to declare rules at the UI-state level
 
 
 ## Backed Integration

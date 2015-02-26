@@ -124,14 +124,9 @@ module.exports = function (grunt) {
         title: 'API Reference',
         api: true
       },
-      example: {
-        src: ['ngdoc_assets/example/index.ngdoc'],
-        title: 'Example',
-        api: false
-      },
       quickstart: {
         src: ['ngdoc_assets/quickstart/index.ngdoc'],
-        title: 'Get Started',
+        title: 'Quickstart',
         api: false
       }
     },
