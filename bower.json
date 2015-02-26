@@ -1,6 +1,6 @@
 {
   "name": "stormpath-sdk-angularjs",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "main": [
     "dist/stormpath-sdk-angularjs.min.js",
     "dist/stormpath-sdk-angularjs.tpls.min.js"
