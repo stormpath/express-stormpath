@@ -101,6 +101,23 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
       }
 
       function authenticatedEvent(response){
+        /**
+         * @ngdoc event
+         * @name stormpath.authService.$auth#$authenticated
+         * @eventOf stormpath.authService.$auth
+         * @eventType broadcast on root scope
+         * @description
+         * This event is broadcast when a call to
+         * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate()}
+         * is successful
+         *
+         * @param {Object} event Angular event object.
+         * @param {httpResponse} httpResponse The http response from the $http service.  If
+         * you are writing your access tokens to the response body when a user
+         * authenticates, you will want to use this response object to get access
+         * to that token.
+         *
+         */
         $rootScope.$broadcast(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,response);
       }
       function authenticationFailureEvent(response){

@@ -4,6 +4,16 @@
 
 # `stormpath-sdk-angularjs` module for AngularJS [BETA]
 
+## Welcome!  Let's get started
+
+You are reading the API documentation for the Stormpath AngularJS SDK,
+you are moments away from sovling all kinds of user management issues
+in your Angular application :)
+
+If you're ready to dive in with code, see the [Getting Started](#quickstart) section.
+Then head back over here to learn about everything that this module has to offer!
+
+
 ## Overview
 
 Used in conjuction with Stormpath on your backend, this module provides

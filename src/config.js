@@ -4,6 +4,7 @@ angular.module('stormpath.CONFIG',[])
 .constant('STORMPATH_CONFIG',{
   AUTHENTICATION_ENDPOINT: '/oauth/token',
   CURRENT_USER_URI: '/api/users/current',
+  USER_COLLECTION_URI: '/api/users',
   DESTROY_SESSION_ENDPOINT: '/logout',
   GET_USER_EVENT: '$currentUser',
   SESSION_END_EVENT: '$sessionEnd',
@@ -13,5 +14,7 @@ angular.module('stormpath.CONFIG',[])
   AUTHENTICATION_SUCCESS_EVENT_NAME: '$authenticated',
   AUTHENTICATION_FAILURE_EVENT_NAME: '$authenticationFailure',
   AUTH_SERVICE_NAME: '$auth',
-  NOT_LOGGED_IN_EVENT: '$notLoggedin'
+  NOT_LOGGED_IN_EVENT: '$notLoggedin',
+  STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
+  STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized'
 });

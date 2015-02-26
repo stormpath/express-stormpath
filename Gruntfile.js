@@ -128,6 +128,11 @@ module.exports = function (grunt) {
         src: ['ngdoc_assets/example/index.ngdoc'],
         title: 'Example',
         api: false
+      },
+      quickstart: {
+        src: ['ngdoc_assets/quickstart/index.ngdoc'],
+        title: 'Get Started',
+        api: false
       }
     },
     copy: {

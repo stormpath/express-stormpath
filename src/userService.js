@@ -49,6 +49,76 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         this.currentUser = null;
         return this;
       }
+      UserService.prototype.create = function(data){
+        /**
+         * @ngdoc function
+         * @name stormpath.userService.$user#create
+         * @methodOf stormpath.userService.$user
+         * @param {Object} accountData An object literal for passing the data
+         * for the new account.
+         *
+         * Required fields:
+         * * `givenName` - the user's first name
+         * * `surname` - the user's last name
+         * * `email` - the email address of the user
+         * * `password` - the password that the user wishes to use for their
+         * account.  Must meet the password requirements that you have specified
+         * on the directory that this account will be created in.
+         * @description
+         *
+         * Attemps to create a new user by posting to `/api/users`
+         *
+         *
+         *
+         * Your backend server will need to accept this request and use a
+         * Stormpath SDK to create the account in the Stormpath service.  If you
+         * are using the Express SDK you want to attach `register` middleware
+         * to your application.
+         *
+         * @returns {promise} A promise representing the operation to create a
+         * new user.  If an error occurs (duplicate email, weak password) the
+         * promise will be rejected and the http response will be passed.
+         * If the operation is successful the promise
+         * will be resolved with a boolean `enabled` value.
+         *
+         * * If `true`, the
+         * account's status is Enabled and you can proceed with authenticating the user.
+         *
+         * * If `false`, the account's status is Unverified.
+         * This will be the case when you have
+         * enabled the email verification workflow on the directory of this
+         * account.
+         *
+         * @example
+         * <pre>
+         * $user.create(accountData)
+         *   .then(function(created){
+         *     if(created){
+         *       // The account is enabled and ready to use
+         *     }else{
+         *       // The account requires email verification
+         *     }
+         *   })
+         *   .catch(function(response){
+         *     // Show the error message to the user
+         *     $scope.error = response.data.errorMessage;
+         *   });
+         * </pre>
+         */
+        var op = $q.defer();
+
+        var transformed = {
+          surname: data.lastName,
+          givenName: data.firstName,
+          email: data.email,
+          password: data.password
+        };
+        $http.post(STORMPATH_CONFIG.USER_COLLECTION_URI,transformed)
+          .then(function(response){
+            op.resolve(response.status===201);
+          },op.reject);
+        return op.promise;
+      };
       UserService.prototype.get = function get() {
         /**
          * @ngdoc function
@@ -104,6 +174,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
             currentUserEvent(self.currentUser);
             op.resolve(self.currentUser);
           },function(response){
+            self.currentUser = false;
             if(response.status===401){
               notLoggedInEvent();
             }

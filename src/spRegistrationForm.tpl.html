@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Registration</h3>
+      <hr>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <p class="text-success" ng-show="created && !enabled">Your account have been created.  Please check your email for a verification link.</p>
+      <p class="text-success" ng-show="created && enabled">Your account has been created.  Login Now.</p>
+
+      <form class="form-horizontal" ng-hide="accepted" ng-submit="submit()">
+        <div class="form-group">
+          <label for="spFirstName" class="col-xs-12 col-sm-4 control-label">First Name</label>
+          <div class="col-xs-12 col-sm-4">
+            <input class="form-control" id="spFirstName" ng-model="formModel.firstName" placeholder="First Name" ng-disabled="creating">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="spLastName" class="col-xs-12 col-sm-4 control-label">Last Name</label>
+          <div class="col-xs-12 col-sm-4">
+            <input class="form-control" id="spLastName" ng-model="formModel.lastName" placeholder="Last Name" ng-disabled="creating">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="spEmail" class="col-xs-12 col-sm-4 control-label">Email</label>
+          <div class="col-xs-12 col-sm-4">
+            <input class="form-control" id="spEmail" ng-model="formModel.email" placeholder="Email" ng-disabled="creating">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="spPassword" class="col-xs-12 col-sm-4 control-label">Password</label>
+          <div class="col-xs-12 col-sm-4">
+            <input type="password" class="form-control" id="spPassword" ng-model="formModel.password" placeholder="Password" ng-disabled="creating">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-4 col-xs-12">
+            <p class="text-danger" ng-show="error" ng-bind="error"></p>
+            <button type="submit" class="btn btn-primary" ng-disabled="creating">Register</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
