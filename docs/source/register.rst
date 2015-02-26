@@ -1,15 +1,17 @@
 .. _register:
 
-Registration Form
+Create the Registration Form
 ===================
 
 
-Create the /register UI route
---------------------------
+Generate the /register route
+--------------------------------
 
-There are a handful of files that you need when creating a new view and matching route in an Angular aplication.
+When you want to create a new view in an Angular application, there
+are a handful of files that you have to make.  Thankfully the generator
+is going to help us with this.
 
-We will use Yeoman to help us out.  Run this command in your project folder::
+Stop the server and run this command in your project folder::
 
     $ yo angular-fullstack:route register
 
@@ -23,65 +25,51 @@ It will ask you some questions, just hit enter to choose the defaults for all of
        create client/app/register/register.css
        create client/app/register/register.html
 
-You can now reload the app (you may need to restart the grunt server) and
-manually go to the ``/register`` route to see the default view that was created:
+Start the server and then manually type in the URL to ``/register``
+in your browser, you will see the default view that was created:
 
 
 .. image:: _static/default-register-view.png
 
-Create a Form (with Bootstrap)
------------------------------
+Use the Registration Form Directive
+--------------------------------
 
-Great!  Let's create the form now, replace the contents of ``register.html`` with this::
+We're going to take advantage of the default registration form
+that is available to you in the Stormpath Angular SDK
 
+Open the file ``client/app/register/register.html`` and then replace
+it's contents with this::
 
-    <div class="row">
-      <div class="col-sm-offset-2">
-        <h3>Registration</h3>
+    <div ng-include="'components/navbar/navbar.html'"></div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>Registration</h3>
+          <hr>
+        </div>
       </div>
+      <div sp-registration-form post-login-state="main"></div>
     </div>
-    <hr>
-    <form class="form-horizontal">
-      <div class="form-group">
-        <label for="inputFirstName3" class="col-sm-2 control-label">First Name</label>
-        <div class="col-sm-4">
-          <input type="email" class="form-control" id="inputFirstName3" ng-model="formModel.firstName" placeholder="First Name">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputLastName3" class="col-sm-2 control-label">Last Name</label>
-        <div class="col-sm-4">
-          <input type="email" class="form-control" id="inputLastName3" ng-model="formModel.lastName" placeholder="Last Name">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-        <div class="col-sm-4">
-          <input type="email" class="form-control" id="inputEmail3" ng-model="formModel.email" placeholder="Email">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-        <div class="col-sm-4">
-          <input type="password" class="form-control" id="inputPassword3" ng-model="formModel.password" placeholder="Password">
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default">Register</button>
-        </div>
-      </div>
-    </form>
 
-This will give you the following view:
+This is a small bit of HTML markup which does the following:
+
+* Includes the common menu bar for the application (we will customize it in a later section)
+* Sets up some bootstrap classes so that the page flows nicely
+* Inserts the default registration form, via the ``sp-registration-form`` directive
+* Declares (on the directive) that we want to send the user to the main page after they register
+
+Save that file and the browser should auto reload, you should now
+see the registration route like this:
 
 .. image:: _static/registration_form.png
 
-Create the Controller
----------------------
+Try it out!
+--------------------------------
 
-We need to create a basic Angular Controller which will:
-
-* Create a form model on the scope, allowing us to gather the data from the form
-* Submit that data to the $user service
-* Handle succes and error cases
+That's it, really!  Give the form a try.  Once you register for an
+account you will be automatically redirected back to the main page.
+You will also be logged in automatically, and you will start seeing
+the list of things again - remember how we locked it down?  Now that
+you are authenticated you are allowed to access that part of the API
+again

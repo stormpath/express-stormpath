@@ -29,11 +29,13 @@ Contents:
 
    quickstart
    create_new_project
+   configure_angular
    protect_api
-   determine_login_state
    register
+   customize_menu
    login
    user_dashboard
+   determine_login_state
 
 
 Indices and tables

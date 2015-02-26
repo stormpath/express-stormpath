@@ -48,11 +48,11 @@ We are going to use the `Angular Fullstack`_ generator, which will create some b
 
 At this point you should create a directory for your project and go into it::
 
-    $ mkdir my-new-project && cd $_
+    $ mkdir my-angular-project && cd $_
 
 Once there we use the generator to create the project.  We need to give our application a name (it does not have to be the same as the folder).  Since we are budilng a basic user dashboard for our API we will call it dashboard::
 
-    $ yo angular-fullstack dashboard
+    $ yo angular-fullstack dashboard-app
 
 The generator will ask you several questions, such as which templating engine to use.  We're sticking to vanilla HTML/CSS/JS for this guide, the only choice we are making is to the the 3rd-part `ui-router`_ instead of Angular's default.  Here are the choices that we made::
 
@@ -71,17 +71,18 @@ The generator will ask you several questions, such as which templating engine to
 
 Assuming everything installs OK you should now have the default project, ready to go.  Use this grunt command to start the development server and see the application::
 
-    grunt serve
+    $ grunt serve
 
 You should see an application that looks like this:
 
 .. image:: _static/fullstack-new-project.png
 
-Now would be a good time to start using Git with your project::
+Now would be a good time to start using Git with your project, you can
+stop the server by pressing `Ctrl+C` - then use these git commands::
 
-    git init
-    git add .
-    git commit -m "Begin project"
+    $ git init
+    $ git add .
+    $ git commit -m "Begin dasbhoard app project"
 
 
 Install the Stormpath packages
@@ -94,7 +95,10 @@ Install them with NPM, using the save flag to add them to your package dependenc
     $ npm install --save stormpath-sdk-express
     $ bower install --save stormpath-sdk-angularjs
 
+We also want to make sure that we are using the latest version of Express, run
+this command to get the latest::
 
+    $ npm i express@latest --save
 
 Create a Stormpath Account
 --------------------------
@@ -155,8 +159,6 @@ Now that you have your API keys and app href, you want to modify the file found 
     };
 
 Grunt will automatically export these values to the environment, and the Stormpath SDK will pick them up automatically.
-
-At this point you should restart the development server, the one you ran with ``grunt serve``.  Use ``Ctrl+C`` to kill it, then start it again.
 
 
 .. _Stormpath Admin Console: https://api.stormpath.com
