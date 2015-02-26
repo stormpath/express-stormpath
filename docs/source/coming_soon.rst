@@ -1,4 +1,4 @@
-.. _coming_soonm:
+.. _coming_soon:
 
 Coming Soon!
 ==============

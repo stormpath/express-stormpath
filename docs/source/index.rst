@@ -6,43 +6,32 @@
 Welcome to Stormpath's AngularJS Guide!
 =================================================
 
-This guide will walk you through the creation of an AngularJS application which is backed by a RESTful API and is secured with Oauth Access Tokens (JWTs).
+.. image:: _static/awesome.png
 
-We will show you how to:
+This guide will show you how to crate an AngularJS application that uses the Stormpath
+User Management Service to handle user registration and login.  We will show you how to:
 
-* Secure your back-end API with a Stormpath SDK, using Oauth Access Tokens (JWTs)
-* Provide a login form in your AngularJS application
-* Fetch user data from your AngularJS application
-* Use the token to know which UI routes are accessible by the user
+* Begin an AngularJS application from scratch, using Grunt, Yeomon and Bower
+* Create a simple REST API and secure it with Oauth Access Tokens (JWTs)
+* Control access to views in the AngularJS application
+* Fetch information about the user from your API
+* Render your UI based on the current user sate
 
-When we explain how to protect your API routes we will be using Node.js
-as the server examples.  If you are using Java please see our `Java Web App Plugin Guide`_
+Ready to get started?  Continue with the :ref:`introduction`.
 
-.. _Java Web App Plugin Guide: https://docs.stormpath.com/java/servlet-plugin/
-
-
-
-Contents:
-
+Table of Contents
+---------------------
 .. toctree::
    :maxdepth: 2
 
-   quickstart
+   introduction
    create_new_project
-   configure_angular
+   create_tenant
    protect_api
+   configure_angular
    register
    customize_menu
    login
    user_profile
    wait_for_user
    coming_soon
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-

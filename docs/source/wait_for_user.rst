@@ -44,5 +44,5 @@ and then everything will render with the proper user state.
 
 If you have a complex bootstrap process and want to show some kind of loading
 overlay while the application is bootstrapping, you may find the
-`whileResolvingUser <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.whileResolvingUser:while-resolving-user>`_.
+`whileResolvingUser <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.whileResolvingUser:while-resolving-user>`_
 directive of use.

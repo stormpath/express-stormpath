@@ -3,10 +3,10 @@
 Configure the Angular App
 --------------------------------
 
-There are a few things we need to setup before we can get build the
+There are a few things we need to setup before we can build the
 rest of the application.  We need to add the Stormpath modules as
-dependencies of our appliaion, and we need to configure some of the
-magic that will happen with the UI Router module.
+dependencies of our application, and we need to configure some of the
+magic that will happen with the `UI Router`_ module.
 
 Add Stormpath to the Agnular Application
 ==========================================
@@ -30,10 +30,10 @@ Configure the UI Router integration
 ===================================
 
 You're going to get the best bang for your buck if you use the
-UI Router module: it's amazing.  So much so that we've built a
+`UI Router`_ module: it's amazing.  So much so that we've built a
 special integrationf or it.
 
-In the same `app.js` file you want to add this run block, place
+In the same ``app.js`` file you want to add this run block, place
 it below the ``.config`` block (make sure you move the semicolon
 from the config block to the run block)::
 
@@ -48,7 +48,9 @@ from the config block to the run block)::
 This tells the integration to do the following:
 
 * Redirect users to the ``login`` view if they try to access a restricted view. After login, they are sent back to the view that they originally requested
-* Send users to the ``main`` view after login, if they have visited the login page directly
+* Send users to the ``main`` view after login, if they have visited the login page directly (they did not try to access a restricted view first)
 
 Let's move back to the server now:  in the next section we will secure our
 API so that only authenticated users can use it
+
+.. _UI Router: https://github.com/angular-ui/ui-router

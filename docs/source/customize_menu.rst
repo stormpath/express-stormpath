@@ -6,11 +6,13 @@ Customize the Menu
 Now that users can register for the system, let's get our menu setup
 properly.  We want it to look differently when the user is logged in.
 
-**When the user is not logged in:**
+When the user is not logged in, we want the following to happen:
+
  * Show a link to the Registration page
  * Show a link to the Login page
 
-**When the user IS logged in:**
+But when they login, we want the following to happen:
+
  * Hide the links to the Registration and Login pages
  * Show a link to the Profile page (we'll build that in a later secion)
  * Show a Logout link
@@ -39,9 +41,12 @@ the ``<ul>`` section with this markup::
     </li>
   </ul>
 
-We've retained the piece that iterates over declared links, but also
-added the new links that we want.  We are using the ``if-user``
-and ``if-not-user`` directives to control the visibility of the links.
+We've retained the piece that iterates over the default links, but we also
+added the new links that we want.  We are using the
+`ifUser <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:if-user>`_
+and
+`ifNotUser <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:if-not-user>`_
+directives to control the visibility of the links.
 
 You can reload the app to see these changes, but the links to the Login
 and Profile pages will be dead until we continue to the next two sections

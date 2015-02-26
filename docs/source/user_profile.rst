@@ -3,6 +3,10 @@
 Creating a User Profile View
 =========================
 
+Most user-centric application have a Profile view, where the user can view and
+edit their basic profile information.  In this section we will show you how to
+make a *very* simple display of the user's information.  In the next releasae of
+this guide we will show you how to update the user's information, see :ref:`coming_soon`
 
 Generate the /profile route
 -----------------

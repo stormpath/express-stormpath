@@ -3,11 +3,16 @@
 Create the Registration Form
 ===================
 
+We want our users to sign up for our service, so we need to provide a Registration
+form.  The Stormpath Angular SDK provides a pre-built registration form, we're
+going to show you how to use it.  When a user submits this form, it will create a new
+account for them in the Stormpath Directory that is associated with the Stormpath Application
+that you created in the :ref:`create_tenant` section
 
 Generate the /register route
 --------------------------------
 
-When you want to create a new view in an Angular application, there
+When you want to create a new route and view in an Angular application, there
 are a handful of files that you have to make.  Thankfully the generator
 is going to help us with this.
 
@@ -32,7 +37,7 @@ in your browser, you will see the default view that was created:
 .. image:: _static/default-register-view.png
 
 Use the Registration Form Directive
---------------------------------
+-----------------------------------
 
 We're going to take advantage of the default registration form
 that is available to you in the Stormpath Angular SDK
@@ -54,8 +59,8 @@ it's contents with this::
 
 This is a small bit of HTML markup which does the following:
 
-* Includes the common menu bar for the application (we will customize it in a later section)
-* Sets up some bootstrap classes so that the page flows nicely
+* Includes the common menu bar for the application (we will customize it the next section)
+* Sets up some Bootstrap classes so that the page flows nicely
 * Inserts the default registration form, via the ``sp-registration-form`` directive
 * Declares (on the directive) that we want to send the user to the main page after they register
 
