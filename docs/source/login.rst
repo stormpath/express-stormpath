@@ -43,3 +43,8 @@ see the login route like this:
 
 .. image:: _static/login_form.png
 
+
+If you want to further customize the look and behaviour of the form,
+please see the API documentation of for
+`sp-login-frorm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_.
+The most useful feature is the ability to specify your own template.

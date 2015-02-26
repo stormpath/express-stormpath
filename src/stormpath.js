@@ -350,10 +350,20 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * If you are NOT using the email verification workflow: you can, optionally,
  * automatically login the user and redirect them to a UI state in your application.
  * See the options below.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
  * @example
  * <pre>
+ * <!-- If you want to use the default template -->
  * <div class="container">
  *   <div sp-registration-form post-login-state="main"></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-registration-form template-url="/path/to/my-custom-template.html"></div>
  * </div>
  * </pre>
  */
@@ -386,10 +396,19 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  *  * The user is sent back to the view they originally requested
  *  * The user is sent to a default view of your choice
  *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
  * @example
  * <pre>
+ * <!-- If you want to use the default template -->
  * <div class="container">
  *   <div sp-login-form></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-login-form template-url="/path/to/my-custom-template.html"></div>
  * </div>
  * </pre>
  */
@@ -476,6 +495,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   return {
     link: function(scope,element){
       $user.get().finally(function(){
+        console.log('currentUser',$user.currentUser);
         if((typeof $user.currentUser ==='object') || ($user.currentUser===false)){
           element.hide();
         }else{

@@ -64,7 +64,12 @@ see the registration route like this:
 
 .. image:: _static/registration_form.png
 
-Try it out!
+If you want to further customize the look and behaviour of the form,
+please see the API documentation of for
+`sp-registration-frorm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:sp-registration-form>`_.
+The most useful feature is the ability to specify your own template.
+
+Try it, register for an account!
 --------------------------------
 
 That's it, really!  Give the form a try.  Once you register for an

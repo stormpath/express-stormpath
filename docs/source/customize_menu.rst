@@ -39,7 +39,8 @@ the ``<ul>`` section with this markup::
     </li>
   </ul>
 
-We've added all the necessary links, and used the ``if-user``
+We've retained the piece that iterates over declared links, but also
+added the new links that we want.  We are using the ``if-user``
 and ``if-not-user`` directives to control the visibility of the links.
 
 You can reload the app to see these changes, but the links to the Login

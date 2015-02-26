@@ -34,8 +34,9 @@ Contents:
    register
    customize_menu
    login
-   user_dashboard
-   determine_login_state
+   user_profile
+   wait_for_user
+   coming_soon
 
 
 Indices and tables
