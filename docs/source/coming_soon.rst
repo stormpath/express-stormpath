@@ -3,6 +3,8 @@
 Coming Soon!
 ==============
 
+*Last Update: February 26th, 2015*
+
 We hope that this tutorial has given you a fully working Angular applicatoin,
 complete with a user registration and login system!
 

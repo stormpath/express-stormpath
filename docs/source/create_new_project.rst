@@ -105,6 +105,9 @@ Install them with these commands, which will also persist them to your ``package
     $ npm install --save stormpath-sdk-express
     $ bower install --save stormpath-sdk-angularjs
 
+Upgrade Express
+--------------------------
+
 We also want to make sure that we are using the latest version of Express, run
 this command to get the latest::
 
