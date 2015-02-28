@@ -17,6 +17,7 @@ additions to this library:
 * More API security examples (like group-based access control)
 * Allowing the user to update their profile from the app
 * Social login!
+* Custom templates: a detailed guide on how to achieve this
 
 Stormpath is a developer-focused platform, we want to hear from you!  Reach
 us at anytime through one of the following channels:

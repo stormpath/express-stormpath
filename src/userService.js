@@ -185,6 +185,12 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         }
 
       };
+      UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
+        return $http.post(STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,data);
+      };
+      UserService.prototype.verify = function verify(data){
+        return $http.post(STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,data);
+      };
       function currentUserEvent(user){
         /**
          * @ngdoc event

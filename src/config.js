@@ -6,6 +6,8 @@ angular.module('stormpath.CONFIG',[])
   CURRENT_USER_URI: '/api/users/current',
   USER_COLLECTION_URI: '/api/users',
   DESTROY_SESSION_ENDPOINT: '/logout',
+  RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
+  EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
   GET_USER_EVENT: '$currentUser',
   SESSION_END_EVENT: '$sessionEnd',
   UNAUTHORIZED_EVENT: 'unauthorized',

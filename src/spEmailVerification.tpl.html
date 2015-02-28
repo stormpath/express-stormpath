@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-sm-offset-4 col-xs-12 col-sm-4">
+    <p ng-show="verifying" class="alert alert-warning">We are verifying your account</p>
+    <p ng-show="verified" class="alert alert-success">
+      Your account has has been verified!
+      <a ui-sref="login">Login Now.</a>
+    </p>
+    <p ng-show="reVerificationSent" class="alert alert-success">
+      We have sent a new verification message to your email address, please check your email for this message.
+    </p>
+    <div ng-show="showVerificationError" class="alert alert-danger">
+      This email verification link is not valid.  If you need us
+      to re-send an email verification message, please enter your email address or username
+      below.
+    </div>
+    <div ng-show="resendFailed" class="alert alert-danger">
+      Sorry, there was a problem with that email or username.  Please try again.
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <form class="form-horizontal" ng-show="needsReVerification && !reVerificationSent" ng-submit="submit()">
+
+      <div class="form-group">
+        <label for="spEmail" class="col-xs-12 col-sm-4 control-label">Email or Username</label>
+        <div class="col-xs-12 col-sm-4">
+          <input class="form-control" id="spUsername" ng-model="formModel.username" placeholder="Username or Email" ng-disabled="posting">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-xs-12">
+          <p class="text-danger" ng-show="error" ng-bind="error"></p>
+          <button type="submit" class="btn btn-primary" ng-disabled="posting">Re-Send Verification</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -320,6 +320,48 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   };
 }])
 
+.controller('SpEmailVerificationCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+  $scope.showVerificationError = false;
+  $scope.verifying = false;
+  $scope.reVerificationSent = false;
+  $scope.needsReVerification = false;
+  $scope.resendFailed = false;
+  $scope.formModel = {
+    username: ''
+  };
+  if($stateParams.sptoken){
+    $scope.verifying = true;
+    $user.verify({sptoken:$stateParams.sptoken})
+      .then(function(){
+        $scope.verified = true;
+      })
+      .catch(function(){
+        $scope.needsReVerification = true;
+        $scope.showVerificationError = true;
+      })
+      .finally(function(){
+        $scope.verifying = false;
+      });
+  }else{
+    $scope.needsReVerification = true;
+    $scope.showVerificationError = true;
+  }
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.resendFailed = false;
+    $scope.showVerificationError = false;
+    $user.resendVerificationEmail({login: $scope.formModel.username})
+      .then(function(){
+        $scope.reVerificationSent = true;
+      })
+      .catch(function(){
+        $scope.resendFailed = true;
+      }).finally(function(){
+        $scope.posting = false;
+      });
+  };
+}])
+
 /**
  * @ngdoc directive
  * @name stormpath.spRegistrationForm:sp-registration-form
@@ -418,6 +460,15 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       return tAttrs.templateUrl || 'spLoginForm.tpl.html';
     },
     controller: 'SpLoginFormCtrl'
+  };
+})
+
+.directive('spEmailVerification',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spEmailVerification.tpl.html';
+    },
+    controller: 'SpEmailVerificationCtrl'
   };
 })
 
