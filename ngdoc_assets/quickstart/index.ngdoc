@@ -51,11 +51,12 @@
  {
      // .. the rest of your bower.json ..
 
-   "overrides":{
-     "stormpath-sdk-angularjs":{
-       "main":[
-         "dist/stormpath-sdk-angularjs.min.js"
-       ]
-     }
+  "overrides":{
+    "stormpath-sdk-angularjs":{
+      "main":[
+        "dist/stormpath-sdk-angularjs.min.js"
+      ]
+    }
+  }
  }
  </pre>
