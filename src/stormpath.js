@@ -270,15 +270,19 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     email: '',
     password: ''
   };
-
+  $scope.created = false;
+  $scope.enabled = false;
   $scope.creating = false;
+  $scope.authenticating = false;
   $scope.submit = function(){
     $scope.creating = true;
     $scope.error = null;
     $user.create($scope.formModel)
-      .then(function(created){
-
-        if(created && $scope.autoLogin){
+      .then(function(enabled){
+        $scope.created = true;
+        $scope.enabled = enabled;
+        if(enabled && $scope.autoLogin){
+          $scope.authenticating = true;
           $auth.authenticate({
             username: $scope.formModel.email,
             password: $scope.formModel.password
@@ -288,12 +292,15 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
               $state.go($scope.postLoginState);
             }
           })
+          .catch(function(response){
+            $scope.error = response.data.errorMessage;
+          })
           .finally(function(){
+            $scope.authenticating = false;
             $scope.creating = false;
           });
         }else{
           $scope.creating = false;
-          $scope.accepted = true;
         }
       })
       .catch(function(response){
@@ -366,7 +373,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @ngdoc directive
  * @name stormpath.spRegistrationForm:sp-registration-form
  *
- * @param {boolean} autoLogin Default `true`, automatically authenticate the user
+ * @param {boolean} autoLogin Default `false`, automatically authenticate the user
  * after creation.  This makes a call to
  * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate} which will
  * trigger the event {@link stormpath.authService.$auth#events_$authenticated $authenticated}.
@@ -416,7 +423,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     },
     controller: 'SpRegistrationFormCtrl',
     link: function(scope,element,attrs){
-      scope.autoLogin = attrs.autoLogin!=='false';
+      scope.autoLogin = attrs.autoLogin==='true';
       scope.postLoginState = attrs.postLoginState || '';
     }
   };

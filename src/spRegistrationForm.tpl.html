@@ -1,9 +1,12 @@
 <div class="row">
+  <div class="col-sm-offset-4 col-xs-12 col-sm-4">
+    <p class="alert alert-success" ng-show="created && !enabled">Your account has been created.  Please check your email for a verification link.</p>
+    <p class="alert alert-success" ng-show="created && enabled && !authenticating">Your account has been created.  <a ui-sref="login">Login Now</a>.</p>
+  </div>
+</div>
+<div class="row">
   <div class="col-xs-12">
-    <p class="text-success" ng-show="created && !enabled">Your account have been created.  Please check your email for a verification link.</p>
-    <p class="text-success" ng-show="created && enabled">Your account has been created.  Login Now.</p>
-
-    <form class="form-horizontal" ng-hide="accepted" ng-submit="submit()">
+    <form class="form-horizontal" ng-hide="created && !authenticating" ng-submit="submit()">
       <div class="form-group">
         <label for="spFirstName" class="col-xs-12 col-sm-4 control-label">First Name</label>
         <div class="col-xs-12 col-sm-4">
@@ -29,11 +32,42 @@
         </div>
       </div>
       <div class="form-group">
-        <div class="col-sm-offset-4 col-xs-12">
-          <p class="text-danger" ng-show="error" ng-bind="error"></p>
+        <div class="col-sm-offset-4 col-sm-4">
+          <p class="alert alert-danger" ng-show="error" ng-bind="error"></p>
           <button type="submit" class="btn btn-primary" ng-disabled="creating">Register</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
+
+<!--
+use cases
+
+
+
+auto login disabled, email verification disabled
+
+  the form should be disabled until the creation is successful, then  it should prompt you to login
+
+
+
+
+auto login disabled, email verification enabled
+
+  the form should be disabled until the creation is successful, then  it should prompt you to check your email
+
+
+
+auto login enabled, email verification enabled
+
+  the form should be disabled until the creation is successful, then  it should prompt you to check your email
+
+
+auto login enabled, email verification disabled
+
+  the form should be disabled until the creation and login is successful
+
+
+ -->
