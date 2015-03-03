@@ -8,6 +8,7 @@ angular.module('stormpath.CONFIG',[])
   DESTROY_SESSION_ENDPOINT: '/logout',
   RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
   EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+  PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
   GET_USER_EVENT: '$currentUser',
   SESSION_END_EVENT: '$sessionEnd',
   UNAUTHORIZED_EVENT: 'unauthorized',

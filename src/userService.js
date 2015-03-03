@@ -191,6 +191,15 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.verify = function verify(data){
         return $http.post(STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,data);
       };
+      UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
+        return $http.get(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token);
+      };
+      UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
+        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,data);
+      };
+      UserService.prototype.resetPassword = function resetPassword(token,data){
+        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,data);
+      };
       function currentUserEvent(user){
         /**
          * @ngdoc event

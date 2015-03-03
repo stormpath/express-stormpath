@@ -369,6 +369,75 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   };
 }])
 
+.controller('SpPasswordResetRequestCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+  $scope.sent = false;
+  $scope.posting = false;
+  $scope.formModel = {
+    username: ''
+  };
+  $scope.requestFailed = false;
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.requestFailed = false;
+    $user.passwordResetRequest({username: $scope.formModel.username})
+      .then(function(){
+        $scope.sent = true;
+      })
+      .catch(function(){
+        $scope.requestFailed = true;
+      }).finally(function(){
+        $scope.posting = false;
+      });
+  };
+}])
+
+.controller('SpPasswordResetCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+  var sptoken = $stateParams.sptoken;
+  $scope.showVerificationError = false;
+  $scope.verifying = false;
+  $scope.verified = false;
+  $scope.posting = false;
+  $scope.reset = false;
+  $scope.error = null;
+
+  $scope.resendFailed = false;
+  $scope.formModel = {
+    password: '',
+    confirmPassword: ''
+  };
+
+  if(sptoken){
+    $scope.verifying = true;
+    $user.verifyPasswordResetToken(sptoken)
+      .then(function(){
+        $scope.verified = true;
+      })
+      .catch(function(){
+        $scope.showVerificationError = true;
+      })
+      .finally(function(){
+        $scope.verifying = false;
+      });
+  }else{
+    $scope.showVerificationError = true;
+  }
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.error = null;
+    $scope.showVerificationError = false;
+    $user.resetPassword(sptoken, {password: $scope.formModel.password})
+      .then(function(){
+        $scope.reset = true;
+      })
+      .catch(function(response){
+        $scope.error = response.data.errorMessage;
+      }).finally(function(){
+        $scope.posting = false;
+      });
+  };
+
+}])
+
 /**
  * @ngdoc directive
  * @name stormpath.spRegistrationForm:sp-registration-form
@@ -426,6 +495,24 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       scope.autoLogin = attrs.autoLogin==='true';
       scope.postLoginState = attrs.postLoginState || '';
     }
+  };
+})
+
+.directive('spPasswordResetRequestForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spPasswordResetRequestForm.tpl.html';
+    },
+    controller: 'SpPasswordResetRequestCtrl'
+  };
+})
+
+.directive('spPasswordResetForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spPasswordResetForm.tpl.html';
+    },
+    controller: 'SpPasswordResetCtrl'
   };
 })
 
