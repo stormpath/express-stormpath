@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.7
+-------------
+
+**Released on February 20, 2015.**
+
+- Providing backwards compatibility for older library users stuck on old
+  sessions.  What we'll do is just expire them immediately to prevent issues.
+
+
 Version 0.6.6
 -------------
 
