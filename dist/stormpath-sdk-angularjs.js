@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.1.0-dev-2015-03-03
+ * @version v0.2.1-dev-2015-03-03
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -595,6 +595,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     $scope.showVerificationError = true;
   }
   $scope.submit = function(){
+    if($scope.formModel.password!==$scope.formModel.confirmPassword){
+      $scope.error = 'Passwords do not match';
+      return;
+    }
     $scope.posting = true;
     $scope.error = null;
     $scope.showVerificationError = false;
