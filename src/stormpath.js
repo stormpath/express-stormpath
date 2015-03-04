@@ -422,6 +422,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     $scope.showVerificationError = true;
   }
   $scope.submit = function(){
+    if($scope.formModel.password!==$scope.formModel.confirmPassword){
+      $scope.error = 'Passwords do not match';
+      return;
+    }
     $scope.posting = true;
     $scope.error = null;
     $scope.showVerificationError = false;
