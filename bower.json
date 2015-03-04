@@ -5,7 +5,18 @@
     "dist/stormpath-sdk-angularjs.min.js",
     "dist/stormpath-sdk-angularjs.tpls.min.js"
   ],
-  "keywords": ["stormpath","jwt","token","user","angular","token based authentication"],
+  "keywords": [
+    "stormpath",
+    "jwt",
+    "token",
+    "user",
+    "angular",
+    "token based authentication",
+    "login",
+    "password",
+    "registration",
+    "user management"
+  ],
   "ignore": [
     ".tmp",
     "build",
