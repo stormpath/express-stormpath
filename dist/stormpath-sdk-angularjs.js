@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.1.0-dev-2015-02-26
+ * @version v0.1.0-dev-2015-03-03
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -155,6 +155,9 @@ angular.module('stormpath.CONFIG',[])
   CURRENT_USER_URI: '/api/users/current',
   USER_COLLECTION_URI: '/api/users',
   DESTROY_SESSION_ENDPOINT: '/logout',
+  RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
+  EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+  PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
   GET_USER_EVENT: '$currentUser',
   SESSION_END_EVENT: '$sessionEnd',
   UNAUTHORIZED_EVENT: 'unauthorized',
@@ -440,15 +443,19 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     email: '',
     password: ''
   };
-
+  $scope.created = false;
+  $scope.enabled = false;
   $scope.creating = false;
+  $scope.authenticating = false;
   $scope.submit = function(){
     $scope.creating = true;
     $scope.error = null;
     $user.create($scope.formModel)
-      .then(function(created){
-
-        if(created && $scope.autoLogin){
+      .then(function(enabled){
+        $scope.created = true;
+        $scope.enabled = enabled;
+        if(enabled && $scope.autoLogin){
+          $scope.authenticating = true;
           $auth.authenticate({
             username: $scope.formModel.email,
             password: $scope.formModel.password
@@ -458,12 +465,15 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
               $state.go($scope.postLoginState);
             }
           })
+          .catch(function(response){
+            $scope.error = response.data.errorMessage;
+          })
           .finally(function(){
+            $scope.authenticating = false;
             $scope.creating = false;
           });
         }else{
           $scope.creating = false;
-          $scope.accepted = true;
         }
       })
       .catch(function(response){
@@ -490,11 +500,122 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   };
 }])
 
+.controller('SpEmailVerificationCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+  $scope.showVerificationError = false;
+  $scope.verifying = false;
+  $scope.reVerificationSent = false;
+  $scope.needsReVerification = false;
+  $scope.resendFailed = false;
+  $scope.formModel = {
+    username: ''
+  };
+  if($stateParams.sptoken){
+    $scope.verifying = true;
+    $user.verify({sptoken:$stateParams.sptoken})
+      .then(function(){
+        $scope.verified = true;
+      })
+      .catch(function(){
+        $scope.needsReVerification = true;
+        $scope.showVerificationError = true;
+      })
+      .finally(function(){
+        $scope.verifying = false;
+      });
+  }else{
+    $scope.needsReVerification = true;
+    $scope.showVerificationError = true;
+  }
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.resendFailed = false;
+    $scope.showVerificationError = false;
+    $user.resendVerificationEmail({login: $scope.formModel.username})
+      .then(function(){
+        $scope.reVerificationSent = true;
+      })
+      .catch(function(){
+        $scope.resendFailed = true;
+      }).finally(function(){
+        $scope.posting = false;
+      });
+  };
+}])
+
+.controller('SpPasswordResetRequestCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+  $scope.sent = false;
+  $scope.posting = false;
+  $scope.formModel = {
+    username: ''
+  };
+  $scope.requestFailed = false;
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.requestFailed = false;
+    $user.passwordResetRequest({username: $scope.formModel.username})
+      .then(function(){
+        $scope.sent = true;
+      })
+      .catch(function(){
+        $scope.requestFailed = true;
+      }).finally(function(){
+        $scope.posting = false;
+      });
+  };
+}])
+
+.controller('SpPasswordResetCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+  var sptoken = $stateParams.sptoken;
+  $scope.showVerificationError = false;
+  $scope.verifying = false;
+  $scope.verified = false;
+  $scope.posting = false;
+  $scope.reset = false;
+  $scope.error = null;
+
+  $scope.resendFailed = false;
+  $scope.formModel = {
+    password: '',
+    confirmPassword: ''
+  };
+
+  if(sptoken){
+    $scope.verifying = true;
+    $user.verifyPasswordResetToken(sptoken)
+      .then(function(){
+        $scope.verified = true;
+      })
+      .catch(function(){
+        $scope.showVerificationError = true;
+      })
+      .finally(function(){
+        $scope.verifying = false;
+      });
+  }else{
+    $scope.showVerificationError = true;
+  }
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.error = null;
+    $scope.showVerificationError = false;
+    $user.resetPassword(sptoken, {password: $scope.formModel.password})
+      .then(function(){
+        $scope.reset = true;
+      })
+      .catch(function(response){
+        $scope.error = response.data.errorMessage;
+      }).finally(function(){
+        $scope.posting = false;
+      });
+  };
+
+}])
+
 /**
  * @ngdoc directive
  * @name stormpath.spRegistrationForm:sp-registration-form
  *
- * @param {boolean} autoLogin Default `true`, automatically authenticate the user
+ * @param {boolean} autoLogin Default `false`, automatically authenticate the user
  * after creation.  This makes a call to
  * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate} which will
  * trigger the event {@link stormpath.authService.$auth#events_$authenticated $authenticated}.
@@ -544,9 +665,27 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     },
     controller: 'SpRegistrationFormCtrl',
     link: function(scope,element,attrs){
-      scope.autoLogin = attrs.autoLogin!=='false';
+      scope.autoLogin = attrs.autoLogin==='true';
       scope.postLoginState = attrs.postLoginState || '';
     }
+  };
+})
+
+.directive('spPasswordResetRequestForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spPasswordResetRequestForm.tpl.html';
+    },
+    controller: 'SpPasswordResetRequestCtrl'
+  };
+})
+
+.directive('spPasswordResetForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spPasswordResetForm.tpl.html';
+    },
+    controller: 'SpPasswordResetCtrl'
   };
 })
 
@@ -588,6 +727,15 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       return tAttrs.templateUrl || 'spLoginForm.tpl.html';
     },
     controller: 'SpLoginFormCtrl'
+  };
+})
+
+.directive('spEmailVerification',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spEmailVerification.tpl.html';
+    },
+    controller: 'SpEmailVerificationCtrl'
   };
 })
 
@@ -883,6 +1031,21 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           return op.promise;
         }
 
+      };
+      UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
+        return $http.post(STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,data);
+      };
+      UserService.prototype.verify = function verify(data){
+        return $http.post(STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,data);
+      };
+      UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
+        return $http.get(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token);
+      };
+      UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
+        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,data);
+      };
+      UserService.prototype.resetPassword = function resetPassword(token,data){
+        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,data);
       };
       function currentUserEvent(user){
         /**
