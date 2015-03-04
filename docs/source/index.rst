@@ -34,4 +34,5 @@ Table of Contents
    login
    user_profile
    wait_for_user
+   password_reset
    coming_soon

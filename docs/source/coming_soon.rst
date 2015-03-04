@@ -3,21 +3,19 @@
 Coming Soon!
 ==============
 
-*Last Update: February 26th, 2015*
+*Last Update: March 3rd, 2015*
 
-We hope that this tutorial has given you a fully working Angular applicatoin,
-complete with a user registration and login system!
+Now that you've reached the end of this tutorial, you have a brannd new
+Angular application - complete with a user registration and login system!
 
 AngularJS is really important to us and we're developing our features
 at breakneck speed.  Check back in the next few weeks for the following
 additions to this library:
 
-* Handling email verification workflows
-* Implementing a password reset flow
+* Custom templates: a detailed guide on how to achieve this
 * More API security examples (like group-based access control)
 * Allowing the user to update their profile from the app
 * Social login!
-* Custom templates: a detailed guide on how to achieve this
 
 Stormpath is a developer-focused platform, we want to hear from you!  Reach
 us at anytime through one of the following channels:
