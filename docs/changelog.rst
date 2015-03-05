@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.8
+-------------
+
+**Released on March 5, 2015.**
+
+- Enforcing our Stormpath middleware authentication types.  For instance,
+  ``stormpath.apiAuthenticationRequired`` middleware now **only** allows through
+  users who have authenticated via the HTTP Authorization header.
+
+
 Version 0.6.7
 -------------
 
