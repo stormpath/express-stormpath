@@ -6,22 +6,52 @@
 
 *A simple user authentication library for AngularJS.*
 
+
+This library provides services and directives for [AngularJS] that will allow
+you to solve these common user management tasks in your AngularJS application:
+
+* Register new users
+* Login users
+* Verify new accounts via email tokens
+* Secure password reset via email tokens
+* Conditionally render parts of your UI, based on login state
+* Control access to application routes
+
+Under the hood this library uses Oauth Access Tokens (JWTs) as the authentication
+mechanism.  This library implements the best-practice approaches that we outline in
+[Token Based Authentication for Single Page Apps (SPAs)](https://stormpath.com/blog/token-auth-spa/).
+
+If you have feedback about this library, please get in touch and share your
+thoughts! support@stormpath.com
+
 [Stormpath](https://stormpath.com) is a User Management API that reduces
 development time with instant-on, scalable user infrastructure.  Stormpath's
 intuitive API and expert support make it easy for developers to authenticate,
 manage, and secure users and roles in any application.
 
-This library provides services for [AngularJS] that will allow you to implement
-token authentication strategies in your Angular application.  This allows you
-to authenticate an account (via username and password) and receive an access token
-that can be used for subsequent requests.
+## Hot screenshots
 
-At the moment this library is focusing purely on authentication.  Authorization
-(aka access control) is left in your control.  A common use case with Stormpath
-is to use Groups as an access control feature.
+Curious?  Here's some screenies that show you what's included:
 
-If you have feedback about this library, please get in touch and share your
-thoughts! support@stormpath.com
+<table>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <p><strong>Registration Forms</strong></p>
+      <img src="http://docs.stormpath.com/angularjs/guide/_images/registration_form.png">
+
+    </td>
+    <td width="33%" align="center" valign="top">
+      <p><strong>Logins Forms</strong></p>
+      <center><img src="http://docs.stormpath.com/angularjs/guide/_images/login_form.png"></center>
+
+    </td>
+    <td width="33%" align="center" valign="top">
+      <p><strong>User Profile Information</strong></p>
+      <center><img src="http://docs.stormpath.com/angularjs/guide/_images/profile_view.png"></center>
+
+    </td>
+  </tr>
+</table>
 
 ## Installation
 
@@ -31,13 +61,36 @@ If you are using Bower simply install it:
 bower install --save stormpath-sdk-angularjs
 ```
 
-If you want to manually load the minified script you can get it from the `dist`
-folder in this repo.
+If you want to manually load the minified scripts you can grab them from the `dist`
+folder in this repo and include them manually:
 
-## Quickstart - Example application
+```html
+<script src="stormpath-sdk-angularjs.min.js"></script>
+<script src="stormpath-sdk-angularjs.tpls.min.js"></script>
+```
 
-Please see the example that is in the `example` folder.  This is a fully
-functional frontend & backend that uses stormpath.  To run the server
+The templates are optional, see the documentation for more information.
+
+
+## Documentation & Guide
+
+If you are starting a new project the
+[Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html)
+will be your best choice.  It will help you get started with a new project and an API
+server for your application.
+
+If you would like to dive into the API of this module you will want the
+[Stormpath AngularJS SDK API Documenation](https://docs.stormpath.com/angularjs/sdk/).
+
+Documentation is also available from the example application.
+While running `grunt serve` the documenation will be automatically
+updated if you edit the ngdoc directives in the source code.
+
+
+## Example application
+
+This repository contains a minimal example application in the `example` folder.
+This is a fully functional frontend & backend that uses this module.  To run the server
 you will need need to clone this repo to your computer.
 
 You will need Grunt on your system, you can install it with this command:
@@ -62,22 +115,5 @@ Then run this command to start the server and view the application:
 grunt serve
 ```
 
-## Documentation
-
-The current SDK documentation can be found at:
-
-http://docs.stormpath.com/angularjs/sdk/
-
-Documentation is also available from the example application.
-While running `grunt serve` the documenation will be automatically
-updated if you edit the ngdoc directives in the source code.
-
-## Development
-
-The source of this library is in the `src` folder.  To build the library into a
-script that can be used by Angularjs you must run `grunt build`.  If you are
-running `grunt serve` this will be done for you automatically when you edit
-files in the `src` directory.  The angular app in the browser will be
-automatically reloaded as well.
 
 [AngularJS]: https://angularjs.org "AngularJS"

@@ -12,7 +12,7 @@ This guide will show you how to crate an AngularJS application that uses the Sto
 User Management Service to handle user registration and login.  We will show you how to:
 
 * Begin an AngularJS application from scratch, using Grunt, Yeomon and Bower
-* Create a simple REST API and secure it with Oauth Access Tokens (JWTs)
+* Create a simple REST API and secure it with Oauth Access Tokens (JWTs).  We will use Express.js for the server.
 * Control access to views in the AngularJS application
 * Fetch information about the user from your API
 * Render your UI based on the current user sate
