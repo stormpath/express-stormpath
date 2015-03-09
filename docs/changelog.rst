@@ -7,6 +7,16 @@ Change Log
 All library changes, in descending order.
 
 
+Version 0.6.9
+-------------
+
+**Released on March 9, 2015.**
+
+- Adding stricter enforcement rules to ``stormpath.apiAuthenticationRequired``
+  -- it'll now double-verify the user based on the HTTP Authorization header for
+  more compliance.
+
+
 Version 0.6.8
 -------------
 
