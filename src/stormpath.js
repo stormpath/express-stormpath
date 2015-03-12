@@ -620,6 +620,11 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.spEmailVerification:sp-email-verification
  *
  * @description
+ *
+ * Use this directive on the page that users land on when they click an email verification link.
+ * These links are sent after a user registers, see
+ * {@link stormpath.spRegistrationForm:sp-registration-form spRegistrationForm}
+ *
  * This directive will render a view which does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
  * * Verifies the given `sptoken` with Stormpath, then:
