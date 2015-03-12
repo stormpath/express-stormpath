@@ -20,6 +20,7 @@
   "ignore": [
     ".tmp",
     "build",
+    "docs",
     "example",
     "ngdoc_assets",
     "src"
