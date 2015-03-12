@@ -501,7 +501,31 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     }
   };
 })
-
+/**
+ * @ngdoc directive
+ * @name stormpath.spPasswordResetRequestForm:sp-password-reset-request-form
+ *
+ * @description
+ * This directive will render a pre-built form which prompts the user for thier
+ * username/email.  If an account is found we will send them an email with a
+ * password reset link.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-password-reset-request-form></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-password-reset-request-form template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
 .directive('spPasswordResetRequestForm',function(){
   return {
     templateUrl: function(tElemenet,tAttrs){
@@ -510,7 +534,38 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     controller: 'SpPasswordResetRequestCtrl'
   };
 })
-
+/**
+ * @ngdoc directive
+ * @name stormpath.spPasswordResetForm:sp-password-reset-form
+ *
+ * @description
+ * Use this directive on the page that users land on when they click on a password
+ * reset link.  To send users a password reset link, see
+ * {@link stormpath.spPasswordResetRequestForm:sp-password-reset-request-form spPasswordResetRequestForm}
+ *
+ * This directive will render a password reset form which does the following:
+ * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
+ * * Verifies the given `sptoken` with Stormpath, then:
+ *   * If the token is valid, show a form which allows the user to enter a new password.
+ *   * If the token is invalid (it is expired or malformed) we prompt the user to enter
+ *     their email address, so that we can try sending them a new link.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-password-reset-form></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-password-reset-form template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
 .directive('spPasswordResetForm',function(){
   return {
     templateUrl: function(tElemenet,tAttrs){
@@ -560,7 +615,34 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     controller: 'SpLoginFormCtrl'
   };
 })
-
+/**
+ * @ngdoc directive
+ * @name stormpath.spEmailVerification:sp-email-verification
+ *
+ * @description
+ * This directive will render a view which does the following:
+ * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
+ * * Verifies the given `sptoken` with Stormpath, then:
+ *   * If the token is valid, tell the user that confirmation is complete and prompt the user to login.
+ *   * If the token is invalid (it is expired or malformed) we prompt the user to enter
+ *     their email address, so that we can try sending them a new link.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-email-verification></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-email-verification template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
 .directive('spEmailVerification',function(){
   return {
     templateUrl: function(tElemenet,tAttrs){
