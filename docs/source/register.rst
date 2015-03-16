@@ -90,13 +90,13 @@ The first thing is to generate another route.  In this situation we will
 call the controller ``emailVerification`` but use the URL of ``/register/verify``
 ::
 
-  $ yo angular-fullstack:route verification
+  $ yo angular-fullstack:route emailVerification
   ? Where would you like to create this route? client/app/
   ? What will the url of your route be? /register/verify
-     create client/app/verification/verification.js
-     create client/app/verification/verification.controller.js
-     create client/app/verification/verification.controller.spec.js
-     create client/app/verification/verification.css
+     create client/app/emailVerification/emailVerification.js
+     create client/app/emailVerification/emailVerification.controller.js
+     create client/app/emailVerification/emailVerification.controller.spec.js
+     create client/app/emailVerification/emailVerification.css
 
 
 Add the sptoken parameter

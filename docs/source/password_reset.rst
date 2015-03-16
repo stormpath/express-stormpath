@@ -57,6 +57,40 @@ string to include this parameter:
     url: '/password/reset?sptoken',
 
 
+Use the password reset directives
+--------------------------------
+
+We want to modify the two views that we created in the last steps.
+
+Open `client/app/passwordReset/passwordReset.html` and replace it's contents with this:
+
+    <div ng-include="'components/navbar/navbar.html'"></div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>Reset Your Password</h3>
+          <hr>
+        </div>
+      </div>
+      <div sp-password-reset-form></div>
+    </div>
+
+Next find `client/app/passwordResetRequest/passwordResetRequest.html` and replace it's contents with this:
+
+    <div ng-include="'components/navbar/navbar.html'"></div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>Request Password Reset</h3>
+          <hr>
+        </div>
+      </div>
+      <div sp-password-reset-request-form></div>
+    </div>
+
+
 Configure the Directory
 ------------------------------------
 

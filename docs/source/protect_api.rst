@@ -61,7 +61,7 @@ This will attach the following route handlers to your Express app:
 * ``GET /logout`` (for ending the current session, the access token is destroyed)
 
 The last thing we need to do is secure the things endpoint.  Modify that line
-to use the authentiate middleware::
+to use the authenticate middleware::
 
     app.use('/api/things', spMiddleware.authenticate, require('./api/thing'));
 
