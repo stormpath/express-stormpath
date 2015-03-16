@@ -89,31 +89,16 @@ updated if you edit the ngdoc directives in the source code.
 
 ## Example application
 
-This repository contains a minimal example application in the `example` folder.
-This is a fully functional frontend & backend that uses this module.  To run the server
-you will need need to clone this repo to your computer.
+This repository contains a working example application in the `example/dashboard-app` folder.
+This is the application that we build in the [Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html).
+If you would like to skip the guide and start using the example applicion, do the following:
+
+1) Clone this repo
+2) Enter the `example/dashboard-app` folder and run `npm install && bower install`
+3) Configure your Stormpath variables as explained in the [Secure the API](https://docs.stormpath.com/angularjs/guide/protect_api.html)
+section of the documenation
+4) Run `grunt serve` to start the Guide
 
 You will need Grunt on your system, you can install it with this command:
-
-```bash
-npm install -g grunt-cli
-```
-
-After you clone this repo you run run this inside of it, this will install
-the dependencies:
-
-```bash
-npm install
-```
-
-You should then edit the file `example/server.js` and replace the default
-credentials with your Stormpath API Key and Secret and application href.
-
-Then run this command to start the server and view the application:
-
-```
-grunt serve
-```
-
 
 [AngularJS]: https://angularjs.org "AngularJS"
