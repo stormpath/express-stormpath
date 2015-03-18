@@ -8,6 +8,41 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 0.6.9 -> Version 1.0.0
+------------------------------
+
+This is a major release that breaks several things from older releases.
+
+Firstly, if you were previously using the ``postRegistrationHandler`` to perform
+custom logic after a new user registers, you'll need to modify this event
+handler to accept new arguments.
+
+Previously, the ``postRegistrationHandler`` had a method signature that looked
+like this::
+
+    postRegistrationHandler(account, res, next) { ... }
+
+In this release, we're modifying the method signature to look like this::
+
+    postRegistrationHandler(account, req, res, next) { ... }
+
+What we've done is add in a new parameter: ``req``, which is the Express request
+object.  This gives you more control over the request, and allows you to do
+things like modify session data, etc.
+
+Secondly, we no longer support old sessions.
+
+If you are upgrading directly from an older release (*version 0.2.x*) to this
+release, then your existing user sessions will be invalid, and this will force
+your users to re-authenticate the next time they visit your site.  This is due
+to a change in the way we store session data that was introduced in *version
+0.3.x*.
+
+.. note::
+    The session change will NOT break your code, but it WILL require your users
+    to re-authenticate the next time they visit your site.
+
+
 Version 0.6.8 -> Version 0.6.9
 ------------------------------
 

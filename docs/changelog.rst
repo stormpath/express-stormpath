@@ -7,6 +7,19 @@ Change Log
 All library changes, in descending order.
 
 
+Version 1.0.0
+-------------
+
+**Released on March 18, 2015.**
+
+- Changing the method signature of ``postRegistrationHandler``.  It now receives
+  an additional argument: ``req``, which allows developers to modify / work with
+  the request object as well.  This is a break change, hence the major release
+  number.
+- Removing legacy support for our older sessions.  Since this is a major release
+  with breaking changes, we won't support backwards compatibility.
+
+
 Version 0.6.9
 -------------
 
