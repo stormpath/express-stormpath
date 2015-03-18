@@ -57,6 +57,7 @@ describe('init', function() {
     'expandGroupMemberships',
     'expandProviderData',
     'expandTenant',
+    'postLoginHandler',
     'postRegistrationHandler',
     'templateContext',
     'renderHandler',
