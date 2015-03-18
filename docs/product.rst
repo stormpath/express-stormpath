@@ -348,16 +348,18 @@ To use a ``postRegistrationHandler``, you need to define your handler function
 in the Stormpath middleware setup::
 
     app.use(stormpath.init(app, {
-      postRegistrationHandler: function(account, res, next) {
+      postRegistrationHandler: function(account, req, res, next) {
         console.log('User:', account.email, 'just registered!');
         next();
       },
     }));
 
 As you can see in the example above, the ``postRegistrationHandler`` function
-takes in three parameters:
+takes in four parameters:
 
 - ``account``: The new, successfully created, user account.
+- ``req``: The Express request object.  This can be used to modify the incoming
+  request directly.
 - ``res``: The Express response object.  This can be used to modify the HTTP
   response directly.
 - ``next``: The callback to call when you're done doing whatever it is you want
@@ -368,7 +370,7 @@ In the example below, we'll use the ``postRegistrationHandler`` to redirect the
 user to a special page (*instead of the normal registration flow*)::
 
     app.use(stormpath.init(app, {
-      postRegistrationHandler: function(account, res, next) {
+      postRegistrationHandler: function(account, req, res, next) {
         res.redirect(302, '/secretpage').end();
       },
     }));
