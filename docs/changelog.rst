@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 1.0.1
+-------------
+
+**Released on March 18, 2015.**
+
+- Adding in new ``postLoginHandler`` that lets you intercept login requests.
+- Adding in docs for new ``postLoginHandler`` hook.
+
+
 Version 1.0.0
 -------------
 
