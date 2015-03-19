@@ -31,7 +31,7 @@ Configure the UI Router integration
 
 You're going to get the best bang for your buck if you use the
 `UI Router`_ module: it's amazing.  So much so that we've built a
-special integrationf or it.
+special integration for it.
 
 In the same ``app.js`` file you want to add this run block, place
 it below the ``.config`` block (make sure you move the semicolon
