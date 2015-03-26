@@ -28,7 +28,97 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
   var authServiceProvider = {
     $get: ['$http','$user','$rootScope',function authServiceFactory($http,$user,$rootScope){
 
+      function UrlEncodedFormParser(){
+
+        // Copy & modify from https://github.com/hapijs/qs/blob/master/lib/stringify.js
+
+        this.delimiter = '&';
+        this.arrayPrefixGenerators = {
+          brackets: function (prefix) {
+            return prefix + '[]';
+          },
+          indices: function (prefix, key) {
+            return prefix + '[' + key + ']';
+          },
+          repeat: function (prefix) {
+            return prefix;
+          }
+        };
+        return this;
+      }
+      UrlEncodedFormParser.prototype.stringify = function stringify(obj, prefix, generateArrayPrefix) {
+
+        if (obj instanceof Date) {
+          obj = obj.toISOString();
+        }
+        else if (obj === null) {
+          obj = '';
+        }
+
+        if (typeof obj === 'string' ||
+          typeof obj === 'number' ||
+          typeof obj === 'boolean') {
+
+          return [encodeURIComponent(prefix) + '=' + encodeURIComponent(obj)];
+        }
+
+        var values = [];
+
+        if (typeof obj === 'undefined') {
+          return values;
+        }
+
+        var objKeys = Object.keys(obj);
+        for (var i = 0, il = objKeys.length; i < il; ++i) {
+          var key = objKeys[i];
+          if (Array.isArray(obj)) {
+            values = values.concat(this.stringify(obj[key], generateArrayPrefix(prefix, key), generateArrayPrefix));
+          }
+          else {
+            values = values.concat(this.stringify(obj[key], prefix + '[' + key + ']', generateArrayPrefix));
+          }
+        }
+
+        return values;
+      };
+      UrlEncodedFormParser.prototype.encode = function encode(obj, options) {
+
+        options = options || {};
+        var delimiter = typeof options.delimiter === 'undefined' ? this.delimiter : options.delimiter;
+
+        var keys = [];
+
+        if (typeof obj !== 'object' ||
+          obj === null) {
+
+          return '';
+        }
+
+        var arrayFormat;
+        if (options.arrayFormat in this.arrayPrefixGenerators) {
+          arrayFormat = options.arrayFormat;
+        }
+        else if ('indices' in options) {
+          arrayFormat = options.indices ? 'indices' : 'repeat';
+        }
+        else {
+          arrayFormat = 'indices';
+        }
+
+        var generateArrayPrefix = this.arrayPrefixGenerators[arrayFormat];
+
+        var objKeys = Object.keys(obj);
+        for (var i = 0, il = objKeys.length; i < il; ++i) {
+          var key = objKeys[i];
+          keys = keys.concat(this.stringify(obj[key], key, generateArrayPrefix));
+        }
+
+        return keys.join(delimiter);
+      };
+
       function AuthService(){
+        var encoder = new UrlEncodedFormParser();
+        this.encodeUrlForm = encoder.encode.bind(encoder);
         return this;
       }
       AuthService.prototype.authenticate = function authenticate(data) {
@@ -70,14 +160,15 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * });
          * </pre>
          */
-        var op = $http.post(
-          STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
-          data,
-          {
+        var op = $http({
+            url: STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
+            method: 'POST',
             withCredentials: true,
+            data: this.encodeUrlForm(data),
             params: {
               'grant_type': 'password'
-            }
+            },
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
           }
         );
         var op2 = op.then(cacheCurrentUser).then(authenticatedEvent);
