@@ -2,7 +2,9 @@
 @name API Documentation
 @description
 
-# `stormpath-sdk-angularjs` module for AngularJS [BETA]
+# `stormpath-sdk-angularjs` module for AngularJS
+
+<span class="label label-warning">BETA</span>
 
 ## Welcome!  Let's get started
 

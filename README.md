@@ -69,6 +69,14 @@ folder in this repo and include them manually:
 <script src="stormpath-sdk-angularjs.tpls.min.js"></script>
 ```
 
+You can then require the Stormpath modules in your application:
+
+```javascript
+
+var myApp = angular.module('myApp', ['stormpath','stormpath.templates']);
+
+```
+
 The templates are optional, see the documentation for more information.
 
 
@@ -79,13 +87,10 @@ If you are starting a new project the
 will be your best choice.  It will help you get started with a new project and an API
 server for your application.
 
-If you would like to dive into the API of this module you will want the
+If you already have an Angular project you will want to visit the
 [Stormpath AngularJS SDK API Documenation](https://docs.stormpath.com/angularjs/sdk/).
-
-Documentation is also available from the example application.
-While running `grunt serve` the documenation will be automatically
-updated if you edit the ngdoc directives in the source code.
-
+That documentation will show you all the available directives and services that you
+can use in your application.
 
 ## Example application
 
@@ -94,10 +99,16 @@ This is the application that we build in the [Stormpath AngularJS Guide](http://
 If you would like to skip the guide and start using the example applicion, do the following:
 
 1) Clone this repo
-2) Enter the `example/dashboard-app` folder and run `npm install && bower install`
-3) Configure your Stormpath variables as explained in the [Secure the API](https://docs.stormpath.com/angularjs/guide/protect_api.html)
+
+2) In your terminal, change directories to the `example/dashboard-app` folder
+
+3) Run `npm install && bower install`
+
+4) Configure your Stormpath variables as explained in the
+[Secure the API](https://docs.stormpath.com/angularjs/guide/protect_api.html)
 section of the documenation
-4) Run `grunt serve` to start the Guide
+
+5) Run `grunt serve` to start the Guide
 
 You will need Grunt on your system, you can install it with this command:
 
