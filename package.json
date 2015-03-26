@@ -18,16 +18,14 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-ngdocs": "^0.2.6",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-express-server": "^0.4.19",
-    "express": "^4.11.1",
-    "stormpath-sdk-express": "0.0.2",
     "body-parser": "^1.11.0",
     "connect-livereload": "^0.5.2",
     "open": "0.0.5",
     "grunt-open": "^0.2.3",
     "cookie-parser": "^1.3.3",
     "grunt-contrib-copy": "^0.7.0",
-    "grunt-html2js": "^0.3.0"
+    "grunt-html2js": "^0.3.0",
+    "grunt-contrib-connect": "^0.9.0"
   },
   "dependencies": {}
 }

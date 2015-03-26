@@ -9,7 +9,8 @@ module.exports = function (grunt) {
   grunt.initConfig({
     builddir: '.tmp/build',
     tmpdir: '.tmp',
-    src: './src/**/*.js',
+    srcDir: './src',
+    src: '<%= srcDir %>/**/*.js',
     pkg: grunt.file.readJSON('package.json'),
     buildtag: '-dev-' + grunt.template.today('yyyy-mm-dd'),
     meta: {
@@ -62,49 +63,39 @@ module.exports = function (grunt) {
         eqnull: true
       }
     },
-    express: {
-      options: {
-        port: process.env.PORT || 9000
-      },
-      dev: {
-        options: {
-          script: 'example/server.js'
-        }
-      }
-    },
     watch: {
-      options:{
-        livereload: true
-      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
-      ngdoc: {
+      ngdocs: {
         files: ['<%= src %>','ngdoc_assets/**/*'],
-        tasks: ['docs']
+        tasks: ['docs'],
+        options: {
+          livereload: true,
+          spawn: false
+        }
       },
       src: {
         files: ['<%= src %>'],
         tasks: ['build']
       },
-      ngapp:{
-        files:  [ 'example/app/*' ],
-        options:{
-          livereload: true
-        }
-      },
-      express: {
-        files:  [ 'example/server.js' ],
-        tasks:  [ 'express:dev'],
+      develop: {
+        files: ['<%= srcDir %>/*.{js,html}'],
+        tasks: ['dist']
+      }
+    },
+    connect: {
+      ngdocs: {
         options: {
-          livereload: true,
-          spawn: false
+          port: 9001,
+          base: '<%= tmpdir %>/site',
+          livereload: true
         }
       }
     },
     open: {
-      server: {
-        url: 'http://localhost:<%= express.options.port %>'
+      docs: {
+        url: 'http://localhost:<%= connect.ngdocs.options.port %>'
       }
     },
     ngdocs: {
@@ -165,11 +156,17 @@ module.exports = function (grunt) {
     grunt.task.run(['clean:ngdocs','ngdocs']);
   });
 
-  grunt.registerTask('serve', function () {
-    grunt.task.run(['build','express:dev','open','watch']);
-  });
+  grunt.registerTask('serve',
+    'Serves the API documentation, and live reloads as you edit it',
+    ['ngdocs','connect:ngdocs','open:docs','watch:ngdocs']
+  );
 
   grunt.registerTask('build', 'Perform a normal build', ['concat', 'html2js','uglify','docs']);
 
   grunt.registerTask('dist', 'Perform a distribution', ['build', 'copy:dist']);
+
+  grunt.registerTask('develop',
+    'Build source and distribution, useful if you are modifying this module as a linked modue while developging another module',
+    ['watch:develop']
+  );
 };
