@@ -350,17 +350,17 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
- * @name stormpath.logout:logout
+ * @name stormpath.spLogout:spLogout
  *
  * @description
  * This directive adds a click handler to the element.  When clicked the user will be logged out.
  *
  * @example
  * <pre>
- *   <a ui-sref="main" logout>Logout</a>
+ *   <a ui-sref="main" sp-logout>Logout</a>
  * </pre>
  */
-.directive('logout',['$auth',function($auth){
+.directive('spLogout',['$auth',function($auth){
   return{
     link: function(scope,element){
       element.on('click',function(){
