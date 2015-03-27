@@ -49,7 +49,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         this.currentUser = null;
         return this;
       }
-      UserService.prototype.create = function(data){
+      UserService.prototype.create = function(accountData){
         /**
          * @ngdoc function
          * @name stormpath.userService.$user#create
@@ -66,14 +66,18 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * on the directory that this account will be created in.
          * @description
          *
-         * Attemps to create a new user by posting to `/api/users`
+         * Attemps to create a new user by submitting the given `accountData` as
+         * JSON to `/api/users`.  The POST endpoint can be modified via the
+         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
          *
+         * This method expects a `201` response if the account does NOT require email
+         * verification.
          *
+         * If email verification is enabled, you should send a `202` response instead.
          *
-         * Your backend server will need to accept this request and use a
-         * Stormpath SDK to create the account in the Stormpath service.  If you
-         * are using the Express SDK you want to attach `register` middleware
-         * to your application.
+         *  If you are using our Express.JS SDK you can simply attach the
+         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
+         * to your application and these responses will be handled automatically for you.
          *
          * @returns {promise} A promise representing the operation to create a
          * new user.  If an error occurs (duplicate email, weak password) the
@@ -107,13 +111,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          */
         var op = $q.defer();
 
-        var transformed = {
-          surname: data.lastName,
-          givenName: data.firstName,
-          email: data.email,
-          password: data.password
-        };
-        $http.post(STORMPATH_CONFIG.USER_COLLECTION_URI,transformed)
+        $http.post(STORMPATH_CONFIG.USER_COLLECTION_URI,accountData)
           .then(function(response){
             op.resolve(response.status===201);
           },op.reject);

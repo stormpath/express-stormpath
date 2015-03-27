@@ -264,9 +264,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 }])
 
 .controller('SpRegistrationFormCtrl', ['$scope','$user','$auth','$state',function ($scope,$user,$auth,$state) {
-  $scope.formModel = {
-    firstName:'',
-    lastName: '',
+  $scope.formModel = (typeof $scope.formModel==='object') ? $scope.formModel : {
+    givenName:'',
+    surname: '',
     email: '',
     password: ''
   };
@@ -472,6 +472,13 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * If you are NOT using the email verification workflow: you can, optionally,
  * automatically login the user and redirect them to a UI state in your application.
  * See the options below.
+ *
+ * # Server Interaction
+ *
+ * This directive makes a call to
+ * {@link stormpath.userService.$user#methods_create $user.create()}
+ * when it is ready to POST the form to the server, please see that method
+ * for more information.
  *
  * @param {string} template-url An alternate template URL, if you want
  * to use your own template for the form.
