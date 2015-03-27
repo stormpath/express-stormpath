@@ -51,7 +51,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
- * @name stormpath.spRegistrationForm:sp-registration-form
+ * @name stormpath.spRegistrationForm:spRegistrationForm
  *
  * @param {boolean} autoLogin Default `false`, automatically authenticate the user
  * after creation.  This makes a call to

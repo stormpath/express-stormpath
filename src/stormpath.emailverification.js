@@ -46,7 +46,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
- * @name stormpath.spEmailVerification:sp-email-verification
+ * @name stormpath.spEmailVerification:spEmailVerification
  *
  * @description
  *

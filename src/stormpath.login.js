@@ -22,7 +22,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
- * @name stormpath.spLoginForm:sp-login-form
+ * @name stormpath.spLoginForm:spLoginForm
  *
  * @description
  * This directive will render a pre-built login form, with all

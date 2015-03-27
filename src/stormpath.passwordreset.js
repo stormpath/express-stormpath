@@ -76,7 +76,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
- * @name stormpath.spPasswordResetRequestForm:sp-password-reset-request-form
+ * @name stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm
  *
  * @description
  * This directive will render a pre-built form which prompts the user for thier
@@ -109,7 +109,7 @@ angular.module('stormpath')
 })
 /**
  * @ngdoc directive
- * @name stormpath.spPasswordResetForm:sp-password-reset-form
+ * @name stormpath.spPasswordResetForm:spPasswordResetForm
  *
  * @description
  * Use this directive on the page that users land on when they click on a password
