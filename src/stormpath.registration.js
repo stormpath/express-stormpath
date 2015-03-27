@@ -73,12 +73,32 @@ angular.module('stormpath')
  *  * Email
  *  * Password
  *
- * If you are using the email verification workflow: this form will tell the user
- * that they need to check their email to complete their registration.
+ * # Customizing the form
  *
- * If you are NOT using the email verification workflow: you can, optionally,
+ * If you would like to customize the form:
+ *
+ * * Create a new view file in your application
+ * * Copy our default template into your file, found here:
+ * <a href="https://github.com/stormpath/stormpath-sdk-angularjs/blob/master/src/spRegistrationForm.tpl.html" target="_blank">spRegistrationForm.tpl.html</a>
+ * * Modify the template to fit your needs, making sure to use `formModel.<FIELD>` as the
+ * value for `ng-model`, where `.<FIELD>` is the name of the field you want to set on
+ * the new account (such as
+ * `middleName`)
+ * * Use the `template-url` option on the directive to point to your new view file
+ *
+ * If you would like to add Custom Data to the new account, you can add form inputs to the template
+ * and use `formModel.customData.<FIELD>` as the value for `ng-model`
+ *
+ * # Email Verification
+ *
+ * If you are using the email verification workflow the default template has a message
+ * which will be shown to the user, telling them that they need to check their email
+ * for verification.
+ *
+ * If you are NOT using the email verification workflow you can, optionally,
  * automatically login the user and redirect them to a UI state in your application.
  * See the options below.
+ *
  *
  * # Server Interaction
  *
