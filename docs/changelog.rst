@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 1.0.2
+-------------
+
+**Released on March 30, 2015.**
+
+- Adding support for a new configuration option: ``cacheClient``.  This allows
+  users to build their OWN cache object, configure it how they like, and then
+  pass that to our library to be used for caching.  This lets you build more
+  complex caching rules / objects.
+
+
 Version 1.0.1
 -------------
 

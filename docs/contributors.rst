@@ -37,6 +37,16 @@ project.
 - Twitter: https://twitter.com/marcantoinelem
 
 
+Jeff Kolesky
+************
+
+Jeff has contributed features to the project.
+
+- Website: http://artisanalbytes.com/
+- Github: https://github.com/jeffkole
+- Twitter: https://twitter.com/jeffkole
+
+
 Elodie Mercure
 **************
 
