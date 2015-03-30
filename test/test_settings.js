@@ -26,6 +26,7 @@ describe('init', function() {
     'cacheTTL',
     'cacheTTI',
     'cacheOptions',
+    'cacheClient',
     'oauthTTL',
     'social',
     'enableUsername',
