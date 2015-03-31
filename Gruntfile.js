@@ -71,7 +71,7 @@ module.exports = function (grunt) {
         files: ['<%= src %>','ngdoc_assets/**/*'],
         tasks: ['docs'],
         options: {
-          livereload: true,
+          livereload: 35730,
           spawn: false
         }
       },
@@ -89,7 +89,7 @@ module.exports = function (grunt) {
         options: {
           port: 9001,
           base: '<%= tmpdir %>/site',
-          livereload: true
+          livereload: 35730
         }
       }
     },
