@@ -75,6 +75,14 @@ module.exports = function (grunt) {
           spawn: false
         }
       },
+      guide: {
+        files: ['docs/source/*.rst'],
+        tasks: ['shell:guide'],
+        options: {
+          livereload: 35731,
+          spawn: false
+        }
+      },
       src: {
         files: ['<%= src %>'],
         tasks: ['build']
@@ -91,11 +99,21 @@ module.exports = function (grunt) {
           base: '<%= tmpdir %>/site',
           livereload: 35730
         }
+      },
+      guide: {
+        options: {
+          port: 9002,
+          livereload: 35731,
+          base: ['docs/build/html']
+        }
       }
     },
     open: {
       docs: {
         url: 'http://localhost:<%= connect.ngdocs.options.port %>'
+      },
+      guide:{
+        url: 'http://localhost:<%= connect.guide.options.port %>'
       }
     },
     ngdocs: {
@@ -148,7 +166,17 @@ module.exports = function (grunt) {
       main: {
         src: ['src/**/*.tpl.html'],
         dest: '<%= builddir %>/<%= pkg.name %>.tpls.js'
-      },
+      }
+    },
+    shell: {
+      guide: {
+        command: 'make html',
+        options:{
+          execOptions: {
+            cwd: 'docs/'
+          }
+        }
+      }
     }
   });
 
@@ -168,5 +196,10 @@ module.exports = function (grunt) {
   grunt.registerTask('develop',
     'Build source and distribution, useful if you are modifying this module as a linked modue while developging another module',
     ['watch:develop']
+  );
+
+  grunt.registerTask('guide',
+    'Serve and livereload the Guide from the docs/ folder',
+    ['connect:guide','open:guide','watch:guide']
   );
 };
