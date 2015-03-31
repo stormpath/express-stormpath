@@ -154,11 +154,20 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor() {
         $rootScope.$on('$stateChangeStart', function(e,toState,toParams){
           var sp = toState.sp || {}; // Grab the sp config for this state
+
           if((sp.authenticate || sp.authorize) && (!$user.currentUser)){
             e.preventDefault();
             $user.get().then(function(){
               // The user is authenticated, continue to the requested state
-              $state.go(toState.name,toParams);
+              if(sp.authorize){
+                if(authorizeStateConfig(sp)){
+                  $state.go(toState.name,toParams);
+                }else{
+                  $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
+                }
+              }else{
+                $state.go(toState.name,toParams);
+              }
             },function(){
               // The user is not authenticated, emit the necessary event
               $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,toState,toParams);
@@ -170,17 +179,27 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
             });
           }
           else if($user.currentUser && sp.authorize){
-            if((Object.keys(sp.authorize).length === 1) && sp.authorize.group){
-              if(!$user.currentUser.inGroup(sp.authorize.group)){
-                e.preventDefault();
-                return $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
-              }
-            }else{
-              console.error('Unknown authorize configuration for state',toState);
+
+            if(!authorizeStateConfig(sp)){
+              e.preventDefault();
+              $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
             }
+
           }
         });
       };
+
+      function authorizeStateConfig(spStateConfig){
+        var sp = spStateConfig;
+        if(sp && sp.authorize && sp.authorize.group) {
+          return $user.currentUser.inGroup(sp.authorize.group);
+        }else{
+          console.error('Unknown authorize configuration for spStateConfig',spStateConfig);
+          return false;
+        }
+
+      }
+
       /**
        * @ngdoc function
        * @name stormpath#uiRouter
@@ -265,7 +284,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
- * @name stormpath.ifUser:if-user
+ * @name stormpath.ifUser:ifUser
  *
  * @description
  * Use this directive to conditionally show an element, if the user is logged in.
@@ -293,7 +312,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
- * @name stormpath.ifNotUser:if-not-user
+ * @name stormpath.ifNotUser:ifNotUser
  *
  * @description
  * Use this directive to conditionally show an element, if the user is NOT logged in.
@@ -310,6 +329,64 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
+          element.hide();
+        }else{
+          element.show();
+        }
+      });
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserInGroup:ifUserInGroup
+ *
+ * @description
+ * Use this directive to conditionally show an element if the user is logged in
+ * and is a member of the group that is specified by the string
+ *
+ * @example
+ * <pre>
+ * <div class="container">
+ *   <h3 if-user-in-group="admins">Hello, {{user.fullName}}, you are an administrator</h3>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserInGroup',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element,attrs){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserInGroup)){
+          element.show();
+        }else{
+          element.hide();
+        }
+      });
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserNotInGroup:ifUserNotInGroup
+ *
+ * @description
+ * Use this directive to conditionally show an element if the user is logged in
+ * and is a member of the group that is specified by the string
+ *
+ * @example
+ * <pre>
+ * <div class="container">
+ *   <h3 if-user-not-in-group="admins">Hello, {{user.fullName}}, please request administrator access</h3>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserNotInGroup',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element,attrs){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserNotInGroup)){
           element.hide();
         }else{
           element.show();

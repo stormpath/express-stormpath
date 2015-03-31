@@ -36,7 +36,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
     });
   }
   User.prototype.inGroup = function inGroup(groupName) {
-    return this.groups.items.filter(function(group){
+    return this.groups.filter(function(group){
       return group.name === groupName;
     }).length >0;
   };
