@@ -16,6 +16,8 @@ Version 1.0.3
   ``requireConfirmPassword``.  These options will add an extra field to the
   registration page that makes a user enter their password twice to confirm they
   entered it properly.
+- Improving redirect functionality in middlewares.  When the user is redirected
+  back to where they are coming from, URI parameters will be preserved.
 
 
 Version 1.0.2
