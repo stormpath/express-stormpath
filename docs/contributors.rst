@@ -63,5 +63,14 @@ jmls has contributed a large feature to the project.
 - Github: https://github.com/jmls
 
 
+Cannibal Vox
+************
+
+Cannibal has contributed a major feature to the project.
+
+- Website: http://www.technicpack.net/
+- Github: https://github.com/CannibalVox
+
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
