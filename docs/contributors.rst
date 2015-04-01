@@ -40,7 +40,7 @@ project.
 Jeff Kolesky
 ************
 
-Jeff has contributed features to the project.
+Jeff has contributed major features to the project.
 
 - Website: http://artisanalbytes.com/
 - Github: https://github.com/jeffkole
