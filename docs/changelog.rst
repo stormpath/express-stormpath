@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 1.0.3
+-------------
+
+**Released on March 31, 2015.**
+
+- Adding support for a new configuration option: ``enableConfirmPassword`` and
+  ``requireConfirmPassword``.  These options will add an extra field to the
+  registration page that makes a user enter their password twice to confirm they
+  entered it properly.
+
+
 Version 1.0.2
 -------------
 
