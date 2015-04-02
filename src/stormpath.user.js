@@ -42,8 +42,8 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
   };
 
   this.$get = [
-    '$q','$http','STORMPATH_CONFIG','$rootScope',
-    function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope){
+    '$q','$http','STORMPATH_CONFIG','$rootScope','$spFormEncoder',
+    function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope,$spFormEncoder){
       function UserService(){
         this.cachedUserOp = null;
         this.currentUser = null;
@@ -164,7 +164,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         if(self.cachedUserOp){
           return self.cachedUserOp.promise;
         }
-        else if(self.currentUser){
+        else if(self.currentUser !== null && self.currentUser!==false){
           op.resolve(self.currentUser);
           return op.promise;
         }else{
@@ -284,7 +284,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
 
       var userService =  new UserService();
       $rootScope.$on(STORMPATH_CONFIG.SESSION_END_EVENT,function(){
-        userService.currentUser = null;
+        userService.currentUser = false;
       });
       return userService;
     }

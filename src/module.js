@@ -359,16 +359,16 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     }
   ];
 }])
-.run(['$rootScope','$user',function($rootScope,$user){
+.run(['$rootScope','$user','STORMPATH_CONFIG',function($rootScope,$user,STORMPATH_CONFIG){
   $rootScope.user = $user.currentUser || null;
   $user.get().finally(function(){
     $rootScope.user = $user.currentUser;
   });
-  $rootScope.$on('$currentUser',function(e,user){
-    $rootScope.user = user;
+  $rootScope.$on(STORMPATH_CONFIG.GET_USER_EVENT,function(){
+    $rootScope.user = $user.currentUser;
   });
-  $rootScope.$on('$sessionEnd',function(){
-    $rootScope.user = null;
+  $rootScope.$on(STORMPATH_CONFIG.SESSION_END_EVENT,function(){
+    $rootScope.user = $user.currentUser;
   });
 }])
 
@@ -500,12 +500,11 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * <div while-resolving-user style="position:fixed;top:0;left:0;right:0;bottom:0;background-color:pink;">I wait for you</div>
  * </pre>
  */
-.directive('whileResolvingUser',['$user',function($user){
+.directive('whileResolvingUser',['$user','$rootScope',function($user,$rootScope){
   return {
     link: function(scope,element){
-      $user.get().finally(function(){
-        console.log('currentUser',$user.currentUser);
-        if((typeof $user.currentUser ==='object') || ($user.currentUser===false)){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser || ($user.currentUser===false)){
           element.hide();
         }else{
           element.show();
