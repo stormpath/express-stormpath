@@ -37,7 +37,7 @@ the ``<ul>`` section with this markup::
         <a ui-sref="login">Login</a>
     </li>
     <li if-user ng-class="{active: isActive('/logout')}">
-        <a ui-sref="main" logout>Logout</a>
+        <a ui-sref="main" sp-logout>Logout</a>
     </li>
   </ul>
 

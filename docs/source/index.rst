@@ -35,4 +35,5 @@ Table of Contents
    user_profile
    wait_for_user
    password_reset
+   access_control
    coming_soon
