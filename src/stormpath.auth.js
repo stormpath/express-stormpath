@@ -26,7 +26,7 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
    * "logging in" the user.
    */
   var authServiceProvider = {
-    $get: ['$http','$user','$rootScope','$stormpath',function authServiceFactory($http,$user,$rootScope,$stormpath){
+    $get: ['$http','$user','$rootScope','$spFormEncoder',function authServiceFactory($http,$user,$rootScope,$spFormEncoder){
 
       function AuthService(){
         return this;
@@ -70,16 +70,15 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * });
          * </pre>
          */
-        var op = $http({
+        var op = $http($spFormEncoder.formPost({
             url: STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
             method: 'POST',
             withCredentials: true,
-            data: $stormpath.encodeUrlForm(data),
+            data: data,
             params: {
               'grant_type': 'password'
-            },
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-          }
+            }
+          })
         );
         var op2 = op.then(cacheCurrentUser).then(authenticatedEvent);
         op.catch(authenticationFailureEvent);

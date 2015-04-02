@@ -111,7 +111,11 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          */
         var op = $q.defer();
 
-        $http.post(STORMPATH_CONFIG.USER_COLLECTION_URI,accountData)
+        $http($spFormEncoder.formPost({
+            url: STORMPATH_CONFIG.USER_COLLECTION_URI,
+            method: 'POST',
+            data: accountData
+          }))
           .then(function(response){
             op.resolve(response.status===201);
           },op.reject);
@@ -184,19 +188,35 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
 
       };
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
-        return $http.post(STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,
+          data: data
+        }));
       };
       UserService.prototype.verify = function verify(data){
-        return $http.post(STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,
+          data: data
+        }));
       };
       UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
         return $http.get(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token);
       };
       UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
-        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,
+          data: data
+        }));
       };
       UserService.prototype.resetPassword = function resetPassword(token,data){
-        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,
+          data: data
+        }));
       };
       function currentUserEvent(user){
         /**

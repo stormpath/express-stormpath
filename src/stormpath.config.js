@@ -19,5 +19,6 @@ angular.module('stormpath.CONFIG',[])
   AUTH_SERVICE_NAME: '$auth',
   NOT_LOGGED_IN_EVENT: '$notLoggedin',
   STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
-  STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized'
+  STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized',
+  FORM_CONTENT_TYPE: ''
 });
