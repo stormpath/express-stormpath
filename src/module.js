@@ -491,14 +491,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.whileResolvingUser:while-resolving-user
  *
  * @description
- * Use this directive to show an element, while waiting to know if the user
- * is logged in or not.  This is useful if you want to show a loading graphic
- * over your application while you are waiting for the user state.
+ * # [DEPRECATED]
+ * Please use {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown} instead
  *
- * @example
- * <pre>
- * <div while-resolving-user style="position:fixed;top:0;left:0;right:0;bottom:0;background-color:pink;">I wait for you</div>
- * </pre>
  */
 .directive('whileResolvingUser',['$user','$rootScope',function($user,$rootScope){
   return {
@@ -508,6 +503,70 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
           element.hide();
         }else{
           element.show();
+        }
+      });
+    }
+  };
+}])
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserStateKnown:ifUserStateKnown
+ *
+ * @description
+ * Use this directive to show an element once the user state is known.
+ * The inverse of {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown}, you can
+ * use this directive to show an element after we know if the user is logged in
+ * or not.
+ *
+ * @example
+ * <pre>
+ * <div if-user-state-known>
+ *   <li if-not-user>
+ *      <a ui-sref="login">Login</a>
+ *    </li>
+ *    <li if-user>
+ *        <a ui-sref="main" logout>Logout</a>
+ *    </li>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserStateKnown',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser || ($user.currentUser===false)){
+          element.show();
+        }else{
+          element.hide();
+        }
+      });
+    }
+  };
+}])
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserStateUnknown:ifUserStateUnknown
+ *
+ * @description
+ * Use this directive to show an element, while waiting to know if the user
+ * is logged in or not.  This is useful if you want to show a loading graphic
+ * over your application while you are waiting for the user state.
+ *
+ * @example
+ * <pre>
+ * <div if-user-state-unknown>
+ *   <p>Loading.. </p>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserStateUnknown',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser === null){
+          element.show();
+        }else{
+          element.hide();
         }
       });
     }
