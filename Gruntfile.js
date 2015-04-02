@@ -170,7 +170,7 @@ module.exports = function (grunt) {
     },
     shell: {
       guide: {
-        command: 'make html',
+        command: 'make clean && make html',
         options:{
           execOptions: {
             cwd: 'docs/'
