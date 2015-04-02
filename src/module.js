@@ -128,7 +128,7 @@
  *         controller: 'AdminCtrl',
  *         sp: {
  *           authorize: {
- *             group: ['admins']
+ *             group: 'admins'
  *           }
  *         }
  *       });
