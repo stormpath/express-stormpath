@@ -10,6 +10,8 @@ All library changes, in descending order.
 Version 1.0.4
 -------------
 
+**Not yet released.**
+
 - Making several documentation fixes / updates.
 - Upgrading the way our session storage works.  While previously, this library
   would write session data to ``req.session`` -- it now writes data to
