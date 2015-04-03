@@ -7,6 +7,18 @@ Change Log
 All library changes, in descending order.
 
 
+Version 1.0.4
+-------------
+
+- Making several documentation fixes / updates.
+- Upgrading the way our session storage works.  While previously, this library
+  would write session data to ``req.session`` -- it now writes data to
+  ``req.stormpathSession`` -- this makes session handling less confusing for
+  developers, as they're free to create their own session backends for their
+  application logic, most of which bind to ``req.session`` by default.  This
+  prevents conflicts in user code.
+
+
 Version 1.0.3
 -------------
 
