@@ -198,7 +198,7 @@ You can easily change the default session / cookie expiration by modifying the
       sessionDuration: 1000 * 60 * 15, // Make sessions expire after 15 minutes.
     }));
 
-By default, sessions will not expire for one month (*out of convenience*).
+By default, sessions will not expire for 30 minutes (*a secure default*).
 
 .. note::
     The ``sessionDuration`` setting expects an integer, which must be the number
