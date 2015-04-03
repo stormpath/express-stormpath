@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.2.1-dev-2015-03-03
+ * @version v0.3.0-dev-2015-04-02
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -13,164 +13,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 }
 
 (function (window, angular, undefined) {
-'use strict';
-/**
- * @ngdoc overview
- * @name  stormpath.authService
- * @description
- * This module provides the {@link stormpath.authService.$auth $auth} service
- *
- * Currently this provider does not have any configuration methods
- */
-/**
- * @ngdoc object
- * @name stormpath.authService.$authProvider
- * @description
- *
- * Provides the {@link stormpath.authService.$auth $auth} service
- *
- * Currently this provider does not have any configuration methods
- */
-angular.module('stormpath.auth',['stormpath.CONFIG'])
-.config(['$injector','STORMPATH_CONFIG',function $authProvider($injector,STORMPATH_CONFIG){
-  /**
-   * @ngdoc object
-   * @name stormpath.authService.$auth
-   * @description
-   * The auth service provides methods for authenticating a user, aka
-   * "logging in" the user.
-   */
-  var authServiceProvider = {
-    $get: ['$http','$user','$rootScope',function authServiceFactory($http,$user,$rootScope){
-
-      function AuthService(){
-        return this;
-      }
-      AuthService.prototype.authenticate = function authenticate(data) {
-        /**
-         * @ngdoc function
-         * @name  stormpath.authService.$auth#authenticate
-         * @methodOf stormpath.authService.$auth
-         * @param {Object} credentialData An object literal for passing
-         * usernmae & password, or social provider token
-         * @description
-         * Sends the provided credential data to your backend server, the server
-         * handler should verify the credentials and return an access token which is
-         * store in an HTTP-only cookie.
-         * @returns {promise} A promise which is resolved with the authntication
-         * response or error response (both are response objects from the $http
-         * service).
-         * @example
-         * ## Username & Password example
-         * <pre>
-         * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
-         *   $scope.errorMessage = null;
-         *   $scope.formData = {
-         *     username: '',         // Expose to user as email/username field
-         *     password: '',
-         *   };
-         *
-         *   // Use this method with ng-submit on your form
-         *   $scope.login = function login(formData){
-         *     $auth.authenticate(formData)
-         *      .then(function(){
-         *        console.log('login success');
-         *        $state.go('home');
-         *      })
-         *      .catch(function(httpResponse){
-         *        $scope.errorMessage = response.data.message;
-         *      });
-         *   }
-         *
-         * });
-         * </pre>
-         */
-        var op = $http.post(
-          STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
-          data,
-          {
-            withCredentials: true,
-            params: {
-              'grant_type': 'password'
-            }
-          }
-        );
-        var op2 = op.then(cacheCurrentUser).then(authenticatedEvent);
-        op.catch(authenticationFailureEvent);
-        return op2;
-
-      };
-
-      AuthService.prototype.endSession = function endSession(){
-        var op = $http.get(STORMPATH_CONFIG.DESTROY_SESSION_ENDPOINT);
-        op.then(function(){
-          $rootScope.$broadcast(STORMPATH_CONFIG.SESSION_END_EVENT);
-        },function(response){
-          console.error('logout error',response);
-        });
-        return op;
-      };
-
-      function cacheCurrentUser(){
-        return $user.get();
-      }
-
-      function authenticatedEvent(response){
-        /**
-         * @ngdoc event
-         * @name stormpath.authService.$auth#$authenticated
-         * @eventOf stormpath.authService.$auth
-         * @eventType broadcast on root scope
-         * @description
-         * This event is broadcast when a call to
-         * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate()}
-         * is successful
-         *
-         * @param {Object} event Angular event object.
-         * @param {httpResponse} httpResponse The http response from the $http service.  If
-         * you are writing your access tokens to the response body when a user
-         * authenticates, you will want to use this response object to get access
-         * to that token.
-         *
-         */
-        $rootScope.$broadcast(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,response);
-      }
-      function authenticationFailureEvent(response){
-        $rootScope.$broadcast(STORMPATH_CONFIG.AUTHENTICATION_FAILURE_EVENT_NAME,response);
-      }
-      return new AuthService();
-    }]
-  };
-
-  $injector.get('$provide')
-    .provider(STORMPATH_CONFIG.AUTH_SERVICE_NAME,authServiceProvider);
-
-}]);
-
-'use strict';
-
-angular.module('stormpath.CONFIG',[])
-.constant('STORMPATH_CONFIG',{
-  AUTHENTICATION_ENDPOINT: '/oauth/token',
-  CURRENT_USER_URI: '/api/users/current',
-  USER_COLLECTION_URI: '/api/users',
-  DESTROY_SESSION_ENDPOINT: '/logout',
-  RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
-  EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
-  PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
-  GET_USER_EVENT: '$currentUser',
-  SESSION_END_EVENT: '$sessionEnd',
-  UNAUTHORIZED_EVENT: 'unauthorized',
-  LOGIN_STATE_NAME: 'login',
-  FORBIDDEN_STATE_NAME: 'forbidden',
-  AUTHENTICATION_SUCCESS_EVENT_NAME: '$authenticated',
-  AUTHENTICATION_FAILURE_EVENT_NAME: '$authenticationFailure',
-  AUTH_SERVICE_NAME: '$auth',
-  NOT_LOGGED_IN_EVENT: '$notLoggedin',
-  STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
-  STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized'
-});
-
 'use strict';
 /**
  * @ngdoc overview
@@ -301,7 +143,7 @@ angular.module('stormpath.CONFIG',[])
  *         controller: 'AdminCtrl',
  *         sp: {
  *           authorize: {
- *             group: ['admins']
+ *             group: 'admins'
  *           }
  *         }
  *       });
@@ -322,16 +164,27 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     function stormpathServiceFactory($user,$state,$cookieStore,STORMPATH_CONFIG,$rootScope){
 
       function StormpathService(){
+        var encoder = new UrlEncodedFormParser();
+        this.encodeUrlForm = encoder.encode.bind(encoder);
         return this;
       }
       StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor() {
         $rootScope.$on('$stateChangeStart', function(e,toState,toParams){
           var sp = toState.sp || {}; // Grab the sp config for this state
+
           if((sp.authenticate || sp.authorize) && (!$user.currentUser)){
             e.preventDefault();
             $user.get().then(function(){
               // The user is authenticated, continue to the requested state
-              $state.go(toState.name,toParams);
+              if(sp.authorize){
+                if(authorizeStateConfig(sp)){
+                  $state.go(toState.name,toParams);
+                }else{
+                  $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
+                }
+              }else{
+                $state.go(toState.name,toParams);
+              }
             },function(){
               // The user is not authenticated, emit the necessary event
               $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,toState,toParams);
@@ -343,17 +196,27 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
             });
           }
           else if($user.currentUser && sp.authorize){
-            if((Object.keys(sp.authorize).length === 1) && sp.authorize.group){
-              if(!$user.currentUser.inGroup(sp.authorize.group)){
-                e.preventDefault();
-                return $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
-              }
-            }else{
-              console.error('Unknown authorize configuration for state',toState);
+
+            if(!authorizeStateConfig(sp)){
+              e.preventDefault();
+              $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
             }
+
           }
         });
       };
+
+      function authorizeStateConfig(spStateConfig){
+        var sp = spStateConfig;
+        if(sp && sp.authorize && sp.authorize.group) {
+          return $user.currentUser.inGroup(sp.authorize.group);
+        }else{
+          console.error('Unknown authorize configuration for spStateConfig',spStateConfig);
+          return false;
+        }
+
+      }
+
       /**
        * @ngdoc function
        * @name stormpath#uiRouter
@@ -419,86 +282,495 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
         }
       };
 
+      function UrlEncodedFormParser(){
+
+        // Copy & modify from https://github.com/hapijs/qs/blob/master/lib/stringify.js
+
+        this.delimiter = '&';
+        this.arrayPrefixGenerators = {
+          brackets: function (prefix) {
+            return prefix + '[]';
+          },
+          indices: function (prefix, key) {
+            return prefix + '[' + key + ']';
+          },
+          repeat: function (prefix) {
+            return prefix;
+          }
+        };
+        return this;
+      }
+      UrlEncodedFormParser.prototype.stringify = function stringify(obj, prefix, generateArrayPrefix) {
+
+        if (obj instanceof Date) {
+          obj = obj.toISOString();
+        }
+        else if (obj === null) {
+          obj = '';
+        }
+
+        if (typeof obj === 'string' ||
+          typeof obj === 'number' ||
+          typeof obj === 'boolean') {
+
+          return [encodeURIComponent(prefix) + '=' + encodeURIComponent(obj)];
+        }
+
+        var values = [];
+
+        if (typeof obj === 'undefined') {
+          return values;
+        }
+
+        var objKeys = Object.keys(obj);
+        for (var i = 0, il = objKeys.length; i < il; ++i) {
+          var key = objKeys[i];
+          if (Array.isArray(obj)) {
+            values = values.concat(this.stringify(obj[key], generateArrayPrefix(prefix, key), generateArrayPrefix));
+          }
+          else {
+            values = values.concat(this.stringify(obj[key], prefix + '[' + key + ']', generateArrayPrefix));
+          }
+        }
+
+        return values;
+      };
+      UrlEncodedFormParser.prototype.encode = function encode(obj, options) {
+
+        options = options || {};
+        var delimiter = typeof options.delimiter === 'undefined' ? this.delimiter : options.delimiter;
+
+        var keys = [];
+
+        if (typeof obj !== 'object' ||
+          obj === null) {
+
+          return '';
+        }
+
+        var arrayFormat;
+        if (options.arrayFormat in this.arrayPrefixGenerators) {
+          arrayFormat = options.arrayFormat;
+        }
+        else if ('indices' in options) {
+          arrayFormat = options.indices ? 'indices' : 'repeat';
+        }
+        else {
+          arrayFormat = 'indices';
+        }
+
+        var generateArrayPrefix = this.arrayPrefixGenerators[arrayFormat];
+
+        var objKeys = Object.keys(obj);
+        for (var i = 0, il = objKeys.length; i < il; ++i) {
+          var key = objKeys[i];
+          keys = keys.concat(this.stringify(obj[key], key, generateArrayPrefix));
+        }
+
+        return keys.join(delimiter);
+      };
+
       return new StormpathService();
     }
   ];
 }])
-.run(['$rootScope','$user',function($rootScope,$user){
+.run(['$rootScope','$user','STORMPATH_CONFIG',function($rootScope,$user,STORMPATH_CONFIG){
   $rootScope.user = $user.currentUser || null;
   $user.get().finally(function(){
     $rootScope.user = $user.currentUser;
   });
-  $rootScope.$on('$currentUser',function(e,user){
-    $rootScope.user = user;
+  $rootScope.$on(STORMPATH_CONFIG.GET_USER_EVENT,function(){
+    $rootScope.user = $user.currentUser;
   });
-  $rootScope.$on('$sessionEnd',function(){
-    $rootScope.user = null;
+  $rootScope.$on(STORMPATH_CONFIG.SESSION_END_EVENT,function(){
+    $rootScope.user = $user.currentUser;
   });
 }])
 
-.controller('SpRegistrationFormCtrl', ['$scope','$user','$auth','$state',function ($scope,$user,$auth,$state) {
-  $scope.formModel = {
-    firstName:'',
-    lastName: '',
-    email: '',
-    password: ''
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUser:ifUser
+ *
+ * @description
+ * Use this directive to conditionally show an element, if the user is logged in.
+ *
+ * @example
+ * <pre>
+ * <div class="container">
+ *   <h3 if-user>Hello, {{user.fullName}}</h3>
+ * </div>
+ * </pre>
+ */
+.directive('ifUser',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(user){
+        if(user && user.href){
+          element.show();
+        }else{
+          element.hide();
+        }
+      });
+    }
   };
-  $scope.created = false;
-  $scope.enabled = false;
-  $scope.creating = false;
-  $scope.authenticating = false;
-  $scope.submit = function(){
-    $scope.creating = true;
-    $scope.error = null;
-    $user.create($scope.formModel)
-      .then(function(enabled){
-        $scope.created = true;
-        $scope.enabled = enabled;
-        if(enabled && $scope.autoLogin){
-          $scope.authenticating = true;
-          $auth.authenticate({
-            username: $scope.formModel.email,
-            password: $scope.formModel.password
-          })
-          .then(function(){
-            if($scope.postLoginState){
-              $state.go($scope.postLoginState);
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.ifNotUser:ifNotUser
+ *
+ * @description
+ * Use this directive to conditionally show an element, if the user is NOT logged in.
+ *
+ * @example
+ * <pre>
+ * <div class="container">
+ *   <h3 if-not-user>Hello, you need to login</h3>
+ * </div>
+ * </pre>
+ */
+.directive('ifNotUser',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(user){
+        if(user && user.href){
+          element.hide();
+        }else{
+          element.show();
+        }
+      });
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserInGroup:ifUserInGroup
+ *
+ * @description
+ * Use this directive to conditionally show an element if the user is logged in
+ * and is a member of the group that is specified by the string
+ *
+ * @example
+ * <pre>
+ * <div class="container">
+ *   <h3 if-user-in-group="admins">Hello, {{user.fullName}}, you are an administrator</h3>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserInGroup',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element,attrs){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserInGroup)){
+          element.show();
+        }else{
+          element.hide();
+        }
+      });
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserNotInGroup:ifUserNotInGroup
+ *
+ * @description
+ * Use this directive to conditionally show an element if the user is logged in
+ * and is a member of the group that is specified by the string
+ *
+ * @example
+ * <pre>
+ * <div class="container">
+ *   <h3 if-user-not-in-group="admins">Hello, {{user.fullName}}, please request administrator access</h3>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserNotInGroup',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element,attrs){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserNotInGroup)){
+          element.hide();
+        }else{
+          element.show();
+        }
+      });
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.whileResolvingUser:while-resolving-user
+ *
+ * @description
+ * # [DEPRECATED]
+ * Please use {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown} instead
+ *
+ */
+.directive('whileResolvingUser',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser || ($user.currentUser===false)){
+          element.hide();
+        }else{
+          element.show();
+        }
+      });
+    }
+  };
+}])
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserStateKnown:ifUserStateKnown
+ *
+ * @description
+ * Use this directive to show an element once the user state is known.
+ * The inverse of {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown}, you can
+ * use this directive to show an element after we know if the user is logged in
+ * or not.
+ *
+ * @example
+ * <pre>
+ * <div if-user-state-known>
+ *   <li if-not-user>
+ *      <a ui-sref="login">Login</a>
+ *    </li>
+ *    <li if-user>
+ *        <a ui-sref="main" logout>Logout</a>
+ *    </li>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserStateKnown',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser || ($user.currentUser===false)){
+          element.show();
+        }else{
+          element.hide();
+        }
+      });
+    }
+  };
+}])
+/**
+ * @ngdoc directive
+ * @name stormpath.ifUserStateUnknown:ifUserStateUnknown
+ *
+ * @description
+ * Use this directive to show an element, while waiting to know if the user
+ * is logged in or not.  This is useful if you want to show a loading graphic
+ * over your application while you are waiting for the user state.
+ *
+ * @example
+ * <pre>
+ * <div if-user-state-unknown>
+ *   <p>Loading.. </p>
+ * </div>
+ * </pre>
+ */
+.directive('ifUserStateUnknown',['$user','$rootScope',function($user,$rootScope){
+  return {
+    link: function(scope,element){
+      $rootScope.$watch('user',function(){
+        if($user.currentUser === null){
+          element.show();
+        }else{
+          element.hide();
+        }
+      });
+    }
+  };
+}])
+
+/**
+ * @ngdoc directive
+ * @name stormpath.spLogout:spLogout
+ *
+ * @description
+ * This directive adds a click handler to the element.  When clicked the user will be logged out.
+ *
+ * @example
+ * <pre>
+ *   <a ui-sref="main" sp-logout>Logout</a>
+ * </pre>
+ */
+.directive('spLogout',['$auth',function($auth){
+  return{
+    link: function(scope,element){
+      element.on('click',function(){
+        $auth.endSession();
+      });
+    }
+  };
+}]);
+'use strict';
+/**
+ * @ngdoc overview
+ * @name  stormpath.authService
+ * @description
+ * This module provides the {@link stormpath.authService.$auth $auth} service
+ *
+ * Currently this provider does not have any configuration methods
+ */
+/**
+ * @ngdoc object
+ * @name stormpath.authService.$authProvider
+ * @description
+ *
+ * Provides the {@link stormpath.authService.$auth $auth} service
+ *
+ * Currently this provider does not have any configuration methods
+ */
+angular.module('stormpath.auth',['stormpath.CONFIG'])
+.config(['$injector','STORMPATH_CONFIG',function $authProvider($injector,STORMPATH_CONFIG){
+  /**
+   * @ngdoc object
+   * @name stormpath.authService.$auth
+   * @description
+   * The auth service provides methods for authenticating a user, aka
+   * "logging in" the user.
+   */
+  var authServiceProvider = {
+    $get: ['$http','$user','$rootScope','$spFormEncoder',function authServiceFactory($http,$user,$rootScope,$spFormEncoder){
+
+      function AuthService(){
+        return this;
+      }
+      AuthService.prototype.authenticate = function authenticate(data) {
+        /**
+         * @ngdoc function
+         * @name  stormpath.authService.$auth#authenticate
+         * @methodOf stormpath.authService.$auth
+         * @param {Object} credentialData An object literal for passing
+         * usernmae & password, or social provider token
+         * @description
+         * Sends the provided credential data to your backend server, the server
+         * handler should verify the credentials and return an access token which is
+         * store in an HTTP-only cookie.
+         * @returns {promise} A promise which is resolved with the authntication
+         * response or error response (both are response objects from the $http
+         * service).
+         * @example
+         * ## Username & Password example
+         * <pre>
+         * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
+         *   $scope.errorMessage = null;
+         *   $scope.formData = {
+         *     username: '',         // Expose to user as email/username field
+         *     password: '',
+         *   };
+         *
+         *   // Use this method with ng-submit on your form
+         *   $scope.login = function login(formData){
+         *     $auth.authenticate(formData)
+         *      .then(function(){
+         *        console.log('login success');
+         *        $state.go('home');
+         *      })
+         *      .catch(function(httpResponse){
+         *        $scope.errorMessage = response.data.message;
+         *      });
+         *   }
+         *
+         * });
+         * </pre>
+         */
+        var op = $http($spFormEncoder.formPost({
+            url: STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
+            method: 'POST',
+            withCredentials: true,
+            data: data,
+            params: {
+              'grant_type': 'password'
             }
           })
-          .catch(function(response){
-            $scope.error = response.data.errorMessage;
-          })
-          .finally(function(){
-            $scope.authenticating = false;
-            $scope.creating = false;
-          });
-        }else{
-          $scope.creating = false;
-        }
-      })
-      .catch(function(response){
-        $scope.creating = false;
-        $scope.error = response.data.errorMessage;
-      });
-  };
-}])
+        );
+        var op2 = op.then(cacheCurrentUser).then(authenticatedEvent);
+        op.catch(authenticationFailureEvent);
+        return op2;
 
-.controller('SpLoginFormCtrl', ['$scope','$auth',function ($scope,$auth) {
-  $scope.formModel = {
-    username: '',
-    password: ''
+      };
+
+      AuthService.prototype.endSession = function endSession(){
+        var op = $http.get(STORMPATH_CONFIG.DESTROY_SESSION_ENDPOINT);
+        op.then(function(){
+          $rootScope.$broadcast(STORMPATH_CONFIG.SESSION_END_EVENT);
+        },function(response){
+          console.error('logout error',response);
+        });
+        return op;
+      };
+
+      function cacheCurrentUser(){
+        return $user.get();
+      }
+
+      function authenticatedEvent(response){
+        /**
+         * @ngdoc event
+         * @name stormpath.authService.$auth#$authenticated
+         * @eventOf stormpath.authService.$auth
+         * @eventType broadcast on root scope
+         * @description
+         * This event is broadcast when a call to
+         * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate()}
+         * is successful
+         *
+         * @param {Object} event Angular event object.
+         * @param {httpResponse} httpResponse The http response from the $http service.  If
+         * you are writing your access tokens to the response body when a user
+         * authenticates, you will want to use this response object to get access
+         * to that token.
+         *
+         */
+        $rootScope.$broadcast(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,response);
+      }
+      function authenticationFailureEvent(response){
+        $rootScope.$broadcast(STORMPATH_CONFIG.AUTHENTICATION_FAILURE_EVENT_NAME,response);
+      }
+      return new AuthService();
+    }]
   };
-  $scope.posting = false;
-  $scope.submit = function(){
-    $scope.posting = true;
-    $scope.error = null;
-    $auth.authenticate($scope.formModel)
-      .catch(function(response){
-        $scope.posting = false;
-        $scope.error = response.data.errorMessage;
-      });
-  };
-}])
+
+  $injector.get('$provide')
+    .provider(STORMPATH_CONFIG.AUTH_SERVICE_NAME,authServiceProvider);
+
+}]);
+
+'use strict';
+
+angular.module('stormpath.CONFIG',[])
+.constant('STORMPATH_CONFIG',{
+  AUTHENTICATION_ENDPOINT: '/oauth/token',
+  CURRENT_USER_URI: '/api/users/current',
+  USER_COLLECTION_URI: '/api/users',
+  DESTROY_SESSION_ENDPOINT: '/logout',
+  RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
+  EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+  PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
+  GET_USER_EVENT: '$currentUser',
+  SESSION_END_EVENT: '$sessionEnd',
+  UNAUTHORIZED_EVENT: 'unauthorized',
+  LOGIN_STATE_NAME: 'login',
+  FORBIDDEN_STATE_NAME: 'forbidden',
+  AUTHENTICATION_SUCCESS_EVENT_NAME: '$authenticated',
+  AUTHENTICATION_FAILURE_EVENT_NAME: '$authenticationFailure',
+  AUTH_SERVICE_NAME: '$auth',
+  NOT_LOGGED_IN_EVENT: '$notLoggedin',
+  STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
+  STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized',
+  FORM_CONTENT_TYPE: ''
+});
+
+'use strict';
+
+angular.module('stormpath')
 
 .controller('SpEmailVerificationCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
   $scope.showVerificationError = false;
@@ -542,6 +814,233 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   };
 }])
 
+/**
+ * @ngdoc directive
+ * @name stormpath.spEmailVerification:spEmailVerification
+ *
+ * @description
+ *
+ * Use this directive on the page that users land on when they click an email verification link.
+ * These links are sent after a user registers, see
+ * {@link stormpath.spRegistrationForm:spRegistrationForm spRegistrationForm}
+ *
+ * This directive will render a view which does the following:
+ * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
+ * * Verifies the given `sptoken` with Stormpath, then:
+ *   * If the token is valid, tell the user that confirmation is complete and prompt the user to login.
+ *   * If the token is invalid (it is expired or malformed) we prompt the user to enter
+ *     their email address, so that we can try sending them a new link.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-email-verification></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-email-verification template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
+.directive('spEmailVerification',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spEmailVerification.tpl.html';
+    },
+    controller: 'SpEmailVerificationCtrl'
+  };
+});
+
+'use strict';
+
+angular.module('stormpath')
+.provider('$spFormEncoder', [function $spFormEncoder(){
+  /**
+   * This service is intenally exclude from NG Docs
+   * It is an internal utility
+   */
+
+  this.$get = [
+    'STORMPATH_CONFIG',
+    function formEncoderServiceFactory(STORMPATH_CONFIG){
+
+      function FormEncoderService(){
+        var encoder = new UrlEncodedFormParser();
+        this.encodeUrlForm = encoder.encode.bind(encoder);
+        return this;
+      }
+
+      FormEncoderService.prototype.formPost = function formPost(httpRequest){
+        if(STORMPATH_CONFIG.FORM_CONTENT_TYPE!=='application/json'){
+          var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
+          h['Content-Type'] = 'application/x-www-form-urlencoded';
+          httpRequest.data = this.encodeUrlForm(httpRequest.data);
+        }
+        return httpRequest;
+      };
+
+      function UrlEncodedFormParser(){
+
+        // Copy & modify from https://github.com/hapijs/qs/blob/master/lib/stringify.js
+
+        this.delimiter = '&';
+        this.arrayPrefixGenerators = {
+          brackets: function (prefix) {
+            return prefix + '[]';
+          },
+          indices: function (prefix, key) {
+            return prefix + '[' + key + ']';
+          },
+          repeat: function (prefix) {
+            return prefix;
+          }
+        };
+        return this;
+      }
+      UrlEncodedFormParser.prototype.stringify = function stringify(obj, prefix, generateArrayPrefix) {
+
+        if (obj instanceof Date) {
+          obj = obj.toISOString();
+        }
+        else if (obj === null) {
+          obj = '';
+        }
+
+        if (typeof obj === 'string' ||
+          typeof obj === 'number' ||
+          typeof obj === 'boolean') {
+
+          return [encodeURIComponent(prefix) + '=' + encodeURIComponent(obj)];
+        }
+
+        var values = [];
+
+        if (typeof obj === 'undefined') {
+          return values;
+        }
+
+        var objKeys = Object.keys(obj);
+        for (var i = 0, il = objKeys.length; i < il; ++i) {
+          var key = objKeys[i];
+          if (Array.isArray(obj)) {
+            values = values.concat(this.stringify(obj[key], generateArrayPrefix(prefix, key), generateArrayPrefix));
+          }
+          else {
+            values = values.concat(this.stringify(obj[key], prefix + '[' + key + ']', generateArrayPrefix));
+          }
+        }
+
+        return values;
+      };
+      UrlEncodedFormParser.prototype.encode = function encode(obj, options) {
+
+        options = options || {};
+        var delimiter = typeof options.delimiter === 'undefined' ? this.delimiter : options.delimiter;
+
+        var keys = [];
+
+        if (typeof obj !== 'object' ||
+          obj === null) {
+
+          return '';
+        }
+
+        var arrayFormat;
+        if (options.arrayFormat in this.arrayPrefixGenerators) {
+          arrayFormat = options.arrayFormat;
+        }
+        else if ('indices' in options) {
+          arrayFormat = options.indices ? 'indices' : 'repeat';
+        }
+        else {
+          arrayFormat = 'indices';
+        }
+
+        var generateArrayPrefix = this.arrayPrefixGenerators[arrayFormat];
+
+        var objKeys = Object.keys(obj);
+        for (var i = 0, il = objKeys.length; i < il; ++i) {
+          var key = objKeys[i];
+          keys = keys.concat(this.stringify(obj[key], key, generateArrayPrefix));
+        }
+
+        return keys.join(delimiter);
+      };
+
+      return new FormEncoderService();
+    }
+  ];
+}]);
+'use strict';
+
+angular.module('stormpath')
+
+.controller('SpLoginFormCtrl', ['$scope','$auth',function ($scope,$auth) {
+  $scope.formModel = {
+    username: '',
+    password: ''
+  };
+  $scope.posting = false;
+  $scope.submit = function(){
+    $scope.posting = true;
+    $scope.error = null;
+    $auth.authenticate($scope.formModel)
+      .catch(function(response){
+        $scope.posting = false;
+        $scope.error = response.data.errorMessage;
+      });
+  };
+}])
+
+
+/**
+ * @ngdoc directive
+ * @name stormpath.spLoginForm:spLoginForm
+ *
+ * @description
+ * This directive will render a pre-built login form, with all
+ * the necessary fields.  After the login is a success, the following
+ * will happen:
+ *
+ * * The {@link stormpath.authService.$auth#events_$authenticated $authenticated} event will
+ * be fired.
+ * *  If you have configured the {@link stormpath.$stormpath#methods_uiRouter UI Router Integration},
+ * the following can happen:
+ *  * The user is sent back to the view they originally requested
+ *  * The user is sent to a default view of your choice
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-login-form></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-login-form template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
+.directive('spLoginForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spLoginForm.tpl.html';
+    },
+    controller: 'SpLoginFormCtrl'
+  };
+});
+'use strict';
+
+angular.module('stormpath')
 .controller('SpPasswordResetRequestCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
   $scope.sent = false;
   $scope.posting = false;
@@ -617,7 +1116,132 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
- * @name stormpath.spRegistrationForm:sp-registration-form
+ * @name stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm
+ *
+ * @description
+ * This directive will render a pre-built form which prompts the user for thier
+ * username/email.  If an account is found we will send them an email with a
+ * password reset link.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-password-reset-request-form></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-password-reset-request-form template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
+.directive('spPasswordResetRequestForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spPasswordResetRequestForm.tpl.html';
+    },
+    controller: 'SpPasswordResetRequestCtrl'
+  };
+})
+/**
+ * @ngdoc directive
+ * @name stormpath.spPasswordResetForm:spPasswordResetForm
+ *
+ * @description
+ * Use this directive on the page that users land on when they click on a password
+ * reset link.  To send users a password reset link, see
+ * {@link stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm spPasswordResetRequestForm}
+ *
+ * This directive will render a password reset form which does the following:
+ * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
+ * * Verifies the given `sptoken` with Stormpath, then:
+ *   * If the token is valid, show a form which allows the user to enter a new password.
+ *   * If the token is invalid (it is expired or malformed) we prompt the user to enter
+ *     their email address, so that we can try sending them a new link.
+ *
+ * @param {string} template-url An alternate template URL, if you want
+ * to use your own template for the form.
+ *
+ * @example
+ * <pre>
+ * <!-- If you want to use the default template -->
+ * <div class="container">
+ *   <div sp-password-reset-form></div>
+ * </div>
+ *
+ * <!-- If you want to use your own template -->
+ * <div class="container">
+ *   <div sp-password-reset-form template-url="/path/to/my-custom-template.html"></div>
+ * </div>
+ * </pre>
+ */
+.directive('spPasswordResetForm',function(){
+  return {
+    templateUrl: function(tElemenet,tAttrs){
+      return tAttrs.templateUrl || 'spPasswordResetForm.tpl.html';
+    },
+    controller: 'SpPasswordResetCtrl'
+  };
+});
+
+'use strict';
+
+angular.module('stormpath')
+.controller('SpRegistrationFormCtrl', ['$scope','$user','$auth','$state',function ($scope,$user,$auth,$state) {
+  $scope.formModel = (typeof $scope.formModel==='object') ? $scope.formModel : {
+    givenName:'',
+    surname: '',
+    email: '',
+    password: ''
+  };
+  $scope.created = false;
+  $scope.enabled = false;
+  $scope.creating = false;
+  $scope.authenticating = false;
+  $scope.submit = function(){
+    $scope.creating = true;
+    $scope.error = null;
+    $user.create($scope.formModel)
+      .then(function(enabled){
+        $scope.created = true;
+        $scope.enabled = enabled;
+        if(enabled && $scope.autoLogin){
+          $scope.authenticating = true;
+          $auth.authenticate({
+            username: $scope.formModel.email,
+            password: $scope.formModel.password
+          })
+          .then(function(){
+            if($scope.postLoginState){
+              $state.go($scope.postLoginState);
+            }
+          })
+          .catch(function(response){
+            $scope.error = response.data.errorMessage;
+          })
+          .finally(function(){
+            $scope.authenticating = false;
+            $scope.creating = false;
+          });
+        }else{
+          $scope.creating = false;
+        }
+      })
+      .catch(function(response){
+        $scope.creating = false;
+        $scope.error = response.data.errorMessage;
+      });
+  };
+}])
+
+
+/**
+ * @ngdoc directive
+ * @name stormpath.spRegistrationForm:spRegistrationForm
  *
  * @param {boolean} autoLogin Default `false`, automatically authenticate the user
  * after creation.  This makes a call to
@@ -639,12 +1263,39 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  *  * Email
  *  * Password
  *
- * If you are using the email verification workflow: this form will tell the user
- * that they need to check their email to complete their registration.
+ * # Customizing the form
  *
- * If you are NOT using the email verification workflow: you can, optionally,
+ * If you would like to customize the form:
+ *
+ * * Create a new view file in your application
+ * * Copy our default template into your file, found here:
+ * <a href="https://github.com/stormpath/stormpath-sdk-angularjs/blob/master/src/spRegistrationForm.tpl.html" target="_blank">spRegistrationForm.tpl.html</a>
+ * * Modify the template to fit your needs, making sure to use `formModel.<FIELD>` as the
+ * value for `ng-model`, where `.<FIELD>` is the name of the field you want to set on
+ * the new account (such as
+ * `middleName`)
+ * * Use the `template-url` option on the directive to point to your new view file
+ *
+ * If you would like to add Custom Data to the new account, you can add form inputs to the template
+ * and use `formModel.customData.<FIELD>` as the value for `ng-model`
+ *
+ * # Email Verification
+ *
+ * If you are using the email verification workflow the default template has a message
+ * which will be shown to the user, telling them that they need to check their email
+ * for verification.
+ *
+ * If you are NOT using the email verification workflow you can, optionally,
  * automatically login the user and redirect them to a UI state in your application.
  * See the options below.
+ *
+ *
+ * # Server Interaction
+ *
+ * This directive makes a call to
+ * {@link stormpath.userService.$user#methods_create $user.create()}
+ * when it is ready to POST the form to the server, please see that method
+ * for more information.
  *
  * @param {string} template-url An alternate template URL, if you want
  * to use your own template for the form.
@@ -673,182 +1324,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       scope.postLoginState = attrs.postLoginState || '';
     }
   };
-})
-
-.directive('spPasswordResetRequestForm',function(){
-  return {
-    templateUrl: function(tElemenet,tAttrs){
-      return tAttrs.templateUrl || 'spPasswordResetRequestForm.tpl.html';
-    },
-    controller: 'SpPasswordResetRequestCtrl'
-  };
-})
-
-.directive('spPasswordResetForm',function(){
-  return {
-    templateUrl: function(tElemenet,tAttrs){
-      return tAttrs.templateUrl || 'spPasswordResetForm.tpl.html';
-    },
-    controller: 'SpPasswordResetCtrl'
-  };
-})
-
-/**
- * @ngdoc directive
- * @name stormpath.spLoginForm:sp-login-form
- *
- * @description
- * This directive will render a pre-built login form, with all
- * the necessary fields.  After the login is a success, the following
- * will happen:
- *
- * * The {@link stormpath.authService.$auth#events_$authenticated $authenticated} event will
- * be fired.
- * *  If you have configured the {@link stormpath.$stormpath#methods_uiRouter UI Router Integration},
- * the following can happen:
- *  * The user is sent back to the view they originally requested
- *  * The user is sent to a default view of your choice
- *
- * @param {string} template-url An alternate template URL, if you want
- * to use your own template for the form.
- *
- * @example
- * <pre>
- * <!-- If you want to use the default template -->
- * <div class="container">
- *   <div sp-login-form></div>
- * </div>
- *
- * <!-- If you want to use your own template -->
- * <div class="container">
- *   <div sp-login-form template-url="/path/to/my-custom-template.html"></div>
- * </div>
- * </pre>
- */
-.directive('spLoginForm',function(){
-  return {
-    templateUrl: function(tElemenet,tAttrs){
-      return tAttrs.templateUrl || 'spLoginForm.tpl.html';
-    },
-    controller: 'SpLoginFormCtrl'
-  };
-})
-
-.directive('spEmailVerification',function(){
-  return {
-    templateUrl: function(tElemenet,tAttrs){
-      return tAttrs.templateUrl || 'spEmailVerification.tpl.html';
-    },
-    controller: 'SpEmailVerificationCtrl'
-  };
-})
-
-/**
- * @ngdoc directive
- * @name stormpath.ifUser:if-user
- *
- * @description
- * Use this directive to conditionally show an element, if the user is logged in.
- *
- * @example
- * <pre>
- * <div class="container">
- *   <h3 if-user>Hello, {{user.fullName}}</h3>
- * </div>
- * </pre>
- */
-.directive('ifUser',['$user','$rootScope',function($user,$rootScope){
-  return {
-    link: function(scope,element){
-      $rootScope.$watch('user',function(user){
-        if(user && user.href){
-          element.show();
-        }else{
-          element.hide();
-        }
-      });
-    }
-  };
-}])
-
-/**
- * @ngdoc directive
- * @name stormpath.ifNotUser:if-not-user
- *
- * @description
- * Use this directive to conditionally show an element, if the user is NOT logged in.
- *
- * @example
- * <pre>
- * <div class="container">
- *   <h3 if-not-user>Hello, you need to login</h3>
- * </div>
- * </pre>
- */
-.directive('ifNotUser',['$user','$rootScope',function($user,$rootScope){
-  return {
-    link: function(scope,element){
-      $rootScope.$watch('user',function(user){
-        if(user && user.href){
-          element.hide();
-        }else{
-          element.show();
-        }
-      });
-    }
-  };
-}])
-
-/**
- * @ngdoc directive
- * @name stormpath.whileResolvingUser:while-resolving-user
- *
- * @description
- * Use this directive to show an element, while waiting to know if the user
- * is logged in or not.  This is useful if you want to show a loading graphic
- * over your application while you are waiting for the user state.
- *
- * @example
- * <pre>
- * <div while-resolving-user style="position:fixed;top:0;left:0;right:0;bottom:0;background-color:pink;">I wait for you</div>
- * </pre>
- */
-.directive('whileResolvingUser',['$user',function($user){
-  return {
-    link: function(scope,element){
-      $user.get().finally(function(){
-        console.log('currentUser',$user.currentUser);
-        if((typeof $user.currentUser ==='object') || ($user.currentUser===false)){
-          element.hide();
-        }else{
-          element.show();
-        }
-      });
-    }
-  };
-}])
-
-/**
- * @ngdoc directive
- * @name stormpath.logout:logout
- *
- * @description
- * This directive adds a click handler to the element.  When clicked the user will be logged out.
- *
- * @example
- * <pre>
- *   <a ui-sref="main" logout>Logout</a>
- * </pre>
- */
-.directive('logout',['$auth',function($auth){
-  return{
-    link: function(scope,element){
-      element.on('click',function(){
-        $auth.endSession();
-      });
-    }
-  };
-}]);
+});
 'use strict';
 /**
  * @ngdoc overview
@@ -887,20 +1363,20 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
     });
   }
   User.prototype.inGroup = function inGroup(groupName) {
-    return this.groups.items.filter(function(group){
+    return this.groups.filter(function(group){
       return group.name === groupName;
     }).length >0;
   };
 
   this.$get = [
-    '$q','$http','STORMPATH_CONFIG','$rootScope',
-    function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope){
+    '$q','$http','STORMPATH_CONFIG','$rootScope','$spFormEncoder',
+    function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope,$spFormEncoder){
       function UserService(){
         this.cachedUserOp = null;
         this.currentUser = null;
         return this;
       }
-      UserService.prototype.create = function(data){
+      UserService.prototype.create = function(accountData){
         /**
          * @ngdoc function
          * @name stormpath.userService.$user#create
@@ -917,14 +1393,18 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * on the directory that this account will be created in.
          * @description
          *
-         * Attemps to create a new user by posting to `/api/users`
+         * Attemps to create a new user by submitting the given `accountData` as
+         * JSON to `/api/users`.  The POST endpoint can be modified via the
+         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
          *
+         * This method expects a `201` response if the account does NOT require email
+         * verification.
          *
+         * If email verification is enabled, you should send a `202` response instead.
          *
-         * Your backend server will need to accept this request and use a
-         * Stormpath SDK to create the account in the Stormpath service.  If you
-         * are using the Express SDK you want to attach `register` middleware
-         * to your application.
+         *  If you are using our Express.JS SDK you can simply attach the
+         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
+         * to your application and these responses will be handled automatically for you.
          *
          * @returns {promise} A promise representing the operation to create a
          * new user.  If an error occurs (duplicate email, weak password) the
@@ -958,13 +1438,11 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          */
         var op = $q.defer();
 
-        var transformed = {
-          surname: data.lastName,
-          givenName: data.firstName,
-          email: data.email,
-          password: data.password
-        };
-        $http.post(STORMPATH_CONFIG.USER_COLLECTION_URI,transformed)
+        $http($spFormEncoder.formPost({
+            url: STORMPATH_CONFIG.USER_COLLECTION_URI,
+            method: 'POST',
+            data: accountData
+          }))
           .then(function(response){
             op.resolve(response.status===201);
           },op.reject);
@@ -1013,7 +1491,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         if(self.cachedUserOp){
           return self.cachedUserOp.promise;
         }
-        else if(self.currentUser){
+        else if(self.currentUser !== null && self.currentUser!==false){
           op.resolve(self.currentUser);
           return op.promise;
         }else{
@@ -1037,19 +1515,35 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
 
       };
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
-        return $http.post(STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,
+          data: data
+        }));
       };
       UserService.prototype.verify = function verify(data){
-        return $http.post(STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,
+          data: data
+        }));
       };
       UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
         return $http.get(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token);
       };
       UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
-        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,
+          data: data
+        }));
       };
       UserService.prototype.resetPassword = function resetPassword(token,data){
-        return $http.post(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,data);
+        return $http($spFormEncoder.formPost({
+          method: 'POST',
+          url: STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,
+          data: data
+        }));
       };
       function currentUserEvent(user){
         /**
@@ -1117,7 +1611,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
 
       var userService =  new UserService();
       $rootScope.$on(STORMPATH_CONFIG.SESSION_END_EVENT,function(){
-        userService.currentUser = null;
+        userService.currentUser = false;
       });
       return userService;
     }
