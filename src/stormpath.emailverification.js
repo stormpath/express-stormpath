@@ -52,7 +52,7 @@ angular.module('stormpath')
  *
  * Use this directive on the page that users land on when they click an email verification link.
  * These links are sent after a user registers, see
- * {@link stormpath.spRegistrationForm:sp-registration-form spRegistrationForm}
+ * {@link stormpath.spRegistrationForm:spRegistrationForm spRegistrationForm}
  *
  * This directive will render a view which does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
