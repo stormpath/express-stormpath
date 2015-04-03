@@ -166,6 +166,41 @@ the list of things again - remember how we locked it down?  Now that
 you are authenticated you are allowed to access that part of the API
 again
 
+Customizing The Form
+----------------------
+
+Do you need to customize the form?  This can be done by supplying
+your own template and adding or removing the appropriate fields.
+
+For example, create a new file in ``client/app/register/`` and call it
+``my-register.html``.  Copy the contents from our existing ``register.html``
+into it.  Then add the following markup to it, in a place that you like::
+
+  <div class="form-group">
+    <label for="favColor" class="col-xs-12 col-sm-4 control-label">Favorite Color</label>
+    <div class="col-xs-12 col-sm-4">
+      <input type="text" class="form-control" id="favColor" ng-model="formModel.customData.favColor" ng-disabled="creating">
+    </div>
+  </div>
+
+Now modify your registration form directive, telling it to use this custom template::
+
+  <div sp-registration-form post-login-state="main" template-url="app/register/my-register.html"></div>
+
+You registration form should have a new field for entering your favorite color!  This information
+will go into the ``customData`` object on the Account object.
+
+.. note::
+  You need to ensure that your server-side framework is decoding complex form
+  objects.  In our Yeoman example you will need to open ``sever/config/express.js``
+  and moodify this line to enable that option::
+
+    app.use(bodyParser.urlencoded({ extended: true }));
+
+For more information about the registration form, see the  `spRegistrationForm documentation`_
+
+.. _spRegistrationForm documentation: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:spRegistrationForm
+
 .. _Stormpath Email Verification: http://docs.stormpath.com/rest/product-guide/#verify-an-email-address
 
 .. _Stormpath Admin Console: https://api.stormpath.com/login
