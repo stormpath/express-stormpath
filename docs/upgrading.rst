@@ -8,6 +8,14 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 1.0.3 -> Version 1.0.4
+------------------------------
+
+If you were previously working with Stormpath sessions directly, then you'll
+need to modify your code.  While previously Stormpath sessions were referred to
+by ``req.session``, they are now referred to by ``req.stormpathSession``.
+
+
 Version 1.0.2 -> Version 1.0.3
 ------------------------------
 
