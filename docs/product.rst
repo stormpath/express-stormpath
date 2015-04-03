@@ -297,7 +297,7 @@ do this::
     var stormpath = require('express-stormpath');
 
     app.get('/email', stormpath.loginRequired, function(req, res) {
-      res.send('Your email address is:', req.user.email);
+      res.send('Your email address is: ' + req.user.email);
     });
 
 The ``req.user`` context allows you to directly interact with the current
