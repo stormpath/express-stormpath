@@ -4,12 +4,10 @@ script(type='text/javascript').
     var clientId = '#{app.get("stormpathSocial").google.clientId}';
     var googleScopes = '#{app.get("stormpathSocial").google.scopes}';
     var hd = '#{app.get("stormpathSocial").google.hd}';
-    var scopes = [];
+    var scopes = '';
 
     if (googleScopes.length) {
-      scopes = googleScopes.join('+');
-    } else {
-      scopes = '';
+      scopes = '+' + googleScopes.split(',').join('+');
     }
 
     var finalUrl = 'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=' +
