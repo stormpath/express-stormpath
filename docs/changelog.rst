@@ -19,6 +19,8 @@ Version 1.0.4
   developers, as they're free to create their own session backends for their
   application logic, most of which bind to ``req.session`` by default.  This
   prevents conflicts in user code.
+- Fixing an issue with custom scopes support for Google login.  This now works
+  properly (*previously this functionality was broken*).
 
 
 Version 1.0.3
