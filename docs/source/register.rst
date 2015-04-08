@@ -119,7 +119,7 @@ messages when someome is trying to complete the email verification process.
 It will:
 
 * Show a success message and prompt them to login
-* Allow them to request anotheer email if the links has expired
+* Allow them to request another email if the links has expired
 
 Open the file ``client/app/emailVerification/emailVerification.html`` and
 replace it's contents with the following::

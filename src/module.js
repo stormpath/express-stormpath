@@ -525,7 +525,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  *      <a ui-sref="login">Login</a>
  *    </li>
  *    <li if-user>
- *        <a ui-sref="main" logout>Logout</a>
+ *        <a ui-sref="main" sp-logout>Logout</a>
  *    </li>
  * </div>
  * </pre>
