@@ -10,7 +10,7 @@ All library changes, in descending order.
 Version 1.0.4
 -------------
 
-**Not yet released.**
+**Released on April 8, 2015.**
 
 - Making several documentation fixes / updates.
 - Upgrading the way our session storage works.  While previously, this library
