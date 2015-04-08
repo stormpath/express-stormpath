@@ -14,7 +14,7 @@ UI State Control
 --------------------------
 
 If you wish to prevent access to an entire UI State, you can define
-a group authorization check in the state configuration.  In this example
+a group authorization check in the state configuration.  In this example,
 we are requiring that the user be in the Admins group::
 
     // Require a user to be in the admins group in order to see this state
@@ -29,14 +29,14 @@ we are requiring that the user be in the Admins group::
         }
       });
 
-For more examples see the `SpStateConfig documentation`_
+For more examples, see the `SpStateConfig documentation`_
 
 Helper Directives
 --------------------------
 
 If you need to show or hide specific elements in response to group state,
 you can use the `ifUserInGroup`_ and `ifUserNotInGroup`_ directives. In
-this example we show a link to the Admin view if the user is in the admin
+this example, we show a link to the Admin view, if the user is in the admin
 group.  If the user is not in the Admin group, we let them know that they
 need to request access::
 
@@ -61,7 +61,7 @@ API Security
 Don't forget to secure your API!  While we provide these convenience
 methods in Angular, you need to protect your server APIs as well.
 If you are using our Express SDK you can use the `groupsRequired Middleware`_
-to help with this
+to help with this.
 
 
 .. _ifUserInGroup: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup
