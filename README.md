@@ -98,18 +98,21 @@ This repository contains a working example application in the `example/dashboard
 This is the application that we build in the [Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html).
 If you would like to skip the guide and start using the example applicion, do the following:
 
-1) Clone this repo
+1) Install [Bower] and [Grunt] if you don't already have them
 
-2) In your terminal, change directories to the `example/dashboard-app` folder
+2) Clone this repo
 
-3) Run `npm install && bower install`
+3) In your terminal, change directories to the `example/dashboard-app` folder
 
-4) Configure your Stormpath variables as explained in the
-[Secure the API](https://docs.stormpath.com/angularjs/guide/protect_api.html)
-section of the documenation
+4) Run `npm install && bower install`
 
-5) Run `grunt serve` to start the Guide
+5) Copy the file `example/dashboard-app/server/config/local.env.sample.js` to
+`local.env.js` (in the same directory) and add your Stormpath variables for the
+Stormpath Applicaiton that you will be using.
 
-You will need Grunt on your system, you can install it with this command:
+6) Run `grunt serve` to start the example application, which will be
+available at http://localhost:9000
 
+[Bower]: http://bower.io "Bower"
+[Grunt]: http://gruntjs.com "Grunt"
 [AngularJS]: https://angularjs.org "AngularJS"

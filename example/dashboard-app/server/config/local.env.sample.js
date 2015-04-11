@@ -10,5 +10,8 @@ module.exports = {
   SESSION_SECRET:   'dashboardapp-secret',
 
   // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+  DEBUG: '',
+  STORMPATH_API_KEY_ID: 'YOUR_KEY_ID',
+  STORMPATH_API_KEY_SECRET: 'YOUR_KEY_SECRET',
+  STORMPATH_APP_HREF: 'YOUR_APP_HREF'
 };

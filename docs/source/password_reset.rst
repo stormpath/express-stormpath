@@ -10,7 +10,7 @@ they click on this link they arrive back at your site.  You then validate
 that this token came from us, and allow the user to set a new password.
 We do all the heavy lifting for you!
 
-We are going to create two seperate UI routes for this flow:
+We are going to create two separate UI routes for this flow:
 
 * ``/password/requestReset`` will serve a form which alllows the user to ask for a new email.
 * ``/password/reset`` will be the page they land on when they click on the link in their email.
