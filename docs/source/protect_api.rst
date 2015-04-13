@@ -3,7 +3,7 @@
 Secure the API
 ====================
 
-The project generator created a simple API for us, it is an Express.js application.
+The project generator created a simple API for us. It is an Express.js application.
 It serves a list of things at ``/api/things`` (you saw this when you ran ``grunt serve`` for the first time,
 they were listed on the home page of the application).  We will use Stormpath to secure this simple API
 
@@ -14,7 +14,7 @@ In the last section, :ref:`create_tenant`, we gathered our API keys an Applicati
 
 We need to place this information somewhere, so that our Express server can make use of it
 This generator follows a convention: whatever is listed in ``server/config/local.env.js`` will
-be automaticaly exposed to the environment.  Open that file and add these properties to the
+be automatically exposed to the environment.  Open that file, add these properties to the
 export block, and fill in your values::
 
     module.exports = {
@@ -33,18 +33,18 @@ Grunt will automatically export these values to the environment, and the Stormpa
 Add the Stormpath middleware
 ---------------------------
 
-Find the file ``server/routes.js``
+Find the file ``server/routes.js``.
 
-This file is attaching some routes to the Express application that is setup in ``server/app.js``
+This file is attaching some routes to the Express application that is setup in ``server/app.js``.
 
-We want to initialize the Stormpath middleware and add it before our API declarion, so that the API will be automatically protected.
+We want to initialize the Stormpath middleware and add it before our API declaration, so that the API will be automatically protected.
 
 First things first, you need to require the SDK - place this at the top of the file::
 
     var stormpathExpressSdk = require('stormpath-sdk-express');
 
 Then you want to create an instance of the Stormpath middleware.  You can
-pass options, but in our case we are just going to make a simple call and
+pass options, but in our case, we are just going to make a simple call and
 use all the default options.  Add this line before the ``module.exports`` statement::
 
     var spMiddleware = stormpathExpressSdk.createMiddleware();
@@ -76,4 +76,4 @@ in your browser:
 .. image:: _static/features-unauthorized.png
 
 
-Our API is now protected from unauthorized, anonymous access.  In the next two sections we will show you how to create a registration form and a login form.  At that point you will be able to login and have access to the API.
+Our API is now protected from unauthorized, anonymous access.  In the next two sections, we will show you how to create a registration form and a login form.  At that point, you will be able to login and have access to the API.

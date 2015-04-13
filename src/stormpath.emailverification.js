@@ -52,13 +52,13 @@ angular.module('stormpath')
  *
  * Use this directive on the page that users land on when they click an email verification link.
  * These links are sent after a user registers, see
- * {@link stormpath.spRegistrationForm:spRegistrationForm spRegistrationForm}
+ * {@link stormpath.spRegistrationForm:spRegistrationForm spRegistrationForm}.
  *
  * This directive will render a view which does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
  * * Verifies the given `sptoken` with Stormpath, then:
  *   * If the token is valid, tell the user that confirmation is complete and prompt the user to login.
- *   * If the token is invalid (it is expired or malformed) we prompt the user to enter
+ *   * If the token is invalid (it is expired or malformed), we prompt the user to enter
  *     their email address, so that we can try sending them a new link.
  *
  * @param {string} template-url An alternate template URL, if you want

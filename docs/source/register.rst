@@ -4,12 +4,12 @@ Create the Registration Form
 ===================
 
 We want our users to sign up for our service, so we need to provide a Registration
-form.  The Stormpath Angular SDK provides a pre-built registration form, we're
+form.  The Stormpath Angular SDK provides a pre-built registration form and we're
 going to show you how to use it.  When a user submits this form, it will create a new
 account for them in the Stormpath Directory that is associated with the Stormpath Application
 that you created in the :ref:`create_tenant` section
 
-Generate the /register route
+Generate the /register Route
 --------------------------------
 
 When you want to create a new route and view in an Angular application, there
@@ -31,7 +31,7 @@ It will ask you some questions, just hit enter to choose the defaults for all of
        create client/app/register/register.html
 
 Start the server and then manually type in the URL to ``/register``
-in your browser, you will see the default view that was created:
+in your browser. You will see the default view that was created:
 
 
 .. image:: _static/default-register-view.png
@@ -40,7 +40,7 @@ Use the Registration Form Directive
 -----------------------------------
 
 We're going to take advantage of the default registration form
-that is available to you in the Stormpath Angular SDK
+that is available to you in the Stormpath Angular SDK.
 
 Open the file ``client/app/register/register.html`` and then replace
 it's contents with this::
@@ -59,22 +59,22 @@ it's contents with this::
 
 This is a small bit of HTML markup which does the following:
 
-* Includes the common menu bar for the application (we will customize it the next section)
-* Sets up some Bootstrap classes so that the page flows nicely
-* Inserts the default registration form, via the ``sp-registration-form`` directive
-* Declares (on the directive) that we want to send the user to the main page after they register
+* Includes the common menu bar for the application (we will customize it the next section).
+* Sets up some Bootstrap classes so that the page flows nicely.
+* Inserts the default registration form via the ``sp-registration-form`` directive.
+* Declares (on the directive) that we want to send the user to the main page after they register.
 
-Save that file and the browser should auto reload, you should now
+Save that file, and the browser should auto reload. You should now
 see the registration route like this:
 
 .. image:: _static/registration_form.png
 
 If you want to further customize the look and behaviour of the form,
-please see the API documentation of for
-`sp-registration-frorm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:sp-registration-form>`_.
+please see the API documentation for
+`sp-registration-form <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:sp-registration-form>`_.
 The most useful feature is the ability to specify your own template.
 
-Generate the /register/verify route
+Generate the /register/verify Route
 --------------------------------
 
 The `Stormpath Email Verification`_ feature will allow you to confirm a user's
@@ -82,12 +82,12 @@ identity by sending them a link that they must click on.
 We handle all the email and links for you!  (If you don't want to use this
 feature, you can skip this section).
 
-However we must decide where the user should go when they click on that
+However, we must decide where the user should go when they click on that
 link in their email.  We will implement a default view for this in our application
 and configure the Stormpath Directory accordingly.
 
-The first thing is to generate another route.  In this situation we will
-call the controller ``emailVerification`` but use the URL of ``/register/verify``
+The first thing is to generate another route.  In this situation, we will
+call the controller ``emailVerification``, but use the URL of ``/register/verify``.
 ::
 
   $ yo angular-fullstack:route emailVerification
@@ -99,7 +99,7 @@ call the controller ``emailVerification`` but use the URL of ``/register/verify`
      create client/app/emailVerification/emailVerification.css
 
 
-Add the sptoken parameter
+Add the sptoken Parameter
 --------------------------------
 
 When the user clicks on the link in their email, they will be sent to your
@@ -115,11 +115,11 @@ Use the Email Verification Directive
 ------------------------------------
 
 We have a pre-built view that shows the necessary informational
-messages when someome is trying to complete the email verification process.
+messages when someone is trying to complete the email verification process.
 It will:
 
-* Show a success message and prompt them to login
-* Allow them to request another email if the links has expired
+* Show a success message and prompt them to login.
+* Allow them to request another email if the links has expired.
 
 Open the file ``client/app/emailVerification/emailVerification.html`` and
 replace it's contents with the following::
@@ -139,7 +139,7 @@ replace it's contents with the following::
 Configure the Directory
 ------------------------------------
 
-In order to use the email verification feature you will need to enable it
+In order to use the email verification feature, you will need to enable it
 on the Directory that this account will be created in.  Login to the
 `Stormpath Admin Console`_ and find the Directories tab.  You will see the
 Directory that was automatically created for the Application.  Click into it,
@@ -156,15 +156,15 @@ Here is what that screen looks like:
 
 .. image:: _static/directory_email_verification.png
 
-Try it, register for an account!
+Try It, Register for an Account!
 --------------------------------
 
 That's it, really!  Give the form a try.  Once you register for an
-account you will be automatically redirected back to the main page.
+account, you will be automatically redirected back to the main page.
 You will also be logged in automatically, and you will start seeing
 the list of things again - remember how we locked it down?  Now that
-you are authenticated you are allowed to access that part of the API
-again
+you are authenticated, you are allowed to access that part of the API
+again.
 
 Customizing The Form
 ----------------------
@@ -183,17 +183,17 @@ into it.  Then add the following markup to it, in a place that you like::
     </div>
   </div>
 
-Now modify your registration form directive, telling it to use this custom template::
+Now, modify your registration form directive and tell it to use this custom template::
 
   <div sp-registration-form post-login-state="main" template-url="app/register/my-register.html"></div>
 
-You registration form should have a new field for entering your favorite color!  This information
+Your registration form should have a new field for entering your favorite color!  This information
 will go into the ``customData`` object on the Account object.
 
 .. note::
   You need to ensure that your server-side framework is decoding complex form
-  objects.  In our Yeoman example you will need to open ``sever/config/express.js``
-  and moodify this line to enable that option::
+  objects.  In our Yeoman example, you will need to open ``sever/config/express.js``
+  and modify this line to enable that option::
 
     app.use(bodyParser.urlencoded({ extended: true }));
 

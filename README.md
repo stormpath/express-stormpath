@@ -17,7 +17,7 @@ you to solve these common user management tasks in your AngularJS application:
 * Conditionally render parts of your UI, based on login state
 * Control access to application routes
 
-Under the hood this library uses Oauth Access Tokens (JWTs) as the authentication
+Under the hood, this library uses Oauth Access Tokens (JWTs) as the authentication
 mechanism.  This library implements the best-practice approaches that we outline in
 [Token Based Authentication for Single Page Apps (SPAs)](https://stormpath.com/blog/token-auth-spa/).
 
@@ -55,13 +55,13 @@ Curious?  Here's some screenies that show you what's included:
 
 ## Installation
 
-If you are using Bower simply install it:
+If you are using Bower, simply install it:
 
 ```bash
 bower install --save stormpath-sdk-angularjs
 ```
 
-If you want to manually load the minified scripts you can grab them from the `dist`
+If you want to manually load the minified scripts, you can grab them from the `dist`
 folder in this repo and include them manually:
 
 ```html
@@ -82,12 +82,12 @@ The templates are optional, see the documentation for more information.
 
 ## Documentation & Guide
 
-If you are starting a new project the
+If you are starting a new project, the
 [Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html)
 will be your best choice.  It will help you get started with a new project and an API
 server for your application.
 
-If you already have an Angular project you will want to visit the
+If you already have an Angular project, you will want to visit the
 [Stormpath AngularJS SDK API Documenation](https://docs.stormpath.com/angularjs/sdk/).
 That documentation will show you all the available directives and services that you
 can use in your application.
@@ -96,7 +96,7 @@ can use in your application.
 
 This repository contains a working example application in the `example/dashboard-app` folder.
 This is the application that we build in the [Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html).
-If you would like to skip the guide and start using the example applicion, do the following:
+If you would like to skip the guide and start using the example application, do the following:
 
 1) Install [Bower] and [Grunt] if you don't already have them
 

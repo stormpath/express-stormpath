@@ -9,13 +9,13 @@
  *
  * ## Welcome!  Let's get started
  *
- * You are reading the API documentation for the Stormpath AngularJS SDK,
- * you are moments away from sovling all kinds of user management issues
- * in your Angular application :)
+ * You are reading the API documentation for the Stormpath AngularJS SDK
+ * and are moments away from solving all kinds of user management issues
+ * in your Angular application. :)
  *
  * ## Installation - Bower
  *
- * If you are using [Bower](https://bower.io) you can simply install
+ * If you are using [Bower](https://bower.io), you can simply install
  * our package:
  *
  * ```
@@ -25,8 +25,8 @@
  * ## Installation - Manual
  *
  * If you would like to add the scripts manually, simply get the latest files from
- * the [dist folder on github](https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/dist).
- * Then add them to the `<head>` section of your document:
+ * the [dist folder on github](https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/dist),
+ * then add them to the `<head>` section of your document:
  *
  * <pre>
  * <script src="stormpath-sdk-angularjs.min.js"></script>
@@ -35,7 +35,7 @@
  *
  * ## Configuration
  *
- * You will need to add `stormpath` as a depenency of your Angular application,
+ * You will need to add `stormpath` as a dependency of your Angular application,
  * and the templates if you will be using those:
  *
  * <pre>
@@ -46,12 +46,12 @@
  *
  * ## Templates are optional
  *
- * This libray includes some default view templates for forms, such as
+ * This library includes some default view templates for forms, such as
  * registration and login.  You have the option to specify your own templates
- * for those directives.  If you are using your own templates it does not make
+ * for those directives.  If you are using your own templates, it does not make
  * sense to include our defaults.
  *
- * If you are using the manual installation: sipmply remove the file
+ * If you are using the manual installation, simply remove the file
  * `stormpath-sdk-angularjs.tpls.min.js`
  *
  * If you are using Bower, you can specify an override for this module
@@ -77,20 +77,26 @@
  * @ngdoc object
  * @name stormpath.SpStateConfig:SpStateConfig
  * @description
+ *
  * The Stormpath State Config is an object that you can define on a
- * state.  You will need to be using the UI Router module, and you need
+ * state.  You will need to be using the UI Router module and you need
  * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}
- * @property {boolean} authenticate If `true`, the user must be
- * authenticated in order to view this state.  If the user is not authenticated they will
- * be redircted to the `login` state.  After they login they will be redicted to
+ *
+ * @property {boolean} authenticate
+ *
+ * If `true`, the user must be
+ * authenticated in order to view this state.  If the user is not authenticated, they will
+ * be redirected to the `login` state.  After they login, they will be redirected to
  * the state that was originally requested.
  *
  * @property {object} authorize
  *
- * An object which defines access control rules.  Currently is supports a group-based
- * check.  See the example below
+ * An object that defines access control rules.  Currently, it supports a group-based
+ * check.  See the example below.
  *
- * @property {boolean} waitForUser If `true`, delay the state transition until we know
+ * @property {boolean} waitForUser
+ *
+ * If `true`, delay the state transition until we know
  * if the user is authenticated or not.  This is useful for situations where
  * you want everyone to see this state, but the state may look different
  * depending on the user's authentication state.
@@ -102,7 +108,7 @@
  * angular.module('myApp')
  *   .config(function ($stateProvider) {
  *
- *     // Wait until we know if the user is logged in, before showing the homepage
+ *     // Wait until we know if the user is logged in before showing the homepage
  *     $stateProvider
  *       .state('main', {
  *         url: '/',
@@ -140,7 +146,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   /**
    * @ngdoc object
    * @name stormpath.$stormpath
+   *
    * @description
+   *
    * This service allows you to enable application-wide features of the library.
    */
 
@@ -206,26 +214,29 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * @ngdoc function
        * @name stormpath#uiRouter
        * @methodOf stormpath.$stormpath
+       *
        * @description
+       *
        * Call this method to enable the integration with the UI Router module.
        *
-       * When enabled you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states, this
-       * object allows you to define access control for the state.  See the
-       * examples below
+       * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
+       * This object allows you to define access control for the state.  See the
+       * examples below.
        *
        * @param {object} config
-       * * **`loginState`** - The UI state name that we should send the user
-       * to if they need to login.  You'll probably use `login` for this value
        *
-       * * **`autoRedirect`** - Defaults to true.  After the user logins at
-       * the state defined by `loginState` they will be redirected back to the
-       * state that was originally requested
+       * * **`loginState`** - The UI state name that we should send the user
+       * to if they need to login.  You'll probably use `login` for this value.
+       *
+       * * **`autoRedirect`** - Defaults to true.  After the user logs in at
+       * the state defined by `loginState`, they will be redirected back to the
+       * state that was originally requested.
        *
        * * **`defaultPostLoginState`**  - Where the user should be sent, after login,
        * if they have visited the login page directly.  If you do not define a value,
        * nothing will happen at the login state.  You can alternatively use the
        * {@link stormpath.authService.$auth#events_$authenticated $authenticated} event to know
-       * that login is successful
+       * that login is successful.
        *
        * @example
        * <pre>
@@ -377,7 +388,8 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifUser:ifUser
  *
  * @description
- * Use this directive to conditionally show an element, if the user is logged in.
+ *
+ * Use this directive to conditionally show an element if the user is logged in.
  *
  * @example
  * <pre>
@@ -405,9 +417,11 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifNotUser:ifNotUser
  *
  * @description
- * Use this directive to conditionally show an element, if the user is NOT logged in.
+ *
+ * Use this directive to conditionally show an element if the user is NOT logged in.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-not-user>Hello, you need to login</h3>
@@ -433,10 +447,12 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifUserInGroup:ifUserInGroup
  *
  * @description
+ *
  * Use this directive to conditionally show an element if the user is logged in
- * and is a member of the group that is specified by the string
+ * and is a member of the group that is specified by the string.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-user-in-group="admins">Hello, {{user.fullName}}, you are an administrator</h3>
@@ -462,10 +478,12 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifUserNotInGroup:ifUserNotInGroup
  *
  * @description
+ *
  * Use this directive to conditionally show an element if the user is logged in
- * and is a member of the group that is specified by the string
+ * and is a member of the group that is specified by the string.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-user-not-in-group="admins">Hello, {{user.fullName}}, please request administrator access</h3>
@@ -491,6 +509,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.whileResolvingUser:while-resolving-user
  *
  * @description
+ *
  * # [DEPRECATED]
  * Please use {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown} instead
  *
@@ -513,12 +532,14 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifUserStateKnown:ifUserStateKnown
  *
  * @description
+ *
  * Use this directive to show an element once the user state is known.
- * The inverse of {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown}, you can
+ * The inverse of {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown}. You can
  * use this directive to show an element after we know if the user is logged in
  * or not.
  *
  * @example
+ *
  * <pre>
  * <div if-user-state-known>
  *   <li if-not-user>
@@ -548,11 +569,13 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifUserStateUnknown:ifUserStateUnknown
  *
  * @description
- * Use this directive to show an element, while waiting to know if the user
+ *
+ * Use this directive to show an element while waiting to know if the user
  * is logged in or not.  This is useful if you want to show a loading graphic
  * over your application while you are waiting for the user state.
  *
  * @example
+ *
  * <pre>
  * <div if-user-state-unknown>
  *   <p>Loading.. </p>
@@ -578,9 +601,11 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.spLogout:spLogout
  *
  * @description
- * This directive adds a click handler to the element.  When clicked the user will be logged out.
+ *
+ * This directive adds a click handler to the element.  When clicked, the user will be logged out.
  *
  * @example
+ *
  * <pre>
  *   <a ui-sref="main" sp-logout>Logout</a>
  * </pre>

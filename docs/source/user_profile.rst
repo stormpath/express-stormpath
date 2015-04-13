@@ -3,12 +3,12 @@
 Creating a User Profile View
 =========================
 
-Most user-centric application have a Profile view, where the user can view and
-edit their basic profile information.  In this section we will show you how to
+Most user-centric applications have a Profile view where the user can view and
+edit their basic profile information.  In this section, we will show you how to
 make a *very* simple display of the user's information.  In the next release of
-this guide we will show you how to update the user's information, see :ref:`coming_soon`
+this guide, we will show you how to update the user's information, see :ref:`coming_soon`
 
-Generate the /profile route
+Generate the /profile Route
 -----------------
 
 Alright, one more time!  We're going to use the generator to scaffold the files for us::
@@ -16,11 +16,11 @@ Alright, one more time!  We're going to use the generator to scaffold the files 
     $ yo angular-fullstack:route profile
 
 
-Force authentication
+Force Authentication
 ---------------------
 
-The user must be logged in if they wan't to see their profile,
-otherwise there is nothing to show!  We want to prevent users
+The user must be logged in if they want to see their profile;
+otherwise, there is nothing to show!  We want to prevent users
 from accessing this page if they are not logged in.  We do
 that by defining the
 `SpStateConfig <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.SpStateConfig:SpStateConfig>`_
@@ -38,23 +38,23 @@ state configuration to include the Stormpath state configuration::
       }
     });
 
-Create the view
+Create the View
 ------------------
 
 Because we have declared ``authenticate: true`` for this state, we
-are guranteed that the user will always be logged in by the time that
+are guaranteed that the user will always be logged in by the time that
 this view loads (if the user is not logged in, they are redirected
 to the login page - and then back here).
 
-With that assurance we can code our template without any complex
+With that assurance, we can code our template without any complex
 switches.
 The Stormpath module will automatically assign the current user
 object to ``user`` on the Root Scope, so it will always be available
 in your templates.
 
-We're gonna keep this super simple and merely render user's object as a JSON
-structure.  Obviously you'll be doing more than this when your application goes
-live :)
+We're going to keep this super simple and merely render user's object as a JSON
+structure.  Obviously, you'll be doing more than this when your application goes
+live. :)
 
 Open the file ``client/app/profile/profile.html`` and then replace
 it's contents with this::
@@ -81,7 +81,7 @@ Just like the other pages, we've included our common menu and setup
 some basic Bootstrap classes.  The ``<pre>`` block will leverage
 Angular's built-in ``json`` filter to show the user object.
 
-Try it out, see your profile!
+Try It Out, See Your Profile!
 -----------------------------
 
 Go back to your browser, make sure your logged in and then go to the

@@ -6,22 +6,22 @@ Waiting For User State
 Now that we have a complete application, you should play around with it!
 
 As you do, you may find something annoying:  our menu bar has a bit of
-a "flash" to it: even if we are logged in, it will momentarily show
+a "flash" to it; even if we are logged in, it will momentarily show
 as if we are not logged in.  This happens while we're fetching the information
 about the current user.
 
-You'll only see this on the main view, you won't see it on the Profile
+You'll only see this on the main view; you won't see it on the Profile
 view because that is an authenticated route.
 
 How do we solve this problem?
 
-Use the waitForUser option
+Use the waitForUser Option
 ---------------------------
 
-The anwer is incredibly simple, just use the ``waitForUser`` option on
+The answer is incredibly simple. Just use the ``waitForUser`` option on
 the state configuration!
 
-With this option we will defer the rendering of the view, but won't
+With this option, we'll defer the rendering of the view, but won't
 go to the login page if the user is not logged in.  We'll continue to
 the view, but the current user state will be resolved either way.  This
 allows our templates to render properly and immediately once the state

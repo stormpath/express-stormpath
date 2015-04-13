@@ -5,21 +5,21 @@ Password Reset Flow
 
 Stormpath has your back when it comes to password reset!  We have
 a complete, secure solution that allows your users to request a password
-reset by email.  We send the user a link with a verification token, when
+reset by email.  We send the user a link with a verification token; when
 they click on this link they arrive back at your site.  You then validate
 that this token came from us, and allow the user to set a new password.
 We do all the heavy lifting for you!
 
 We are going to create two separate UI routes for this flow:
 
-* ``/password/requestReset`` will serve a form which alllows the user to ask for a new email.
+* ``/password/requestReset`` will serve a form, which allows the user to ask for a new email.
 * ``/password/reset`` will be the page they land on when they click on the link in their email.
 
 
 Generate the routes
 --------------------------------
 
-Using the generator command, create a route named ``passwordResetRequest`` but make sure
+Using the generator command, create a route named ``passwordResetRequest``, but make sure
 that you set the URL to ``/password/requestReset`` when prompted.  We will use this
 route to render a form which asks them for their email address::
 
@@ -32,7 +32,7 @@ route to render a form which asks them for their email address::
        create client/app/passwordResetRequest/passwordResetRequest.css
        create client/app/passwordResetRequest/passwordResetRequest.html
 
-Then we want to make a form which allows them to set a new password, after we verify
+Then we want to make a form which allows them to set a new password after we verify
 that they have arrived with a valid reset token.  We will name this view ``passwordReset``
 and give it a URL of ``/password/reset`` - make sure to set this when prompted::
 
@@ -94,7 +94,7 @@ Next find `client/app/passwordResetRequest/passwordResetRequest.html` and replac
 Configure the Directory
 ------------------------------------
 
-In order to use the password reset feature you will need to enable it
+In order to use the password reset feature, you will need to enable it
 on the Directory that this account will be created in.  Login to the
 `Stormpath Admin Console`_ and find the Directories tab.  You will see the
 Directory that was automatically created for the Application.  Click into it,

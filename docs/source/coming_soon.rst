@@ -5,7 +5,7 @@ Coming Soon!
 
 *Last Update: April 2nd, 2015*
 
-Now that you've reached the end of this tutorial, you have a brannd new
+Now that you've reached the end of this tutorial, you have a brand new
 Angular application - complete with a user registration and login system!
 
 AngularJS is really important to us and we're developing our features

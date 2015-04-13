@@ -14,7 +14,7 @@ When the user is not logged in, we want the following to happen:
 But when they login, we want the following to happen:
 
  * Hide the links to the Registration and Login pages
- * Show a link to the Profile page (we'll build that in a later secion)
+ * Show a link to the Profile page (we'll build that in a later section)
  * Show a Logout link
 
 Modify navbar.html
@@ -59,5 +59,5 @@ After you save the file the browser should reload and you'll see the
 changes to the menu bar.  Click on the Logout button - you should see
 that the menu bar changes to show that you're no longer logged in.
 
-In the next section we're going to build the Login route, so that you
+In the next section, we're going to build the Login route, so that you
 can log back in!

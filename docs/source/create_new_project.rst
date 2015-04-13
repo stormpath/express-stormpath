@@ -25,7 +25,7 @@ repeatable boilerplate code).  This must also be installed as a global NPM packa
 
     $ npm install -g yo
 
-Finally we will install `Bower`_, a package manager for front-end applications::
+Finally, we will install `Bower`_, a package manager for front-end applications::
 ::
 
     $ npm install -g bower
@@ -43,7 +43,7 @@ Create an Angular-fullstack project
 ------------------------------------
 
 We are going to use the `Angular Fullstack Generator <https://github.com/DaftMonk/generator-angular-fullstack>`_.
-It's going to create a LOT of files for us: essentially, our entire devopment environment
+It's going to create a LOT of files for us: essentially, our entire development environment
 and the seed files for the client AND server.  This is really amazing.
 
 To use the generator you need to first install it as a global node module::
@@ -55,13 +55,13 @@ At this point you should create a directory for your project and change into it:
     $ mkdir my-angular-project && cd $_
 
 Once there we use the generator to create the project.  We need to give our application a
-name (it does not have to be the same as the folder).  Since we are budilng a basic user
-dashboard for our API we will call it dashboard::
+name (it does not have to be the same as the folder).  Since we are building a basic user
+dashboard for our API, we will call it dashboard::
 
     $ yo angular-fullstack dashboard-app
 
 The generator will ask you several questions, such as which templating engine to use.  We're sticking
-to vanilla HTML/CSS/JS for this guide, the only opinionated choice we are making is to the the 3rd-party
+to vanilla HTML/CSS/JS for this guide. The only opinionated choice we are making is to the the 3rd-party
 `UI Router`_ instead of Angular's default.
 Here are the choices that we made::
 
@@ -113,7 +113,7 @@ this command to get the latest::
 
     $ npm i express@latest --save
 
-In the next section we will get your Stormpath Tenant information, so that we can
+In the next section, we will get your Stormpath Tenant information, so that we can
 continue with the latter sections.
 
 .. _Stormpath Admin Console: https://api.stormpath.com
