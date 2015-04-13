@@ -3,8 +3,8 @@
 angular.module('stormpath')
 .provider('$spFormEncoder', [function $spFormEncoder(){
   /**
-   * This service is intenally exclude from NG Docs
-   * It is an internal utility
+   * This service is intentionally excluded from NG Docs.
+   * It is an internal utility.
    */
 
   this.$get = [

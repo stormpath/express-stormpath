@@ -8,8 +8,8 @@
 
 ## Welcome!  Let's get started
 
-You are reading the API documentation for the Stormpath AngularJS SDK,
-you are moments away from adding user login features to your Angular application :)
+You are reading the API documentation for the Stormpath AngularJS SDK
+and are moments away from adding user login features to your Angular application. :)
 
 If you're ready to dive in with code, see the [Getting Started](#quickstart) section.
 
@@ -18,7 +18,7 @@ If you want a walkthrough tutorial, see the [In-Depth Guide](https://docs.stormp
 
 ## Overview
 
-Used in conjuction with Stormpath on your backend, this module provides
+Used in conjunction with Stormpath on your backend, this module provides
 Angular services which allow you to:
 
 * Authenticate username & password and get the Account object
@@ -31,10 +31,10 @@ Angular services which allow you to:
 
 This module is intended to be used with a Stormpath SDK on your server.  Our
 [Stormpath Express SDK][stormpath-sdk-express] is specifically designed for this.
-We support many other langues as well, please see [docs.stormpath.com]
+We support many other languages as well, please see [docs.stormpath.com]
 
-By default the Angular application expects to find the `/oauth/token` and
-`/api/users/current` endpoints.  If you need to use alternate URLs you can
+By default, the Angular application expects to find the `/oauth/token` and
+`/api/users/current` endpoints.  If you need to use alternate URLs, you can
 configure them using the {@link $stormpath} provider.
 
 ## Using with Express.js
@@ -42,35 +42,35 @@ configure them using the {@link $stormpath} provider.
 We have an Express-based example application in the github repo for
 this project, see the <a href="#example">Example</a>
 
-## How token authentication works
+## How Token Authentication Works
 
 We have written a comprehensive article about token authentication for
 Single Page Applications (SPAs).  Please find it here:
 
 <a href="https://stormpath.com/blog/token-auth-spa" target="_blank">https://stormpath.com/blog/token-auth-spa</a>
 
-### Token creation and storage
+### Token Creation and Storage
 
-When a user logs in the server will issue an access token in the form of a
-JWT.  This access token will be stored in an HTTP-only cookie, and will also
+When a user logs in ,the server will issue an access token in the form of a
+JWT.  This access token will be stored in an HTTP-only cookie and will also
 set the Secure flag (so that it is only sent over HTTPS) in your production
 environment.
 
-You may have heard that cookie are insecure, but that is a vague statement.
-The truth is that HTTP-only cookies, espeically Secure-only cookies, are the
-most secure place to store authentication information becuase the Javascript
+You may have heard that cookies are insecure, but that is a vague statement.
+The truth is that HTTP-only cookies, especially Secure-only cookies, are the
+most secure place to store authentication information because the Javascript
 environment cannot access them.  This is the best way to protect yourself
 from XSS attacks.
 
-### Token expiration and revocation
+### Token Expiration and Revocation
 
 Access tokens are valid until they expire.  You should set an expiration (TTL) that
 makes sense for your application.  The TTL is controlled on your server.  If you
-are using the [Stormpath Express SDK][stormpath-sdk-express] you want to
+are using the [Stormpath Express SDK][stormpath-sdk-express], you want to
 configure the `accessTokenTtl` options.
 
-If you need the ability to revoke specific tokens you can maintain a cache of issued
-tokens on your server.  All tokens have a `jti` field which is a unique nonce for each token.
+If you need the ability to revoke specific tokens, you can maintain a cache of issued
+tokens on your server.  All tokens have a `jti` field, which is a unique nonce for each token.
 
 [docs.stormpath.com]: https://docs.stormpath.com
 [ui-router]: https://github.com/angular-ui/ui-router

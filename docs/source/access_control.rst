@@ -36,7 +36,7 @@ Helper Directives
 
 If you need to show or hide specific elements in response to group state,
 you can use the `ifUserInGroup`_ and `ifUserNotInGroup`_ directives. In
-this example, we show a link to the Admin view, if the user is in the admin
+this example, we show a link to the Admin view if the user is in the admin
 group.  If the user is not in the Admin group, we let them know that they
 need to request access::
 
@@ -60,7 +60,7 @@ API Security
 
 Don't forget to secure your API!  While we provide these convenience
 methods in Angular, you need to protect your server APIs as well.
-If you are using our Express SDK you can use the `groupsRequired Middleware`_
+If you are using our Express SDK, you can use the `groupsRequired Middleware`_
 to help with this.
 
 

@@ -3,18 +3,19 @@
  * @ngdoc overview
  * @name  stormpath.authService
  * @description
- * This module provides the {@link stormpath.authService.$auth $auth} service
+ * This module provides the {@link stormpath.authService.$auth $auth} service.
  *
- * Currently this provider does not have any configuration methods
+ * Currently this provider does not have any configuration methods.
  */
 /**
  * @ngdoc object
  * @name stormpath.authService.$authProvider
+ *
  * @description
  *
- * Provides the {@link stormpath.authService.$auth $auth} service
+ * Provides the {@link stormpath.authService.$auth $auth} service.
  *
- * Currently this provider does not have any configuration methods
+ * Currently this provider does not have any configuration methods.
  */
 angular.module('stormpath.auth',['stormpath.CONFIG'])
 .config(['$injector','STORMPATH_CONFIG',function $authProvider($injector,STORMPATH_CONFIG){
@@ -36,17 +37,27 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * @ngdoc function
          * @name  stormpath.authService.$auth#authenticate
          * @methodOf stormpath.authService.$auth
-         * @param {Object} credentialData An object literal for passing
-         * usernmae & password, or social provider token
+         *
+         * @param {Object} credentialData
+         *
+         * An object literal for passing
+         * username & password, or social provider token.
+         *
          * @description
-         * Sends the provided credential data to your backend server, the server
-         * handler should verify the credentials and return an access token which is
-         * store in an HTTP-only cookie.
-         * @returns {promise} A promise which is resolved with the authntication
+         *
+         * Sends the provided credential data to your backend server. The server
+         * handler should verify the credentials and return an access token, which is
+         * stored in an HTTP-only cookie.
+         *
+         * @returns {promise}
+         *
+         * A promise that is resolved with the authentication
          * response or error response (both are response objects from the $http
          * service).
+         *
          * @example
          * ## Username & Password example
+         *
          * <pre>
          * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
          *   $scope.errorMessage = null;
@@ -106,13 +117,18 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * @name stormpath.authService.$auth#$authenticated
          * @eventOf stormpath.authService.$auth
          * @eventType broadcast on root scope
+         *
          * @description
+         *
          * This event is broadcast when a call to
          * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate()}
-         * is successful
+         * is successful.
          *
          * @param {Object} event Angular event object.
-         * @param {httpResponse} httpResponse The http response from the $http service.  If
+         *
+         * @param {httpResponse} httpResponse
+         *
+         * The http response from the $http service.  If
          * you are writing your access tokens to the response body when a user
          * authenticates, you will want to use this response object to get access
          * to that token.

@@ -25,7 +25,8 @@ angular.module('stormpath')
  * @name stormpath.spLoginForm:spLoginForm
  *
  * @description
- * This directive will render a pre-built login form, with all
+ *
+ * This directive will render a pre-built login form with all
  * the necessary fields.  After the login is a success, the following
  * will happen:
  *
@@ -36,10 +37,13 @@ angular.module('stormpath')
  *  * The user is sent back to the view they originally requested
  *  * The user is sent to a default view of your choice
  *
- * @param {string} template-url An alternate template URL, if you want
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
  * to use your own template for the form.
  *
  * @example
+ *
  * <pre>
  * <!-- If you want to use the default template -->
  * <div class="container">

@@ -2,19 +2,21 @@
 /**
  * @ngdoc overview
  * @name stormpath.userService
+ *
  * @description
  *
- * This module provides the {@link stormpath.userService.$user $user} service
+ * This module provides the {@link stormpath.userService.$user $user} service.
  */
 
 /**
  * @ngdoc object
  * @name stormpath.userService.$userProvider
+ *
  * @description
  *
- * Provides the {@link stormpath.userService.$user $user} service
+ * Provides the {@link stormpath.userService.$user $user} service.
  *
- * Currently this provider does not have any configuration methods
+ * Currently, this provider does not have any configuration methods.
  */
 
 angular.module('stormpath.userService',['stormpath.CONFIG'])
@@ -25,8 +27,9 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
    * @name stormpath.userService.$user
    *
    * @description
+   *
    * Use this service to get the current user and do access control checks
-   * on the user
+   * on the user.
    */
 
   function User(data){
@@ -54,7 +57,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @ngdoc function
          * @name stormpath.userService.$user#create
          * @methodOf stormpath.userService.$user
-         * @param {Object} accountData An object literal for passing the data
+         *
+         * @param {Object} accountData
+         *
+         * An object literal for passing the data
          * for the new account.
          *
          * Required fields:
@@ -64,9 +70,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * * `password` - the password that the user wishes to use for their
          * account.  Must meet the password requirements that you have specified
          * on the directory that this account will be created in.
+         *
          * @description
          *
-         * Attemps to create a new user by submitting the given `accountData` as
+         * Attempts to create a new user by submitting the given `accountData` as
          * JSON to `/api/users`.  The POST endpoint can be modified via the
          * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
          *
@@ -75,14 +82,16 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          *
          * If email verification is enabled, you should send a `202` response instead.
          *
-         *  If you are using our Express.JS SDK you can simply attach the
+         *  If you are using our Express.JS SDK, you can simply attach the
          *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
          * to your application and these responses will be handled automatically for you.
          *
-         * @returns {promise} A promise representing the operation to create a
-         * new user.  If an error occurs (duplicate email, weak password) the
+         * @returns {promise}
+         *
+         * A promise representing the operation to create a
+         * new user.  If an error occurs (duplicate email, weak password), the
          * promise will be rejected and the http response will be passed.
-         * If the operation is successful the promise
+         * If the operation is successful, the promise
          * will be resolved with a boolean `enabled` value.
          *
          * * If `true`, the
@@ -94,6 +103,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * account.
          *
          * @example
+         *
          * <pre>
          * $user.create(accountData)
          *   .then(function(created){
@@ -126,23 +136,27 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @ngdoc function
          * @name stormpath.userService.$user#get
          * @methodOf stormpath.userService.$user
+         *
          * @description
          *
          * Attempt to get the current user.  Returns a promise.  If the user
-         * is authenticated the promise will be resolved with the user object.
-         * If the user is not authenticated the promise will be rejected and
+         * is authenticated, the promise will be resolved with the user object.
+         * If the user is not authenticated, the promise will be rejected and
          * passed the error response from the $http service.
          *
-         * If you cannot make use of the promise you can also obseve the
+         * If you cannot make use of the promise, you can also observe the
          * {@link $notLoggedin $notLoggedin} or {@link $currentUser $currentUser}
          * events.  They are emitted when this method has a success or failure.
          *
          * The user object is a Stormpath Account
-         * object which is wrapped by by a {@link eh User} type
+         * object, which is wrapped by a {@link eh User} type.
          *
-         * @returns {promise} A promise representing the operation to get the current user data
+         * @returns {promise}
+         *
+         * A promise representing the operation to get the current user data
          *
          * @example
+         *
          * <pre>
          * var myApp = angular.module('myApp', ['stormmpath']);
          *
@@ -224,12 +238,14 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @name stormpath.userService.$user#$currentUser
          * @eventOf stormpath.userService.$user
          * @eventType broadcast on root scope
+         *
          * @description
+         *
          * This event is broadcast when a call to
          * {@link stormpath.userService.$user#methods_get $user.get()}
-         * results in a {@link User User} object
+         * results in a {@link User User} object.
          *
-         * See the next section, the $notLoggeInEvent, for example usage
+         * See the next section, the $notLoggeInEvent, for example usage.
          *
          * @param {Object} event Angular event object.
          * @param {User} user The current user object
@@ -243,21 +259,24 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @name stormpath.userService.$user#$notLoggedIn
          * @eventOf stormpath.userService.$user
          * @eventType broadcast on root scope
+         *
          * @description
+         *
          * This event is broadcast when a call to
          * {@link stormpath.userService.$user#methods_get $user.get()}
-         * results in an authentication failure
+         * results in an authentication failure.
          *
          * This event is useful for situations where you want to trigger
          * the call to get the current user, but need to respond to it
-         * from some other place in your application.  An example could be
-         * during application bootstrap: you make a single call to get the current
+         * from some other place in your application.  An example could be,
+         * during application bootstrap, you make a single call to get the current
          * user from the run function, then react to it inside your
          * application controller.
          *
          * @param {Object} event Angular event object.
          *
          * @example
+         *
          * <pre>
          * var myApp = angular.module('myApp', ['stormmpath']);
          * myApp.run(function($user){
@@ -267,6 +286,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          *   //
          *   $user.get();
          * });
+         *
          * myApp.controller('MyAppCtrl', function ($scope, $rootScope) {
          *   $scope.isVisible = false; // Wait for authentication
          *   $rootScope.$on('$notLoggedIn',function(){

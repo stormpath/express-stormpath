@@ -24,7 +24,7 @@
 
  ## Configuration
 
- You will need to add `stormpath` as a depenency of your Angular application,
+ You will need to add `stormpath` as a dependency of your Angular application
  and the templates if you will be using those:
 
  <pre>
@@ -35,12 +35,12 @@
 
  ## Templates are optional
 
- This libray includes some default view templates for forms, such as
+ This library includes some default view templates for forms, such as
  registration and login.  You have the option to specify your own templates
  for those directives.  If you are using your own templates it does not make
  sense to include our defaults.
 
- If you are using the manual installation: sipmply remove the file
+ If you are using the manual installation: simply remove the file
  `stormpath-sdk-angularjs.tpls.min.js`
 
  If you are using Bower, you can specify an override for this module

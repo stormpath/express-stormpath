@@ -5,7 +5,7 @@ Create the Login form
 
 Login forms are pretty straightforward, why re-invent the wheel?
 The Stormpath Angular SDK includes a default login form that you can
-simply insert into your application.  In the next release of this guide
+simply insert into your application.  In the next release of this guide,
 we will show you how to add password reset functions to this form, see
 :ref:`coming_soon`
 
@@ -40,24 +40,24 @@ it's contents with this::
 
 This is a small bit of HTML markup which does the following:
 
-* Includes the common menu bar for the application (we customized it in the last section)
-* Sets up some Bootstrap classes so that the page flows nicely
-* Inserts the default login form, via the `spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive
+* Includes the common menu bar for the application (we customized it in the last section).
+* Sets up some Bootstrap classes so that the page flows nicely.
+* Inserts the default login form, via the `spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive.
 
-Save that file and the browser should auto reload, you should now
+Save that file and the browser should auto reload. You should now
 see the login route like this:
 
 .. image:: _static/login_form.png
 
 
 If you want to further customize the look and behaviour of the form,
-please see the API documentation of for
+please see the API documentation for
 `spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive.
 The most useful feature is the ability to specify your own template.
 
 Try it, log back in!
 --------------------------------
 
-Submit the username and password that you created when you registered,
-you should be redirected back to the main view and you should see the
+Submit the username and password that you created when you registered.
+You should be redirected back to the main view, and you should see the
 logged-in changes to the menu bar.
