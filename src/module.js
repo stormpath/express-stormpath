@@ -9,9 +9,9 @@
  *
  * ## Welcome!  Let's get started
  *
- * You are reading the API documentation for the Stormpath AngularJS SDK
- * and are moments away from solving all kinds of user management issues
- * in your Angular application. :)
+ * You are reading the API documentation for the Stormpath AngularJS SDK.
+ * You are moments away from solving all kinds of user management issues
+ * in your Angular application :)
  *
  * ## Installation - Bower
  *
@@ -25,8 +25,8 @@
  * ## Installation - Manual
  *
  * If you would like to add the scripts manually, simply get the latest files from
- * the [dist folder on github](https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/dist),
- * then add them to the `<head>` section of your document:
+ * the [dist folder on github](https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/dist).
+ * Then add them to the `<head>` section of your document:
  *
  * <pre>
  * <script src="stormpath-sdk-angularjs.min.js"></script>
@@ -35,7 +35,7 @@
  *
  * ## Configuration
  *
- * You will need to add `stormpath` as a dependency of your Angular application,
+ * You will need to add `stormpath` as a dependency of your Angular application
  * and the templates if you will be using those:
  *
  * <pre>
@@ -52,11 +52,11 @@
  * sense to include our defaults.
  *
  * If you are using the manual installation, simply remove the file
- * `stormpath-sdk-angularjs.tpls.min.js`
+ * `stormpath-sdk-angularjs.tpls.min.js`.
  *
  * If you are using Bower, you can specify an override for this module
  * and only include the core javascript.  This is done inside your
- * `bower.json` file:
+ * `bower.json` file.
  *
  * <pre>
  * {
@@ -77,15 +77,14 @@
  * @ngdoc object
  * @name stormpath.SpStateConfig:SpStateConfig
  * @description
- *
  * The Stormpath State Config is an object that you can define on a
- * state.  You will need to be using the UI Router module and you need
- * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}
+ * state.  You will need to be using the UI Router module, and you need
+ * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}.
  *
  * @property {boolean} authenticate
  *
- * If `true`, the user must be
- * authenticated in order to view this state.  If the user is not authenticated, they will
+ * If `true`, the user must be authenticated in order to view this state.
+ * If the user is not authenticated, they will
  * be redirected to the `login` state.  After they login, they will be redirected to
  * the state that was originally requested.
  *
@@ -246,7 +245,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        *       loginState: 'login',
        *       defaultPostLoginState: 'main'
        *     });
-       *   })
+       *   });
        * </pre>
        */
       StormpathService.prototype.uiRouter = function uiRouter(config){
@@ -511,7 +510,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @description
  *
  * # [DEPRECATED]
- * Please use {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown} instead
+ * Please use {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown} instead.
  *
  */
 .directive('whileResolvingUser',['$user','$rootScope',function($user,$rootScope){

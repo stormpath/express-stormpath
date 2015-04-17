@@ -34,8 +34,8 @@ angular.module('stormpath')
  * be fired.
  * *  If you have configured the {@link stormpath.$stormpath#methods_uiRouter UI Router Integration},
  * the following can happen:
- *  * The user is sent back to the view they originally requested
- *  * The user is sent to a default view of your choice
+ *  * The user is sent back to the view they originally requested.
+ *  * The user is sent to a default view of your choice.
  *
  * @param {string} template-url
  *

@@ -61,7 +61,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @param {Object} accountData
          *
          * An object literal for passing the data
-         * for the new account.
+         * to the new account.
          *
          * Required fields:
          * * `givenName` - the user's first name
@@ -94,12 +94,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * If the operation is successful, the promise
          * will be resolved with a boolean `enabled` value.
          *
-         * * If `true`, the
-         * account's status is Enabled and you can proceed with authenticating the user.
+         * * If `true`, the account's status is Enabled and you can proceed with authenticating the user.
          *
          * * If `false`, the account's status is Unverified.
-         * This will be the case when you have
-         * enabled the email verification workflow on the directory of this
+         * This will be the case when you have enabled the email verification workflow on the directory of this
          * account.
          *
          * @example
@@ -153,7 +151,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          *
          * @returns {promise}
          *
-         * A promise representing the operation to get the current user data
+         * A promise representing the operation to get the current user data.
          *
          * @example
          *
@@ -248,7 +246,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * See the next section, the $notLoggeInEvent, for example usage.
          *
          * @param {Object} event Angular event object.
-         * @param {User} user The current user object
+         * @param {User} user The current user object.
          *
          */
         $rootScope.$broadcast(STORMPATH_CONFIG.GET_USER_EVENT,user);
@@ -281,8 +279,8 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * var myApp = angular.module('myApp', ['stormmpath']);
          * myApp.run(function($user){
          *   //
-         *   // Once our app is ready to run, trigger a call to $user.get()
-         *   // We can then do other things while we wait for the result
+         *   // Once our app is ready to run, trigger a call to $user.get().
+         *   // We can then do other things while we wait for the result.
          *   //
          *   $user.get();
          * });

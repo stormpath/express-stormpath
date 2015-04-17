@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.3.0-dev-2015-04-02
+ * @version v0.3.0-dev-2015-04-17
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -20,6 +20,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
  *
  * @description
  *
+ *
+ *
  * ## Welcome!  Let's get started
  *
  * You are reading the API documentation for the Stormpath AngularJS SDK.
@@ -28,7 +30,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
  *
  * ## Installation - Bower
  *
- * If you are using [Bower](https://bower.io) you can simply install
+ * If you are using [Bower](https://bower.io), you can simply install
  * our package:
  *
  * ```
@@ -103,8 +105,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
  *
  * @property {object} authorize
  *
- * An object which defines access control rules.  Currently supports a group-based
- * check.  See the example below:
+ * An object that defines access control rules.  Currently, it supports a group-based
+ * check.  See the example below.
  *
  * @property {boolean} waitForUser
  *
@@ -158,7 +160,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
   /**
    * @ngdoc object
    * @name stormpath.$stormpath
+   *
    * @description
+   *
    * This service allows you to enable application-wide features of the library.
    */
 
@@ -229,9 +233,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        *
        * Call this method to enable the integration with the UI Router module.
        *
-       * When enabled you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states. This
-       * object allows you to define access control for the state.  See the
-       * examples below
+       * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
+       * This object allows you to define access control for the state.  See the
+       * examples below.
        *
        * @param {object} config
        *
@@ -427,9 +431,11 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @name stormpath.ifNotUser:ifNotUser
  *
  * @description
+ *
  * Use this directive to conditionally show an element if the user is NOT logged in.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-not-user>Hello, you need to login</h3>
@@ -460,6 +466,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * and is a member of the group that is specified by the string.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-user-in-group="admins">Hello, {{user.fullName}}, you are an administrator</h3>
@@ -490,6 +497,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * and is a member of the group that is specified by the string.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-user-not-in-group="admins">Hello, {{user.fullName}}, please request administrator access</h3>
@@ -540,18 +548,19 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @description
  *
  * Use this directive to show an element once the user state is known.
- * The inverse of {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown}, you can
+ * The inverse of {@link stormpath.ifUserStateUnknown:ifUserStateUnknown ifUserStateUnknown}. You can
  * use this directive to show an element after we know if the user is logged in
  * or not.
  *
  * @example
+ *
  * <pre>
  * <div if-user-state-known>
  *   <li if-not-user>
  *      <a ui-sref="login">Login</a>
  *    </li>
  *    <li if-user>
- *        <a ui-sref="main" logout>Logout</a>
+ *        <a ui-sref="main" sp-logout>Logout</a>
  *    </li>
  * </div>
  * </pre>
@@ -575,11 +584,12 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  *
  * @description
  *
- * Use this directive to show an element, while waiting to know if the user
+ * Use this directive to show an element while waiting to know if the user
  * is logged in or not.  This is useful if you want to show a loading graphic
  * over your application while you are waiting for the user state.
  *
  * @example
+ *
  * <pre>
  * <div if-user-state-unknown>
  *   <p>Loading.. </p>
@@ -609,6 +619,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * This directive adds a click handler to the element.  When clicked, the user will be logged out.
  *
  * @example
+ *
  * <pre>
  *   <a ui-sref="main" sp-logout>Logout</a>
  * </pre>
@@ -634,6 +645,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 /**
  * @ngdoc object
  * @name stormpath.authService.$authProvider
+ *
  * @description
  *
  * Provides the {@link stormpath.authService.$auth $auth} service.
@@ -660,23 +672,25 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * @ngdoc function
          * @name  stormpath.authService.$auth#authenticate
          * @methodOf stormpath.authService.$auth
+         *
          * @param {Object} credentialData
          *
          * An object literal for passing username & password, or social provider token.
+         *
          * @description
          *
-         * Sends the provided credential data to your backend server, the server
-         * handler should verify the credentials and return an access token which is
-         * store in an HTTP-only cookie.
+         * Sends the provided credential data to your backend server. The server
+         * handler should verify the credentials and return an access token, which is
+         * stored in an HTTP-only cookie.
          *
          * @returns {promise}
          *
-         * A promise which is resolved with the authentication response or error response (both are response objects from the $http
-         * service).
+         * A promise which is resolved with the authentication response or error response (both are response objects from the $http service).
          *
          * @example
          *
          * ## Username & Password example
+         *
          * <pre>
          * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
          *   $scope.errorMessage = null;
@@ -888,7 +902,7 @@ angular.module('stormpath')
 angular.module('stormpath')
 .provider('$spFormEncoder', [function $spFormEncoder(){
   /**
-   * This service is intentionally excluded from NG Docs
+   * This service is intentionally excluded from NG Docs.
    * It is an internal utility.
    */
 
@@ -1195,7 +1209,7 @@ angular.module('stormpath')
  * This directive will render a password reset form which does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
  * * Verifies the given `sptoken` with Stormpath, then:
- *   * If the token is valid, show a form which allows the user to enter a new password.
+ *   * If the token is valid, shows a form which allows the user to enter a new password.
  *   * If the token is invalid (it is expired or malformed), we prompt the user to enter
  *     their email address, so that we can try sending them a new link.
  *

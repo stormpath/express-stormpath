@@ -61,10 +61,13 @@ angular.module('stormpath')
  *   * If the token is invalid (it is expired or malformed), we prompt the user to enter
  *     their email address, so that we can try sending them a new link.
  *
- * @param {string} template-url An alternate template URL, if you want
+ * @param {string} template-url
+ *
+ * An alternate template URL, if you want
  * to use your own template for the form.
  *
  * @example
+ *
  * <pre>
  * <!-- If you want to use the default template -->
  * <div class="container">

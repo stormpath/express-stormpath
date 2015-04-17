@@ -55,7 +55,7 @@ angular.module('stormpath')
  *
  * @param {boolean} autoLogin
  *
- * Default `false`, automatically authenticate the user
+ * Default `false`. Automatically authenticate the user
  * after creation.  This makes a call to
  * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate}, which will
  * trigger the event {@link stormpath.authService.$auth#events_$authenticated $authenticated}.

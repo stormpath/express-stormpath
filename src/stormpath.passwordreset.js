@@ -119,7 +119,7 @@ angular.module('stormpath')
  *
  * Use this directive on the page that users land on when they click on a password
  * reset link.  To send users a password reset link, see
- * {@link stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm spPasswordResetRequestForm}
+ * {@link stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm spPasswordResetRequestForm}.
  *
  * This directive will render a password reset form which does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
