@@ -116,3 +116,8 @@ available at http://localhost:9000
 [Bower]: http://bower.io "Bower"
 [Grunt]: http://gruntjs.com "Grunt"
 [AngularJS]: https://angularjs.org "AngularJS"
+
+## Contributing
+
+Found something you want to change?  Please see the [Contribution Guide](CONTRIBUTING.md),
+we love your input!
