@@ -19,7 +19,7 @@ SDK for the same features.  If you are using Java, please see our `Java Web App 
 
 
 
-What we're building
+What We're Building
 --------------------
 
 Let's quickly cover what we'll be building:
@@ -31,7 +31,7 @@ Let's quickly cover what we'll be building:
 **An AngularJS application**.  This will be an HTML5-based application, which allows users to register, login, and see their profile.  We will control profile access, so that only logged-in users can access that view.
 
 
-How to get support
+How to get Support
 -------------------
 Getting stuck?  Stormpath is a developer-focused platform.  We want to hear from you!  Reach
 us anytime through one of the following channels:

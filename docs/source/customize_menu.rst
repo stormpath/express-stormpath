@@ -52,7 +52,7 @@ You can reload the app to see these changes, but the links to the Login
 and Profile pages will be dead until we continue to the next two sections
 of this guide.
 
-Try it, and logout!
+Try It, and Logout!
 --------------------------
 
 After you save the file the browser should reload and you'll see the

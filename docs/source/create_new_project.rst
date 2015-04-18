@@ -39,7 +39,7 @@ Finally, we will install `Bower`_, a package manager for front-end applications:
 
 
 
-Create an Angular-fullstack project
+Create an Angular-Fullstack Project
 ------------------------------------
 
 We are going to use the `Angular Fullstack Generator <https://github.com/DaftMonk/generator-angular-fullstack>`_.
@@ -94,7 +94,7 @@ stop the server by pressing ``Ctrl+C`` - then use these git commands::
     $ git commit -m "Begin dasbhoard app project"
 
 
-Install the Stormpath packages
+Install the Stormpath Packages
 --------------------------
 
 We need to add two packages to this project, the `Stormpath Express SDK`_ and the `Stormpath Angular SDK`_.

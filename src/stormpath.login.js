@@ -22,7 +22,13 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spLoginForm:spLoginForm
+ *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
  *
  * @description
  *
@@ -36,11 +42,6 @@ angular.module('stormpath')
  * the following can happen:
  *  * The user is sent back to the view they originally requested.
  *  * The user is sent to a default view of your choice.
- *
- * @param {string} template-url
- *
- * An alternate template URL if you want
- * to use your own template for the form.
  *
  * @example
  *

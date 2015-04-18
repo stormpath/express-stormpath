@@ -8,7 +8,7 @@ rest of the application.  We need to add the Stormpath modules as
 dependencies of our application, and we need to configure some of the
 magic that will happen with the `UI Router`_ module.
 
-Add Stormpath to the Agnular Application
+Add Stormpath to the Angular Application
 ==========================================
 
 We need to manually declare the Stormpath Angular SDK as a module
@@ -26,7 +26,7 @@ to look like so::
       'stormpath.templates'
     ])
 
-Configure the UI Router integration
+Configure the UI Router Integration
 ===================================
 
 You're going to get the best bang for your buck if you use the

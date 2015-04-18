@@ -46,7 +46,13 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spEmailVerification:spEmailVerification
+ *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
  *
  * @description
  *
@@ -54,17 +60,12 @@ angular.module('stormpath')
  * These links are sent after a user registers, see
  * {@link stormpath.spRegistrationForm:spRegistrationForm spRegistrationForm}.
  *
- * This directive will render a view which does the following:
+ * This directive will render a view that does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
  * * Verifies the given `sptoken` with Stormpath, then:
- *   * If the token is valid, tell the user that confirmation is complete and prompt the user to login.
+ *   * If the token is valid, tell the user that the confirmation is complete and prompt the user to login.
  *   * If the token is invalid (it is expired or malformed), we prompt the user to enter
  *     their email address, so that we can try sending them a new link.
- *
- * @param {string} template-url
- *
- * An alternate template URL, if you want
- * to use your own template for the form.
  *
  * @example
  *

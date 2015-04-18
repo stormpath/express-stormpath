@@ -2,11 +2,8 @@
 
 /**
  * @ngdoc object
+ *
  * @name stormpath.SpStateConfig:SpStateConfig
- * @description
- * The Stormpath State Config is an object that you can define on a
- * state.  You will need to be using the UI Router module, and you need
- * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}.
  *
  * @property {boolean} authenticate
  *
@@ -27,8 +24,14 @@
  * you want everyone to see this state, but the state may look different
  * depending on the user's authentication state.
  *
+ * @description
+ *
+ * The Stormpath State Config is an object that you can define on a
+ * state.  You will need to be using the UI Router module, and you need
+ * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}.
  *
  * @example
+ *
  * <pre>
  *
  * angular.module('myApp')
@@ -71,6 +74,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 .provider('$stormpath', [function $stormpathProvider(){
   /**
    * @ngdoc object
+   *
    * @name stormpath.$stormpath
    *
    * @description
@@ -138,16 +142,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       /**
        * @ngdoc function
+       *
        * @name stormpath#uiRouter
+       *
        * @methodOf stormpath.$stormpath
-       *
-       * @description
-       *
-       * Call this method to enable the integration with the UI Router module.
-       *
-       * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
-       * This object allows you to define access control for the state.  See the
-       * examples below.
        *
        * @param {object} config
        *
@@ -164,7 +162,16 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * {@link stormpath.authService.$auth#events_$authenticated $authenticated} event to know
        * that login is successful.
        *
+       * @description
+       *
+       * Call this method to enable the integration with the UI Router module.
+       *
+       * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
+       * This object allows you to define access control for the state.  See the
+       * examples below.
+       *
        * @example
+       *
        * <pre>
        * angular.module('myApp')
        *   .run(function($stormpath){
@@ -311,6 +318,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUser:ifUser
  *
  * @description
@@ -318,6 +326,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * Use this directive to conditionally show an element if the user is logged in.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-user>Hello, {{user.fullName}}</h3>
@@ -340,6 +349,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifNotUser:ifNotUser
  *
  * @description
@@ -370,6 +380,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserInGroup:ifUserInGroup
  *
  * @description
@@ -401,6 +412,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserNotInGroup:ifUserNotInGroup
  *
  * @description
@@ -432,6 +444,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.whileResolvingUser:while-resolving-user
  *
  * @description
@@ -455,6 +468,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 }])
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserStateKnown:ifUserStateKnown
  *
  * @description
@@ -492,6 +506,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 }])
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserStateUnknown:ifUserStateUnknown
  *
  * @description
@@ -524,6 +539,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spLogout:spLogout
  *
  * @description
