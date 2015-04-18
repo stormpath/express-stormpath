@@ -8,7 +8,7 @@ Welcome to Stormpath's AngularJS Guide!
 
 .. image:: _static/awesome.png
 
-This guide will show you how to crate an AngularJS application that uses the Stormpath
+This guide will show you how to create an AngularJS application that uses the Stormpath
 User Management Service to handle user registration and login.  We will show you how to:
 
 * Begin an AngularJS application from scratch, using Grunt, Yeoman and Bower
