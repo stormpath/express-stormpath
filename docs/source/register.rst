@@ -3,11 +3,11 @@
 Create the Registration Form
 ===================
 
-We want our users to sign up for our service, so we need to provide a Registration
+We want our users to sign up for our service, so we need to provide a registration
 form.  The Stormpath Angular SDK provides a pre-built registration form and we're
 going to show you how to use it.  When a user submits this form, it will create a new
 account for them in the Stormpath Directory that is associated with the Stormpath Application
-that you created in the :ref:`create_tenant` section
+that you created in the :ref:`create_tenant` section.
 
 Generate the /register Route
 --------------------------------
@@ -20,7 +20,7 @@ Stop the server and run this command in your project folder::
 
     $ yo angular-fullstack:route register
 
-It will ask you some questions, just hit enter to choose the defaults for all of them.  It is going to tell you that it has created these files for you::
+It will ask you some questions.  Just hit enter to choose the defaults for all of them.  It is going to tell you that it has created these files for you::
 
     ? Where would you like to create this route? client/app/
     ? What will the url of your route be? /register
@@ -43,7 +43,7 @@ We're going to take advantage of the default registration form
 that is available to you in the Stormpath Angular SDK.
 
 Open the file ``client/app/register/register.html`` and then replace
-it's contents with this::
+its contents with this::
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -59,19 +59,19 @@ it's contents with this::
 
 This is a small bit of HTML markup which does the following:
 
-* Includes the common menu bar for the application (we will customize it the next section).
+* Includes the common menu bar for the application (we will customize it in the next section).
 * Sets up some Bootstrap classes so that the page flows nicely.
 * Inserts the default registration form via the ``sp-registration-form`` directive.
 * Declares (on the directive) that we want to send the user to the main page after they register.
 
-Save that file, and the browser should auto reload. You should now
+Save that file, and the browser should auto-reload. You should now
 see the registration route like this:
 
 .. image:: _static/registration_form.png
 
-If you want to further customize the look and behaviour of the form,
-please see the API documentation for
-`sp-registration-form <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:sp-registration-form>`_.
+If you want to further customize the look and behavior of the form,
+please see the API documentation for the
+`sp-registration-form <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:sp-registration-form>`_ directive.
 The most useful feature is the ability to specify your own template.
 
 Generate the /register/verify Route
@@ -119,10 +119,10 @@ messages when someone is trying to complete the email verification process.
 It will:
 
 * Show a success message and prompt them to login.
-* Allow them to request another email if the links has expired.
+* Allow them to request another email if the link has expired.
 
 Open the file ``client/app/emailVerification/emailVerification.html`` and
-replace it's contents with the following::
+replace its contents with the following::
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -146,7 +146,7 @@ Directory that was automatically created for the Application.  Click into it,
 find the Workflows tab, and then enable the email verification workflow.
 
 You should also modify the **Link Base URL** to point
-to your application.  At the moment that URL will be::
+to your application.  At the moment, that URL will be::
 
     http://localhost:9000/register/verify
 
@@ -156,13 +156,13 @@ Here is what that screen looks like:
 
 .. image:: _static/directory_email_verification.png
 
-Try It, Register for an Account!
+Try It, register for an Account!
 --------------------------------
 
 That's it, really!  Give the form a try.  Once you register for an
 account, you will be automatically redirected back to the main page.
-You will also be logged in automatically, and you will start seeing
-the list of things again - remember how we locked it down?  Now that
+You will also be logged-in automatically, and you will start seeing
+the list of things again -- remember how we locked it down?  Now that
 you are authenticated, you are allowed to access that part of the API
 again.
 

@@ -15,11 +15,11 @@ additions to this library:
 * Custom templates: a detailed guide on how to achieve this
 * Allowing the user to update their profile from the app
 * Social login!
-* Integrating with Angular's build-in routing system
+* Integrating with Angular's built-in routing system
 
-Stormpath is a developer-focused platform, we want to hear from you!  Reach
+Stormpath is a developer-focused platform.  We want to hear from you!  Reach
 us at anytime through one of the following channels:
 
 * Email support: support@stormpath.com
-* Our knowledgebase: https://support.stormpath.com/hc/en-us
+* Our knowledge-base: https://support.stormpath.com/hc/en-us
 * Github: github.com/stormpath
