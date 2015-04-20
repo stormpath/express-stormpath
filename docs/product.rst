@@ -33,6 +33,11 @@ could define the following variables::
     $ export STORMPATH_SECRET_KEY=blah
     $ export STORMPATH_ENABLE_HTTPS=false
 
+.. note::
+    If you're on Windows, that will look like::
+
+        set STORMPATH_SECRET_KEY=blah
+
 Then, when defining my middleware, I could simply write::
 
     var stormpath = require('express-stormpath');
