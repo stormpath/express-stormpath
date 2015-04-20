@@ -1,6 +1,6 @@
 .. _login:
 
-Create the Login form
+Create the Login Form
 ============================
 
 Login forms are pretty straightforward, why re-invent the wheel?
@@ -9,7 +9,7 @@ simply insert into your application.  In the next release of this guide,
 we will show you how to add password reset functions to this form, see
 :ref:`coming_soon`
 
-Generate the /login route
+Generate the /login Route
 --------------------------------
 
 Like we did with the Registration page, we will use the generator
@@ -55,7 +55,7 @@ please see the API documentation for
 `spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive.
 The most useful feature is the ability to specify your own template.
 
-Try it, log back in!
+Try It, Log Back In!
 --------------------------------
 
 Submit the username and password that you created when you registered.

@@ -16,7 +16,7 @@ We are going to create two separate UI routes for this flow:
 * ``/password/reset`` will be the page they land on when they click on the link in their email.
 
 
-Generate the routes
+Generate the Routes
 --------------------------------
 
 Using the generator command, create a route named ``passwordResetRequest``, but make sure
@@ -45,7 +45,7 @@ and give it a URL of ``/password/reset`` - make sure to set this when prompted::
        create client/app/passwordReset/passwordReset.css
        create client/app/passwordReset/passwordReset.html
 
-Add the sptoken parameter
+Add the sptoken Parameter
 --------------------------------
 
 When the user clicks on the link in their email, they will be sent to your
@@ -57,7 +57,7 @@ string to include this parameter:
     url: '/password/reset?sptoken',
 
 
-Use the password reset directives
+Use the Password Reset Directives
 --------------------------------
 
 We want to modify the two views that we created in the last steps.
@@ -112,7 +112,7 @@ Here is what that screen looks like:
 .. image:: _static/password_reset.png
 
 
-Try it, reset your password!
+Try It, Reset your Password!
 --------------------------------
 
 This form should be fully functional now!  Visit the Login page and you

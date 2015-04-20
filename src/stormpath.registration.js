@@ -51,6 +51,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spRegistrationForm:spRegistrationForm
  *
  * @param {boolean} autoLogin
@@ -67,6 +68,12 @@ angular.module('stormpath')
  * If using the `autoLogin` option, you can specify the name of a UI state that the user
  * should be redirected to after they successfully have registered.
  *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
+ *
+ *
  * @description
  *
  * This directive will render a pre-built user registration form with the following
@@ -80,14 +87,13 @@ angular.module('stormpath')
  *
  * If you would like to customize the form:
  *
- * * Create a new view file in your application
+ * * Create a new view file in your application.
  * * Copy our default template into your file, found here:
- * <a href="https://github.com/stormpath/stormpath-sdk-angularjs/blob/master/src/spRegistrationForm.tpl.html" target="_blank">spRegistrationForm.tpl.html</a>
+ * <a href="https://github.com/stormpath/stormpath-sdk-angularjs/blob/master/src/spRegistrationForm.tpl.html" target="_blank">spRegistrationForm.tpl.html</a>.
  * * Modify the template to fit your needs, making sure to use `formModel.<FIELD>` as the
- * value for `ng-model`, where `.<FIELD>` is the name of the field you want to set on
- * the new account (such as
- * `middleName`)
- * * Use the `template-url` option on the directive to point to your new view file
+ * value for `ng-model` where `.<FIELD>` is the name of the field you want to set on
+ * the new account (such as `middleName`).
+ * * Use the `template-url` option on the directive to point to your new view file.
  *
  * If you would like to add Custom Data to the new account, you can add form inputs to the template
  * and use `formModel.customData.<FIELD>` as the value for `ng-model`
@@ -108,11 +114,6 @@ angular.module('stormpath')
  * {@link stormpath.userService.$user#methods_create $user.create()}
  * when it is ready to POST the form to the server. Please see that method
  * for more information.
- *
- * @param {string} template-url
- *
- * An alternate template URL if you want
- * to use your own template for the form.
  *
  * @example
  *

@@ -7,7 +7,7 @@ The project generator created a simple API for us. It is an Express.js applicati
 It serves a list of things at ``/api/things`` (you saw this when you ran ``grunt serve`` for the first time,
 they were listed on the home page of the application).  We will use Stormpath to secure this simple API
 
-Configure your environment variables
+Configure your Environment Variables
 ------------------------------------
 
 In the last section, :ref:`create_tenant`, we gathered our API keys an Application href.
@@ -30,7 +30,7 @@ export block, and fill in your values::
 Grunt will automatically export these values to the environment, and the Stormpath SDK will pick them up automatically.
 
 
-Add the Stormpath middleware
+Add the Stormpath Middleware
 ---------------------------
 
 Find the file ``server/routes.js``.
@@ -65,7 +65,7 @@ to use the authenticate middleware::
 
     app.use('/api/things', spMiddleware.authenticate, require('./api/thing'));
 
-Reload the app
+Reload the App
 ---------------
 
 Restart the server by running ``grunt serve`` again.  You should now see that

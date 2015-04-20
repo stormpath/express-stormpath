@@ -6,7 +6,7 @@
 ## Example
 
 We have a complete sample application which shows you how to create an
-Angularjs application with an Express backend.  Please see the example
+AngularJS application with an Express backend.  Please see the example
 folder in the repo:
 
 <a href="https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/example" target="_blank">https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/example</a>

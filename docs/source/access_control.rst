@@ -6,7 +6,7 @@ Access Control
 Parts of your application may only be available to certain users.
 Stormpath provides Groups, which is a great way to segment users.
 
-We provide some functionality which makes it easy to make UI decisions
+We provide some functionality, which makes it easy to make UI decisions
 by looking at the groups that the account is a member of.
 
 

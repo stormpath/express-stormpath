@@ -1,6 +1,7 @@
 'use strict';
 /**
  * @ngdoc overview
+ *
  * @name stormpath.userService
  *
  * @description
@@ -10,6 +11,7 @@
 
 /**
  * @ngdoc object
+ *
  * @name stormpath.userService.$userProvider
  *
  * @description
@@ -24,6 +26,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
 
   /**
    * @ngdoc object
+   *
    * @name stormpath.userService.$user
    *
    * @description
@@ -55,7 +58,9 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.create = function(accountData){
         /**
          * @ngdoc function
+         *
          * @name stormpath.userService.$user#create
+         *
          * @methodOf stormpath.userService.$user
          *
          * @param {Object} accountData
@@ -71,21 +76,6 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * account.  Must meet the password requirements that you have specified
          * on the directory that this account will be created in.
          *
-         * @description
-         *
-         * Attempts to create a new user by submitting the given `accountData` as
-         * JSON to `/api/users`.  The POST endpoint can be modified via the
-         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
-         *
-         * This method expects a `201` response if the account does NOT require email
-         * verification.
-         *
-         * If email verification is enabled, you should send a `202` response instead.
-         *
-         *  If you are using our Express.JS SDK, you can simply attach the
-         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
-         * to your application and these responses will be handled automatically for you.
-         *
          * @returns {promise}
          *
          * A promise representing the operation to create a
@@ -99,6 +89,21 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * * If `false`, the account's status is Unverified.
          * This will be the case when you have enabled the email verification workflow on the directory of this
          * account.
+         *
+         * @description
+         *
+         * Attempts to create a new user by submitting the given `accountData` as
+         * JSON to `/api/users`.  The POST endpoint can be modified via the
+         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
+         *
+         * This method expects a `201` response if the account does NOT require email
+         * verification.
+         *
+         * If email verification is enabled, you should send a `202` response instead.
+         *
+         * If you are using our Express.JS SDK, you can simply attach the
+         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
+         * to your application and these responses will be handled automatically for you.
          *
          * @example
          *
@@ -132,8 +137,14 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.get = function get() {
         /**
          * @ngdoc function
+         *
          * @name stormpath.userService.$user#get
+         *
          * @methodOf stormpath.userService.$user
+         *
+         * @returns {promise}
+         *
+         * A promise representing the operation to get the current user data.
          *
          * @description
          *
@@ -149,14 +160,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * The user object is a Stormpath Account
          * object, which is wrapped by a {@link eh User} type.
          *
-         * @returns {promise}
-         *
-         * A promise representing the operation to get the current user data.
-         *
          * @example
          *
          * <pre>
-         * var myApp = angular.module('myApp', ['stormmpath']);
+         * var myApp = angular.module('myApp', ['stormpath']);
          *
          * myApp.controller('MyAppCtrl', function ($scope, $user) {
          *   $user.get()
@@ -233,9 +240,20 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       function currentUserEvent(user){
         /**
          * @ngdoc event
+         *
          * @name stormpath.userService.$user#$currentUser
+         *
          * @eventOf stormpath.userService.$user
+         *
          * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
+         *
+         * @param {User} user
+         *
+         * The current user object.
          *
          * @description
          *
@@ -244,19 +262,22 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * results in a {@link User User} object.
          *
          * See the next section, the $notLoggeInEvent, for example usage.
-         *
-         * @param {Object} event Angular event object.
-         * @param {User} user The current user object.
-         *
          */
         $rootScope.$broadcast(STORMPATH_CONFIG.GET_USER_EVENT,user);
       }
       function notLoggedInEvent(){
         /**
          * @ngdoc event
+         *
          * @name stormpath.userService.$user#$notLoggedIn
+         *
          * @eventOf stormpath.userService.$user
+         *
          * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
          *
          * @description
          *
@@ -271,16 +292,14 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * user from the run function, then react to it inside your
          * application controller.
          *
-         * @param {Object} event Angular event object.
-         *
          * @example
          *
          * <pre>
-         * var myApp = angular.module('myApp', ['stormmpath']);
+         * var myApp = angular.module('myApp', ['stormpath']);
          * myApp.run(function($user){
          *   //
-         *   // Once our app is ready to run, trigger a call to $user.get().
-         *   // We can then do other things while we wait for the result.
+         *   // Once our app is ready to run, trigger a call to $user.get()
+         *   // We can then do other things while we wait for the result
          *   //
          *   $user.get();
          * });
