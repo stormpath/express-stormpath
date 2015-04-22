@@ -27,7 +27,7 @@ Angular services which allow you to:
 * Use [`ui-router`][ui-router] to declare rules at the UI-state level
 
 
-## Backed Integration
+## Backend Integration
 
 This module is intended to be used with a Stormpath SDK on your server.  Our
 [Stormpath Express SDK][stormpath-sdk-express] is specifically designed for this.
