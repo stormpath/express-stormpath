@@ -60,7 +60,7 @@ dashboard for our API, we will call it dashboard::
     $ yo angular-fullstack dashboard-app
 
 The generator will ask you several questions, such as which templating engine to use.  We're sticking
-to vanilla HTML/CSS/JS for this guide. The only opinionated choice we are making is to use the the 3rd-party
+to vanilla HTML/CSS/JS for this guide. The only opinionated choice we are making is to use the 3rd-party
 `UI Router`_ instead of Angular's default.
 Here are the choices that we made::
 
