@@ -80,7 +80,7 @@ Generate the /register/verify Route
 The `Stormpath Email Verification`_ feature will allow you to confirm a user's
 identity by sending them a link that they must click on.
 We handle all the email and links for you!  (If you don't want to use this
-feature, you can skip this section).
+feature, you can skip this section.)
 
 However, we must decide where the user should go when they click on that
 link in their email.  We will implement a default view for this in our application
@@ -156,7 +156,7 @@ Here is what that screen looks like:
 
 .. image:: _static/directory_email_verification.png
 
-Try It, register for an Account!
+Try It, Register for an Account!
 --------------------------------
 
 That's it, really!  Give the form a try.  Once you register for an
@@ -166,7 +166,7 @@ the list of things again -- remember how we locked it down?  Now that
 you are authenticated, you are allowed to access that part of the API
 again.
 
-Customizing The Form
+Customizing the Form
 ----------------------
 
 Do you need to customize the form?  This can be done by supplying
@@ -174,7 +174,7 @@ your own template and adding or removing the appropriate fields.
 
 For example, create a new file in ``client/app/register/`` and call it
 ``my-register.html``.  Copy the contents from our existing ``register.html``
-into it.  Then add the following markup to it, in a place that you like::
+into it.  Then add the following markup to it in a place that you like::
 
   <div class="form-group">
     <label for="favColor" class="col-xs-12 col-sm-4 control-label">Favorite Color</label>
@@ -197,7 +197,7 @@ will go into the ``customData`` object on the Account object.
 
     app.use(bodyParser.urlencoded({ extended: true }));
 
-For more information about the registration form, see the  `spRegistrationForm documentation`_
+For more information about the registration form, see the  `spRegistrationForm documentation`_.
 
 .. _spRegistrationForm documentation: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:spRegistrationForm
 

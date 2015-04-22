@@ -55,8 +55,8 @@ of this guide.
 Try It, and Logout!
 --------------------------
 
-After you save the file the browser should reload and you'll see the
-changes to the menu bar.  Click on the Logout button - you should see
+After you save the file, the browser should reload and you'll see the
+changes to the menu bar.  Click on the Logout button and you should see
 that the menu bar changes to show that you're no longer logged in.
 
 In the next section, we're going to build the Login route, so that you

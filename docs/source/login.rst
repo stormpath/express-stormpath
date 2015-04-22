@@ -15,7 +15,7 @@ Generate the /login Route
 Like we did with the Registration page, we will use the generator
 to create the login route.
 
-Stop the server and run this command in your project folder, pressing
+Stop the server, run the following command in your project folder, and press
 enter to choose all the default options when it asks::
 
     $ yo angular-fullstack:route login
@@ -24,7 +24,7 @@ Use the Login Form Directive
 --------------------------------
 
 Open the file ``client/app/login/login.html`` and then replace
-it's contents with this::
+its contents with this::
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -38,7 +38,7 @@ it's contents with this::
       <div sp-login-form></div>
     </div>
 
-This is a small bit of HTML markup which does the following:
+This is a small bit of HTML markup, which does the following:
 
 * Includes the common menu bar for the application (we customized it in the last section).
 * Sets up some Bootstrap classes so that the page flows nicely.
@@ -51,7 +51,7 @@ see the login route like this:
 
 
 If you want to further customize the look and behaviour of the form,
-please see the API documentation for
+please see the API documentation for the
 `spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive.
 The most useful feature is the ability to specify your own template.
 

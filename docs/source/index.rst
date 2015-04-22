@@ -11,11 +11,11 @@ Welcome to Stormpath's AngularJS Guide!
 This guide will show you how to create an AngularJS application that uses the Stormpath
 User Management Service to handle user registration and login.  We will show you how to:
 
-* Begin an AngularJS application from scratch, using Grunt, Yeoman and Bower
+* Begin an AngularJS application from scratch, using Grunt, Yeoman and Bower.
 * Create a simple REST API and secure it with Oauth Access Tokens (JWTs).  We will use Express.js for the server.
-* Control access to views in the AngularJS application
-* Fetch information about the user from your API
-* Render your UI based on the current user sate
+* Control access to views in the AngularJS application.
+* Fetch information about the user from your API.
+* Render your UI based on the current user state.
 
 Ready to get started?  Continue with the :ref:`introduction`.
 

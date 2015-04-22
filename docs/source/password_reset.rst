@@ -6,8 +6,8 @@ Password Reset Flow
 Stormpath has your back when it comes to password reset!  We have
 a complete, secure solution that allows your users to request a password
 reset by email.  We send the user a link with a verification token; when
-they click on this link they arrive back at your site.  You then validate
-that this token came from us, and allow the user to set a new password.
+they click on this link, they arrive back at your site.  You then validate
+that this token came from us and allow the user to set a new password.
 We do all the heavy lifting for you!
 
 We are going to create two separate UI routes for this flow:
@@ -32,7 +32,7 @@ route to render a form which asks them for their email address::
        create client/app/passwordResetRequest/passwordResetRequest.css
        create client/app/passwordResetRequest/passwordResetRequest.html
 
-Then we want to make a form which allows them to set a new password after we verify
+Then we want to make a form, which allows them to set a new password after we verify
 that they have arrived with a valid reset token.  We will name this view ``passwordReset``
 and give it a URL of ``/password/reset`` - make sure to set this when prompted::
 
@@ -62,7 +62,7 @@ Use the Password Reset Directives
 
 We want to modify the two views that we created in the last steps.
 
-Open `client/app/passwordReset/passwordReset.html` and replace it's contents with this:
+Open `client/app/passwordReset/passwordReset.html` and replace its contents with this:
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -76,7 +76,7 @@ Open `client/app/passwordReset/passwordReset.html` and replace it's contents wit
       <div sp-password-reset-form></div>
     </div>
 
-Next find `client/app/passwordResetRequest/passwordResetRequest.html` and replace it's contents with this:
+Next find `client/app/passwordResetRequest/passwordResetRequest.html` and replace its contents with this:
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
