@@ -11,7 +11,7 @@ Sign up for Stormpath
 ---------------------
 
 Now that you're ready to integrate Stormpath, the first thing you'll want to do is
-create a new Stormpath account by visiting https://api.stormpath.com/register .
+create a new Stormpath account by visiting https://api.stormpath.com/register.
 
 We'll send you an email verification message, please verify it and then you can
 login to the `Stormpath Admin Console`_.
