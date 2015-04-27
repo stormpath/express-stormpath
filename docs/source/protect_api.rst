@@ -5,15 +5,15 @@ Secure the API
 
 The project generator created a simple API for us. It is an Express.js application.
 It serves a list of things at ``/api/things`` (you saw this when you ran ``grunt serve`` for the first time,
-they were listed on the home page of the application).  We will use Stormpath to secure this simple API
+they were listed on the home page of the application).  We will use Stormpath to secure this simple API.
 
 Configure your Environment Variables
 ------------------------------------
 
-In the last section, :ref:`create_tenant`, we gathered our API keys an Application href.
+In the last section, :ref:`create_tenant`, we gathered our API keys an Application Href.
 
-We need to place this information somewhere, so that our Express server can make use of it
-This generator follows a convention: whatever is listed in ``server/config/local.env.js`` will
+We need to place this information somewhere, so that our Express server can make use of it.
+This generator follows a convention: whatever is listed in ``server/config/local.env.js``, will
 be automatically exposed to the environment.  Open that file, add these properties to the
 export block, and fill in your values::
 

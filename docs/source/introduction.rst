@@ -4,7 +4,7 @@ Introduction
 =============
 
 In this guide we will be creating a full-stack JavaScript application.
-We will be starting a new project from scratch, we will use the Grunt
+We will be starting a new project from scratch and we will use the Grunt
 and Yeoman tools to take care of the tedious setup.
 
 If you're a seasoned AngularJS developer and simply need to know the
@@ -24,7 +24,7 @@ What We're Building
 
 Let's quickly cover what we'll be building:
 
-**A fullstack project**.  We're going to create a project with a lot of boilerplate code, but don't worry: it's going to be created automatically for you!  This is the power of Yeoman.
+**A fullstack project**.  We're going to create a project with a lot of boilerplate code, but don't worry, it's going to be created automatically for you!  This is the power of Yeoman.
 
 **A Node.js server**.  This server will serve the assets for the AngularJS application.  It will also serve a simple API, which we will secure with Stormpath.
 

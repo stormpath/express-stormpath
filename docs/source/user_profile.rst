@@ -84,7 +84,7 @@ Angular's built-in ``json`` filter to show the user object.
 Try It Out, See Your Profile!
 -----------------------------
 
-Go back to your browser, make sure your logged in and then go to the
+Go back to your browser, make sure your logged in, and then go to the
 Profile link.  You should now see your user data:
 
 .. image:: _static/profile_view.png

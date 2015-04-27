@@ -29,7 +29,7 @@ we are requiring that the user be in the Admins group::
         }
       });
 
-For more examples, see the `SpStateConfig documentation`_
+For more examples, see the `SpStateConfig documentation`_.
 
 Helper Directives
 --------------------------
@@ -59,7 +59,7 @@ API Security
 --------------------------
 
 Don't forget to secure your API!  While we provide these convenience
-methods in Angular, you need to protect your server APIs as well.
+methods in AngularJS, you need to protect your server APIs as well.
 If you are using our Express SDK, you can use the `groupsRequired Middleware`_
 to help with this.
 
