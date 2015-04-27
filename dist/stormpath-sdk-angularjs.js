@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.3.0-dev-2015-04-17
+ * @version v0.4.0-dev-2015-04-27
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -17,11 +17,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
 /**
  * @ngdoc object
+ *
  * @name stormpath.SpStateConfig:SpStateConfig
- * @description
- * The Stormpath State Config is an object that you can define on a
- * state.  You will need to be using the UI Router module, and you need
- * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}.
  *
  * @property {boolean} authenticate
  *
@@ -42,8 +39,14 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
  * you want everyone to see this state, but the state may look different
  * depending on the user's authentication state.
  *
+ * @description
+ *
+ * The Stormpath State Config is an object that you can define on a
+ * state.  You will need to be using the UI Router module, and you need
+ * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}.
  *
  * @example
+ *
  * <pre>
  *
  * angular.module('myApp')
@@ -86,6 +89,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 .provider('$stormpath', [function $stormpathProvider(){
   /**
    * @ngdoc object
+   *
    * @name stormpath.$stormpath
    *
    * @description
@@ -153,16 +157,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       /**
        * @ngdoc function
+       *
        * @name stormpath#uiRouter
+       *
        * @methodOf stormpath.$stormpath
-       *
-       * @description
-       *
-       * Call this method to enable the integration with the UI Router module.
-       *
-       * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
-       * This object allows you to define access control for the state.  See the
-       * examples below.
        *
        * @param {object} config
        *
@@ -179,7 +177,16 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * {@link stormpath.authService.$auth#events_$authenticated $authenticated} event to know
        * that login is successful.
        *
+       * @description
+       *
+       * Call this method to enable the integration with the UI Router module.
+       *
+       * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
+       * This object allows you to define access control for the state.  See the
+       * examples below.
+       *
        * @example
+       *
        * <pre>
        * angular.module('myApp')
        *   .run(function($stormpath){
@@ -217,6 +224,18 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
             }
           });
         }
+      };
+
+      StormpathService.prototype.regexAttrParser = function regexAttrParser(value){
+        var expr;
+        if(value instanceof RegExp){
+          expr = value;
+        }else if(value && /^\/.+\/[gim]?$/.test(value)){
+          expr = new RegExp(value.split('/')[1],value.split('/')[2]);
+        }else{
+          expr = value;
+        }
+        return expr;
       };
 
       function UrlEncodedFormParser(){
@@ -326,6 +345,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUser:ifUser
  *
  * @description
@@ -333,6 +353,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * Use this directive to conditionally show an element if the user is logged in.
  *
  * @example
+ *
  * <pre>
  * <div class="container">
  *   <h3 if-user>Hello, {{user.fullName}}</h3>
@@ -355,6 +376,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifNotUser:ifNotUser
  *
  * @description
@@ -385,68 +407,145 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserInGroup:ifUserInGroup
  *
  * @description
  *
  * Use this directive to conditionally show an element if the user is logged in
- * and is a member of the group that is specified by the string.
+ * and is a member of the group that is specified by the expression.
+ *
+ * The attribute value MUST be one of:
+ *
+ * * A string expression, surrounded by quotes
+ * * A reference to a property on the $scope.  That property can be a string or
+ * regular expression.
+ *
+ * # Using Regular Expressions
+ *
+ * If using a string expression as the attribute value, you can pass a regular
+ * expression by wrapping it in the literal
+ * syntax, e.g.
+ *  * `'/admins/'` would match any group which has *admins* in the name
+ *  * `'/admin$/'` would match any group were the name **ends with** *admin*
+ *
+ * If referencing a scope property, you should create the value as a RegExp type,
+ * e.g.:
+ *
+ *  <pre>
+ *    $scope.matchGroup = new RegExp(/admins/);
+ *  </pre>
  *
  * @example
  *
  * <pre>
- * <div class="container">
- *   <h3 if-user-in-group="admins">Hello, {{user.fullName}}, you are an administrator</h3>
- * </div>
+ *   <script type="text/javascript">
+ *     function SomeController($scope){
+ *       $scope.matchGroup = /admins/;
+ *     }
+ *   <script>
+ *   <div ng-controller="SomeController">
+ *     <h3 if-user-in-group="'admins'">
+ *       Hello, {{user.fullName}}, you are an administrator
+ *     </h3>
+ *
+ *     <div if-user-in-group="'/admins/'">
+ *        <!-- would match any group which has *admins* in the name -->
+ *     </div>
+ *     <div if-user-in-group="matchGroup">
+ *        <!-- equivalent to the last example -->
+ *     </div>
+ *     <div if-user-in-group="'/admin$/'">
+ *        <!-- would match any group were the name **ends with** *admin* -->
+ *     </div>
+ *   </div>
  * </pre>
  */
-.directive('ifUserInGroup',['$user','$rootScope',function($user,$rootScope){
+.directive('ifUserInGroup',['$user','$rootScope','$parse','$stormpath',function($user,$rootScope,$parse,$stormpath){
+
   return {
     link: function(scope,element,attrs){
-      $rootScope.$watch('user',function(){
-        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserInGroup)){
+
+      var expr;
+      var attrExpr = attrs.ifUserInGroup;
+
+      function evalElement(){
+        var user = $user.currentUser;
+        if(user && user.groupTest(expr)){
           element.show();
         }else{
           element.hide();
         }
-      });
+      }
+
+      if(attrExpr){
+        scope.$watch($parse(attrExpr),function(value){
+          expr = $stormpath.regexAttrParser(value);
+          evalElement();
+        });
+        $rootScope.$watch('user',function(){
+          evalElement();
+        });
+      }
     }
   };
 }])
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserNotInGroup:ifUserNotInGroup
  *
  * @description
  *
  * Use this directive to conditionally show an element if the user is logged in
- * and is a member of the group that is specified by the string.
+ * and is NOT a member of the group that is specified by the expression.
+ *
+ * This is the inverse of {@link stormpath.ifUserInGroup:ifUserInGroup ifUserInGroup},
+ * please refer to that directive for full usage information.
  *
  * @example
  *
  * <pre>
- * <div class="container">
- *   <h3 if-user-not-in-group="admins">Hello, {{user.fullName}}, please request administrator access</h3>
- * </div>
+ *   <div class="container">
+ *     <h3 if-user-not-in-group="'admins'">
+ *       Hello, {{user.fullName}}, please request administrator access
+ *     </h3>
+ *   </div>
  * </pre>
  */
-.directive('ifUserNotInGroup',['$user','$rootScope',function($user,$rootScope){
+.directive('ifUserNotInGroup',['$user','$rootScope','$parse','$stormpath',function($user,$rootScope,$parse,$stormpath){
   return {
     link: function(scope,element,attrs){
-      $rootScope.$watch('user',function(){
-        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserNotInGroup)){
+
+      var expr;
+      var attrExpr = attrs.ifUserNotInGroup;
+
+      function evalElement(){
+        var user = $user.currentUser;
+        if(user && user.groupTest(expr)){
           element.hide();
         }else{
           element.show();
         }
-      });
+      }
+
+      if(attrExpr){
+        scope.$watch($parse(attrExpr),function(value){
+          expr = $stormpath.regexAttrParser(value);
+          evalElement();
+        });
+        $rootScope.$watch('user',function(){
+          evalElement();
+        });
+      }
     }
   };
 }])
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.whileResolvingUser:while-resolving-user
  *
  * @description
@@ -470,6 +569,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 }])
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserStateKnown:ifUserStateKnown
  *
  * @description
@@ -507,6 +607,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 }])
 /**
  * @ngdoc directive
+ *
  * @name stormpath.ifUserStateUnknown:ifUserStateUnknown
  *
  * @description
@@ -539,6 +640,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spLogout:spLogout
  *
  * @description
@@ -563,14 +665,18 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 'use strict';
 /**
  * @ngdoc overview
+ *
  * @name  stormpath.authService
+ *
  * @description
+ *
  * This module provides the {@link stormpath.authService.$auth $auth} service.
  *
  * Currently, this provider does not have any configuration methods.
  */
 /**
  * @ngdoc object
+ *
  * @name stormpath.authService.$authProvider
  *
  * @description
@@ -583,8 +689,11 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
 .config(['$injector','STORMPATH_CONFIG',function $authProvider($injector,STORMPATH_CONFIG){
   /**
    * @ngdoc object
+   *
    * @name stormpath.authService.$auth
+   *
    * @description
+   *
    * The auth service provides methods for authenticating a user, aka
    * "logging in" the user.
    */
@@ -597,22 +706,24 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
       AuthService.prototype.authenticate = function authenticate(data) {
         /**
          * @ngdoc function
+         *
          * @name  stormpath.authService.$auth#authenticate
+         *
          * @methodOf stormpath.authService.$auth
          *
          * @param {Object} credentialData
          *
          * An object literal for passing username & password, or social provider token.
          *
+         * @returns {promise}
+         *
+         * A promise that is resolved with the authentication response or error response (both are response objects from the $http service).
+         *
          * @description
          *
          * Sends the provided credential data to your backend server. The server
          * handler should verify the credentials and return an access token, which is
          * stored in an HTTP-only cookie.
-         *
-         * @returns {promise}
-         *
-         * A promise which is resolved with the authentication response or error response (both are response objects from the $http service).
          *
          * @example
          *
@@ -674,15 +785,12 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
       function authenticatedEvent(response){
         /**
          * @ngdoc event
+         *
          * @name stormpath.authService.$auth#$authenticated
+         *
          * @eventOf stormpath.authService.$auth
+         *
          * @eventType broadcast on root scope
-         *
-         * @description
-         *
-         * This event is broadcast when a call to
-         * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate()}
-         * is successful.
          *
          * @param {Object} event
          *
@@ -690,9 +798,14 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          *
          * @param {httpResponse} httpResponse
          *
-         * The http response from the $http service.  If you are writing your access tokens to the response body when a user
-         * authenticates, you will want to use this response object to get access to that token.
+         * The http response from the $http service.  If you are writing your access tokens to the response body
+         * when a user authenticates, you will want to use this response object to get access to that token.
          *
+         * @description
+         *
+         * This event is broadcast when a call to
+         * {@link stormpath.authService.$auth#methods_authenticate $auth.authenticate()}
+         * is successful.
          */
         $rootScope.$broadcast(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,response);
       }
@@ -781,7 +894,13 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spEmailVerification:spEmailVerification
+ *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
  *
  * @description
  *
@@ -789,17 +908,12 @@ angular.module('stormpath')
  * These links are sent after a user registers, see
  * {@link stormpath.spRegistrationForm:spRegistrationForm spRegistrationForm}.
  *
- * This directive will render a view which does the following:
+ * This directive will render a view that does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
  * * Verifies the given `sptoken` with Stormpath, then:
- *   * If the token is valid, tell the user that confirmation is complete and prompt the user to login.
+ *   * If the token is valid, tell the user that the confirmation is complete and prompt the user to login.
  *   * If the token is invalid (it is expired or malformed), we prompt the user to enter
  *     their email address, so that we can try sending them a new link.
- *
- * @param {string} template-url
- *
- * An alternate template URL, if you want
- * to use your own template for the form.
  *
  * @example
  *
@@ -968,7 +1082,13 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spLoginForm:spLoginForm
+ *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
  *
  * @description
  *
@@ -982,11 +1102,6 @@ angular.module('stormpath')
  * the following can happen:
  *  * The user is sent back to the view they originally requested.
  *  * The user is sent to a default view of your choice.
- *
- * @param {string} template-url
- *
- * An alternate template URL if you want
- * to use your own template for the form.
  *
  * @example
  *
@@ -1088,18 +1203,19 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm
+ *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
  *
  * @description
  *
  * This directive will render a pre-built form which prompts the user for their
  * username/email.  If an account is found, we will send them an email with a
  * password reset link.
- *
- * @param {string} template-url
- *
- * An alternate template URL if you want
- * to use your own template for the form.
  *
  * @example
  *
@@ -1125,7 +1241,14 @@ angular.module('stormpath')
 })
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spPasswordResetForm:spPasswordResetForm
+ *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
+ *
  *
  * @description
  *
@@ -1133,17 +1256,12 @@ angular.module('stormpath')
  * reset link.  To send users a password reset link, see
  * {@link stormpath.spPasswordResetRequestForm:spPasswordResetRequestForm spPasswordResetRequestForm}.
  *
- * This directive will render a password reset form which does the following:
+ * This directive will render a password reset form that does the following:
  * * Verifies that the current URL has an `sptoken` in it.  Shows an error if not.
  * * Verifies the given `sptoken` with Stormpath, then:
- *   * If the token is valid, shows a form which allows the user to enter a new password.
+ *   * If the token is valid, shows a form that allows the user to enter a new password.
  *   * If the token is invalid (it is expired or malformed), we prompt the user to enter
  *     their email address, so that we can try sending them a new link.
- *
- * @param {string} template-url
- *
- * An alternate template URL if you want
- * to use your own template for the form.
  *
  * @example
  *
@@ -1221,6 +1339,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc directive
+ *
  * @name stormpath.spRegistrationForm:spRegistrationForm
  *
  * @param {boolean} autoLogin
@@ -1237,6 +1356,12 @@ angular.module('stormpath')
  * If using the `autoLogin` option, you can specify the name of a UI state that the user
  * should be redirected to after they successfully have registered.
  *
+ * @param {string} template-url
+ *
+ * An alternate template URL if you want
+ * to use your own template for the form.
+ *
+ *
  * @description
  *
  * This directive will render a pre-built user registration form with the following
@@ -1250,14 +1375,13 @@ angular.module('stormpath')
  *
  * If you would like to customize the form:
  *
- * * Create a new view file in your application
+ * * Create a new view file in your application.
  * * Copy our default template into your file, found here:
- * <a href="https://github.com/stormpath/stormpath-sdk-angularjs/blob/master/src/spRegistrationForm.tpl.html" target="_blank">spRegistrationForm.tpl.html</a>
+ * <a href="https://github.com/stormpath/stormpath-sdk-angularjs/blob/master/src/spRegistrationForm.tpl.html" target="_blank">spRegistrationForm.tpl.html</a>.
  * * Modify the template to fit your needs, making sure to use `formModel.<FIELD>` as the
- * value for `ng-model`, where `.<FIELD>` is the name of the field you want to set on
- * the new account (such as
- * `middleName`)
- * * Use the `template-url` option on the directive to point to your new view file
+ * value for `ng-model` where `.<FIELD>` is the name of the field you want to set on
+ * the new account (such as `middleName`).
+ * * Use the `template-url` option on the directive to point to your new view file.
  *
  * If you would like to add Custom Data to the new account, you can add form inputs to the template
  * and use `formModel.customData.<FIELD>` as the value for `ng-model`
@@ -1278,11 +1402,6 @@ angular.module('stormpath')
  * {@link stormpath.userService.$user#methods_create $user.create()}
  * when it is ready to POST the form to the server. Please see that method
  * for more information.
- *
- * @param {string} template-url
- *
- * An alternate template URL if you want
- * to use your own template for the form.
  *
  * @example
  *
@@ -1313,6 +1432,7 @@ angular.module('stormpath')
 'use strict';
 /**
  * @ngdoc overview
+ *
  * @name stormpath.userService
  *
  * @description
@@ -1322,6 +1442,7 @@ angular.module('stormpath')
 
 /**
  * @ngdoc object
+ *
  * @name stormpath.userService.$userProvider
  *
  * @description
@@ -1336,6 +1457,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
 
   /**
    * @ngdoc object
+   *
    * @name stormpath.userService.$user
    *
    * @description
@@ -1350,10 +1472,36 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       self[k] = data[k];
     });
   }
+  /**
+  * This method may change in the future, do not use.
+  * Please use the `ifUserInGroup` directive instead
+  */
   User.prototype.inGroup = function inGroup(groupName) {
     return this.groups.filter(function(group){
       return group.name === groupName;
     }).length >0;
+  };
+  /**
+  * This method may change in the future, do not use.
+  * Please use the `ifUserInGroup` directive instead
+  */
+  User.prototype.matchesGroupExpression = function matchesGroupExpression(regex) {
+    return this.groups.filter(function(group){
+      return regex.test(group.name);
+    }).length >0;
+  };
+  /**
+  * This method may change in the future, do not use.
+  * Please use the `ifUserInGroup` directive instead
+  */
+  User.prototype.groupTest = function groupTest(expr) {
+    if(expr instanceof RegExp && this.matchesGroupExpression(expr)){
+      return true;
+    }else if(this.inGroup(expr)){
+      return true;
+    }else{
+      return false;
+    }
   };
 
   this.$get = [
@@ -1367,7 +1515,9 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.create = function(accountData){
         /**
          * @ngdoc function
+         *
          * @name stormpath.userService.$user#create
+         *
          * @methodOf stormpath.userService.$user
          *
          * @param {Object} accountData
@@ -1383,21 +1533,6 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * account.  Must meet the password requirements that you have specified
          * on the directory that this account will be created in.
          *
-         * @description
-         *
-         * Attempts to create a new user by submitting the given `accountData` as
-         * JSON to `/api/users`.  The POST endpoint can be modified via the
-         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
-         *
-         * This method expects a `201` response if the account does NOT require email
-         * verification.
-         *
-         * If email verification is enabled, you should send a `202` response instead.
-         *
-         *  If you are using our Express.JS SDK, you can simply attach the
-         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
-         * to your application and these responses will be handled automatically for you.
-         *
          * @returns {promise}
          *
          * A promise representing the operation to create a
@@ -1411,6 +1546,21 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * * If `false`, the account's status is Unverified.
          * This will be the case when you have enabled the email verification workflow on the directory of this
          * account.
+         *
+         * @description
+         *
+         * Attempts to create a new user by submitting the given `accountData` as
+         * JSON to `/api/users`.  The POST endpoint can be modified via the
+         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
+         *
+         * This method expects a `201` response if the account does NOT require email
+         * verification.
+         *
+         * If email verification is enabled, you should send a `202` response instead.
+         *
+         * If you are using our Express.JS SDK, you can simply attach the
+         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
+         * to your application and these responses will be handled automatically for you.
          *
          * @example
          *
@@ -1444,8 +1594,14 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.get = function get() {
         /**
          * @ngdoc function
+         *
          * @name stormpath.userService.$user#get
+         *
          * @methodOf stormpath.userService.$user
+         *
+         * @returns {promise}
+         *
+         * A promise representing the operation to get the current user data.
          *
          * @description
          *
@@ -1461,14 +1617,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * The user object is a Stormpath Account
          * object, which is wrapped by a {@link eh User} type.
          *
-         * @returns {promise}
-         *
-         * A promise representing the operation to get the current user data.
-         *
          * @example
          *
          * <pre>
-         * var myApp = angular.module('myApp', ['stormmpath']);
+         * var myApp = angular.module('myApp', ['stormpath']);
          *
          * myApp.controller('MyAppCtrl', function ($scope, $user) {
          *   $user.get()
@@ -1545,9 +1697,20 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       function currentUserEvent(user){
         /**
          * @ngdoc event
+         *
          * @name stormpath.userService.$user#$currentUser
+         *
          * @eventOf stormpath.userService.$user
+         *
          * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
+         *
+         * @param {User} user
+         *
+         * The current user object.
          *
          * @description
          *
@@ -1556,19 +1719,22 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * results in a {@link User User} object.
          *
          * See the next section, the $notLoggeInEvent, for example usage.
-         *
-         * @param {Object} event Angular event object.
-         * @param {User} user The current user object.
-         *
          */
         $rootScope.$broadcast(STORMPATH_CONFIG.GET_USER_EVENT,user);
       }
       function notLoggedInEvent(){
         /**
          * @ngdoc event
+         *
          * @name stormpath.userService.$user#$notLoggedIn
+         *
          * @eventOf stormpath.userService.$user
+         *
          * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
          *
          * @description
          *
@@ -1583,16 +1749,14 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * user from the run function, then react to it inside your
          * application controller.
          *
-         * @param {Object} event Angular event object.
-         *
          * @example
          *
          * <pre>
-         * var myApp = angular.module('myApp', ['stormmpath']);
+         * var myApp = angular.module('myApp', ['stormpath']);
          * myApp.run(function($user){
          *   //
-         *   // Once our app is ready to run, trigger a call to $user.get().
-         *   // We can then do other things while we wait for the result.
+         *   // Once our app is ready to run, trigger a call to $user.get()
+         *   // We can then do other things while we wait for the result
          *   //
          *   $user.get();
          * });

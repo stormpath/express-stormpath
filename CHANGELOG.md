@@ -1,3 +1,28 @@
+# 0.4.0
+
+## Breaking Changes
+
+The [ifUserInGroup] and [ifUserNotInGroup] directives now requires you to pass
+either a string expression or a reference to a scope variable.  I.E. this will
+now throw a parse exception unless `admin` is a reference to a scope property:
+
+```html
+<div if-user-in-group="admin">Hello, Administrator</div>
+```
+
+It should be re-written to be a string expression with quotes:
+
+```html
+<div if-user-in-group="'admin'">Hello, Administrator</div>
+```
+
+## New Features
+
+The [ifUserInGroup] and [ifUserNotInGroup] directives now support regular
+expressions :)
+
+See the documentation of [ifUserInGroup] for more information
+
 # 0.3.0
 
 ## Breaking Changes
@@ -43,3 +68,6 @@ directives.
 
 * [`whileResolvingUser`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.whileResolvingUser:while-resolving-user)
 would break after logout (user state was not properly reflected after logout)
+
+[ifUserInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup
+[ifUserNotInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserNotInGroup:ifUserNotInGroup
