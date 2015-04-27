@@ -211,6 +211,18 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
         }
       };
 
+      StormpathService.prototype.regexAttrParser = function regexAttrParser(value){
+        var expr;
+        if(value instanceof RegExp){
+          expr = value;
+        }else if(value && /^\/.+\/[gim]?$/.test(value)){
+          expr = new RegExp(value.split('/')[1],value.split('/')[2]);
+        }else{
+          expr = value;
+        }
+        return expr;
+      };
+
       function UrlEncodedFormParser(){
 
         // Copy & modify from https://github.com/hapijs/qs/blob/master/lib/stringify.js
@@ -386,26 +398,80 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @description
  *
  * Use this directive to conditionally show an element if the user is logged in
- * and is a member of the group that is specified by the string.
+ * and is a member of the group that is specified by the expression.
+ *
+ * The attribute value MUST be one of:
+ *
+ * * A string expression, surrounded by quotes
+ * * A reference to a property on the $scope.  That property can be a string or
+ * regular expression.
+ *
+ * # Using Regular Expressions
+ *
+ * If using a string expression as the attribute value, you can pass a regular
+ * expression by wrapping it in the literal
+ * syntax, e.g.
+ *  * `'/admins/'` would match any group which has *admins* in the name
+ *  * `'/admin$/'` would match any group were the name **ends with** *admin*
+ *
+ * If referencing a scope property, you should create the value as a RegExp type,
+ * e.g.:
+ *
+ *  <pre>
+ *    $scope.matchGroup = new RegExp(/admins/);
+ *  </pre>
  *
  * @example
  *
  * <pre>
- * <div class="container">
- *   <h3 if-user-in-group="admins">Hello, {{user.fullName}}, you are an administrator</h3>
- * </div>
+ *   <script type="text/javascript">
+ *     function SomeController($scope){
+ *       $scope.matchGroup = /admins/;
+ *     }
+ *   <script>
+ *   <div ng-controller="SomeController">
+ *     <h3 if-user-in-group="'admins'">
+ *       Hello, {{user.fullName}}, you are an administrator
+ *     </h3>
+ *
+ *     <div if-user-in-group="'/admins/'">
+ *        <!-- would match any group which has *admins* in the name -->
+ *     </div>
+ *     <div if-user-in-group="matchGroup">
+ *        <!-- equivalent to the last example -->
+ *     </div>
+ *     <div if-user-in-group="'/admin$/'">
+ *        <!-- would match any group were the name **ends with** *admin* -->
+ *     </div>
+ *   </div>
  * </pre>
  */
-.directive('ifUserInGroup',['$user','$rootScope',function($user,$rootScope){
+.directive('ifUserInGroup',['$user','$rootScope','$parse','$stormpath',function($user,$rootScope,$parse,$stormpath){
+
   return {
     link: function(scope,element,attrs){
-      $rootScope.$watch('user',function(){
-        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserInGroup)){
+
+      var expr;
+      var attrExpr = attrs.ifUserInGroup;
+
+      function evalElement(){
+        var user = $user.currentUser;
+        if(user && user.groupTest(expr)){
           element.show();
         }else{
           element.hide();
         }
-      });
+      }
+
+      if(attrExpr){
+        scope.$watch($parse(attrExpr),function(value){
+          expr = $stormpath.regexAttrParser(value);
+          evalElement();
+        });
+        $rootScope.$watch('user',function(){
+          evalElement();
+        });
+      }
     }
   };
 }])
@@ -418,26 +484,46 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  * @description
  *
  * Use this directive to conditionally show an element if the user is logged in
- * and is a member of the group that is specified by the string.
+ * and is NOT a member of the group that is specified by the expression.
+ *
+ * This is the inverse of {@link stormpath.ifUserInGroup:ifUserInGroup ifUserInGroup},
+ * please refer to that directive for full usage information.
  *
  * @example
  *
  * <pre>
- * <div class="container">
- *   <h3 if-user-not-in-group="admins">Hello, {{user.fullName}}, please request administrator access</h3>
- * </div>
+ *   <div class="container">
+ *     <h3 if-user-not-in-group="'admins'">
+ *       Hello, {{user.fullName}}, please request administrator access
+ *     </h3>
+ *   </div>
  * </pre>
  */
-.directive('ifUserNotInGroup',['$user','$rootScope',function($user,$rootScope){
+.directive('ifUserNotInGroup',['$user','$rootScope','$parse','$stormpath',function($user,$rootScope,$parse,$stormpath){
   return {
     link: function(scope,element,attrs){
-      $rootScope.$watch('user',function(){
-        if($user.currentUser && $user.currentUser.inGroup(attrs.ifUserNotInGroup)){
+
+      var expr;
+      var attrExpr = attrs.ifUserNotInGroup;
+
+      function evalElement(){
+        var user = $user.currentUser;
+        if(user && user.groupTest(expr)){
           element.hide();
         }else{
           element.show();
         }
-      });
+      }
+
+      if(attrExpr){
+        scope.$watch($parse(attrExpr),function(value){
+          expr = $stormpath.regexAttrParser(value);
+          evalElement();
+        });
+        $rootScope.$watch('user',function(){
+          evalElement();
+        });
+      }
     }
   };
 }])

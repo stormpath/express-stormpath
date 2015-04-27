@@ -41,10 +41,36 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       self[k] = data[k];
     });
   }
+  /**
+  * This method may change in the future, do not use.
+  * Please use the `ifUserInGroup` directive instead
+  */
   User.prototype.inGroup = function inGroup(groupName) {
     return this.groups.filter(function(group){
       return group.name === groupName;
     }).length >0;
+  };
+  /**
+  * This method may change in the future, do not use.
+  * Please use the `ifUserInGroup` directive instead
+  */
+  User.prototype.matchesGroupExpression = function matchesGroupExpression(regex) {
+    return this.groups.filter(function(group){
+      return regex.test(group.name);
+    }).length >0;
+  };
+  /**
+  * This method may change in the future, do not use.
+  * Please use the `ifUserInGroup` directive instead
+  */
+  User.prototype.groupTest = function groupTest(expr) {
+    if(expr instanceof RegExp && this.matchesGroupExpression(expr)){
+      return true;
+    }else if(this.inGroup(expr)){
+      return true;
+    }else{
+      return false;
+    }
   };
 
   this.$get = [
