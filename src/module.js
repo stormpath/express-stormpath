@@ -93,6 +93,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
    * @description
    *
    * This service allows you to enable application-wide features of the library.
+   *
+   * At the moment the only feature is the UI Router integration, which is
+   * documented below.
    */
 
   this.$get = [
@@ -107,10 +110,15 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       function stateChangeUnauthenticatedEvent(toState, toParams){
         /**
          * @ngdoc event
+         *
          * @name stormpath.$stormpath#$stateChangeUnauthenticated
+         *
          * @eventOf stormpath.$stormpath
+         *
          * @eventType broadcast on root scope
+         *
          * @param {Object} toState The state that the user attempted to access.
+         *
          * @param {Object} toParams The state params of the state that the user
          * attempted to access.
          *
@@ -125,6 +133,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
          * To receive this event, you must be using the UI Router integration.
          *
          * @example
+         *
          * <pre>
          *   $rootScope.$on('$stateChangeUnauthenticated',function(e,toState,toParams){
          *     // Your custom logic for deciding how the user should login, and
@@ -137,10 +146,15 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       function stateChangeUnauthorizedEvent(toState,toParams){
         /**
          * @ngdoc event
+         *
          * @name stormpath.$stormpath#$stateChangeUnauthorized
+         *
          * @eventOf stormpath.$stormpath
+         *
          * @eventType broadcast on root scope
+         *
          * @param {Object} toState The state that the user attempted to access.
+         *
          * @param {Object} toParams The state params of the state that the user
          * attempted to access.
          *
@@ -157,6 +171,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
          * To receive this event, you must be using the UI Router integration.
          *
          * @example
+         *
          * <pre>
          *   $rootScope.$on('$stateChangeUnauthorized',function(e,toState,toParams){
          *     // Your custom logic for deciding how the user should be
@@ -247,8 +262,13 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * Call this method to enable the integration with the UI Router module.
        *
        * When enabled, you can define {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations} on your UI states.
-       * This object allows you to define access control for the state.  See the
-       * examples below.
+       * This object allows you to define access control for the state.
+       *
+       * You can pass config options to this integration, the options control the
+       * default behavior around "need to login" and "forbidden" situations.
+       * If you wish to implement your own logic for these situations, simply
+       * omit the options and use the events (documented below) to know
+       * what is happening in the application.
        *
        * @example
        *

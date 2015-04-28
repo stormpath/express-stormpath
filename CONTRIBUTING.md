@@ -24,6 +24,21 @@ You can regenerate the API docs by running `grunt docs`.  If you want to
 see your changes as you edit them you can use `grunt serve` to start a
 livereload server that will reload your changes as you make them.
 
+When editing the JS Doc comments, please follow this order for tags:
+
+```
+@ngdoc
+@name
+@methodOf (or eventOf, etc)
+@eventType (if applicable)
+@param
+@returns
+@description
+@example
+```
+
+And put a newline before and after the line that includes the tag.
+
 ### Product Guide Documentation
 
 The product guide files are located in the `docs` directory.  The format is RST
