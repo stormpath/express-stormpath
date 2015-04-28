@@ -71,7 +71,7 @@
  *
  *     // Require a user to be in the admins group in order to see this state
  *     $stateProvider
-*       .state('secrets', {
+ *       .state('secrets', {
  *         url: '/admin',
  *         controller: 'AdminCtrl',
  *         sp: {
@@ -117,6 +117,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
          *
          * @eventType broadcast on root scope
          *
+         * @param {Object} event
+         *
+         * Angular event object.
+         *
          * @param {Object} toState The state that the user attempted to access.
          *
          * @param {Object} toParams The state params of the state that the user
@@ -152,6 +156,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
          * @eventOf stormpath.$stormpath
          *
          * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
          *
          * @param {Object} toState The state that the user attempted to access.
          *
