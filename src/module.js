@@ -421,6 +421,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
  *    $scope.matchGroup = new RegExp(/admins/);
  *  </pre>
  *
+ * All regular expressions are evaluated via
+ * [RegExp.prototype.test](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test)
+ *
  * @example
  *
  * <pre>
