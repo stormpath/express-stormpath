@@ -104,6 +104,68 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
         this.encodeUrlForm = encoder.encode.bind(encoder);
         return this;
       }
+      function stateChangeUnauthenticatedEvent(toState, toParams){
+        /**
+         * @ngdoc event
+         * @name stormpath.$stormpath#$stateChangeUnauthenticated
+         * @eventOf stormpath.$stormpath
+         * @eventType broadcast on root scope
+         * @param {Object} toState The state that the user attempted to access.
+         * @param {Object} toParams The state params of the state that the user
+         * attempted to access.
+         *
+         * @description
+         *
+         * This event is broadcast when a UI state change is prevented,
+         * because the user is not logged in.
+         *
+         * Use this event if you want to implement your own strategy for
+         * presenting the user with a login form.
+         *
+         * To receive this event, you must be using the UI Router integration.
+         *
+         * @example
+         * <pre>
+         *   $rootScope.$on('$stateChangeUnauthenticated',function(e,toState,toParams){
+         *     // Your custom logic for deciding how the user should login, and
+         *     // if you want to redirect them to the desired state afterwards
+         *   });
+         * </pre>
+         */
+        $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,toState,toParams);
+      }
+      function stateChangeUnauthorizedEvent(toState,toParams){
+        /**
+         * @ngdoc event
+         * @name stormpath.$stormpath#$stateChangeUnauthorized
+         * @eventOf stormpath.$stormpath
+         * @eventType broadcast on root scope
+         * @param {Object} toState The state that the user attempted to access.
+         * @param {Object} toParams The state params of the state that the user
+         * attempted to access.
+         *
+         * @description
+         *
+         * This event is broadcast when a UI state change is prevented,
+         * because the user is not authorized by the rules defined in the
+         * {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configuration}
+         * for the requested state.
+         *
+         * Use this event if you want to implement your own strategy for telling
+         * the user that they are forbidden from viewing that state.
+         *
+         * To receive this event, you must be using the UI Router integration.
+         *
+         * @example
+         * <pre>
+         *   $rootScope.$on('$stateChangeUnauthorized',function(e,toState,toParams){
+         *     // Your custom logic for deciding how the user should be
+         *     // notified that they are forbidden from this state
+         *   });
+         * </pre>
+         */
+        $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
+      }
       StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor() {
         $rootScope.$on('$stateChangeStart', function(e,toState,toParams){
           var sp = toState.sp || {}; // Grab the sp config for this state
@@ -116,14 +178,14 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
                 if(authorizeStateConfig(sp)){
                   $state.go(toState.name,toParams);
                 }else{
-                  $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
+                  stateChangeUnauthorizedEvent(toState,toParams);
                 }
               }else{
                 $state.go(toState.name,toParams);
               }
             },function(){
               // The user is not authenticated, emit the necessary event
-              $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,toState,toParams);
+              stateChangeUnauthenticatedEvent(toState,toParams);
             });
           }else if(sp.waitForUser && ($user.currentUser===null)){
             e.preventDefault();
@@ -135,7 +197,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
             if(!authorizeStateConfig(sp)){
               e.preventDefault();
-              $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
+              stateChangeUnauthorizedEvent(toState,toParams);
             }
 
           }
@@ -194,6 +256,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * angular.module('myApp')
        *   .run(function($stormpath){
        *     $stormpath.uiRouter({
+       *       forbiddenState: 'forbidden',
        *       defaultPostLoginState: 'main',
        *       loginState: 'login'
        *     });
