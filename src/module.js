@@ -24,11 +24,24 @@
  * you want everyone to see this state, but the state may look different
  * depending on the user's authentication state.
  *
+ *
  * @description
  *
- * The Stormpath State Config is an object that you can define on a
- * state.  You will need to be using the UI Router module, and you need
- * to enable the integration by calling  {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()}.
+ * The Stormpath State Config is an object that you can define on a UI Router
+ * state.  Use this configuration to define access control for your routes, as
+ * defined by UI Router.
+ *
+ * You will need to be using the UI Router module, and you need
+ * to enable the integration by calling
+ * {@link stormpath.$stormpath#methods_uiRouter $stormpath.uiRouter()} in your
+ * application's config block.
+ *
+ * This configuration does not support Angular's built-in `$routeProvider` at
+ * this time, we will add this in a future version.
+ *
+ * **NOTE:** Do not define this configuration on a abstract state, it must go on
+ * the child state.  However, the controller of the abstract state will be
+ * initialized AFTER any configuration rules of the child state have been met.
  *
  * @example
  *
