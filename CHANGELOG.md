@@ -82,7 +82,7 @@ directives.
 would break after logout (user state was not properly reflected after logout)
 
 
-[$stateChangeUnauthenticated]: https://docs.stormpath.com/angularjs/sdk/#/stormpath.$stormpath#events_$statechangeunauthenticated
-[$stateChangeUnauthorized]: https://docs.stormpath.com/angularjs/sdk/#/stormpath.$stormpath#events_$statechangeunauthorized
+[$stateChangeUnauthenticated]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.$stormpath#events_$statechangeunauthenticated
+[$stateChangeUnauthorized]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.$stormpath#events_$statechangeunauthorized
 [ifUserInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup
 [ifUserNotInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserNotInGroup:ifUserNotInGroup
