@@ -1,3 +1,15 @@
+# 0.4.1
+
+## New Features
+
+The UI Router integration now accepts a `forbiddenState` option, this is the
+state we will send the user to if they are unauthorized for a given state.
+This is useful if you want to show a default "Forbidden" view in these
+situations.
+
+Added documentation for the [$stateChangeUnauthenticated] and
+[$stateChangeUnauthorized] events!
+
 # 0.4.0
 
 ## Breaking Changes
@@ -69,5 +81,8 @@ directives.
 * [`whileResolvingUser`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.whileResolvingUser:while-resolving-user)
 would break after logout (user state was not properly reflected after logout)
 
+
+[$stateChangeUnauthenticated]: https://docs.stormpath.com/angularjs/sdk/#/stormpath.$stormpath#events_$statechangeunauthenticated
+[$stateChangeUnauthorized]: https://docs.stormpath.com/angularjs/sdk/#/stormpath.$stormpath#events_$statechangeunauthorized
 [ifUserInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup
 [ifUserNotInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserNotInGroup:ifUserNotInGroup
