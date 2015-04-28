@@ -162,9 +162,6 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        *
        * @param {object} config
        *
-       * * **`loginState`** - The UI state name that we should send the user
-       * to if they need to login.  You'll probably use `login` for this value.
-       *
        * * **`autoRedirect`** - Defaults to true.  After the user logs in at
        * the state defined by `loginState`, they will be redirected back to the
        * state that was originally requested.
@@ -174,6 +171,14 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * nothing will happen at the login state.  You can alternatively use the
        * {@link stormpath.authService.$auth#events_$authenticated $authenticated} event to know
        * that login is successful.
+       *
+       * * **`forbiddenState`** - The UI state name that we should send the user
+       * to if they try to an access a view that they are not authorized to view.
+       * This happens in response to an `authorize` rule in one of your
+       * {@link stormpath.SpStateConfig:SpStateConfig Stormpath State Configurations}
+       *
+       * * **`loginState`** - The UI state name that we should send the user
+       * to if they need to login.  You'll probably use `login` for this value.
        *
        * @description
        *
@@ -189,8 +194,8 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
        * angular.module('myApp')
        *   .run(function($stormpath){
        *     $stormpath.uiRouter({
-       *       loginState: 'login',
-       *       defaultPostLoginState: 'main'
+       *       defaultPostLoginState: 'main',
+       *       loginState: 'login'
        *     });
        *   });
        * </pre>
@@ -199,13 +204,14 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
         var self = this;
         config = typeof config === 'object' ? config : {};
         this.stateChangeInterceptor();
+
         if(config.loginState){
           self.unauthenticatedWather = $rootScope.$on(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,function(e,toState,toParams){
             self.postLogin = {toState:toState,toParams:toParams};
             $state.go(config.loginState);
             if(config.autoRedirect !== false){
               self.authWatcher = $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
-                self.authWatcher(); // unregister this watecher
+                self.authWatcher(); // unregister this watcher
                 if(self.postLogin){
                   $state.go(self.postLogin.toState,self.postLogin.toParams).then(function(){
                     self.postLogin = null;
@@ -213,6 +219,11 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
                 }
               });
             }
+          });
+        }
+        if(config.forbiddenState){
+          self.forbiddenWatcher = $rootScope.$on(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,function(){
+            $state.go(config.forbiddenState);
           });
         }
         if(config.defaultPostLoginState){
