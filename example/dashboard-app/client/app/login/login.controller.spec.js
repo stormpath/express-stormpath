@@ -3,7 +3,7 @@
 describe('Controller: LoginCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('dashboardAppApp'));
+  beforeEach(module('dashboardApp'));
 
   var LoginCtrl, scope;
 

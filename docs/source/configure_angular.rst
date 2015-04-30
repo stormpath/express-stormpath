@@ -17,7 +17,7 @@ in the Angular app.
 Open the file ``client/app/app.js`` and modify the module list
 to look like so::
 
-    angular.module('dashboardAppApp', [
+    angular.module('dashboardApp', [
       'ngCookies',
       'ngResource',
       'ngSanitize',

@@ -3,7 +3,7 @@
 describe('Controller: PasswordResetRequestCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('dashboardAppApp'));
+  beforeEach(module('dashboardApp'));
 
   var PasswordResetRequestCtrl, scope;
 

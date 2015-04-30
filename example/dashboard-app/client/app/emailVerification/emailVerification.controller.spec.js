@@ -3,7 +3,7 @@
 describe('Controller: EmailVerificationCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('dashboardAppApp'));
+  beforeEach(module('dashboardApp'));
 
   var EmailVerificationCtrl, scope;
 
