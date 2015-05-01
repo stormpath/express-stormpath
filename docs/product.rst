@@ -442,13 +442,13 @@ model::
     req.user.customData.somefield = 'somevalue';
     req.user.customData['anotherfield'] = {'json': 'data'};
     req.user.customData['woot'] = 10.202223;
-    req.user.save();
+    req.user.customData.save();
 
     user.customData['woot'];
     // 10.202223
 
     delete user.customData['woot'];
-    user.save(function(err, updatedUser) {
+    user.customData.save(function(err) {
       if (!err) {
         updatedUser.customData.woot;
         // undefined
