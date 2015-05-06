@@ -201,9 +201,12 @@ You can easily change the default session / cookie expiration by modifying the
 
     app.use(stormpath.init(app, {
       sessionDuration: 1000 * 60 * 15, // Make sessions expire after 15 minutes.
+      activeDuration: 1000 * 60 * 5, // Allow session extension, 5 minutes before expiration
     }));
 
-By default, sessions will not expire for 30 minutes (*a secure default*).
+By default, sessions will expire after 30 minutes (*a secure default*) with an
+active duration of 5 minutes.  This means that the session will be extended by
+30 minutes if a request is made within the 5 minutes before the session expires.
 
 .. note::
     The ``sessionDuration`` setting expects an integer, which must be the number
