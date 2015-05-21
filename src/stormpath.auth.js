@@ -89,7 +89,7 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * </pre>
          */
         var op = $http($spFormEncoder.formPost({
-            url: STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
+            url: STORMPATH_CONFIG.getUrl('AUTHENTICATION_ENDPOINT'),
             method: 'POST',
             withCredentials: true,
             data: data,
@@ -105,7 +105,7 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
       };
 
       AuthService.prototype.endSession = function endSession(){
-        var op = $http.get(STORMPATH_CONFIG.DESTROY_SESSION_ENDPOINT);
+        var op = $http.get(STORMPATH_CONFIG.getUrl('DESTROY_SESSION_ENDPOINT'));
         op.then(function(){
           $rootScope.$broadcast(STORMPATH_CONFIG.SESSION_END_EVENT);
         },function(response){
