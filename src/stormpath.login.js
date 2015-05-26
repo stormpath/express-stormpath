@@ -14,7 +14,7 @@ angular.module('stormpath')
     $auth.authenticate($scope.formModel)
       .catch(function(response){
         $scope.posting = false;
-        $scope.error = response.data.errorMessage;
+        $scope.error = response.data && response.data.errorMessage || 'XHR Error';
       });
   };
 }])
