@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.4.1-dev-2015-04-28
+ * @version v0.5.0-dev-2015-05-26
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -99,6 +99,20 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
  * </pre>
  */
 angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userService'])
+.factory('SpAuthInterceptor',[function(){
+  function SpAuthInterceptor(){
+
+  }
+  SpAuthInterceptor.prototype.request = function(config){
+    config.withCredentials=true;
+    return config;
+  };
+
+  return new SpAuthInterceptor();
+}])
+.config(['$httpProvider',function($httpProvider){
+  $httpProvider.interceptors.push('SpAuthInterceptor');
+}])
 .provider('$stormpath', [function $stormpathProvider(){
   /**
    * @ngdoc object
@@ -871,7 +885,7 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          * </pre>
          */
         var op = $http($spFormEncoder.formPost({
-            url: STORMPATH_CONFIG.AUTHENTICATION_ENDPOINT,
+            url: STORMPATH_CONFIG.getUrl('AUTHENTICATION_ENDPOINT'),
             method: 'POST',
             withCredentials: true,
             data: data,
@@ -887,7 +901,7 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
       };
 
       AuthService.prototype.endSession = function endSession(){
-        var op = $http.get(STORMPATH_CONFIG.DESTROY_SESSION_ENDPOINT);
+        var op = $http.get(STORMPATH_CONFIG.getUrl('DESTROY_SESSION_ENDPOINT'));
         op.then(function(){
           $rootScope.$broadcast(STORMPATH_CONFIG.SESSION_END_EVENT);
         },function(response){
@@ -942,27 +956,34 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
 'use strict';
 
 angular.module('stormpath.CONFIG',[])
-.constant('STORMPATH_CONFIG',{
-  AUTHENTICATION_ENDPOINT: '/oauth/token',
-  CURRENT_USER_URI: '/api/users/current',
-  USER_COLLECTION_URI: '/api/users',
-  DESTROY_SESSION_ENDPOINT: '/logout',
-  RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
-  EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
-  PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
-  GET_USER_EVENT: '$currentUser',
-  SESSION_END_EVENT: '$sessionEnd',
-  UNAUTHORIZED_EVENT: 'unauthorized',
-  LOGIN_STATE_NAME: 'login',
-  FORBIDDEN_STATE_NAME: 'forbidden',
-  AUTHENTICATION_SUCCESS_EVENT_NAME: '$authenticated',
-  AUTHENTICATION_FAILURE_EVENT_NAME: '$authenticationFailure',
-  AUTH_SERVICE_NAME: '$auth',
-  NOT_LOGGED_IN_EVENT: '$notLoggedin',
-  STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
-  STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized',
-  FORM_CONTENT_TYPE: ''
-});
+.constant('STORMPATH_CONFIG',(function stormpathConfigBuilder(){
+  var c={
+    ENDPOINT_PREFIX: '',
+    AUTHENTICATION_ENDPOINT: '/oauth/token',
+    CURRENT_USER_URI: '/api/users/current',
+    USER_COLLECTION_URI: '/api/users',
+    DESTROY_SESSION_ENDPOINT: '/logout',
+    RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
+    EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+    PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
+    GET_USER_EVENT: '$currentUser',
+    SESSION_END_EVENT: '$sessionEnd',
+    UNAUTHORIZED_EVENT: 'unauthorized',
+    LOGIN_STATE_NAME: 'login',
+    FORBIDDEN_STATE_NAME: 'forbidden',
+    AUTHENTICATION_SUCCESS_EVENT_NAME: '$authenticated',
+    AUTHENTICATION_FAILURE_EVENT_NAME: '$authenticationFailure',
+    AUTH_SERVICE_NAME: '$auth',
+    NOT_LOGGED_IN_EVENT: '$notLoggedin',
+    STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
+    STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized',
+    FORM_CONTENT_TYPE: ''
+  };
+  c.getUrl = function(key) {
+    return this.ENDPOINT_PREFIX + this[key];
+  };
+  return c;
+})());
 
 'use strict';
 
@@ -1192,7 +1213,7 @@ angular.module('stormpath')
     $auth.authenticate($scope.formModel)
       .catch(function(response){
         $scope.posting = false;
-        $scope.error = response.data.errorMessage;
+        $scope.error = response.data && response.data.errorMessage || 'XHR Error';
       });
   };
 }])
@@ -1700,7 +1721,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         var op = $q.defer();
 
         $http($spFormEncoder.formPost({
-            url: STORMPATH_CONFIG.USER_COLLECTION_URI,
+            url: STORMPATH_CONFIG.getUrl('USER_COLLECTION_URI'),
             method: 'POST',
             data: accountData
           }))
@@ -1764,7 +1785,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         }else{
           self.cachedUserOp = op;
 
-          $http.get(STORMPATH_CONFIG.CURRENT_USER_URI).then(function(response){
+          $http.get(STORMPATH_CONFIG.getUrl('CURRENT_USER_URI'),{withCredentials:true}).then(function(response){
             self.cachedUserOp = null;
             self.currentUser = new User(response.data);
             currentUserEvent(self.currentUser);
@@ -1784,31 +1805,31 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
-          url: STORMPATH_CONFIG.RESEND_EMAIL_VERIFICATION_ENDPOINT,
+          url: STORMPATH_CONFIG.getUrl('RESEND_EMAIL_VERIFICATION_ENDPOINT'),
           data: data
         }));
       };
       UserService.prototype.verify = function verify(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
-          url: STORMPATH_CONFIG.EMAIL_VERIFICATION_ENDPOINT,
+          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT'),
           data: data
         }));
       };
       UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
-        return $http.get(STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token);
+        return $http.get(STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT')+'/'+token);
       };
       UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
-          url: STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT,
+          url: STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT'),
           data: data
         }));
       };
       UserService.prototype.resetPassword = function resetPassword(token,data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
-          url: STORMPATH_CONFIG.PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT+'/'+token,
+          url:STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT')+'/'+token,
           data: data
         }));
       };

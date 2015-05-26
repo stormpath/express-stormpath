@@ -1,3 +1,14 @@
+# 0.5.0
+
+## New Features
+
+XHR requests now set the `withCredentials` option to `true`, allowing you to
+make cross-domain requests that will send the `access_token` and `XSRF-TOKEN`
+cookies.  Your server must respond with the necessary
+[Cross-Origin-Resource-Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) headers.
+If you are using our Express SDK this is done by specifying
+[Allowed Origins on spConfig](https://github.com/stormpath/stormpath-sdk-express#allowedOrigins)
+
 # 0.4.1
 
 ## New Features
