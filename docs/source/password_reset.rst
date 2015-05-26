@@ -62,7 +62,7 @@ Use the Password Reset Directives
 
 We want to modify the two views that we created in the last steps.
 
-Open `client/app/passwordReset/passwordReset.html` and replace its contents with this:
+Open `client/app/passwordReset/passwordReset.html` and replace its contents with this::
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -76,7 +76,7 @@ Open `client/app/passwordReset/passwordReset.html` and replace its contents with
       <div sp-password-reset-form></div>
     </div>
 
-Next find `client/app/passwordResetRequest/passwordResetRequest.html` and replace its contents with this:
+Next find `client/app/passwordResetRequest/passwordResetRequest.html` and replace its contents with this::
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
