@@ -84,6 +84,20 @@
  * </pre>
  */
 angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userService'])
+.factory('SpAuthInterceptor',[function(){
+  function SpAuthInterceptor(){
+
+  }
+  SpAuthInterceptor.prototype.request = function(config){
+    config.withCredentials=true;
+    return config;
+  };
+
+  return new SpAuthInterceptor();
+}])
+.config(['$httpProvider',function($httpProvider){
+  $httpProvider.interceptors.push('SpAuthInterceptor');
+}])
 .provider('$stormpath', [function $stormpathProvider(){
   /**
    * @ngdoc object

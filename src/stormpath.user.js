@@ -215,7 +215,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         }else{
           self.cachedUserOp = op;
 
-          $http.get(STORMPATH_CONFIG.getUrl('CURRENT_USER_URI')).then(function(response){
+          $http.get(STORMPATH_CONFIG.getUrl('CURRENT_USER_URI'),{withCredentials:true}).then(function(response){
             self.cachedUserOp = null;
             self.currentUser = new User(response.data);
             currentUserEvent(self.currentUser);
