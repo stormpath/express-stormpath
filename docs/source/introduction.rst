@@ -38,4 +38,4 @@ us anytime through one of the following channels:
 
 * Email support: support@stormpath.com
 * Our knowledgebase: https://support.stormpath.com/hc/en-us
-* Github: github.com/stormpath
+* Github: https://github.com/stormpath/stormpath-sdk-angularjs
