@@ -13,16 +13,22 @@ the :ref:`create_tenant` section.
 Generate the /register Route
 --------------------------------
 
-Stop the server and run this command in your project folder::
+Stop the server and run this command in your project folder:
+
+.. code-block:: bash
 
     $ yo angular-fullstack:route register
 
-Press enter to accept the defaults options::
+Press enter to accept the defaults options:
+
+.. code-block:: bash
 
     ? Where would you like to create this route? client/app/
     ? What will the url of your route be? /register
 
-The following files will be created::
+The following files will be created:
+
+.. code-block:: bash
 
     create client/app/register/register.js
     create client/app/register/register.controller.js
@@ -40,7 +46,9 @@ Add the Registration Form Directive
 -----------------------------------
 
 Open the file ``client/app/register/register.html`` and then replace
-its contents with this::
+its contents with this:
+
+.. code-block:: html
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -58,7 +66,7 @@ This HTML markup does the following:
 
 * Includes the common menu bar for the application.
 * Sets up some `Bootstrap`_ classes so that the page flows nicely.
-* Inserts the default registration form via the ``sp-registration-form`` directive.
+* Inserts the default registration form via the `spRegistrationForm`_ directive.
 * Declares (on the directive) that we want to send the user to the main page after they register.
 
 Save that file, and the browser should auto-reload. You should now
@@ -84,8 +92,9 @@ link in their email.  We will implement a default view for this in our applicati
 and configure the Stormpath Directory accordingly.
 
 The first thing is to generate another route.  In this situation, we will
-call the controller ``emailVerification``, but use the URL of ``/register/verify``.
-::
+call the controller ``emailVerification``, but use the URL of ``/register/verify``:
+
+.. code-block:: bash
 
   $ yo angular-fullstack:route emailVerification
   ? Where would you like to create this route? client/app/
@@ -104,7 +113,10 @@ application with a url parameter called ``sptoken`` - we need to let the UI
 router know about this.  Open the file
 ``client/app/emailVerification/emailVerification.js`` and modify the ``url``
 string to include this parameter:
-::
+:
+
+.. code-block:: js
+
     url: '/register/verify?sptoken',
 
 
@@ -119,7 +131,9 @@ It will:
 * Allow them to request another email if the link has expired.
 
 Open the file ``client/app/emailVerification/emailVerification.html`` and
-replace its contents with the following::
+replace its contents with the following:
+
+.. code-block:: html
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -143,9 +157,12 @@ Directory that was automatically created for the Application.  Click into it,
 find the Workflows tab, and then enable the email verification workflow.
 
 You should also modify the **Link Base URL** to point
-to your application.  At the moment, that URL will be::
+to your application.  At the moment, that URL will be:
+
+.. code-block:: html
 
     http://localhost:9000/register/verify
+
 
 Don't forget to press save!
 
@@ -171,7 +188,9 @@ your own template and adding or removing the appropriate fields.
 
 For example, create a new file in ``client/app/register/`` and call it
 ``my-register.html``.  Copy the contents from our existing ``register.html``
-into it.  Then add the following markup to it in a place that you like::
+into it.  Then add the following markup to it in a place that you like:
+
+.. code-block:: html
 
   <div class="form-group">
     <label for="favColor" class="col-xs-12 col-sm-4 control-label">Favorite Color</label>
@@ -180,7 +199,9 @@ into it.  Then add the following markup to it in a place that you like::
     </div>
   </div>
 
-Now, modify your registration form directive and tell it to use this custom template::
+Now, modify your registration form directive and tell it to use this custom template:
+
+.. code-block:: html
 
   <div sp-registration-form post-login-state="main" template-url="app/register/my-register.html"></div>
 

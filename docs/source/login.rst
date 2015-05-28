@@ -34,7 +34,9 @@ Use the Login Form Directive
 --------------------------------
 
 Open the file ``client/app/login/login.html`` and then replace
-its contents with this::
+its contents with this
+
+.. code-block:: html
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -54,8 +56,8 @@ This is a small bit of HTML markup, which does the following:
 * Sets up some Bootstrap classes so that the page flows nicely.
 * Inserts the default login form, via the `spLoginForm`_ directive.
 
-Save that file and the browser should auto reload. If you click the Login link
-you should now see the login route like this:
+Save that file and restart the server via ``grunt serve``. Now when you click
+the Login link you should now see the login route like this:
 
 .. image:: _static/login_form.png
 

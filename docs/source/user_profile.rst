@@ -1,6 +1,6 @@
 .. _user_dashboard:
 
-Creating a User Profile View
+Create the Profile View
 =========================
 
 Most user-centric applications have a Profile view where the user can view and

@@ -24,7 +24,9 @@ Modify navbar.html
 --------------------------
 
 Open the file ``client/components/navbar/navbar.html`` and replace
-the ``<ul>`` section with this markup::
+the ``<ul>`` section with this markup:
+
+.. code-block:: html
 
   <ul class="nav navbar-nav">
     <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}">
