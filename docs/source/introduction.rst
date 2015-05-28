@@ -3,20 +3,31 @@
 Introduction
 =============
 
-In this guide we will be creating a full-stack JavaScript application.
-We will be starting a new project from scratch and we will use the Grunt
-and Yeoman tools to take care of the tedious setup.
+The purpose of this guide is to walk you through the creation of an Angular
+project from scratch, while showing you how to integrate the
+`Stormpath Angular SDK`_ to achieve the following tasks in your Angular
+application:
 
-If you're a seasoned AngularJS developer and simply need to know the
-module API, you can visit the `Stormpath AngularJS SDK API Documentation <https://docs.stormpath.com/angularjs/sdk/>`_.
-Throughout this guide, we will refer you to the API documentation if you want
-to learn more about how we're using it.
+* User Login
+* User Registration
+* Password Reset
+* Access Control
 
-While this guide will be JavaScript only, we do have support in our Java
-SDK for the same features.  If you are using Java, please see our `Java Web App Plugin Guide`_.
+If you're a seasoned AngularJS developer and simply want to explore the
+module API, you can visit the `Stormpath AngularJS SDK API Documentation`_.
+
+In this guide we will create a simple API server which our Angular application
+will use, using Node.js.  If you wish to create a server using Java, please see
+our `Java Web App Plugin Guide`_.  For other environments please visit
+`Stormpath Docs`_ to see if we have an integration for you!
+
+.. _Stormpath Docs: https://docs.stormpath.com
+
+.. _Stormpath Angular SDK: https://github.com/stormpath/stormpath-sdk-angularjs
+
+.. _Stormpath AngularJS SDK API Documentation: https://docs.stormpath.com/angularjs/sdk/
 
 .. _Java Web App Plugin Guide: https://docs.stormpath.com/java/servlet-plugin/
-
 
 
 What We're Building
