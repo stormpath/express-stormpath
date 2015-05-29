@@ -33,7 +33,7 @@ the ``<ul>`` section with this markup:
         <a ng-href="{{item.link}}">{{item.title}}</a>
     </li>
     <li if-user ng-class="{active: isActive('/profile')}">
-        <a ng-href="/profile">Profile</a>
+        <a ui-sref="profile">Profile</a>
     </li>
     <li if-not-user ng-class="{active: isActive('/register')}">
         <a ui-sref="register">Register</a>
