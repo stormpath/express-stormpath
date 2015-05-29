@@ -232,6 +232,34 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         }
 
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name resendVerificationEmail
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to resend a verification token
+       * to the given email address.  Will resolve, even if the email address
+       * does not exist.  If rejected there was a network error.
+       *
+       * @description
+       *
+       * Re-sends the verification email to the account specified by the
+       * username or email address.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the username or email.
+       * ```
+       * {
+       *   username: 'email address or username'
+       * }
+       * ```
+       */
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
