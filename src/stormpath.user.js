@@ -78,6 +78,26 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
     function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope,$spFormEncoder){
       function UserService(){
         this.cachedUserOp = null;
+
+        /**
+          * @ngdoc property
+          *
+          * @name currentUser
+          *
+          * @propertyOf stormpath.userService.$user
+          *
+          * @description
+          *
+          * Retains the account object of the currently logged in user.
+          *
+          * If the user state is unknown, this value is `null`.
+          *
+          * If the user state is known and the user is not logged in
+          * ({@link stormpath.userService.$user#methods_get $user.get()} has
+          * been called, and rejected) then this value will be `false`.
+          *
+          */
+
         this.currentUser = null;
         return this;
       }
