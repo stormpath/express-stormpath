@@ -86,7 +86,15 @@ angular.module('stormpath.CONFIG',[])
     *
     * Default: `/oauth/token`
     *
-    * The URI that the login form will post to.
+    * The URI that the login form will post to.  The endpoint MUST accept data
+    * in the following format:
+    *
+    * ```
+    * {
+    *     username: '',
+    *     password: ''
+    * }
+    * ```
     */
     AUTHENTICATION_ENDPOINT: '/oauth/token',
 
