@@ -55,9 +55,9 @@ At this point, you should create a directory for your project and change into it
 
 Once there, we use the generator to create the project.  We need to give our application a
 name (it does not have to be the same as the folder).  Since we are building a basic user
-dashboard for our API, we will call it dashboard::
+dashboard for our API, we will call it "dashboard"::
 
-    $ yo angular-fullstack dashboard-app
+    $ yo angular-fullstack dashboard
 
 The generator will ask you several questions, such as which templating engine to use.  We're sticking
 to vanilla HTML/CSS/JS for this guide. The only opinionated choice we are making is to use the 3rd-party

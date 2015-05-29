@@ -1,6 +1,6 @@
 .. _user_dashboard:
 
-Creating a User Profile View
+Create the Profile View
 =========================
 
 Most user-centric applications have a Profile view where the user can view and
@@ -11,9 +11,16 @@ this guide, we will show you how to update the user's information, see :ref:`com
 Generate the /profile Route
 -----------------
 
-Alright, one more time!  We're going to use the generator to scaffold the files for us::
+Alright, one more time!  We're going to use the generator to scaffold the files for us:
+
+.. code-block:: bash
 
     $ yo angular-fullstack:route profile
+
+.. code-block:: bash
+
+    ? Where would you like to create this route? client/app/
+    ? What will the url of your route be? /profile
 
 
 Force Authentication
@@ -57,7 +64,9 @@ structure.  Obviously, you'll be doing more than this when your application goes
 live. :)
 
 Open the file ``client/app/profile/profile.html`` and then replace
-it's contents with this::
+it's contents with this:
+
+.. code-block:: html
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 

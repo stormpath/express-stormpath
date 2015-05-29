@@ -3,8 +3,11 @@
 Customize the Menu
 ===================
 
-Now that users can register for the system, let's get our menu setup
-properly.  We want it to look differently when the user is logged in.
+Now that our Angular application is configured, let's get on with the building!
+
+The first view we want to work with is the menu bar.  We want to have login
+and registration links, as well as a link to the user profile view that we
+will be building.
 
 When the user is not logged in, we want the following to happen:
 
@@ -21,14 +24,16 @@ Modify navbar.html
 --------------------------
 
 Open the file ``client/components/navbar/navbar.html`` and replace
-the ``<ul>`` section with this markup::
+the ``<ul>`` section with this markup:
+
+.. code-block:: html
 
   <ul class="nav navbar-nav">
     <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}">
         <a ng-href="{{item.link}}">{{item.title}}</a>
     </li>
     <li if-user ng-class="{active: isActive('/profile')}">
-        <a ng-href="/profile">Profile</a>
+        <a ui-sref="profile">Profile</a>
     </li>
     <li if-not-user ng-class="{active: isActive('/register')}">
         <a ui-sref="register">Register</a>
@@ -43,21 +48,10 @@ the ``<ul>`` section with this markup::
 
 We've retained the piece that iterates over the default links, but we also
 added the new links that we want.  We are using the
-`ifUser <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:if-user>`_
-and
-`ifNotUser <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:if-not-user>`_
-directives to control the visibility of the links.
+`ifUser`_ and `ifNotUser`_ directives to control the visibility of the links.
 
-You can reload the app to see these changes, but the links to the Login
-and Profile pages will be dead until we continue to the next two sections
-of this guide.
+You can reload the app to see these changes, but the links will not work until
+we complete the following sections in this guide.
 
-Try It, and Logout!
---------------------------
-
-After you save the file, the browser should reload and you'll see the
-changes to the menu bar.  Click on the Logout button and you should see
-that the menu bar changes to show that you're no longer logged in.
-
-In the next section, we're going to build the Login route, so that you
-can log back in!
+.. _ifUser: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:ifUser
+.. _ifNotUser: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:ifNotUser

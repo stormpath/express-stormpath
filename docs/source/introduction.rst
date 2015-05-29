@@ -3,32 +3,49 @@
 Introduction
 =============
 
-In this guide we will be creating a full-stack JavaScript application.
-We will be starting a new project from scratch and we will use the Grunt
-and Yeoman tools to take care of the tedious setup.
+The purpose of this guide is to walk you through the creation of an Angular
+project from scratch, while showing you how to integrate the
+`Stormpath Angular SDK`_ to achieve the following tasks in your Angular
+application:
 
-If you're a seasoned AngularJS developer and simply need to know the
-module API, you can visit the `Stormpath AngularJS SDK API Documentation <https://docs.stormpath.com/angularjs/sdk/>`_.
-Throughout this guide, we will refer you to the API documentation if you want
-to learn more about how we're using it.
+* User Login
+* User Registration
+* Password Reset
+* Access Control
 
-While this guide will be JavaScript only, we do have support in our Java
-SDK for the same features.  If you are using Java, please see our `Java Web App Plugin Guide`_.
-
-.. _Java Web App Plugin Guide: https://docs.stormpath.com/java/servlet-plugin/
-
-
+If you're a seasoned AngularJS developer and simply want to explore the
+module API, you can visit the `Stormpath AngularJS SDK API Documentation`_.
 
 What We're Building
 --------------------
 
-Let's quickly cover what we'll be building:
+In this guide we will create a simple API server which our Angular application
+will use, using Node.js.  If you wish to create a server using Java, please see
+our `Java Web App Plugin Guide`_.  For other environments please visit
+`Stormpath Docs`_ to see if we have an integration for you!
 
-**A fullstack project**.  We're going to create a project with a lot of boilerplate code, but don't worry, it's going to be created automatically for you!  This is the power of Yeoman.
+By the end of this guide we will create the following:
 
-**A Node.js server**.  This server will serve the assets for the AngularJS application.  It will also serve a simple API, which we will secure with Stormpath.
+**A fullstack project & workflow**.  We're going to create a project with a lot
+of boilerplate code, but don't worry, it's going to be created automatically for
+you!  This is the power of Yeoman.
 
-**An AngularJS application**.  This will be an HTML5-based application, which allows users to register, login, and see their profile.  We will control profile access, so that only logged-in users can access that view.
+**A Node.js server**.  This server will serve the assets for the AngularJS
+application.  It will also serve a simple API, which we will secure with
+Stormpath.
+
+**An AngularJS application**.  This will be an HTML5-based application, which
+allows users to register, login, and see their profile.  We will control profile
+access, so that only logged-in users can access that view.
+
+Example Project
+--------------------
+
+As you follow this tutorial you will be creating and editing files.  If you're
+uncertain about a certain step, you can compare you code to the example project
+in this folder of the SDK repository:
+
+https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/example/dashboard-app
 
 
 How to get Support
@@ -38,4 +55,13 @@ us anytime through one of the following channels:
 
 * Email support: support@stormpath.com
 * Our knowledgebase: https://support.stormpath.com/hc/en-us
-* Github: github.com/stormpath
+* Github: https://github.com/stormpath/stormpath-sdk-angularjs
+
+
+.. _Stormpath Docs: https://docs.stormpath.com
+
+.. _Stormpath Angular SDK: https://github.com/stormpath/stormpath-sdk-angularjs
+
+.. _Stormpath AngularJS SDK API Documentation: https://docs.stormpath.com/angularjs/sdk/
+
+.. _Java Web App Plugin Guide: https://docs.stormpath.com/java/servlet-plugin/

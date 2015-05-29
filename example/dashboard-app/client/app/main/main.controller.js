@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dashboardAppApp')
+angular.module('dashboardApp')
   .controller('MainCtrl', function ($scope, $http) {
     $scope.awesomeThings = [];
 

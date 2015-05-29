@@ -29,11 +29,11 @@ Table of Contents
    create_tenant
    protect_api
    configure_angular
-   register
    customize_menu
    login
+   register
    user_profile
-   wait_for_user
    password_reset
    access_control
+   wait_for_user
    coming_soon

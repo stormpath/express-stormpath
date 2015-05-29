@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dashboardAppApp')
+angular.module('dashboardApp')
   .config(function ($stateProvider) {
     $stateProvider
       .state('register', {

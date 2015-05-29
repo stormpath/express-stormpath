@@ -78,6 +78,26 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
     function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope,$spFormEncoder){
       function UserService(){
         this.cachedUserOp = null;
+
+        /**
+          * @ngdoc property
+          *
+          * @name currentUser
+          *
+          * @propertyOf stormpath.userService.$user
+          *
+          * @description
+          *
+          * Retains the account object of the currently logged in user.
+          *
+          * If the user state is unknown, this value is `null`.
+          *
+          * If the user state is known and the user is not logged in
+          * ({@link stormpath.userService.$user#methods_get $user.get()} has
+          * been called, and rejected) then this value will be `false`.
+          *
+          */
+
         this.currentUser = null;
         return this;
       }
@@ -85,7 +105,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         /**
          * @ngdoc function
          *
-         * @name stormpath.userService.$user#create
+         * @name create
          *
          * @methodOf stormpath.userService.$user
          *
@@ -164,7 +184,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         /**
          * @ngdoc function
          *
-         * @name stormpath.userService.$user#get
+         * @name get
          *
          * @methodOf stormpath.userService.$user
          *
@@ -232,6 +252,34 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         }
 
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name resendVerificationEmail
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to resend a verification token
+       * to the given email address.  Will resolve, even if the email address
+       * does not exist.  If rejected there was a network error.
+       *
+       * @description
+       *
+       * Re-sends the verification email to the account specified by the
+       * username or email address.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the username or email.
+       * ```
+       * {
+       *   username: 'email address or username'
+       * }
+       * ```
+       */
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -239,6 +287,35 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name verify
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to verify the given
+       * email verification token token.  If resolved the account has been
+       * verified and can be used for login.  If rejected the token is expired
+       * or has already been used.
+       *
+       * @param  {Object} data Data object
+       *
+       * An object literal for passing the email verification token.
+       * Must follow this format:
+       * ```
+       * {
+       *   sptoken: '<token from email>'
+       * }```
+       *
+       * @description
+       *
+       * Verifies a new account, using the `sptoken` that was sent to the user
+       * by email.
+       */
       UserService.prototype.verify = function verify(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -246,9 +323,63 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name verifyPasswordResetToken
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * A $http promise representing the operation to verify the given password
+       * reset token token.  If resolved, the token can be used.  If rejected
+       * the token cannot be used.
+       *
+       * @description
+       *
+       * Verifies a password reset token that was sent to the user by email.
+       * If valid, the token can be used to reset the user's password.  If not
+       * valid it means that the token has expired or has already been used.
+       *
+       * Use this method to verify the token, before asking the user to specify
+       * a new password.  If the token is invalid the user must ask for another.
+       *
+       * @param  {String} sptoken
+       *
+       * The `sptoken` that was delivered to the user by email
+       */
       UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
         return $http.get(STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT')+'/'+token);
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name passwordResetRequest
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to generate a password
+       * reset token for the given email address.  Will resolve, even if the
+       * email address does not exist.  If rejected there was a network error.
+       *
+       * @description
+       *
+       * Triggers a password reset email to the given username or email address.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the username or email.
+       * ```
+       * {
+       *   username: 'email address or username'
+       * }
+       * ```
+       */
       UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -256,6 +387,39 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name resetPassword
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to reset the password and
+       * consume the token.  If resolved the password was successfully changed,
+       * if rejected the token is invalid or the posted password does not meet
+       * the password strength rules of the directory.
+       *
+       * @description
+       *
+       * Resets a user's password, using a token that was emailed to the user.
+       *
+       * @param {String} token
+       *
+       * The `sptoken` that was sent to the user via email.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the new password.  Must follow this
+       * format:
+       * ```
+       * {
+       *   password: 'the new password'
+       * }
+       * ```
+       */
       UserService.prototype.resetPassword = function resetPassword(token,data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -285,7 +449,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          *
          * This event is broadcast when a call to
          * {@link stormpath.userService.$user#methods_get $user.get()}
-         * results in a {@link User User} object.
+         * and provides the user object as the second parameter.
          *
          * See the next section, the $notLoggeInEvent, for example usage.
          */

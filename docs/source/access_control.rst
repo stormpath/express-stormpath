@@ -38,7 +38,9 @@ If you need to show or hide specific elements in response to group state,
 you can use the `ifUserInGroup`_ and `ifUserNotInGroup`_ directives. In
 this example, we show a link to the Admin view if the user is in the admin
 group.  If the user is not in the Admin group, we let them know that they
-need to request access::
+need to request access:
+
+.. code-block:: html
 
   <ul class="nav navbar-nav">
     <li if-user-in-group="admins">

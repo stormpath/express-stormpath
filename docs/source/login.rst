@@ -3,28 +3,40 @@
 Create the Login Form
 ============================
 
-Login forms are pretty straightforward, why re-invent the wheel?
-The Stormpath Angular SDK includes a default login form that you can
-simply insert into your application.  In the next release of this guide,
-we will show you how to add password reset functions to this form, see
-:ref:`coming_soon`
+Login forms are pretty straightforward, why re-invent the wheel? The `Stormpath
+Angular SDK`_ includes a default login form that you can simply insert into your
+application, via an Angular directive.  To use it we need to create a Login
+route and view in our application.
 
 Generate the /login Route
 --------------------------------
 
-Like we did with the Registration page, we will use the generator
-to create the login route.
+We can use Yeomaon to create the Angular route and view at the same time.
 
-Stop the server, run the following command in your project folder, and press
-enter to choose all the default options when it asks::
+Stop the server, then run the following command in your project folder::
 
     $ yo angular-fullstack:route login
+
+It will ask you these questions, just hit enter to choose the defaults for all of them::
+
+    ? Where would you like to create this route? client/app/
+    ? What will the url of your route be? /login
+
+It will then tell you about the files it has created::
+
+  create client/app/login/login.js
+  create client/app/login/login.controller.js
+  create client/app/login/login.controller.spec.js
+  create client/app/login/login.css
+  create client/app/login/login.html
 
 Use the Login Form Directive
 --------------------------------
 
 Open the file ``client/app/login/login.html`` and then replace
-its contents with this::
+its contents with this
+
+.. code-block:: html
 
     <div ng-include="'components/navbar/navbar.html'"></div>
 
@@ -42,22 +54,20 @@ This is a small bit of HTML markup, which does the following:
 
 * Includes the common menu bar for the application (we customized it in the last section).
 * Sets up some Bootstrap classes so that the page flows nicely.
-* Inserts the default login form, via the `spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive.
+* Inserts the default login form, via the `spLoginForm`_ directive.
 
-Save that file and the browser should auto reload. You should now
-see the login route like this:
+Save that file and restart the server via ``grunt serve``. Now when you click
+the Login link you should now see the login route like this:
 
 .. image:: _static/login_form.png
 
+Perfect!  Now that we have a login form, we also need the ability to register
+for an account.  Continue on to the next section and we will build a registration form.
 
-If you want to further customize the look and behaviour of the form,
-please see the API documentation for the
-`spLoginForm <https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:sp-login-form>`_ directive.
+If you want to further customize the look and behavior of the form,
+please see the API documentation for the `spLoginForm`_ directive.
 The most useful feature is the ability to specify your own template.
 
-Try It, Log Back In!
---------------------------------
 
-Submit the username and password that you created when you registered.
-You should be redirected back to the main view, and you should see the
-logged-in changes to the menu bar.
+.. _spLoginForm: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:spLoginForm
+.. _Stormpath Angular SDK: https://github.com/stormpath/stormpath-sdk-angularjs

@@ -1,0 +1,164 @@
+@ngdoc overview
+@name Server Integration Guide
+@description
+
+# Server Integration Guide
+
+To use this module, you also need to use Stormpath on your server.
+
+## With Express.js
+
+If you are using Express.js as your server, you can follow our
+[Expres.js Guide](https://docs.stormpath.com/angularjs/guide/) to easily add
+Stormpath to your server and support this Angular SDK.
+
+## With other environments
+
+If you are using another type of server you will have to manually setup some
+server endpoints to support this module.  Please visit
+[Stormpath Docs](https://docs.stormpath.com) to find the language SDK of your
+server environment.
+
+Using the SDK of your choice, you need to implement the endpoints in the
+following table.  The references to the Angular APIs will describe what
+this SDK expects from your server.  The Stormpath API column points you to the
+part of our REST API that you will want to use to implement the endpoint.  Our
+SDKs will have convenience methods for these APIs.
+
+**Endpoints to implement:**
+
+<table>
+  <thead>
+    <th>Server Endpoint Description</th>
+    <th>Angular SDK APIs</th>
+    <th>Stormpath API to use</th>
+  </thead>
+<tbody>
+  <tr>
+    <td>
+      <p>**Current User Endpoint**</p>
+      <p>Returns a JSON object of the currently logged-in Stormpath account</p>
+    </td>
+    <td>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_current_user_uri CURRENT_USER_URI}
+    </td>
+    <td>
+      *N/A*
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>**Email Verification**</p>
+      <p>Used to verify and consume email verification tokens</p>
+    </td>
+    <td>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_email_verification_endpoint EMAIL_VERIFICATION_ENDPOINT}
+      <br/>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_resend_email_verification_endpoint RESEND_EMAIL_VERIFICATION_ENDPOINT}
+    </td>
+    <td>
+      [Account Verification](http://docs.stormpath.com/rest/product-guide/#verify-an-email-address)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>**Login**</p>
+      <p>
+        Used to authenticate a user and generate an access token which is stored in a secure cookie.
+      </p>
+    </td>
+    <td>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_authentication_endpoint AUTHENTICATION_ENDPOINT}
+    </td>
+    <td>
+      [Login Attempts](http://docs.stormpath.com/rest/product-guide/#authenticate-an-account)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>**Logout**</p>
+      <p>Used to remove any session-related cookies, such as the access token.</p>
+    </td>
+    <td>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_destroy_session_endpoint DESTROY_SESSION_ENDPOINT}
+    </td>
+    <td>
+      *N/A*
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>**Password Reset**</p>
+      <p>Used to initiate and complete the password reset workflow for a given
+        username or email</p>
+    </td>
+    <td>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_password_reset_token_collection_endpoint PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT}
+    </td>
+    <td>
+      [Password Reset](http://docs.stormpath.com/rest/product-guide/#reset-an-accounts-password)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>**User Registration**</p>
+      <p>Used to create new Stormpath accounts</p>
+    </td>
+    <td>
+      {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_user_collection_uri USER_COLLECTION_URI}
+    </td>
+    <td>
+      [Account Creation](http://docs.stormpath.com/rest/product-guide/#create-an-account)
+    </td>
+  </tr>
+</tbody>
+</table>
+
+## How Sessions Work
+
+The Angular SDK is agnostic to the authentication strategy used, however we
+do suggest that you use JWT access tokens.  You can read more in our blog post,
+[Token Based Authentication for Single Page Apps](https://stormpath.com/blog/token-auth-spa).
+Our [Express.js Integration](https://docs.stormpath.com/angularjs/guide/)
+does this for you.
+
+Most of our SDKs have methods for issuing JWTs, and can be used to implement
+this strategy in your server.
+
+If you do not want to use JWT Access Tokens, you need to ensure the following on
+your server:
+* The {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_authentication_endpoint AUTHENTICATION_ENDPOINT} should set a cookie that identifies a session for the
+user
+* Your protected API endpoints should respond with `401 Unauthorized` if the
+user does not have a valid session
+
+## How Token Authentication Works
+
+### Token Creation and Storage
+
+When a user logs in, the server will issue an access token in the form of a
+JWT.  This access token will be stored in an HTTP-only cookie and will also
+set the Secure flag (so that it is only sent over HTTPS) in your production
+environment.
+
+You may have heard that cookies are insecure, but that is a vague statement.
+The truth is that HTTP-only cookies, especially Secure-only cookies, are the
+most secure place to store authentication information because the JavaScript
+environment cannot access them.  This is the best way to protect yourself
+from XSS attacks.
+
+### Token Expiration and Revocation
+
+Access tokens are valid until they expire.  You should set an expiration (TTL) that
+makes sense for your application.  The TTL is controlled on your server.  If you
+are using the [Stormpath Express SDK][stormpath-sdk-express], you want to
+configure the `accessTokenTtl` options.
+
+If you need the ability to revoke specific tokens, you can maintain a cache of issued
+tokens on your server.  All tokens have a `jti` field, which is a unique nonce for each token.
+
+[docs.stormpath.com]: https://docs.stormpath.com
+[ui-router]: https://github.com/angular-ui/ui-router
+[stormpath-sdk-node]: https://github.com/stormpath/stormpath-sdk-node "Stormpath Node SDK"
+
+[stormpath-sdk-express]: https://github.com/stormpath/stormpath-sdk-express "Stormpath Express SDK"
