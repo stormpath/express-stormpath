@@ -10,9 +10,10 @@ All library changes, in descending order.
 Version 1.0.5
 -------------
 
-**Not yet released.**
-
 - Adding note for Windows users regarding setting environment variables.
+- Added option ``sessionActiveDuration``, which can be used to extend a
+  session if a request is made within the active duration timeframe. This
+  is passed to the ``client-sessions`` library and the default is 5 minutes.
 
 
 Version 1.0.4

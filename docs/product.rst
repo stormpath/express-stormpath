@@ -201,7 +201,7 @@ You can easily change the default session / cookie expiration by modifying the
 
     app.use(stormpath.init(app, {
       sessionDuration: 1000 * 60 * 15, // Make sessions expire after 15 minutes.
-      activeDuration: 1000 * 60 * 5, // Allow session extension, 5 minutes before expiration
+      sessionActiveDuration: 1000 * 60 * 5, // Allow session extension, 5 minutes before expiration
     }));
 
 By default, sessions will expire after 30 minutes (*a secure default*) with an
@@ -1083,8 +1083,6 @@ First, copy the following code into ``views/register.jade``::
       p #{error}
 
     form(method='post')
-      input(name='_csrf', type='hidden', value=csrfToken)
-
       // This block of code renders the desired input boxes for registering users.
       if app.get('stormpathEnableUsername')
         input(placeholder='Username', name='username', required=app.get('stormpathRequireUsername') ? true : false, type='text')

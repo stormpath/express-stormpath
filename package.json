@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
