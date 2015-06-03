@@ -23,8 +23,6 @@ block body
                   p #{error.error}
 
             form.registration-form.form-horizontal.sp-form(method='post', role='form')
-              input(name='_csrf', type='hidden', value=csrfToken)
-
               if app.get('stormpathEnableUsername')
                 .form-group.group-username(form-group='true')
                   label.col-sm-4 Username

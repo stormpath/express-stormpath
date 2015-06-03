@@ -1083,8 +1083,6 @@ First, copy the following code into ``views/register.jade``::
       p #{error}
 
     form(method='post')
-      input(name='_csrf', type='hidden', value=csrfToken)
-
       // This block of code renders the desired input boxes for registering users.
       if app.get('stormpathEnableUsername')
         input(placeholder='Username', name='username', required=app.get('stormpathRequireUsername') ? true : false, type='text')
