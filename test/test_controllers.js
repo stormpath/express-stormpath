@@ -77,7 +77,6 @@ describe('register', function() {
 
         var $ = cheerio.load(res.text);
 
-        assert($('input[name=_csrf]').val());
         done();
       });
   });
@@ -104,7 +103,6 @@ describe('register', function() {
 
             var $ = cheerio.load(res.text);
 
-            assert($('input[name=_csrf]').val());
             cb();
           });
       },
@@ -149,7 +147,6 @@ describe('register', function() {
         }
 
         var $ = cheerio.load(res.text);
-        var csrfToken = $('input[name=_csrf]').val();
         var email = uuid.v4() + '@test.com';
 
         setTimeout(function() {
@@ -159,7 +156,6 @@ describe('register', function() {
             .send({ surname: uuid.v4() })
             .send({ email: email })
             .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-            .send({ _csrf: csrfToken })
             .end(function(err, res) {
               if (err) {
                 return done(err);
@@ -205,7 +201,6 @@ describe('register', function() {
         }
 
         var $ = cheerio.load(res.text);
-        var csrfToken = $('input[name=_csrf]').val();
         var email = uuid.v4() + '@test.com';
 
         setTimeout(function() {
@@ -215,7 +210,6 @@ describe('register', function() {
             .send({ givenName: uuid.v4() })
             .send({ email: email })
             .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-            .send({ _csrf: csrfToken })
             .end(function(err, res) {
               if (err) {
                 return done(err);
