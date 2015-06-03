@@ -180,8 +180,10 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('docs', function () {
-    grunt.task.run(['clean:ngdocs','ngdocs']);
+  grunt.registerTask('docs', 'Builds the Guide and ngDocs for deployment',function () {
+    grunt.task.run(
+      ['clean:ngdocs','ngdocs','shell:guide']
+    );
   });
 
   grunt.registerTask('serve',
