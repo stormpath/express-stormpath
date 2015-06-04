@@ -47,7 +47,6 @@ describe('init', function() {
     'enableLogin',
     'enableLogout',
     'enableForgotPassword',
-    'enableAccountVerification',
     'enableFacebook',
     'enableGoogle',
     'enableIdSite',
