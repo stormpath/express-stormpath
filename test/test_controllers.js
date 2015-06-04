@@ -81,6 +81,102 @@ describe('register', function() {
       });
   });
 
+  it('should return json if the accept header supports json and the content type we post is json', function(done) {
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
+      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
+      application:  stormpathApplication.href,
+    }));
+
+    setTimeout(function() {
+      request(app)
+        .post('/register')
+        .type('json')
+        .set('Accept', 'application/json')
+        .expect(400)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          }
+
+          var json = JSON.parse(res.text);
+          if (!json.error) {
+            return done(new Error('No JSON error returned.'));
+          }
+
+          done();
+        });
+    }, 5000);
+  });
+
+  it('should return a successful response if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
+      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
+      application:  stormpathApplication.href,
+    }));
+
+    setTimeout(function() {
+      request(app)
+        .post('/register')
+        .type('json')
+        .send({
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
+          email: uuid.v4() + '@test.com',
+          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          } else if (res.text) {
+            return done(new Error('Body not empty.'));
+          }
+
+          done();
+        });
+    }, 5000);
+  });
+
+  it('should return a successful response if the accept header supports json and the content type we post is form data and we supply all user data fields', function(done) {
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
+      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
+      application:  stormpathApplication.href,
+    }));
+
+    setTimeout(function() {
+      request(app)
+        .post('/register')
+        .type('form')
+        .send({
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
+          email: uuid.v4() + '@test.com',
+          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          } else if (res.text) {
+            return done(new Error('Body not empty.'));
+          }
+
+          done();
+        });
+    }, 5000);
+  });
+
   it('should bind to another URL if specified', function(done) {
     var app = express();
 
