@@ -17,11 +17,9 @@ information to the SDK by exporting it to the environment.
 
 The ``Gruntfile`` of this project has a task that will automatically export the
 properties that are added to ``server/config/local.env.js``.  Open that file,
-add these properties to the export block, and fill in your values::
+add modify the export block, filling in your values::
 
     module.exports = {
-      DOMAIN: 'http://localhost:9000',
-      SESSION_SECRET: "dashboard-secret",
       // Control debug level for modules using visionmedia/debug
       DEBUG: '',
       STORMPATH_API_KEY_ID: 'YOUR_KEY_ID',
@@ -31,6 +29,11 @@ add these properties to the export block, and fill in your values::
 
 Grunt will automatically export these values to the environment, and the
 `Stormpath Express SDK`_ will pick them up automatically.
+
+.. note::
+
+  We've removed the ``DOMAIN`` and ``SESSION_SECRET`` properties, as we do not
+  use those features in this demonstration application.
 
 .. note::
 
