@@ -81,7 +81,7 @@ describe('register', function() {
       });
   });
 
-  it('should return json if the accept header supports json and the content type we post is json', function(done) {
+  it('should return a json error if the accept header supports json and the content type we post is json', function(done) {
     var app = express();
 
     app.use(stormpath.init(app, {
