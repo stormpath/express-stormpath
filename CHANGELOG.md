@@ -1,3 +1,9 @@
+# 0.5.1
+
+## Bug Fixes
+
+The `defaultPostLoginState` option was not being used by the SDK, but now it is!
+
 # 0.5.0
 
 ## New Features

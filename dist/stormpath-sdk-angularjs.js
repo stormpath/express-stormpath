@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.5.0-dev-2015-05-26
+ * @version v0.5.1-dev-2015-06-11
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -218,7 +218,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
          */
         $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
       }
-      StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor() {
+      StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor(config) {
         $rootScope.$on('$stateChangeStart', function(e,toState,toParams){
           var sp = toState.sp || {}; // Grab the sp config for this state
 
@@ -246,12 +246,25 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
             });
           }
           else if($user.currentUser && sp.authorize){
-
             if(!authorizeStateConfig(sp)){
               e.preventDefault();
               stateChangeUnauthorizedEvent(toState,toParams);
             }
-
+          }else if(toState.name===config.loginState){
+            if($user.currentUser && $user.currentUser.href){
+              e.preventDefault();
+              $state.go(config.defaultPostLoginState);
+            }
+            else if($user.currentUser===null){
+              e.preventDefault();
+              $user.get().finally(function(){
+                if($user.currentUser){
+                  $state.go(config.defaultPostLoginState);
+                }else{
+                  $state.go(toState.name,toParams);
+                }
+              });
+            }
           }
         });
       };
@@ -323,34 +336,31 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       StormpathService.prototype.uiRouter = function uiRouter(config){
         var self = this;
         config = typeof config === 'object' ? config : {};
-        this.stateChangeInterceptor();
+        this.stateChangeInterceptor(config);
 
         if(config.loginState){
           self.unauthenticatedWather = $rootScope.$on(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,function(e,toState,toParams){
-            self.postLogin = {toState:toState,toParams:toParams};
+            self.postLogin = {
+              toState: toState,
+              toParams: toParams
+            };
             $state.go(config.loginState);
-            if(config.autoRedirect !== false){
-              self.authWatcher = $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
-                self.authWatcher(); // unregister this watcher
-                if(self.postLogin){
-                  $state.go(self.postLogin.toState,self.postLogin.toParams).then(function(){
-                    self.postLogin = null;
-                  });
-                }
-              });
-            }
           });
         }
+
+        $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
+          if(self.postLogin && (config.autoRedirect !== false)){
+            $state.go(self.postLogin.toState,self.postLogin.toParams).then(function(){
+              self.postLogin = null;
+            });
+          }else if(config.defaultPostLoginState){
+            $state.go(config.defaultPostLoginState);
+          }
+        });
+
         if(config.forbiddenState){
           self.forbiddenWatcher = $rootScope.$on(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,function(){
             $state.go(config.forbiddenState);
-          });
-        }
-        if(config.defaultPostLoginState){
-          self.defaultRedirectStateWatcher = $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
-            if(!self.postLogin){
-              $state.go(config.defaultPostLoginState);
-            }
           });
         }
       };
@@ -845,17 +855,21 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          *
          * @param {Object} credentialData
          *
-         * An object literal for passing username & password, or social provider token.
+         * An object literal for passing username & password, or social provider
+         * token.
          *
          * @returns {promise}
          *
-         * A promise that is resolved with the authentication response or error response (both are response objects from the $http service).
+         * A promise that is resolved with the authentication response or error
+         * response (both are response objects from the $http service).
          *
          * @description
          *
+         * Logs the user in.
+         *
          * Sends the provided credential data to your backend server. The server
-         * handler should verify the credentials and return an access token, which is
-         * stored in an HTTP-only cookie.
+         * handler should verify the credentials and return an access token,
+         * which is stored in an HTTP-only cookie.
          *
          * @example
          *
@@ -955,29 +969,370 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
 
 'use strict';
 
+/**
+* @ngdoc object
+*
+* @name stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+*
+* @description
+*
+* This constant allows you to configure the internal settings of the module,
+* such as authentication endpoints and the names of events. These properties
+* must be modified within a config block.
+*
+* **Example:**
+* <pre>
+*     angular.module('myapp')
+*       .config(function(STORMPATH_CONFIG){
+*           STORMPATH_CONFIG.ENDPOINT_PREFIX = 'http://api.mydomain.com';
+*       });
+* </pre>
+*/
+
 angular.module('stormpath.CONFIG',[])
 .constant('STORMPATH_CONFIG',(function stormpathConfigBuilder(){
   var c={
-    ENDPOINT_PREFIX: '',
-    AUTHENTICATION_ENDPOINT: '/oauth/token',
-    CURRENT_USER_URI: '/api/users/current',
-    USER_COLLECTION_URI: '/api/users',
-    DESTROY_SESSION_ENDPOINT: '/logout',
-    RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
-    EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
-    PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
-    GET_USER_EVENT: '$currentUser',
-    SESSION_END_EVENT: '$sessionEnd',
-    UNAUTHORIZED_EVENT: 'unauthorized',
-    LOGIN_STATE_NAME: 'login',
-    FORBIDDEN_STATE_NAME: 'forbidden',
+    /**
+    * @ngdoc property
+    *
+    * @name AUTHENTICATION_SUCCESS_EVENT_NAME
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$authenticated`
+    *
+    * The name of the event that is fired when a user logs in, after
+    * successfully submitting the login form.
+    *
+    */
     AUTHENTICATION_SUCCESS_EVENT_NAME: '$authenticated',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name AUTHENTICATION_FAILURE_EVENT_NAME
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$authenticationFailure`
+    *
+    * The name of the event that is fired when the user posts
+    * invalid login credentials to the login form.
+    */
     AUTHENTICATION_FAILURE_EVENT_NAME: '$authenticationFailure',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name AUTH_SERVICE_NAME
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$auth`
+    *
+    * The name of the authentication service, this changes the
+    * service name that you inject.
+    */
     AUTH_SERVICE_NAME: '$auth',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name AUTHENTICATION_ENDPOINT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/oauth/token`
+    *
+    * The URI that the login form will post to.  The endpoint MUST accept data
+    * in the following format:
+    *
+    * ```
+    * {
+    *     username: '',
+    *     password: ''
+    * }
+    * ```
+    */
+    AUTHENTICATION_ENDPOINT: '/oauth/token',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name CURRENT_USER_URI
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/api/users/current`
+    *
+    * The URI that is used to fetch the account object of
+    * the currently logged in user.  This endpoint MUST:
+    *  * Respond with a JSON object that is the Stormpath account object,
+    *  if the user has an active session.
+    *  * Respond with `401 Unauthorized` if the user has no session.
+    */
+    CURRENT_USER_URI: '/api/users/current',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name DESTROY_SESSION_ENDPOINT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/logout`
+    *
+    * The URL that the {@link stormpath.spLogout:spLogout spLogout} directive
+    * will make a GET request to, this endpoint MUST delete the access token
+    * cookie, XSRF token cookie, and any other cookies that relate to the user
+    * session.
+    */
+    DESTROY_SESSION_ENDPOINT: '/logout',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name EMAIL_VERIFICATION_ENDPOINT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/api/emailVerificationTokens`
+    *
+    * The endpoint that is used for verifying an account that requires email
+    * verification.  Used by
+    * {@link stormpath.userService.$user#methods_verify $user.verify()} to POST
+    * the `sptoken` that was delivered to the user by email.
+    *
+    * This endpoint MUST accept a POST request with the following format and
+    * use Stormpath to verify the token:
+    * ```
+    * {
+    *   sptoken: '<token from email sent to user>'
+    * }
+    * ```
+    *
+    */
+    EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name ENDPOINT_PREFIX
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: *none*
+    *
+    * A prefix, e.g. "base URL" to add to all endpoints that are used by this SDK.
+    * Use this if your backend API is running on a different port or domain than
+    * your Angular application.  Omit the trailing forward slash.
+    *
+    * **NOTE:** This may trigger
+    * [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+    * behaviour in the browser, and your server
+    * will need to respond to requests accordingly.  If you are using our
+    * Express SDK see
+    * [allowedOrigins](https://github.com/stormpath/stormpath-sdk-express#allowedOrigins)
+    *
+    * **Example:**
+    * <pre>
+    *   ENDPOINT_PREFIX = 'http://api.mydomain.com'
+    * </pre>
+    */
+    ENDPOINT_PREFIX: '',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name FORM_CONTENT_TYPE
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `'application/x-www-form-urlencoded'`
+    *
+    * The content type that is used for form posts.
+    */
+    FORM_CONTENT_TYPE: 'application/x-www-form-urlencoded',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name GET_USER_EVENT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$currentUser`
+    *
+    * The name of the event that is fired when
+    * {@link stormpath.userService.$user#methods_get $user.get()}
+    * is resolved with a user object.
+    */
+    GET_USER_EVENT: '$currentUser',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name NOT_LOGGED_IN_EVENT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$notLoggedin`
+    *
+    * The name of the event that is fired when
+    * {@link stormpath.userService.$user#methods_get $user.get()}
+    * is rejected without a user.
+    */
     NOT_LOGGED_IN_EVENT: '$notLoggedin',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/api/passwordResetTokens`
+    *
+    * The endpoint that is used by
+    * {@link stormpath.userService.$user#methods_verifyPasswordResetToken $user.verifyPasswordResetToken()} and
+    * {@link stormpath.userService.$user#methods_passwordResetRequest $user.passwordResetRequest()} and
+    * {@link stormpath.userService.$user#methods_resetPassword $user.resetPassword()}
+    * to create, verify, and consume password reset tokens.
+    */
+    PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name RESEND_EMAIL_VERIFICATION_ENDPOINT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/api/verificationEmails`
+    *
+    * The endpoint that is used by
+    * {@link stormpath.userService.$user#methods_resendVerificationEmail $user.resendVerificationEmail()}
+    * to re-send a verification email to a user.
+    *
+    * This endpoint MUST accept a POST request with the following format:
+    * ```
+    * {
+    *   username: 'email or username'
+    * }
+    * ```
+    */
+    RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name SESSION_END_EVENT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$sessionEnd`
+    *
+    * The name of the event that is fired when the user logs out via the
+    * {@link stormpath.spLogout:spLogout spLogout}
+    * directive
+    */
+    SESSION_END_EVENT: '$sessionEnd',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name STATE_CHANGE_UNAUTHENTICATED
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$stateChangeUnauthenticated`
+    *
+    * The name of the event that is fired when the user attempts to visit a
+    * UI Router state that requires authentication, but the user is not
+    * authenticated.
+    */
     STATE_CHANGE_UNAUTHENTICATED: '$stateChangeUnauthenticated',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name STATE_CHANGE_UNAUTHORIZED
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$stateChangeUnauthorized`
+    *
+    * The name of the event that is fired when the user attempts to visit a
+    * UI Router state that has an access control rule which the user does not
+    * meet (such as not being in a specified group)
+    */
     STATE_CHANGE_UNAUTHORIZED: '$stateChangeUnauthorized',
-    FORM_CONTENT_TYPE: ''
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name USER_COLLECTION_URI
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/api/users`
+    *
+    * The endpoint that is used by
+    * {@link stormpath.userService.$user#methods_create $user.create()}
+    * to POST new users.  This endpoint MUST accept a stormpath account object
+    * and use Stormpath to create the new user.
+    */
+    USER_COLLECTION_URI: '/api/users'
   };
   c.getUrl = function(key) {
     return this.ENDPOINT_PREFIX + this[key];
@@ -1097,11 +1452,9 @@ angular.module('stormpath')
       }
 
       FormEncoderService.prototype.formPost = function formPost(httpRequest){
-        if(STORMPATH_CONFIG.FORM_CONTENT_TYPE!=='application/json'){
-          var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
-          h['Content-Type'] = 'application/x-www-form-urlencoded';
-          httpRequest.data = this.encodeUrlForm(httpRequest.data);
-        }
+        var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
+        h['Content-Type'] = STORMPATH_CONFIG.FORM_CONTENT_TYPE;
+        httpRequest.data = this.encodeUrlForm(httpRequest.data);
         return httpRequest;
       };
 
@@ -1648,6 +2001,26 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
     function userServiceFactory($q,$http,STORMPATH_CONFIG,$rootScope,$spFormEncoder){
       function UserService(){
         this.cachedUserOp = null;
+
+        /**
+          * @ngdoc property
+          *
+          * @name currentUser
+          *
+          * @propertyOf stormpath.userService.$user
+          *
+          * @description
+          *
+          * Retains the account object of the currently logged in user.
+          *
+          * If the user state is unknown, this value is `null`.
+          *
+          * If the user state is known and the user is not logged in
+          * ({@link stormpath.userService.$user#methods_get $user.get()} has
+          * been called, and rejected) then this value will be `false`.
+          *
+          */
+
         this.currentUser = null;
         return this;
       }
@@ -1655,7 +2028,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         /**
          * @ngdoc function
          *
-         * @name stormpath.userService.$user#create
+         * @name create
          *
          * @methodOf stormpath.userService.$user
          *
@@ -1734,7 +2107,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         /**
          * @ngdoc function
          *
-         * @name stormpath.userService.$user#get
+         * @name get
          *
          * @methodOf stormpath.userService.$user
          *
@@ -1802,6 +2175,34 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         }
 
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name resendVerificationEmail
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to resend a verification token
+       * to the given email address.  Will resolve, even if the email address
+       * does not exist.  If rejected there was a network error.
+       *
+       * @description
+       *
+       * Re-sends the verification email to the account specified by the
+       * username or email address.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the username or email.
+       * ```
+       * {
+       *   username: 'email address or username'
+       * }
+       * ```
+       */
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -1809,6 +2210,35 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name verify
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to verify the given
+       * email verification token token.  If resolved the account has been
+       * verified and can be used for login.  If rejected the token is expired
+       * or has already been used.
+       *
+       * @param  {Object} data Data object
+       *
+       * An object literal for passing the email verification token.
+       * Must follow this format:
+       * ```
+       * {
+       *   sptoken: '<token from email>'
+       * }```
+       *
+       * @description
+       *
+       * Verifies a new account, using the `sptoken` that was sent to the user
+       * by email.
+       */
       UserService.prototype.verify = function verify(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -1816,9 +2246,63 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name verifyPasswordResetToken
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * A $http promise representing the operation to verify the given password
+       * reset token token.  If resolved, the token can be used.  If rejected
+       * the token cannot be used.
+       *
+       * @description
+       *
+       * Verifies a password reset token that was sent to the user by email.
+       * If valid, the token can be used to reset the user's password.  If not
+       * valid it means that the token has expired or has already been used.
+       *
+       * Use this method to verify the token, before asking the user to specify
+       * a new password.  If the token is invalid the user must ask for another.
+       *
+       * @param  {String} sptoken
+       *
+       * The `sptoken` that was delivered to the user by email
+       */
       UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
         return $http.get(STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT')+'/'+token);
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name passwordResetRequest
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to generate a password
+       * reset token for the given email address.  Will resolve, even if the
+       * email address does not exist.  If rejected there was a network error.
+       *
+       * @description
+       *
+       * Triggers a password reset email to the given username or email address.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the username or email.
+       * ```
+       * {
+       *   username: 'email address or username'
+       * }
+       * ```
+       */
       UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -1826,6 +2310,39 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+
+      /**
+       * @ngdoc function
+       *
+       * @name resetPassword
+       *
+       * @methodOf stormpath.userService.$user
+       *
+       * @returns {promise}
+       *
+       * An $http promise representing the operation to reset the password and
+       * consume the token.  If resolved the password was successfully changed,
+       * if rejected the token is invalid or the posted password does not meet
+       * the password strength rules of the directory.
+       *
+       * @description
+       *
+       * Resets a user's password, using a token that was emailed to the user.
+       *
+       * @param {String} token
+       *
+       * The `sptoken` that was sent to the user via email.
+       *
+       * @param  {Object} data
+       *
+       * An object literal for passing the new password.  Must follow this
+       * format:
+       * ```
+       * {
+       *   password: 'the new password'
+       * }
+       * ```
+       */
       UserService.prototype.resetPassword = function resetPassword(token,data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
@@ -1855,7 +2372,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          *
          * This event is broadcast when a call to
          * {@link stormpath.userService.$user#methods_get $user.get()}
-         * results in a {@link User User} object.
+         * and provides the user object as the second parameter.
          *
          * See the next section, the $notLoggeInEvent, for example usage.
          */
