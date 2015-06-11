@@ -203,7 +203,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
          */
         $rootScope.$broadcast(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,toState,toParams);
       }
-      StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor() {
+      StormpathService.prototype.stateChangeInterceptor = function stateChangeInterceptor(config) {
         $rootScope.$on('$stateChangeStart', function(e,toState,toParams){
           var sp = toState.sp || {}; // Grab the sp config for this state
 
@@ -231,12 +231,25 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
             });
           }
           else if($user.currentUser && sp.authorize){
-
             if(!authorizeStateConfig(sp)){
               e.preventDefault();
               stateChangeUnauthorizedEvent(toState,toParams);
             }
-
+          }else if(toState.name===config.loginState){
+            if($user.currentUser && $user.currentUser.href){
+              e.preventDefault();
+              $state.go(config.defaultPostLoginState);
+            }
+            else if($user.currentUser===null){
+              e.preventDefault();
+              $user.get().finally(function(){
+                if($user.currentUser){
+                  $state.go(config.defaultPostLoginState);
+                }else{
+                  $state.go(toState.name,toParams);
+                }
+              });
+            }
           }
         });
       };
@@ -308,34 +321,31 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       StormpathService.prototype.uiRouter = function uiRouter(config){
         var self = this;
         config = typeof config === 'object' ? config : {};
-        this.stateChangeInterceptor();
+        this.stateChangeInterceptor(config);
 
         if(config.loginState){
           self.unauthenticatedWather = $rootScope.$on(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHENTICATED,function(e,toState,toParams){
-            self.postLogin = {toState:toState,toParams:toParams};
+            self.postLogin = {
+              toState: toState,
+              toParams: toParams
+            };
             $state.go(config.loginState);
-            if(config.autoRedirect !== false){
-              self.authWatcher = $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
-                self.authWatcher(); // unregister this watcher
-                if(self.postLogin){
-                  $state.go(self.postLogin.toState,self.postLogin.toParams).then(function(){
-                    self.postLogin = null;
-                  });
-                }
-              });
-            }
           });
         }
+
+        $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
+          if(self.postLogin && (config.autoRedirect !== false)){
+            $state.go(self.postLogin.toState,self.postLogin.toParams).then(function(){
+              self.postLogin = null;
+            });
+          }else if(config.defaultPostLoginState){
+            $state.go(config.defaultPostLoginState);
+          }
+        });
+
         if(config.forbiddenState){
           self.forbiddenWatcher = $rootScope.$on(STORMPATH_CONFIG.STATE_CHANGE_UNAUTHORIZED,function(){
             $state.go(config.forbiddenState);
-          });
-        }
-        if(config.defaultPostLoginState){
-          self.defaultRedirectStateWatcher = $rootScope.$on(STORMPATH_CONFIG.AUTHENTICATION_SUCCESS_EVENT_NAME,function(){
-            if(!self.postLogin){
-              $state.go(config.defaultPostLoginState);
-            }
           });
         }
       };

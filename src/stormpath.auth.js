@@ -49,17 +49,21 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          *
          * @param {Object} credentialData
          *
-         * An object literal for passing username & password, or social provider token.
+         * An object literal for passing username & password, or social provider
+         * token.
          *
          * @returns {promise}
          *
-         * A promise that is resolved with the authentication response or error response (both are response objects from the $http service).
+         * A promise that is resolved with the authentication response or error
+         * response (both are response objects from the $http service).
          *
          * @description
          *
+         * Logs the user in.
+         *
          * Sends the provided credential data to your backend server. The server
-         * handler should verify the credentials and return an access token, which is
-         * stored in an HTTP-only cookie.
+         * handler should verify the credentials and return an access token,
+         * which is stored in an HTTP-only cookie.
          *
          * @example
          *
