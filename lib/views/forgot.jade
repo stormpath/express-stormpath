@@ -27,7 +27,7 @@ block body
               .alert.alert-danger.bad-login
                 each error in formErrors
                   p #{error}
-                  
+
             form.login-form.form-horizontal(method='post', role='form')
               input(name='_csrf', type='hidden', value=csrfToken)
 
@@ -40,5 +40,5 @@ block body
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Submit
 
-        if app.get('stormpathEnableLogin')
-          a.forgot(href="#{app.get('stormpathLoginUrl')}") Back to Log In
+        if config.web.login.enabled
+          a.forgot(href="#{config.web.login.uri}") Back to Log In
