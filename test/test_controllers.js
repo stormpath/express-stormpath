@@ -111,7 +111,7 @@ describe('register', function() {
     }, 5000);
   });
 
-  it('should return a successful response if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
+  it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
     var app = express();
 
     app.use(stormpath.init(app, {
@@ -135,8 +135,11 @@ describe('register', function() {
         .end(function(err, res) {
           if (err) {
             return done(err);
-          } else if (res.text) {
-            return done(new Error('Body not empty.'));
+          }
+
+          var json = JSON.parse(res.text);
+          if (!json.status) {
+            return done(new Error('No JSON status fields returned.'));
           }
 
           done();
