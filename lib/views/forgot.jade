@@ -28,7 +28,7 @@ block body
                 each error in formErrors
                   p #{error.error}
 
-            form.login-form.form-horizontal(method='post', role='form')
+            form.login-form.form-horizontal(method='post', role='form', action=config.web.forgotPassword.uri)
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
