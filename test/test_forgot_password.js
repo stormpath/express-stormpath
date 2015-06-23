@@ -19,9 +19,7 @@ describe('forgotPassword', function() {
   var stormpathApplication;
   var stormpathClient = new stormpathRaw.Client();
 
-
   before(function(done) {
-
     var appData = { name: uuid.v4() };
     var opts = { createDirectory: true };
 
@@ -35,8 +33,6 @@ describe('forgotPassword', function() {
     });
   });
 
-
-
   after(function(done) {
     stormpathApplication.delete(done);
   });
@@ -45,8 +41,8 @@ describe('forgotPassword', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
           secret: process.env.STORMPATH_API_KEY_SECRET,
         },
@@ -55,7 +51,7 @@ describe('forgotPassword', function() {
         href: stormpathApplication.href,
       },
       web: {
-        forgotPassword:{
+        forgotPassword: {
           enabled: true
         }
       }
@@ -73,9 +69,8 @@ describe('forgotPassword', function() {
 
         var $ = cheerio.load(res.text);
 
-        // assert that the form was rendered
-        assert.equal($('form[action="'+config.web.forgotPassword.uri+'"]').length,1);
-
+        // Assert that the form was rendered.
+        assert.equal($('form[action="'+config.web.forgotPassword.uri+'"]').length, 1);
         done();
       });
   });
@@ -84,17 +79,17 @@ describe('forgotPassword', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
           secret: process.env.STORMPATH_API_KEY_SECRET,
-        },
+        }
       },
       application: {
         href: stormpathApplication.href,
       },
       web: {
-        forgotPassword:{
+        forgotPassword: {
           enabled: true
         }
       }
@@ -112,6 +107,7 @@ describe('forgotPassword', function() {
           if (err) {
             return done(err);
           }
+
           assert(/Please enter a valid email address/.test(res.text));
           done();
         });
@@ -122,17 +118,17 @@ describe('forgotPassword', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
           secret: process.env.STORMPATH_API_KEY_SECRET,
-        },
+        }
       },
       application: {
         href: stormpathApplication.href,
       },
       web: {
-        forgotPassword:{
+        forgotPassword: {
           enabled: true
         }
       }
@@ -149,8 +145,6 @@ describe('forgotPassword', function() {
         })
         .expect('Location',config.web.forgotPassword.nextUri)
         .expect(302,done);
-
     }, 5000);
   });
-
 });
