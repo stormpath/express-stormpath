@@ -10,6 +10,15 @@ block body
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if status==='reset'
+          .box.row
+            .email-password-area.col-xs-12.large.col-sm-12
+              .header
+                span.
+                  Password Reset Successfuly
+                p.
+                  You can now login with your new password.
+          br
         if status==='forgot'
           .box.row
             .email-password-area.col-xs-12.large.col-sm-12

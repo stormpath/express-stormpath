@@ -12,12 +12,24 @@ block body
         .box.row
           .email-password-area.col-xs-12.large.col-sm-12
             .header
-              span.
-                Forgot your password?
-              p.
-                Enter your email address below to reset your password. You will
-                be sent an email which you will need to open to continue. You may
-                need to check your spam folder.
+              if status==='invalid_sp_token'
+                span.
+                  Password Reset Failed
+              else
+                span.
+                  Forgot your password?
+              if status==='invalid_sp_token'
+                p.
+                  Your password reset attempt has failed.  This might happen for
+                  several reasons: your reset token might be expired, it might
+                  have already been used, or we may just be having issues right
+                  now!  Please try again, and if you're still having
+                  problems, contact the site administrator for help!
+              else
+                p.
+                  Enter your email address below to reset your password. You will
+                  be sent an email which you will need to open to continue. You may
+                  need to check your spam folder.
 
             if error
               .alert.alert-danger.bad-login
@@ -38,7 +50,7 @@ block body
                   input.form-control(placeholder='Email', required=true, name='email', type='text')
 
               div
-                button.login.btn.btn-login.btn-sp-green(type='submit') Submit
+                button.login.btn.btn-login.btn-sp-green(type='submit') Send Email
 
         if config.web.login.enabled
           a.forgot(href="#{config.web.login.uri}") Back to Log In
