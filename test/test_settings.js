@@ -5,145 +5,81 @@ var fs = require('fs');
 var path = require('path');
 
 var express = require('express');
+var uuid = require('uuid');
 
-var settings = require('../lib/settings');
+var stormpathExpress = require('../');
 
 describe('init', function() {
-  var opts = [
-    'apiKeyId',
-    'apiKeySecret',
-    'apiKeyFile',
-    'application',
-    'debug',
-    'secretKey',
-    'enableHttps',
-    'sessionDuration',
-    'sessionDomain',
-    'sessionMiddleware',
-    'cache',
-    'cacheHost',
-    'cachePort',
-    'cacheTTL',
-    'cacheTTI',
-    'cacheOptions',
-    'cacheClient',
-    'oauthTTL',
-    'social',
-    'enableConfirmPassword',
-    'enableUsername',
-    'enableGivenName',
-    'enableMiddleName',
-    'enableSurname',
-    'enableEmail',
-    'enablePassword',
-    'requireConfirmPassword',
-    'requireUsername',
-    'requireGivenName',
-    'requireMiddleName',
-    'requireSurname',
-    'requireEmail',
-    'requirePassword',
-    'enableRegistration',
-    'enableLogin',
-    'enableLogout',
-    'enableForgotPassword',
-    'enableFacebook',
-    'enableGoogle',
-    'enableIdSite',
-    'enableAutoLogin',
-    'enableForgotPasswordChangeAutoLogin',
-    'expandApiKeys',
-    'expandCustomData',
-    'expandDirectory',
-    'expandGroups',
-    'expandGroupMemberships',
-    'expandProviderData',
-    'expandTenant',
-    'postLoginHandler',
-    'postRegistrationHandler',
-    'templateContext',
-    'renderHandler',
-    'registrationView',
-    'loginView',
-    'forgotPasswordView',
-    'forgotPasswordEmailSentView',
-    'forgotPasswordChangeView',
-    'forgotPasswordChangeFailedView',
-    'forgotPasswordCompleteView',
-    'accountVerificationEmailSentView',
-    'accountVerificationCompleteView',
-    'accountVerificationFailedView',
-    'idSiteVerificationFailedView',
-    'googleLoginFailedView',
-    'facebookLoginFailedView',
-    'unauthorizedView',
-    'registrationUrl',
-    'loginUrl',
-    'logoutUrl',
-    'postLogoutRedirectUrl',
-    'forgotPasswordUrl',
-    'postForgotPasswordRedirectUrl',
-    'forgotPasswordChangeUrl',
-    'postForgotPasswordChangeRedirectUrl',
-    'accountVerificationCompleteUrl',
-    'getOauthTokenUrl',
-    'redirectUrl',
-    'facebookLoginUrl',
-    'googleLoginUrl',
-    'idSiteUrl',
-    'idSiteRegistrationUrl',
-  ];
 
-  it('should not require any options', function() {
+  it('should not require any options if you have them in your env', function() {
     var app = express();
+
+    process.env.STORMPATH_CLIENT_APIKEY_ID = 'xxx';
+    process.env.STORMPATH_CLIENT_APIKEY_SECRET = 'xxx';
 
     assert.doesNotThrow(
       function() {
-        settings.init(app);
+        stormpathExpress.init(app);
       },
       TypeError
     );
+    delete process.env.STORMPATH_CLIENT_APIKEY_ID;
+    delete process.env.STORMPATH_CLIENT_APIKEY_SECRET;
   });
 
   it('should export options values on the app', function() {
     var app = express();
-    var testOpts = {};
+    var testConfig = {
+      client:{
+        apiKey:{
+          id:'xx',
+          secret: 'xx'
+        }
+      },
+      application: {
+        href: 'whatev'
+      }
+    };
 
-    for (var i = 0; i < opts.length; i++) {
-      testOpts[opts[i]] = 'xxx';
-    }
+    stormpathExpress.init(app, testConfig);
 
-    settings.init(app, testOpts);
+    assert.equal(app.get('stormpathConfig').application.href, testConfig.application.href);
 
-    for (var key in testOpts) {
-      var exportedName = 'stormpath' + key.charAt(0).toUpperCase() + key.slice(1);
-      assert.equal(app.get(exportedName), 'xxx');
-    }
   });
 
   it('should prefer explicitly provided values over environment variables', function() {
     var app = express();
 
-    process.env.STORMPATH_API_KEY_ID = 'xxx';
+    process.env.STORMPATH_CLIENT_APIKEY_ID = 'envKeyId';
+    process.env.STORMPATH_CLIENT_APIKEY_SECRET = 'envKeySecret';
 
-    settings.init(app, { apiKeyId: 'yyy' });
-    assert.equal(app.get('stormpathApiKeyId'), 'yyy');
+    stormpathExpress.init(app, {
+      client: {
+        apiKey:{
+          id: 'configKeyId',
+          secret: 'configKeySecret'
+        }
+      }
+    });
+    assert.equal(app.get('stormpathConfig').client.apiKey.id, 'configKeyId');
+    assert.equal(app.get('stormpathConfig').client.apiKey.secret, 'configKeySecret');
 
-    delete process.env.STORMPATH_API_KEY_ID;
+    delete process.env.STORMPATH_CLIENT_APIKEY_ID;
+    delete process.env.STORMPATH_CLIENT_APIKEY_SECRET;
   });
 
   it('should default only if no explicit or environment variables have been set', function() {
     var app = express();
 
-    settings.init(app);
+    stormpathExpress.init(app);
     assert.equal(app.get('stormpathCache'), 'memory');
 
     process.env.STORMPATH_CACHE = 'redis';
 
-    settings.init(app);
+    stormpathExpress.init(app);
     assert.equal(app.get('stormpathCache'), 'redis');
 
-    settings.init(app, { cache: 'blah' });
+    stormpathExpress.init(app, { cache: 'blah' });
     assert.equal(app.get('stormpathCache'), 'blah');
 
     delete process.env.STORMPATH_CACHE;
@@ -154,8 +90,8 @@ describe('prep', function() {
   it('should generate a secret key if one isn\'t supplied', function() {
     var app = express();
 
-    settings.init(app);
-    settings.prep(app);
+    stormpathExpress.init(app);
+    stormpathExpress.prep(app);
 
     assert(app.get('stormpathSecretKey'));
   });
@@ -163,8 +99,8 @@ describe('prep', function() {
   it('should not do anything if api keys are present', function() {
     var app = express();
 
-    settings.init(app, { apiKeyId: 'xxx', apiKeySecret: 'xxx' });
-    settings.prep(app);
+    stormpathExpress.init(app, { apiKeyId: 'xxx', apiKeySecret: 'xxx' });
+    stormpathExpress.prep(app);
 
     assert.equal(app.get('stormpathApiKeyId'), 'xxx');
     assert.equal(app.get('stormpathApiKeySecret'), 'xxx');
@@ -174,8 +110,8 @@ describe('prep', function() {
   it('should not do anything if an api key file is specified', function() {
     var app = express();
 
-    settings.init(app, { apiKeyFile: 'blah.properties' });
-    settings.prep(app);
+    stormpathExpress.init(app, { apiKeyFile: 'blah.properties' });
+    stormpathExpress.prep(app);
 
     assert.equal(app.get('stormpathApiKeyId'), process.env.STORMPATH_API_KEY_ID);
     assert.equal(app.get('stormpathApiKeySecret'), process.env.STORMPATH_API_KEY_SECRET);
@@ -189,8 +125,8 @@ describe('prep', function() {
 
     var app = express();
 
-    settings.init(app);
-    settings.prep(app);
+    stormpathExpress.init(app);
+    stormpathExpress.prep(app);
 
     fs.unlinkSync('apiKey.properties');
 
@@ -216,8 +152,8 @@ describe('prep', function() {
 
     var app = express();
 
-    settings.init(app);
-    settings.prep(app);
+    stormpathExpress.init(app);
+    stormpathExpress.prep(app);
 
     fs.unlinkSync(apiKeyFile);
 
@@ -233,11 +169,11 @@ describe('validate', function() {
   it('should throw an error if no api key file is specified', function() {
     var app = express();
 
-    settings.init(app, { apiKeySecret: 'xxx' });
+    stormpathExpress.init(app, { apiKeySecret: 'xxx' });
 
     assert.throws(
       function() {
-        settings.validate(app);
+        stormpathExpress.validate(app);
       },
       Error
     );
@@ -246,11 +182,11 @@ describe('validate', function() {
   it('should throw an error if an invalid api key file is specified', function() {
     var app = express();
 
-    settings.init(app, { apiKeyFile: 'woooo' });
+    stormpathExpress.init(app, { apiKeyFile: 'woooo' });
 
     assert.throws(
       function() {
-        settings.validate(app);
+        stormpathExpress.validate(app);
       },
       Error
     );
