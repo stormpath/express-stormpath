@@ -3,12 +3,10 @@
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
+
 var async = require('async');
-
 var cheerio = require('cheerio');
-
 var express = require('express');
-
 var request = require('supertest');
 var uuid = require('uuid');
 
