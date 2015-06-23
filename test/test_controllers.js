@@ -4,15 +4,9 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 
-var after = require('mocha').after;
-var afterEach = require('mocha').afterEach;
 var async = require('async');
-var before = require('mocha').before;
-var beforeEach = require('mocha').beforeEach;
 var cheerio = require('cheerio');
-var describe = require('mocha').describe;
 var express = require('express');
-var it = require('mocha').it;
 var request = require('supertest');
 var uuid = require('uuid');
 
