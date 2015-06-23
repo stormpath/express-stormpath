@@ -43,7 +43,7 @@ describe('forgotPassword', function() {
         apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
           secret: process.env.STORMPATH_API_KEY_SECRET
-        },
+        }
       },
       application: {
         href: stormpathApplication.href,
