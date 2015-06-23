@@ -44,7 +44,7 @@ describe('forgotPassword', function() {
       client: {
         apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
+          secret: process.env.STORMPATH_API_KEY_SECRET
         },
       },
       application: {
@@ -82,7 +82,7 @@ describe('forgotPassword', function() {
       client: {
         apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
+          secret: process.env.STORMPATH_API_KEY_SECRET
         }
       },
       application: {
@@ -121,7 +121,7 @@ describe('forgotPassword', function() {
       client: {
         apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
+          secret: process.env.STORMPATH_API_KEY_SECRET
         }
       },
       application: {
