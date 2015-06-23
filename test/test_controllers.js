@@ -58,13 +58,24 @@ describe('register', function() {
     });
   });
 
-  it('should bind to /register by default', function(done) {
+  it('should bind to /register if enabled', function(done) {
     var app = express();
 
     app.use(stormpath.init(app, {
-      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
-      application:  stormpathApplication.href,
+      client:{
+        apiKey:{
+          id: process.env.STORMPATH_API_KEY_ID,
+          secret: process.env.STORMPATH_API_KEY_SECRET,
+        },
+      },
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        register:{
+          enabled: true
+        }
+      }
     }));
 
     request(app)
@@ -85,9 +96,20 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
-      application:  stormpathApplication.href,
+      client:{
+        apiKey:{
+          id: process.env.STORMPATH_API_KEY_ID,
+          secret: process.env.STORMPATH_API_KEY_SECRET,
+        },
+      },
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        register:{
+          enabled: true
+        }
+      }
     }));
 
     setTimeout(function() {
@@ -115,9 +137,20 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
-      application:  stormpathApplication.href,
+      client:{
+        apiKey:{
+          id: process.env.STORMPATH_API_KEY_ID,
+          secret: process.env.STORMPATH_API_KEY_SECRET,
+        },
+      },
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        register:{
+          enabled: true
+        }
+      }
     }));
 
     setTimeout(function() {
@@ -151,9 +184,20 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      apiKeyId:     process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
-      application:  stormpathApplication.href,
+      client:{
+        apiKey:{
+          id: process.env.STORMPATH_API_KEY_ID,
+          secret: process.env.STORMPATH_API_KEY_SECRET,
+        },
+      },
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        register:{
+          enabled: true
+        }
+      }
     }));
 
     setTimeout(function() {
@@ -186,11 +230,24 @@ describe('register', function() {
   it('should bind to another URL if specified', function(done) {
     var app = express();
 
+
+
     app.use(stormpath.init(app, {
-      apiKeyId:         process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
-      application:      stormpathApplication.href,
-      registrationUrl:  '/newregister',
+      client:{
+        apiKey:{
+          id: process.env.STORMPATH_API_KEY_ID,
+          secret: process.env.STORMPATH_API_KEY_SECRET,
+        },
+      },
+      application: {
+        href: stormpathApplication.href,
+      },
+      web:{
+        register:{
+          enabled: true,
+          uri: '/newregister',
+        }
+      }
     }));
 
     async.series([
@@ -229,111 +286,116 @@ describe('register', function() {
     });
   });
 
-  it('should not require givenName if requireGivenName is false', function(done) {
-    var app = express();
-    var agent = request.agent(app);
+  // TODO bring back this test after we finalize our config for form fields
 
-    app.use(stormpath.init(app, {
-      apiKeyId:         process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
-      application:      stormpathApplication.href,
-      requireGivenName: false,
-    }));
+  // it('should not require givenName if requireGivenName is false', function(done) {
+  //   var app = express();
+  //   var agent = request.agent(app);
 
-    agent
-      .get('/register')
-      .expect(200)
-      .end(function(err, res) {
-        if (err) {
-          return done(err);
-        }
+  //   app.use(stormpath.init(app, {
+  //     apiKeyId:         process.env.STORMPATH_API_KEY_ID,
+  //     apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
+  //     application:      stormpathApplication.href,
+  //     requireGivenName: false,
+  //   }));
 
-        var $ = cheerio.load(res.text);
-        var email = uuid.v4() + '@test.com';
+  //   agent
+  //     .get('/register')
+  //     .expect(200)
+  //     .end(function(err, res) {
+  //       if (err) {
+  //         return done(err);
+  //       }
 
-        setTimeout(function() {
-          agent
-            .post('/register')
-            .type('form')
-            .send({ surname: uuid.v4() })
-            .send({ email: email })
-            .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-            .end(function(err, res) {
-              if (err) {
-                return done(err);
-              }
+  //       var $ = cheerio.load(res.text);
+  //       var email = uuid.v4() + '@test.com';
 
-              stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
-                if (err) {
-                  return done(err);
-                }
+  //       setTimeout(function() {
+  //         agent
+  //           .post('/register')
+  //           .type('form')
+  //           .send({ surname: uuid.v4() })
+  //           .send({ email: email })
+  //           .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
+  //           .end(function(err, res) {
+  //             if (err) {
+  //               return done(err);
+  //             }
 
-                accounts.each(function(account, cb) {
-                  if (account.email === email) {
-                    return done();
-                  }
+  //             stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+  //               if (err) {
+  //                 return done(err);
+  //               }
 
-                  cb();
-                }, function() {
-                  done(new Error('Account not created.'));
-                });
-              });
-            });
-        }, 5000);
-      });
-  });
+  //               accounts.each(function(account, cb) {
+  //                 if (account.email === email) {
+  //                   return done();
+  //                 }
 
-  it('should not require surname if requireSurname is false', function(done) {
-    var app = express();
-    var agent = request.agent(app);
+  //                 cb();
+  //               }, function() {
+  //                 done(new Error('Account not created.'));
+  //               });
+  //             });
+  //           });
+  //       }, 5000);
+  //     });
+  // });
+  //
 
-    app.use(stormpath.init(app, {
-      apiKeyId:         process.env.STORMPATH_API_KEY_ID,
-      apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
-      application:      stormpathApplication.href,
-      requireSurname:   false,
-    }));
+  // TODO bring back this test after we finalize our config for form fields
 
-    agent
-      .get('/register')
-      .expect(200)
-      .end(function(err, res) {
-        if (err) {
-          return done(err);
-        }
+  // it('should not require surname if requireSurname is false', function(done) {
+  //   var app = express();
+  //   var agent = request.agent(app);
 
-        var $ = cheerio.load(res.text);
-        var email = uuid.v4() + '@test.com';
+  //   app.use(stormpath.init(app, {
+  //     apiKeyId:         process.env.STORMPATH_API_KEY_ID,
+  //     apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
+  //     application:      stormpathApplication.href,
+  //     requireSurname:   false,
+  //   }));
 
-        setTimeout(function() {
-          agent
-            .post('/register')
-            .type('form')
-            .send({ givenName: uuid.v4() })
-            .send({ email: email })
-            .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-            .end(function(err, res) {
-              if (err) {
-                return done(err);
-              }
+  //   agent
+  //     .get('/register')
+  //     .expect(200)
+  //     .end(function(err, res) {
+  //       if (err) {
+  //         return done(err);
+  //       }
 
-              stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
-                if (err) {
-                  return done(err);
-                }
+  //       var $ = cheerio.load(res.text);
+  //       var email = uuid.v4() + '@test.com';
 
-                accounts.each(function(account, cb) {
-                  if (account.email === email) {
-                    return done();
-                  }
+  //       setTimeout(function() {
+  //         agent
+  //           .post('/register')
+  //           .type('form')
+  //           .send({ givenName: uuid.v4() })
+  //           .send({ email: email })
+  //           .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
+  //           .end(function(err, res) {
+  //             if (err) {
+  //               return done(err);
+  //             }
 
-                  cb();
-                }, function() {
-                  done(new Error('Account not created.'));
-                });
-              });
-            });
-        }, 5000);
-      });
-  });
+  //             stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+  //               if (err) {
+  //                 return done(err);
+  //               }
+
+  //               accounts.each(function(account, cb) {
+  //                 if (account.email === email) {
+  //                   return done();
+  //                 }
+
+  //                 cb();
+  //               }, function() {
+  //                 done(new Error('Account not created.'));
+  //               });
+  //             });
+  //           });
+  //       }, 5000);
+  //     });
+  // });
 });
