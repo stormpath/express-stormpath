@@ -70,125 +70,23 @@ describe('init', function() {
 
   it('should default only if no explicit or environment variables have been set', function() {
     var app = express();
+    var config = {
+      client:{
+        apiKey:{
+          id: 'xx',
+          secret: 'xx'
+        }
+      }
+    };
+    stormpathExpress.init(app,config);
+    assert.equal(app.get('stormpathConfig').client.cacheManager.defaultTtl, 300);
 
-    stormpathExpress.init(app);
-    assert.equal(app.get('stormpathCache'), 'memory');
+    process.env.STORMPATH_CLIENT_CACHEMANAGER_DEFAULTTTL = '10';
 
-    process.env.STORMPATH_CACHE = 'redis';
+    stormpathExpress.init(app,config);
+    assert.equal(app.get('stormpathConfig').client.cacheManager.defaultTtl, 10);
 
-    stormpathExpress.init(app);
-    assert.equal(app.get('stormpathCache'), 'redis');
-
-    stormpathExpress.init(app, { cache: 'blah' });
-    assert.equal(app.get('stormpathCache'), 'blah');
-
-    delete process.env.STORMPATH_CACHE;
+    delete process.env.STORMPATH_CLIENT_CACHEMANAGER_DEFAULTTTL;
   });
 });
 
-describe('prep', function() {
-  it('should generate a secret key if one isn\'t supplied', function() {
-    var app = express();
-
-    stormpathExpress.init(app);
-    stormpathExpress.prep(app);
-
-    assert(app.get('stormpathSecretKey'));
-  });
-
-  it('should not do anything if api keys are present', function() {
-    var app = express();
-
-    stormpathExpress.init(app, { apiKeyId: 'xxx', apiKeySecret: 'xxx' });
-    stormpathExpress.prep(app);
-
-    assert.equal(app.get('stormpathApiKeyId'), 'xxx');
-    assert.equal(app.get('stormpathApiKeySecret'), 'xxx');
-    assert.equal(app.get('stormpathApiKeyFile'), undefined);
-  });
-
-  it('should not do anything if an api key file is specified', function() {
-    var app = express();
-
-    stormpathExpress.init(app, { apiKeyFile: 'blah.properties' });
-    stormpathExpress.prep(app);
-
-    assert.equal(app.get('stormpathApiKeyId'), process.env.STORMPATH_API_KEY_ID);
-    assert.equal(app.get('stormpathApiKeySecret'), process.env.STORMPATH_API_KEY_SECRET);
-    assert.equal(app.get('stormpathApiKeyFile'), 'blah.properties');
-  });
-
-  it('should try to use the local apiKey.properties file if no settings are specified', function() {
-    var fd = fs.openSync('apiKey.properties', 'w');
-    fs.writeSync(fd, new Buffer('hi there'));
-    fs.closeSync(fd);
-
-    var app = express();
-
-    stormpathExpress.init(app);
-    stormpathExpress.prep(app);
-
-    fs.unlinkSync('apiKey.properties');
-
-    assert.equal(app.get('stormpathApiKeyFile'), 'apiKey.properties');
-  });
-
-  it('should try to use ~/.stormpath/apiKey.properties file if no settings are specified and apiKey.properties doesn\'t exist', function() {
-    var homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-    var apiKeyFile = path.join(homeDir, '.stormpath', 'apiKey.properties');
-    var apiKeyFileBackup = apiKeyFile + '.backup';
-
-    if (fs.existsSync(apiKeyFile)) {
-      fs.renameSync(apiKeyFile, apiKeyFileBackup);
-    }
-
-    if (!fs.existsSync(path.join(homeDir, '.stormpath'))) {
-      fs.mkdirSync(path.join(homeDir, '.stormpath'));
-    }
-
-    var fd = fs.openSync(apiKeyFile, 'w');
-    fs.writeSync(fd, new Buffer('hi there'));
-    fs.closeSync(fd);
-
-    var app = express();
-
-    stormpathExpress.init(app);
-    stormpathExpress.prep(app);
-
-    fs.unlinkSync(apiKeyFile);
-
-    if (fs.existsSync(apiKeyFileBackup)) {
-      fs.renameSync(apiKeyFileBackup, apiKeyFile);
-    }
-
-    assert.equal(app.get('stormpathApiKeyFile'), apiKeyFile);
-  });
-});
-
-describe('validate', function() {
-  it('should throw an error if no api key file is specified', function() {
-    var app = express();
-
-    stormpathExpress.init(app, { apiKeySecret: 'xxx' });
-
-    assert.throws(
-      function() {
-        stormpathExpress.validate(app);
-      },
-      Error
-    );
-  });
-
-  it('should throw an error if an invalid api key file is specified', function() {
-    var app = express();
-
-    stormpathExpress.init(app, { apiKeyFile: 'woooo' });
-
-    assert.throws(
-      function() {
-        stormpathExpress.validate(app);
-      },
-      Error
-    );
-  });
-});
