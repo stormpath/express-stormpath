@@ -6,9 +6,20 @@ block vars
   - var bodytag = 'login'
 
 block body
+
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if status==='forgot'
+          .box.row
+            .email-password-area.col-xs-12.large.col-sm-12
+              .header
+                span.
+                  Password Reset Requested
+                p.
+                  If an account exists for the email provided, you will
+                  receive an email shortly.
+          br
         .box.row
           if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
             - var cls = 'small col-sm-8'
@@ -17,9 +28,9 @@ block body
 
           div(class='email-password-area col-xs-12 #{cls}')
             .header
-              if app.get('stormpathEnableRegistration')
+              if config.web.register.enabled
                 span.
-                  Log In or <a href="#{app.get('stormpathRegistrationUrl')}">Create Account</a>
+                  Log In or <a href="#{config.web.register.uri}">Create Account</a>
               else
                 span.
                   Log In
@@ -33,7 +44,7 @@ block body
                 each error in formErrors
                   p #{error.error}
 
-            form.login-form.form-horizontal(method='post', role='form')
+            form.login-form.form-horizontal(method='post', role='form',action=config.web.login.uri)
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
@@ -89,5 +100,5 @@ block body
 
         if app.get('stormpathEnableAccountVerification')
           a.forgot(style="float:left", href="#{app.get('stormpathResendAccountVerificationEmailUrl')}") Resend Verification Email?
-        if app.get('stormpathEnableForgotPassword')
-          a.forgot(style="float:right", href="#{app.get('stormpathForgotPasswordUrl')}") Forgot Password?
+        if config.web.forgotPassword.enabled
+          a.forgot(style="float:right", href="#{config.web.forgotPassword.uri}") Forgot Password?
