@@ -6,7 +6,7 @@ describe('exports stormpath', function() {
   it('should export the stormpath library when express-stormpath is required', function() {
     assert.doesNotThrow(
       function() {
-        var stormpath = require('../index');
+        require('../index');
       },
       Error
     );
