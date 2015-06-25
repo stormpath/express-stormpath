@@ -10,7 +10,7 @@ var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
-var stormpath = require('../index');
+var stormpath = require('../../index');
 var stormpathRaw = require('stormpath');
 
 describe('register', function() {
