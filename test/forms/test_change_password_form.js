@@ -2,7 +2,7 @@
 
 var assert = require('assert');
 
-var forms = require('../lib/forms');
+var forms = require('../../lib/forms');
 
 describe('changePasswordForm', function() {
   it('should require a password', function() {

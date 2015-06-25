@@ -2,7 +2,7 @@
 
 var assert = require('assert');
 
-var forms = require('../lib/forms');
+var forms = require('../../lib/forms');
 
 describe('forgotPasswordForm', function() {
   it('should require an email', function() {
