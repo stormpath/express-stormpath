@@ -12,7 +12,6 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 var stormpath = require('../../index');
-var stormpathRaw = require('stormpath');
 
 describe('register', function() {
   var stormpathApplication;
@@ -38,17 +37,17 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
+          secret: process.env.STORMPATH_API_KEY_SECRET
         },
       },
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
-        register:{
+        register: {
           enabled: true
         }
       }
@@ -58,13 +57,7 @@ describe('register', function() {
       .get('/register')
       .expect(200)
       .end(function(err, res) {
-        if (err) {
-          return done(err);
-        }
-
-        var $ = cheerio.load(res.text);
-
-        done();
+        done(err);
       });
   });
 
@@ -72,17 +65,17 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
-        },
+          secret: process.env.STORMPATH_API_KEY_SECRET
+        }
       },
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
-        register:{
+        register: {
           enabled: true
         }
       }
@@ -95,15 +88,10 @@ describe('register', function() {
         .set('Accept', 'application/json')
         .expect(400)
         .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
+          if (err) return done(err);
 
           var json = JSON.parse(res.text);
-          if (!json.error) {
-            return done(new Error('No JSON error returned.'));
-          }
-
+          if (!json.error) return done(new Error('No JSON error returned.'));
           done();
         });
     }, 5000);
@@ -113,17 +101,17 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
-        },
+          secret: process.env.STORMPATH_API_KEY_SECRET
+        }
       },
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
-        register:{
+        register: {
           enabled: true
         }
       }
@@ -142,15 +130,10 @@ describe('register', function() {
         .set('Accept', 'application/json')
         .expect(200)
         .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
+          if (err) return done(err);
 
           var json = JSON.parse(res.text);
-          if (!json.status) {
-            return done(new Error('No JSON status fields returned.'));
-          }
-
+          if (!json.status) return done(new Error('No JSON status fields returned.'));
           done();
         });
     }, 5000);
@@ -160,17 +143,17 @@ describe('register', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
-        },
+          secret: process.env.STORMPATH_API_KEY_SECRET
+        }
       },
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
-        register:{
+        register: {
           enabled: true
         }
       }
@@ -189,15 +172,10 @@ describe('register', function() {
         .set('Accept', 'application/json')
         .expect(200)
         .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
+          if (err) return done(err);
 
           var json = JSON.parse(res.text);
-          if (!json.status) {
-            return done(new Error('No JSON status fields returned.'));
-          }
-
+          if (!json.status) return done(new Error('No JSON status fields returned.'));
           done();
         });
     }, 5000);
@@ -206,22 +184,20 @@ describe('register', function() {
   it('should bind to another URL if specified', function(done) {
     var app = express();
 
-
-
     app.use(stormpath.init(app, {
-      client:{
-        apiKey:{
+      client: {
+        apiKey: {
           id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET,
-        },
+          secret: process.env.STORMPATH_API_KEY_SECRET
+        }
       },
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
-      web:{
-        register:{
+      web: {
+        register: {
           enabled: true,
-          uri: '/newregister',
+          uri: '/newregister'
         }
       }
     }));
@@ -232,12 +208,7 @@ describe('register', function() {
           .get('/newregister')
           .expect(200)
           .end(function(err, res) {
-            if (err) {
-              return cb(err);
-            }
-
-            var $ = cheerio.load(res.text);
-
+            if (err) return cb(err);
             cb();
           });
       },
@@ -246,18 +217,12 @@ describe('register', function() {
           .get('/register')
           .expect(404)
           .end(function(err, res) {
-            if (err) {
-              return cb(err);
-            }
-
+            if (err) return cb(err);
             cb();
           });
       }
     ], function(err) {
-      if (err) {
-        return done(err);
-      }
-
+      if (err) return done(err);
       done();
     });
   });

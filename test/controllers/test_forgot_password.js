@@ -10,8 +10,8 @@ var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
+var helpers = require('../helpers');
 var stormpath = require('../../index');
-var stormpathRaw = require('stormpath');
 
 describe('forgotPassword', function() {
   var stormpathApplication;
