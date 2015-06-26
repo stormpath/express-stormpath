@@ -10,46 +10,28 @@ var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
+var helpers = require('../helpers');
 var stormpath = require('../../index');
 var stormpathRaw = require('stormpath');
 
 describe('register', function() {
   var stormpathApplication;
   var stormpathClient;
-  var stormpathPrefix;
 
   before(function() {
-    var apiKey = new stormpathRaw.ApiKey(
-      process.env.STORMPATH_API_KEY_ID,
-      process.env.STORMPATH_API_KEY_SECRET
-    );
-    stormpathClient = new stormpathRaw.Client({ apiKey: apiKey });
+    stormpathClient = helpers.createClient();
   });
 
   beforeEach(function(done) {
-    stormpathPrefix = uuid.v4();
-
-    var appData = { name: stormpathPrefix };
-    var opts = { createDirectory: true };
-
-    stormpathClient.createApplication(appData, opts, function(err, app) {
-      if (err) {
-        return done(err);
-      }
-
+    helpers.createApplication(stormpathClient, function(err, app) {
+      if (err) return done(err);
       stormpathApplication = app;
       done();
     });
   });
 
   afterEach(function(done) {
-    stormpathApplication.delete(function(err) {
-      if (err) {
-        return done(err);
-      }
-
-      done();
-    });
+    helpers.destroyApplication(stormpathApplication, done);
   });
 
   it('should bind to /register if enabled', function(done) {

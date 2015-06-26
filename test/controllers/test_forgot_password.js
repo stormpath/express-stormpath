@@ -15,24 +15,22 @@ var stormpathRaw = require('stormpath');
 
 describe('forgotPassword', function() {
   var stormpathApplication;
-  var stormpathClient = new stormpathRaw.Client();
+  var stormpathClient;
 
-  before(function(done) {
-    var appData = { name: uuid.v4() };
-    var opts = { createDirectory: true };
+  before(function() {
+    stormpathClient = helpers.createClient();
+  });
 
-    stormpathClient.createApplication(appData, opts, function(err, app) {
-      if (err) {
-        return done(err);
-      }
-
+  beforeEach(function(done) {
+    helpers.createApplication(stormpathClient, function(err, app) {
+      if (err) return done(err);
       stormpathApplication = app;
       done();
     });
   });
 
-  after(function(done) {
-    stormpathApplication.delete(done);
+  afterEach(function(done) {
+    helpers.destroyApplication(stormpathApplication, done);
   });
 
   it('should bind to /forgot if enabled', function(done) {
