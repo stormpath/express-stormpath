@@ -65,6 +65,7 @@ describe('register', function() {
       apiKeyId:     process.env.STORMPATH_API_KEY_ID,
       apiKeySecret: process.env.STORMPATH_API_KEY_SECRET,
       application:  stormpathApplication.href,
+      enableCsrf: true,
     }));
 
     request(app)
@@ -90,6 +91,7 @@ describe('register', function() {
       apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
       application:      stormpathApplication.href,
       registrationUrl:  '/newregister',
+      enableCsrf: true,
     }));
 
     async.series([
