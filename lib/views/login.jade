@@ -34,7 +34,8 @@ block body
                   p #{error.error}
 
             form.login-form.form-horizontal(method='post', role='form')
-              input(name='_csrf', type='hidden', value=csrfToken)
+              if csrfToken
+                input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
                 if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')

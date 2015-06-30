@@ -30,7 +30,8 @@ block body
                   p #{error}
 
             form.login-form.form-horizontal(method='post', role='form')
-              input(name='_csrf', type='hidden', value=csrfToken)
+              if csrfToken
+                input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
                 label.col-sm-4 Email
