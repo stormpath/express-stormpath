@@ -54,6 +54,38 @@ describe('loginForm', function() {
   });
 });
 
+describe('changeOldPasswordForm', function() {
+  it('should require the current password', function() {
+    var form = forms.changePasswordForm.bind({
+      old_password: null // TODO: Change to appropriate value
+    });
+
+    form.validate(function(err) {
+      assert.equal(err, 'Current password is required.');
+    });
+  });
+
+  it('should require a new password', function() {
+    var form = forms.changePasswordForm.bind({
+      passwordAgain: 'blahblahBLAH!1234'
+    });
+
+    form.validate(function(err) {
+      assert.equal(err, 'New password is required.');
+    });
+  });
+
+  it('should require the new password (again)', function() {
+    var form = forms.changePasswordForm.bind({
+      password: 'blahblahBLAH!1234'
+    });
+
+    form.validate(function(err) {
+      assert.equal(err, 'New password is required.');
+    });
+  });
+});
+
 describe('forgotPasswordForm', function() {
   it('should require an email', function() {
     var form = forms.forgotPasswordForm.bind({});

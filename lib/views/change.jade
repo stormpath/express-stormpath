@@ -1,0 +1,51 @@
+extends base
+
+block vars
+  - var title = 'Change Your Password'
+  - var description = 'Change your password here.'
+  - var bodytag = 'login'
+
+block body
+  .container.custom-container
+    .va-wrapper
+      .view.login-view.container
+        .box.row
+          .email-password-area.col-xs-12.large.col-sm-12
+            .header
+              span.
+                Change Your Password
+              p.
+                Enter your new account password below.
+
+            if error
+              .alert.alert-danger.bad-login
+                p #{error}
+
+            if formErrors
+              .alert.alert-danger.bad-login
+                each error in formErrors
+                  p #{error}
+
+            form.login-form.form-horizontal(method='post', role='form')
+              input(name='_csrf', type='hidden', value=csrfToken)
+
+              .form-group.group-password
+                label.col-sm-4 Current password
+
+                div.col-sm-8
+                  input.form-control(autofocus='true', placeholder='Current password', required=true, name='old_password', type='password')
+
+              .form-group.group-password
+                label.col-sm-4 New password
+
+                div.col-sm-8
+                  input.form-control(placeholder='New password', required=true, name='password', type='password')
+
+              .form-group.group-password
+                label.col-sm-4 New password (again)
+
+                div.col-sm-8
+                  input.form-control(placeholder='New password (again)', required=true, name='passwordAgain', type='password')
+
+              div
+                button.login.btn.btn-login.btn-sp-green(type='submit') Submit
