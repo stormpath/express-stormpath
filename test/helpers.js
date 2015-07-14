@@ -2,7 +2,7 @@
 
 var uuid = require('uuid');
 
-var stormpathRaw = require('stormpath');
+var stormpath = require('stormpath');
 
 /**
  * Build a new Stormpath Client for usage in tests.
@@ -12,12 +12,7 @@ var stormpathRaw = require('stormpath');
  * @return {Object} Returns an initialized Stormpath Client object.
  */
 module.exports.createClient = function() {
-  var apiKey = new stormpathRaw.ApiKey(
-    process.env.STORMPATH_API_KEY_ID,
-    process.env.STORMPATH_API_KEY_SECRET
-  );
-
-  return new stormpathRaw.Client({ apiKey: apiKey });
+  return new stormpath.Client();
 };
 
 /**

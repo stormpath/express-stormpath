@@ -37,12 +37,6 @@ describe('forgotPassword', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client: {
-        apiKey: {
-          id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET
-        }
-      },
       application: {
         href: stormpathApplication.href,
       },
@@ -75,12 +69,6 @@ describe('forgotPassword', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client: {
-        apiKey: {
-          id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET
-        }
-      },
       application: {
         href: stormpathApplication.href,
       },
@@ -114,12 +102,6 @@ describe('forgotPassword', function() {
     var app = express();
 
     app.use(stormpath.init(app, {
-      client: {
-        apiKey: {
-          id: process.env.STORMPATH_API_KEY_ID,
-          secret: process.env.STORMPATH_API_KEY_SECRET
-        }
-      },
       application: {
         href: stormpathApplication.href,
       },
