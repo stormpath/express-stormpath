@@ -69,7 +69,7 @@ describe('register', function() {
       }
     }));
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/register')
         .type('json')
@@ -82,7 +82,7 @@ describe('register', function() {
           if (!json.error) return done(new Error('No JSON error returned.'));
           done();
         });
-    }, 5000);
+    });
   });
 
   it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
@@ -99,7 +99,7 @@ describe('register', function() {
       }
     }));
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/register')
         .type('json')
@@ -118,7 +118,7 @@ describe('register', function() {
           if (!json.status) return done(new Error('No JSON status fields returned.'));
           done();
         });
-    }, 5000);
+    });
   });
 
   it('should return a successful json response with a status field if the accept header supports json and the content type we post is form data and we supply all user data fields', function(done) {
@@ -135,7 +135,7 @@ describe('register', function() {
       }
     }));
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/register')
         .type('form')
@@ -154,7 +154,7 @@ describe('register', function() {
           if (!json.status) return done(new Error('No JSON status fields returned.'));
           done();
         });
-    }, 5000);
+    });
   });
 
   it('should bind to another URL if specified', function(done) {
@@ -172,7 +172,7 @@ describe('register', function() {
       }
     }));
 
-    async.series([
+    async.parallel([
       function(cb) {
         request(app)
           .get('/newregister')
@@ -221,7 +221,7 @@ describe('register', function() {
   //       var $ = cheerio.load(res.text);
   //       var email = uuid.v4() + '@test.com';
 
-  //       setTimeout(function() {
+  //       app.on('stormpath.ready',function(){
   //         agent
   //           .post('/register')
   //           .type('form')
@@ -249,7 +249,7 @@ describe('register', function() {
   //               });
   //             });
   //           });
-  //       }, 5000);
+  //       });
   //     });
   // });
   //
@@ -278,7 +278,7 @@ describe('register', function() {
   //       var $ = cheerio.load(res.text);
   //       var email = uuid.v4() + '@test.com';
 
-  //       setTimeout(function() {
+  //       app.on('stormpath.ready',function(){
   //         agent
   //           .post('/register')
   //           .type('form')
@@ -306,7 +306,7 @@ describe('register', function() {
   //               });
   //             });
   //           });
-  //       }, 5000);
+  //       });
   //     });
   // });
 });

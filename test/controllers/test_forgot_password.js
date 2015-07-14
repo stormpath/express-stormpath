@@ -79,7 +79,7 @@ describe('forgotPassword', function() {
       }
     }));
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/forgot')
         .type('form')
@@ -95,7 +95,7 @@ describe('forgotPassword', function() {
           assert(/Please enter a valid email address/.test(res.text));
           done();
         });
-    }, 5000);
+    });
   });
 
   it('should redirect to the next uri if an email is given', function(done) {
@@ -114,7 +114,7 @@ describe('forgotPassword', function() {
 
     var config = app.get('stormpathConfig');
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/forgot')
         .type('form')
@@ -123,6 +123,6 @@ describe('forgotPassword', function() {
         })
         .expect('Location',config.web.forgotPassword.nextUri)
         .expect(302,done);
-    }, 5000);
+    });
   });
 });

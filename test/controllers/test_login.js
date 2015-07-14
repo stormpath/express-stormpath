@@ -88,7 +88,7 @@ describe('login', function() {
       }
     }));
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/login')
         .type('json')
@@ -110,7 +110,7 @@ describe('login', function() {
             done();
           }
         });
-    }, 5000);
+    });
   });
 
   it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
@@ -127,7 +127,7 @@ describe('login', function() {
       }
     }));
 
-    setTimeout(function() {
+    app.on('stormpath.ready',function(){
       request(app)
         .post('/login')
         .type('json')
@@ -138,7 +138,7 @@ describe('login', function() {
         .set('Accept', 'application/json')
         .expect(200)
         .end(done);
-    }, 5000);
+    });
   });
 
   it('should bind to another URL if specified', function(done) {
