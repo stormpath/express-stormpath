@@ -13,11 +13,11 @@
   "node": true,
   "globals": {
     /* MOCHA */
-    "describe": true,
-    "it": true,
-    "after": true,
-    "afterEach": true,
-    "before": true,
-    "beforeEach": ture
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false
   }
 }
