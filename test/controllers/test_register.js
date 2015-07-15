@@ -17,11 +17,9 @@ describe('register', function() {
   var stormpathApplication;
   var stormpathClient;
 
-  before(function() {
+  before(function(done) {
     stormpathClient = helpers.createClient();
-  });
 
-  beforeEach(function(done) {
     helpers.createApplication(stormpathClient, function(err, app) {
       if (err) return done(err);
       stormpathApplication = app;
@@ -29,7 +27,7 @@ describe('register', function() {
     });
   });
 
-  afterEach(function(done) {
+  after(function(done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
@@ -177,24 +175,15 @@ describe('register', function() {
         request(app)
           .get('/newregister')
           .expect(200)
-          .end(function(err, res) {
-            if (err) return cb(err);
-            cb();
-          });
+          .end(cb);
       },
       function(cb) {
         request(app)
           .get('/register')
           .expect(404)
-          .end(function(err, res) {
-            if (err) return cb(err);
-            cb();
-          });
+          .end(cb);
       }
-    ], function(err) {
-      if (err) return done(err);
-      done();
-    });
+    ], done);
   });
 
   // TODO bring back this test after we finalize our config for form fields

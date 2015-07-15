@@ -218,12 +218,7 @@ describe('login', function() {
           .expect(404)
           .end(cb);
       }
-    ], function(err) {
-      if (err) {
-        return done(err);
-      }
-      done();
-    });
+    ], done);
   });
 
 });

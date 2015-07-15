@@ -17,11 +17,9 @@ describe('forgotPassword', function() {
   var stormpathApplication;
   var stormpathClient;
 
-  before(function() {
+  before(function(done) {
     stormpathClient = helpers.createClient();
-  });
 
-  beforeEach(function(done) {
     helpers.createApplication(stormpathClient, function(err, app) {
       if (err) return done(err);
       stormpathApplication = app;
@@ -29,7 +27,7 @@ describe('forgotPassword', function() {
     });
   });
 
-  afterEach(function(done) {
+  after(function(done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
