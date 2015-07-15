@@ -17,13 +17,20 @@ describe('register', function() {
   var stormpathApplication;
   var stormpathClient;
 
+  var existingUserData = {
+    givenName: uuid.v4(),
+    surname: uuid.v4(),
+    email: 'robert+'+uuid.v4() + '@stormpath.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+
   before(function(done) {
     stormpathClient = helpers.createClient();
 
     helpers.createApplication(stormpathClient, function(err, app) {
       if (err) return done(err);
       stormpathApplication = app;
-      done();
+      app.createAccount(existingUserData,done);
     });
   });
 
@@ -184,6 +191,36 @@ describe('register', function() {
           .end(cb);
       }
     ], done);
+  });
+
+  it('should show an error if that email address is already registered',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true
+        }
+      }
+    }));
+
+    app.on('stormpath.ready',function(){
+      request(app)
+        .post('/register')
+        .type('form')
+        .send(existingUserData)
+        .expect(200)
+        .end(function(err,res){
+          if (err){
+            return done(err);
+          }else{
+            assert(res.text.match(/Account with that email already exists/));
+          }
+        });
+    });
   });
 
   // TODO bring back this test after we finalize our config for form fields
