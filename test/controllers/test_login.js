@@ -141,6 +141,55 @@ describe('login', function() {
     });
   });
 
+  it('should retain the requested url when redirecting to the login page',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        login: {
+          enabled: true
+        }
+      }
+    }));
+    app.get('/secrets',stormpath.loginRequired);
+    app.on('stormpath.ready',function(){
+      request(app)
+        .get('/secrets')
+        .expect(302)
+        .expect('Location', '/login?next=%2Fsecrets')
+        .end(done);
+    });
+  });
+
+  it('should redirect me to the next url if given',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        login: {
+          enabled: true
+        }
+      }
+    }));
+    app.on('stormpath.ready',function(){
+      request(app)
+        .post('/login?next=%2Fsecrets')
+        .send({
+          login: username,
+          password: password
+        })
+        .expect(302)
+        .expect('Location', '/secrets')
+        .end(done);
+    });
+  });
+
   it('should bind to another URL if specified', function(done) {
     var app = express();
 

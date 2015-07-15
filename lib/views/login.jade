@@ -53,7 +53,7 @@ block body
                 each error in formErrors
                   p #{error.error}
 
-            form.login-form.form-horizontal(method='post', role='form',action=config.web.login.uri)
+            form.login-form.form-horizontal(method='post', role='form',action=formActionUri)
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
