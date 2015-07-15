@@ -143,6 +143,29 @@ describe('login', function() {
 
   it('should retain the requested url when redirecting to the login page',function(done){
     var app = express();
+    var protectedUri = '/' + uuid.v4();
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        login: {
+          enabled: true
+        }
+      }
+    }));
+    app.get(protectedUri,stormpath.loginRequired);
+    app.on('stormpath.ready',function(){
+      request(app)
+        .get(protectedUri)
+        .expect(302)
+        .expect('Location', '/login?next=' + encodeURIComponent(protectedUri))
+        .end(done);
+    });
+  });
+
+  it('should retain the requested url in the form action url',function(done){
+    var app = express();
 
     app.use(stormpath.init(app, {
       application: {
@@ -154,13 +177,19 @@ describe('login', function() {
         }
       }
     }));
-    app.get('/secrets',stormpath.loginRequired);
+
     app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      var nextUri = uuid.v4();
       request(app)
-        .get('/secrets')
-        .expect(302)
-        .expect('Location', '/login?next=%2Fsecrets')
-        .end(done);
+        .get('/login?next=' + encodeURIComponent(nextUri))
+        .expect(200)
+        .end(function(err, res) {
+          var $ = cheerio.load(res.text);
+          // Assert that the form was rendered.
+          assert.equal($('form[action="'+config.web.login.uri+'?next='+nextUri+'"]').length, 1);
+          done(err);
+        });
     });
   });
 
@@ -178,14 +207,15 @@ describe('login', function() {
       }
     }));
     app.on('stormpath.ready',function(){
+      var nextUri = uuid.v4();
       request(app)
-        .post('/login?next=%2Fsecrets')
+        .post('/login?next=' + encodeURIComponent(nextUri))
         .send({
           login: username,
           password: password
         })
         .expect(302)
-        .expect('Location', '/secrets')
+        .expect('Location', nextUri)
         .end(done);
     });
   });
