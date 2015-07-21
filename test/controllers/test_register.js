@@ -193,6 +193,52 @@ describe('register', function() {
     ], done);
   });
 
+  it.skip('should register new users and redirect to the nextUri',function(done){
+
+    var newUserData = {
+      givenName: uuid.v4(),
+      surname: uuid.v4(),
+      email: 'robert+'+uuid.v4() + '@stormpath.com',
+      password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+    };
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true
+        }
+      }
+    }));
+
+    var config = app.get('stormpathConfig');
+
+    app.on('stormpath.ready',function(){
+      request(app)
+        .post('/register')
+        .type('form')
+        .send(existingUserData)
+        .expect(302)
+        .expect('Location',config.web.register.nextUri)
+        .end(function(err){
+          if(err){
+            return done(err);
+          }else{
+            stormpathApplication.getAccounts({email:newUserData.email},function(err,collection){
+              if(err){
+                done(err);
+              }else{
+                assert(collection.length===1);
+              }
+            });
+          }
+        });
+    });
+  });
+
   it('should show an error if that email address is already registered',function(done){
     var app = express();
 
