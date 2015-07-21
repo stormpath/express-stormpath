@@ -1,11 +1,39 @@
-* node sdk needs to read the default directory of the given application, and then enable or disable `config.veirfy` feature
-* implement access tokens and refresh tokens for sessions
-* rework email verification flow to meet spec (url names, etc) and to work with angular'
-* implement "agular root path" setting, for serving a specificed angular app
-* expose the new middleware functions that want
+NOTE: As developing on this branch, you should be symlinked
+to the "config parser" branch of the `stormpath` module
+
+For immediate release:
+
+* Finish discussion around registration fields, map or array?
+
+* Session spec needs to be re-written to describe how we will use the
+  new oauth endpoint from the application to issue access and refresh
+  tokens.  The refresh token will be stored in a cookie, the name of
+  the cookie will be BASE64URL(HMACSHA256(accesstoken, api_key_secret))
+
+* rework email verification feature to meet the framework spec
+
+* ID site callback will need to contiue using a traditional session
+  cookie, until we implement an oauth workflow that allows us to get
+  an access token and refresh token after an ID site login.  So this
+  library will need to be able to do authentiation with access tokens
+  or the cookies that we create for ID site callbacks.
+
+* implement "agular root path" setting, this tells the framework where
+  the root of an HTML5-based angular app should be served from (any time
+  we need to render a view, serve the root of this path if this path
+  is defined)
+
+* test all the features
+
+* update all the documentation
+
+
+Future goals:
+
+* expose new middleware functions that want
   * auth middlewares:
     * accessTokenCookieRequired
-    * apiAuthenticationRequired
+    * apiAuthenticationRequired    <-- what is this?  should it be apiKeyAuthenticationRequired?
     * basicAuthenticationRequired
     * getUser
     * oauthAutheticationRequired
@@ -14,9 +42,7 @@
   * oauth exchange middlewares (for getting access tokens):
 
     * authenticateApiKeyForToken
-    * authenticateUsernamePasswordForToken
+    * authenticateUsernamePasswordForToken   <-- this should use our new token endpoint
 
 
-* tests for any new features we've added
 
-* update all the documentation
