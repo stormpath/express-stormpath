@@ -1,7 +1,7 @@
 /**
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
- * 
+ *
  * @version v0.5.1-dev-2015-06-11
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
@@ -9,7 +9,7 @@
 
 /* commonjs package manager support (eg componentjs) */
 if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
-  module.exports = 'ui.router';
+  module.exports = 'stormpath';
 }
 
 (function (window, angular, undefined) {

@@ -113,8 +113,8 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
    */
 
   this.$get = [
-    '$user','$state','$cookieStore','STORMPATH_CONFIG','$rootScope',
-    function stormpathServiceFactory($user,$state,$cookieStore,STORMPATH_CONFIG,$rootScope){
+    '$user','$state','STORMPATH_CONFIG','$rootScope',
+    function stormpathServiceFactory($user,$state,STORMPATH_CONFIG,$rootScope){
 
       function StormpathService(){
         var encoder = new UrlEncodedFormParser();
