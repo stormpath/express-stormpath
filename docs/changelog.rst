@@ -7,6 +7,12 @@ Change Log
 All library changes, in descending order.
 
 
+Version 1.0.6
+-------------
+
+- Fixing broken Google login redirection.
+
+
 Version 1.0.5
 -------------
 
