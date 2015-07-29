@@ -1,10 +1,24 @@
 button.btn.btn-social.btn-google(onclick='googleLogin()') Google
 script(type='text/javascript').
+  /**
+   * Get the value of a querystring
+   * @param  {String} field The field to get the value of
+   * @param  {String} url   The URL to get the value from (optional)
+   * @return {String}       The field value
+   */
+  function getQueryString(field, url) {
+      var href = url ? url : window.location.href;
+      var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+      var string = reg.exec(href);
+      return string ? string[1] : null;
+  }
+
   function googleLogin() {
     var clientId = '#{app.get("stormpathSocial").google.clientId}';
     var googleScopes = '#{app.get("stormpathSocial").google.scopes}';
     var hd = '#{app.get("stormpathSocial").google.hd}';
     var scopes = '';
+    var next = getQueryString('next').replace(/^\s+|\s+$/g, '');
 
     if (googleScopes.length) {
       scopes = '+' + googleScopes.split(',').join('+');
@@ -18,6 +32,10 @@ script(type='text/javascript').
 
     if (hd) {
       finalUrl = finalUrl + '&hd=' + hd;
+    }
+
+    if (next) {
+      finalUrl = finalUrl + '&state=' + next;
     }
 
     window.location.replace(finalUrl);
