@@ -3,12 +3,9 @@ to the "config parser" branch of the `stormpath` module
 
 For immediate release:
 
-* Finish discussion around registration fields, map or array?
+* Implment registration fields features (map, and fieldOrder array)
 
-* Session spec needs to be re-written to describe how we will use the
-  new oauth endpoint from the application to issue access and refresh
-  tokens.  The refresh token will be stored in a cookie, the name of
-  the cookie will be BASE64URL(HMACSHA256(accesstoken, api_key_secret))
+* Session spec needs to be reviewed, and then implemented
 
 * rework email verification feature to meet the framework spec
 
