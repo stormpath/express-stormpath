@@ -61,17 +61,18 @@ describe('login', function() {
       }
     }));
 
-    var config = app.get('stormpathConfig');
-
-    request(app)
-      .get('/login')
-      .expect(200)
-      .end(function(err, res) {
-        var $ = cheerio.load(res.text);
-        // Assert that the form was rendered.
-        assert.equal($('form[action="'+config.web.login.uri+'"]').length, 1);
-        done(err);
-      });
+    app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      request(app)
+        .get('/login')
+        .expect(200)
+        .end(function(err, res) {
+          var $ = cheerio.load(res.text);
+          // Assert that the form was rendered.
+          assert.equal($('form[action="'+config.web.login.uri+'"]').length, 1);
+          done(err);
+        });
+    });
   });
 
   it('should return a json error if the accept header supports json and the content type we post is json', function(done) {
@@ -235,20 +236,22 @@ describe('login', function() {
       }
     }));
 
-    async.parallel([
-      function(cb) {
-        request(app)
-          .get('/newlogin')
-          .expect(200)
-          .end(cb);
-      },
-      function(cb) {
-        request(app)
-          .get('/login')
-          .expect(404)
-          .end(cb);
-      }
-    ], done);
+    app.on('stormpath.ready',function(){
+      async.parallel([
+        function(cb) {
+          request(app)
+            .get('/newlogin')
+            .expect(200)
+            .end(cb);
+        },
+        function(cb) {
+          request(app)
+            .get('/login')
+            .expect(404)
+            .end(cb);
+        }
+      ], done);
+    });
   });
 
 });

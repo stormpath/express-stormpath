@@ -10,24 +10,36 @@ block body
   .container.custom-container
     .va-wrapper
       .view.login-view.container
-        if status==='reset'
+        if status
           .box.row
             .email-password-area.col-xs-12.large.col-sm-12
               .header
-                span.
-                  Password Reset Successfuly
-                p.
-                  You can now login with your new password.
-          br
-        if status==='forgot'
-          .box.row
-            .email-password-area.col-xs-12.large.col-sm-12
-              .header
-                span.
-                  Password Reset Requested
-                p.
-                  If an account exists for the email provided, you will
-                  receive an email shortly.
+                if status==='unverified'
+                  span.
+                    Your account verification email has been sent!
+                  p.
+                    Before you can log into your account, you need to activate your
+                    account by clicking the link we sent to your inbox.
+                  p.
+                    Didn't get the email? <a href="#{config.web.verifyEmail.uri}">Click Here</a>.
+                  br
+                if status==='created'
+                  span.
+                    Your Account Has Been Created
+                  p.
+                    You may now login.
+                if status==='reset'
+                  span.
+                    Password Reset Successfuly
+                  p.
+                    You can now login with your new password.
+                  br
+                if status==='forgot'
+                  span.
+                    Password Reset Requested
+                  p.
+                    If an account exists for the email provided, you will
+                    receive an email shortly.
           br
         .box.row
           if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')

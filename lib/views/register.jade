@@ -8,66 +8,84 @@ block body
   .container.custom-container
     .va-wrapper
       .view.registration-view.container
-        .box.row
-          .col-sm-12
-            .header
-              span Create Account
+        if status==='UNVERIFIED'
+          .box.row
+            .email-password-area.col-xs-12.large.col-sm-12
+              .header
+                span.
+                  Your account verification email has been sent!
+                p.
+                  Before you can log into your account, you need to activate your
+                  account by clicking the link we sent to you at your email
+                  address: <b>#{user.email}</b>.
+                p
+                  span.
+                    Please check your inbox to continue.  If you do not recieve the
+                    email, please
+                  span.
+                  a(href=app.get('stormpathConfig').web.verifyEmail.view) click here
+                  span .
+        else
+          .box.row
+            .col-sm-12
+              .header
+                span Create Account
 
-            if error
-              .alert.alert-danger
-                p #{error}
+              if error
+                .alert.alert-danger
+                  p #{error}
 
-            if formErrors
-              .alert.alert-danger
-                each error in formErrors
-                  p #{error.error}
+              if formErrors
+                .alert.alert-danger
+                  each error in formErrors
+                    p #{error.error}
 
-            form.registration-form.form-horizontal.sp-form(method='post', role='form')
-              if app.get('stormpathEnableUsername')
-                .form-group.group-username(form-group='true')
-                  label.col-sm-4 Username
+              form.registration-form.form-horizontal.sp-form(method='post', role='form')
+                if app.get('stormpathEnableUsername')
+                  .form-group.group-username(form-group='true')
+                    label.col-sm-4 Username
+                    .col-sm-8
+                      - var value = form.data ? form.data.username : '';
+                      input.form-control(placeholder='Username', name='username', value=value, required=app.get('stormpathRequireUsername') ? true : false, type='text')
+
+                if app.get('stormpathEnableGivenName')
+                  .form-group.group-first-name(form-group='true')
+                    label.col-sm-4 First Name
+                    .col-sm-8
+                      - var value = form.data ? form.data.givenName : '';
+                      input.form-control(placeholder='First Name', name='givenName', value=value, required=app.get('stormpathRequireGivenName') ? true : false, type='text')
+
+                if app.get('stormpathEnableMiddleName')
+                  .form-group.group-middle-name(form-group='true')
+                    label.col-sm-4 Middle Name
+                    .col-sm-8
+                      - var value = form.data ? form.data.middleName : '';
+                      input.form-control(placeholder='Middle Name', name='middleName', value=value, required=app.get('stormpathRequireMiddleName') ? true : false, type='text')
+
+                if app.get('stormpathEnableSurname')
+                  .form-group.group-last-name(form-group='true')
+                    label.col-sm-4 Last Name
+                    .col-sm-8
+                      - var value = form.data ? form.data.surname : '';
+                      input.form-control(placeholder='Last Name', name='surname', value=value, required=app.get('stormpathRequireSurname') ? true : false, type='text')
+
+                .form-group.group-email(form-group='true')
+                  label.col-sm-4 Email
                   .col-sm-8
-                    - var value = form.data ? form.data.username : '';
-                    input.form-control(placeholder='Username', name='username', value=value, required=app.get('stormpathRequireUsername') ? true : false, type='text')
+                    - var value = form.data ? form.data.email : '';
+                    input.form-control(placeholder='Email', name='email', value=value, required='true', type='text')
 
-              if app.get('stormpathEnableGivenName')
-                .form-group.group-first-name(form-group='true')
-                  label.col-sm-4 First Name
+                .form-group.group-password(form-group='true')
+                  label.col-sm-4 Password
                   .col-sm-8
-                    - var value = form.data ? form.data.givenName : '';
-                    input.form-control(placeholder='First Name', name='givenName', value=value, required=app.get('stormpathRequireGivenName') ? true : false, type='text')
+                    input.form-control(placeholder='Password', name='password', required='true', type='password')
 
-              if app.get('stormpathEnableMiddleName')
-                .form-group.group-middle-name(form-group='true')
-                  label.col-sm-4 Middle Name
-                  .col-sm-8
-                    - var value = form.data ? form.data.middleName : '';
-                    input.form-control(placeholder='Middle Name', name='middleName', value=value, required=app.get('stormpathRequireMiddleName') ? true : false, type='text')
+                if app.get('stormpathEnableConfirmPassword')
+                  .form-group.group-confirm-password(form-group='true')
+                    label.col-sm-4 Confirm Password
+                    .col-sm-8
+                      input.form-control(placeholder='Confirm Password', name='confirmPassword', required='true', type='password')
 
-              if app.get('stormpathEnableSurname')
-                .form-group.group-last-name(form-group='true')
-                  label.col-sm-4 Last Name
-                  .col-sm-8
-                    - var value = form.data ? form.data.surname : '';
-                    input.form-control(placeholder='Last Name', name='surname', value=value, required=app.get('stormpathRequireSurname') ? true : false, type='text')
+                button.btn.btn-register.btn-sp-green(type='submit') Create Account
 
-              .form-group.group-email(form-group='true')
-                label.col-sm-4 Email
-                .col-sm-8
-                  - var value = form.data ? form.data.email : '';
-                  input.form-control(placeholder='Email', name='email', value=value, required='true', type='text')
-
-              .form-group.group-password(form-group='true')
-                label.col-sm-4 Password
-                .col-sm-8
-                  input.form-control(placeholder='Password', name='password', required='true', type='password')
-
-              if app.get('stormpathEnableConfirmPassword')
-                .form-group.group-confirm-password(form-group='true')
-                  label.col-sm-4 Confirm Password
-                  .col-sm-8
-                    input.form-control(placeholder='Confirm Password', name='confirmPassword', required='true', type='password')
-
-              button.btn.btn-register.btn-sp-green(type='submit') Create Account
-
-        a.to-login(href=config.web.login.uri) Back to Log In
+          a.to-login(href=config.web.login.uri) Back to Log In

@@ -52,12 +52,14 @@ describe('register', function() {
       }
     }));
 
-    request(app)
-      .get('/register')
-      .expect(200)
-      .end(function(err, res) {
-        done(err);
-      });
+    app.on('stormpath.ready',function(){
+      request(app)
+        .get('/register')
+        .expect(200)
+        .end(function(err) {
+          done(err);
+        });
+    });
   });
 
   it('should return a json error if the accept header supports json and the content type we post is json', function(done) {
@@ -81,11 +83,16 @@ describe('register', function() {
         .set('Accept', 'application/json')
         .expect(400)
         .end(function(err, res) {
-          if (err) return done(err);
-
-          var json = JSON.parse(res.text);
-          if (!json.error) return done(new Error('No JSON error returned.'));
-          done();
+          if (err){
+            done(err);
+          }else{
+            var json = JSON.parse(res.text);
+            if (!json.error){
+              done(new Error('No JSON error returned.'));
+            }else{
+              done();
+            }
+          }
         });
     });
   });
@@ -177,33 +184,29 @@ describe('register', function() {
       }
     }));
 
-    async.parallel([
-      function(cb) {
-        request(app)
-          .get('/newregister')
-          .expect(200)
-          .end(cb);
-      },
-      function(cb) {
-        request(app)
-          .get('/register')
-          .expect(404)
-          .end(cb);
-      }
-    ], done);
+    app.on('stormpath.ready',function(){
+      async.parallel([
+        function(cb) {
+          request(app)
+            .get('/newregister')
+            .expect(200)
+            .end(cb);
+        },
+        function(cb) {
+          request(app)
+            .get('/register')
+            .expect(404)
+            .end(cb);
+        }
+      ], done);
+    });
   });
 
-  it.skip('should register new users and redirect to the nextUri',function(done){
+  it('should register new users and redirect to the login view if autoAuthorize is not enabled',function(done){
 
-    var newUserData = {
-      givenName: uuid.v4(),
-      surname: uuid.v4(),
-      email: 'robert+'+uuid.v4() + '@stormpath.com',
-      password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-    };
-    var app = express();
+    var newUserData = helpers.newUser();
 
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
@@ -212,26 +215,67 @@ describe('register', function() {
           enabled: true
         }
       }
-    }));
-
-    var config = app.get('stormpathConfig');
+    });
 
     app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
       request(app)
         .post('/register')
         .type('form')
-        .send(existingUserData)
+        .send(newUserData)
         .expect(302)
-        .expect('Location',config.web.register.nextUri)
+        .expect('Location',config.web.login.uri+'?status=created')
         .end(function(err){
           if(err){
-            return done(err);
+            done(err);
           }else{
             stormpathApplication.getAccounts({email:newUserData.email},function(err,collection){
               if(err){
                 done(err);
               }else{
-                assert(collection.length===1);
+                assert(collection.items.length===1);
+                done();
+              }
+            });
+          }
+        });
+    });
+  });
+
+  it('should register new users and redirect to the nextUri if autoAuthorize is enabled',function(done){
+
+    var newUserData = helpers.newUser();
+
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true,
+          autoAuthorize: true
+        }
+      }
+    });
+
+    app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      request(app)
+        .post('/register')
+        .type('form')
+        .send(newUserData)
+        .expect(302)
+        .expect('Location',config.web.register.nextUri)
+        .end(function(err){
+          if(err){
+            done(err);
+          }else{
+            stormpathApplication.getAccounts({email:newUserData.email},function(err,collection){
+              if(err){
+                done(err);
+              }else{
+                assert(collection.items.length===1);
+                done();
               }
             });
           }
@@ -264,6 +308,7 @@ describe('register', function() {
             return done(err);
           }else{
             assert(res.text.match(/Account with that email already exists/));
+            done();
           }
         });
     });

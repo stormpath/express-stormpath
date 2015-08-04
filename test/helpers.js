@@ -4,6 +4,10 @@ var uuid = require('uuid');
 
 var stormpath = require('stormpath');
 
+var stormpathExpress = require('../');
+
+var express = require('express');
+
 /**
  * Build a new Stormpath Client for usage in tests.
  *
@@ -13,6 +17,22 @@ var stormpath = require('stormpath');
  */
 module.exports.createClient = function() {
   return new stormpath.Client();
+};
+
+/**
+ * Builds an object that can be used to create a new Stormpath account
+ *
+ * @function
+ *
+ * @return {Object} Object literal for passing to createAccount functions.
+ */
+module.exports.newUser = function() {
+  return {
+    givenName: uuid.v4(),
+    surname: uuid.v4(),
+    email: 'robert+'+uuid.v4() + '@stormpath.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
 };
 
 /**
@@ -34,6 +54,13 @@ module.exports.createApplication = function(client, callback) {
     if (err) return callback(err);
     callback(null, app);
   });
+};
+
+module.exports.createStormpathExpressApp = function(config){
+  var app = express();
+
+  app.use(stormpathExpress.init(app, config));
+  return app;
 };
 
 /**

@@ -19,11 +19,13 @@ describe('forgotPassword', function() {
 
   before(function(done) {
     stormpathClient = helpers.createClient();
-
     helpers.createApplication(stormpathClient, function(err, app) {
-      if (err) return done(err);
-      stormpathApplication = app;
-      done();
+      if (err){
+        done(err);
+      }else{
+        stormpathApplication = app;
+        done();
+      }
     });
   });
 
@@ -45,22 +47,23 @@ describe('forgotPassword', function() {
       }
     }));
 
-    var config = app.get('stormpathConfig');
+    app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      request(app)
+        .get('/forgot')
+        .expect(200)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          }
 
-    request(app)
-      .get('/forgot')
-      .expect(200)
-      .end(function(err, res) {
-        if (err) {
-          return done(err);
-        }
+          var $ = cheerio.load(res.text);
 
-        var $ = cheerio.load(res.text);
-
-        // Assert that the form was rendered.
-        assert.equal($('form[action="'+config.web.forgotPassword.uri+'"]').length, 1);
-        done();
-      });
+          // Assert that the form was rendered.
+          assert.equal($('form[action="'+config.web.forgotPassword.uri+'"]').length, 1);
+          done();
+        });
+    });
   });
 
   it('should return an error if the posted email is not an email', function(done) {
@@ -110,9 +113,8 @@ describe('forgotPassword', function() {
       }
     }));
 
-    var config = app.get('stormpathConfig');
-
     app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
       request(app)
         .post('/forgot')
         .type('form')
