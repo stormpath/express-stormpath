@@ -23,6 +23,11 @@ block body
                   p.
                     Didn't get the email? <a href="#{config.web.verifyEmail.uri}">Click Here</a>.
                   br
+                if status==='verified'
+                  span.
+                    Your Account Has Been Verified
+                  p.
+                    You may now login.
                 if status==='created'
                   span.
                     Your Account Has Been Created

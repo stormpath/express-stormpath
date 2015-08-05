@@ -1,11 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
-
 var async = require('async');
-var cheerio = require('cheerio');
 var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
@@ -202,7 +198,7 @@ describe('register', function() {
     });
   });
 
-  it('should register new users and redirect to the login view if autoAuthorize is not enabled',function(done){
+  it('should register new users and redirect to the login view, with a "created" message, if autoAuthorize is not enabled',function(done){
 
     var newUserData = helpers.newUser();
 
@@ -242,7 +238,7 @@ describe('register', function() {
     });
   });
 
-  it('should register new users and redirect to the nextUri if autoAuthorize is enabled',function(done){
+  it('should register new users and redirect to the nextUri with a session if autoAuthorize is enabled',function(done){
 
     var newUserData = helpers.newUser();
 
@@ -266,6 +262,7 @@ describe('register', function() {
         .send(newUserData)
         .expect(302)
         .expect('Location',config.web.register.nextUri)
+        .expect('Set-Cookie',/access_token/)
         .end(function(err){
           if(err){
             done(err);

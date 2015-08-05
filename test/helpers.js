@@ -50,9 +50,47 @@ module.exports.createApplication = function(client, callback) {
   var appData = { name: prefix };
   var opts = { createDirectory: true };
 
-  client.createApplication(appData, opts, function(err, app) {
-    if (err) return callback(err);
-    callback(null, app);
+  client.createApplication(appData, opts, callback);
+};
+
+/**
+ * Set the status (enabled or disabled) of the email verification property
+ * on the account creation policy, for the default account store of the
+ * given directory
+ *
+ * Assumes that the default account store is a directory
+ *
+ * @param  {Object} application
+ * @param {Function} callback Called when updating is complete
+ */
+module.exports.setEmailVerificationStatus = function(application,status,cb){
+  function done(err){
+    if(err){
+      throw err;
+    }else{
+      cb();
+    }
+  }
+  application.getDefaultAccountStore(function(err,accountStoreMapping){
+    if(err){
+      done(err);
+    }else{
+      accountStoreMapping.getAccountStore(function(err,directory){
+        if(err){
+          done(err);
+        }else{
+          directory.getAccountCreationPolicy(function(err,policy){
+            if(err){
+              done(err);
+            }else{
+              policy.verificationEmailStatus = status;
+              policy.save(done);
+            }
+          });
+        }
+      });
+
+    }
   });
 };
 
