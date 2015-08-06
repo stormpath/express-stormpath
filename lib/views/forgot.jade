@@ -9,27 +9,23 @@ block body
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if status==='invalid_sptoken'
+          .row
+            .alert.alert-warning.invalid-sp-token-warning
+              p.
+                The password reset link you tried to use is no longer valid.
+                Please request a new link from the form below.
         .box.row
           .email-password-area.col-xs-12.large.col-sm-12
             .header
-              if status==='invalid_sp_token'
-                span.
-                  Password Reset Failed
-              else
-                span.
-                  Forgot your password?
-              if status==='invalid_sp_token'
-                p.
-                  Your password reset attempt has failed.  This might happen for
-                  several reasons: your reset token might be expired, it might
-                  have already been used, or we may just be having issues right
-                  now!  Please try again, and if you're still having
-                  problems, contact the site administrator for help!
-              else
-                p.
-                  Enter your email address below to reset your password. You will
-                  be sent an email which you will need to open to continue. You may
-                  need to check your spam folder.
+
+              span.
+                Forgot your password?
+
+              p.
+                Enter your email address below to reset your password. You will
+                be sent an email which you will need to open to continue. You may
+                need to check your spam folder.
 
             if error
               .alert.alert-danger.bad-login

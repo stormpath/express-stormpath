@@ -1,10 +1,6 @@
 'use strict';
 
 var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
-
-var async = require('async');
 var cheerio = require('cheerio');
 var express = require('express');
 var request = require('supertest');
@@ -12,6 +8,13 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 var stormpath = require('../../index');
+
+function assertInvalidSpTokenMessage(res){
+  var $ = cheerio.load(res.text);
+  // Assert that the warning was rendered
+  assert.equal($('.invalid-sp-token-warning').length, 1);
+}
+
 
 describe('forgotPassword', function() {
   var stormpathApplication;
@@ -94,6 +97,31 @@ describe('forgotPassword', function() {
           }
 
           assert(/Please enter a valid email address/.test(res.text));
+          done();
+        });
+    });
+  });
+
+  it('should show an info message if the user is redirected here afer an invalid sptoken',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        forgotPassword: {
+          enabled: true
+        }
+      }
+    }));
+
+    app.on('stormpath.ready',function(){
+      request(app)
+        .get('/forgot?status=invalid_sptoken')
+        .expect(200)
+        .end(function(err, res) {
+          assertInvalidSpTokenMessage(res);
           done();
         });
     });
