@@ -22,6 +22,24 @@ function assertResetFormExists(res) {
   assert.equal($('input[name="passwordAgain"]').length, 1);
 }
 
+function assertPasswordMismatchError(res){
+  var $ = cheerio.load(res.text);
+  // Assert that the error was shown
+  assert($('.alert-danger').html().match(/Passwords do not match/));
+}
+
+function assertPasswordPolicyError(res){
+  var $ = cheerio.load(res.text);
+  // Assert that the error was shown
+  assert($('.alert-danger').html().match(/Account password minimum length not satisfied/));
+}
+
+function assertPasswordNotConfirmedError(res){
+  var $ = cheerio.load(res.text);
+  // Assert that the error was shown
+  assert($('.alert-danger').html().match(/Password is required/));
+}
+
 describe('resetPassword', function() {
   var stormpathApplication;
   var stormpathClient;
@@ -126,7 +144,101 @@ describe('resetPassword', function() {
           assertResetFormExists(res);
           done();
         });
+    });
+  });
 
+  it('should error if the passwords do not match',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        resetPassword: {
+          enabled: true
+        }
+      }
+    }));
+
+    app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      request(app)
+        .post(config.web.changePassword.uri)
+        .type('form')
+        .send({
+          password: 'a',
+          passwordAgain: 'b',
+          sptoken: passwordResetToken
+        })
+        .expect(200)
+        .end(function(err,res){
+          assertPasswordMismatchError(res);
+          done();
+        });
+    });
+  });
+
+  it('should error if the password is too short (does not meet policy requirements)',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        resetPassword: {
+          enabled: true
+        }
+      }
+    }));
+
+    app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      request(app)
+        .post(config.web.changePassword.uri)
+        .type('form')
+        .send({
+          password: 'a',
+          passwordAgain: 'a',
+          sptoken: passwordResetToken
+        })
+        .expect(200)
+        .end(function(err,res){
+          assertPasswordPolicyError(res);
+          done();
+        });
+    });
+  });
+
+  it('should error if the the password is not entered twice',function(done){
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href,
+      },
+      web: {
+        resetPassword: {
+          enabled: true
+        }
+      }
+    }));
+
+    app.on('stormpath.ready',function(){
+      var config = app.get('stormpathConfig');
+      request(app)
+        .post(config.web.changePassword.uri)
+        .type('form')
+        .send({
+          password: 'a',
+          sptoken: passwordResetToken
+        })
+        .expect(200)
+        .end(function(err,res){
+          assertPasswordNotConfirmedError(res);
+          done();
+        });
     });
   });
 
@@ -168,6 +280,8 @@ describe('resetPassword', function() {
         });
     });
   });
+
+
 
   it('should send me to the request-new-link page if i use and already consumed token',function(done){
     // The token was consumed by the previous test, above

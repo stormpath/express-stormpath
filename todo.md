@@ -22,6 +22,10 @@ For immediate release:
 
 * test all the features
 
+* update the language and styling of the password reset and email
+  verification workflows.  the wording is not my favorite right now,
+  and there are some styling bugs (things aren't aligned correctly)
+
 * update all the documentation
 
 

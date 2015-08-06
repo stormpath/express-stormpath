@@ -24,9 +24,12 @@ describe('register', function() {
     stormpathClient = helpers.createClient();
 
     helpers.createApplication(stormpathClient, function(err, app) {
-      if (err) return done(err);
-      stormpathApplication = app;
-      app.createAccount(existingUserData,done);
+      if (err){
+        done(err);
+      }else{
+        stormpathApplication = app;
+        app.createAccount(existingUserData,done);
+      }
     });
   });
 
