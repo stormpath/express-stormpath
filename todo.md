@@ -3,11 +3,11 @@ to the "config parser" branch of the `stormpath` module
 
 For immediate release:
 
-* Implment registration fields features (map, and fieldOrder array)
+* Implement registration fields features (map, and fieldOrder array)
 
 * Session spec needs to be reviewed, and then implemented
 
-* rework email verification feature to meet the framework spec
+* need to enable/disable passwording changing, in response to directory policy config
 
 * ID site callback will need to contiue using a traditional session
   cookie, until we implement an oauth workflow that allows us to get
