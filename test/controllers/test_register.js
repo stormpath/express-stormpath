@@ -266,6 +266,7 @@ describe('register', function() {
         .expect(302)
         .expect('Location',config.web.register.nextUri)
         .expect('Set-Cookie',/access_token/)
+        .expect('Set-Cookie',/refresh_token/)
         .end(function(err){
           if(err){
             done(err);
