@@ -77,7 +77,7 @@ describe('resetPassword', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it.only('should disable password reset functionality if the directory has it disabled', function(done) {
+  it('should disable password reset functionality if the directory has it disabled', function(done) {
     helpers.setPasswordResetStatus(stormpathApplication, 'DISABLED', function(err) {
       if (err) {
         return cb(err);
