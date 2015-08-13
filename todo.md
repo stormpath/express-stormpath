@@ -5,8 +5,6 @@ For immediate release:
 
 * Implement registration fields features (map, and fieldOrder array)
 
-* Session spec needs to be reviewed, and then implemented
-
 * need to enable/disable passwording changing, in response to directory policy config
 
 * ID site callback will need to contiue using a traditional session
@@ -31,6 +29,7 @@ For immediate release:
 
 * update all the documentation
 
+* what to do when an application does not have a cloud account store mapped to it?
 
 Future goals:
 
