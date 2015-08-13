@@ -77,6 +77,29 @@ describe('resetPassword', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
+  it.only('should disable password reset functionality if the directory has it disabled', function(done) {
+    helpers.setPasswordResetStatus(stormpathApplication, 'DISABLED', function(err) {
+      if (err) {
+        return cb(err);
+      }
+
+      var app = express();
+
+      app.use(stormpath.init(app, {
+        application: {
+          href: stormpathApplication.href,
+        }
+      }));
+
+      app.on('stormpath.ready', function(){
+        var config = app.get('stormpathConfig');
+        requestResetPage(app)
+          .expect(404)
+          .end(done);
+      });
+    });
+  });
+
   it('should redirect to the /forgot view is no sptoken is given', function(done) {
     var app = express();
 

@@ -94,6 +94,45 @@ module.exports.setEmailVerificationStatus = function(application,status,cb){
   });
 };
 
+/**
+ * Set the status (enabled or disabled) of the resetEmailStatus property
+ * on the password policy, for the default account store of the given directory.
+ *
+ * Assumes that the default account store is a directory.
+ *
+ * @param  {Object} application
+ * @param {Function} callback Called when updating is complete
+ */
+module.exports.setPasswordResetStatus = function(application, status, cb){
+  function done(err){
+    if(err){
+      throw err;
+    } else {
+      cb();
+    }
+  }
+  application.getDefaultAccountStore(function(err,accountStoreMapping){
+    if(err){
+      done(err);
+    }else{
+      accountStoreMapping.getAccountStore(function(err,directory){
+        if(err){
+          done(err);
+        }else{
+          directory.getPasswordPolicy(function(err,policy){
+            if(err){
+              done(err);
+            }else{
+              policy.resetEmailStatus = status;
+              policy.save(done);
+            }
+          });
+        }
+      });
+    }
+  });
+};
+
 module.exports.createStormpathExpressApp = function(config){
   var app = express();
 
