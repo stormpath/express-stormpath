@@ -36,6 +36,36 @@ describe('forgotPassword', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
+  afterEach(function(done) {
+    helpers.setPasswordResetStatus(stormpathApplication, 'ENABLED', function(err) {
+      done(err);
+    });
+  });
+
+  it('should disable forgot password functionality if the directory has it disabled', function(done) {
+    helpers.setPasswordResetStatus(stormpathApplication, 'DISABLED', function(err) {
+      if (err) {
+        return done(err);
+      }
+
+      var app = express();
+
+      app.use(stormpath.init(app, {
+        application: {
+          href: stormpathApplication.href,
+        }
+      }));
+
+      app.on('stormpath.ready', function(){
+        var config = app.get('stormpathConfig');
+        request(app)
+          .get(config.web.forgotPassword.uri)
+          .expect(404)
+          .end(done);
+      });
+    });
+  });
+
   it('should bind to /forgot if enabled', function(done) {
     var app = express();
 

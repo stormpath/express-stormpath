@@ -77,10 +77,16 @@ describe('resetPassword', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
+  afterEach(function(done) {
+    helpers.setPasswordResetStatus(stormpathApplication, 'ENABLED', function(err) {
+      done(err);
+    });
+  });
+
   it('should disable password reset functionality if the directory has it disabled', function(done) {
     helpers.setPasswordResetStatus(stormpathApplication, 'DISABLED', function(err) {
       if (err) {
-        return cb(err);
+        return done(err);
       }
 
       var app = express();
