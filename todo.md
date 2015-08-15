@@ -18,7 +18,7 @@ For immediate release:
   we need to render a view, serve the root of this path if this path
   is defined)
 
-* test all the features
+* 95% test coverage, as an assertion that will fail the build otherwise
 
 * read the docs of the current verion, and ensure that we haven't
   removed any features accidentally
