@@ -69,6 +69,50 @@ function revertIdSiteModel(client,currentHost,callbckUri,cb){
   });
 }
 
+function getIdSiteCallbackUrl(host,config,app,accountData,done){
+  request(host).get(config.web.login.uri)
+    .end(function(err,res){
+
+      request(res.headers.location).get('')
+        .end(function(err,res){
+          if(err){
+            return done(err);
+          }
+          var jwt = res.headers.location.split('jwt=')[1];
+          var origin = 'https://'+res.headers.location.split('/')[2];
+          var appHref = app.get('stormpathApplication').href;
+          request(appHref).get('?expand=idSiteModel')
+            .set('Authorization', 'Bearer ' + jwt)
+            .set('Origin', origin)
+            .set('Referer', origin)
+            .end(function(err,res){
+              if(err){
+                return done(err);
+              }else{
+                var nextJwt = res.headers.authorization.split('Bearer ')[1];
+                request(appHref).post('/loginAttempts')
+                  .type('json')
+                  .send({
+                    type: 'basic',
+                    value: new Buffer(accountData.email+':'+accountData.password).toString('base64')
+                  })
+                  .set('Authorization', 'Bearer ' + nextJwt)
+                  .set('Origin', origin)
+                  .set('Referer', origin)
+                  .end(function(err,res){
+                    if(err){
+                      return done(err);
+                    }else{
+                      var url = res.headers['stormpath-sso-redirect-location'];
+                      done(url);
+                    }
+                  });
+              }
+            });
+        });
+    });
+}
+
 describe('id site',function() {
   var stormpathApplication, app, config, server, host, callbackUri;
 
@@ -80,46 +124,50 @@ describe('id site',function() {
   };
 
   before(function(done) {
-    helpers.createApplication(helpers.createClient(), function(err, _app) {
-      if (err){
-        done(err);
-      }else{
-        stormpathApplication = _app;
-        stormpathApplication.createAccount(accountData,function(err){
-          if (err){
-            done(err);
-          }else{
+    var client = helpers.createClient().on('ready',function(){
+      helpers.createApplication(client, function(err, _app) {
 
-            app = express();
+        if (err){
+          done(err);
+        }else{
+          stormpathApplication = _app;
+          stormpathApplication.createAccount(accountData,function(err){
+            if (err){
+              done(err);
+            }else{
 
-            app.use(stormpath.init(app, {
-              application: {
-                href: stormpathApplication.href
-              },
-              web: {
-                login: {
-                  enabled: true
+              app = express();
+
+              app.use(stormpath.init(app, {
+                application: {
+                  href: stormpathApplication.href
                 },
-                register: {
-                  enabled: true
-                },
-                idSite: {
-                  enabled: true
+                web: {
+                  login: {
+                    enabled: true
+                  },
+                  register: {
+                    enabled: true
+                  },
+                  idSite: {
+                    enabled: true
+                  }
                 }
-              }
-            }));
+              }));
 
-            app.on('stormpath.ready',function(){
-              config = app.get('stormpathConfig');
-              server = app.listen(function(){
-                host = 'http://' + server.address().address + ':' + server.address().port;
-                callbackUri = host + config.web.idSite.uri;
-                prepeareIdSiteModel(app.get('stormpathClient'),host,callbackUri,done);
+              app.on('stormpath.ready',function(){
+
+                config = app.get('stormpathConfig');
+                server = app.listen(function(){
+                  host = 'http://' + server.address().address + ':' + server.address().port;
+                  callbackUri = host + config.web.idSite.uri;
+                  prepeareIdSiteModel(app.get('stormpathClient'),host,callbackUri,done);
+                });
               });
-            });
-          }
-        });
-      }
+            }
+          });
+        }
+      });
     });
   });
 
@@ -164,5 +212,11 @@ describe('id site',function() {
       });
   });
   it.skip('should bind the id site callback hanlder, if idisite is enabled');
-  it.skip('should create a session on id site callback');
+  it('should create a session on id site callback',function(done){
+    getIdSiteCallbackUrl(host,config,app,accountData,function(url){
+      request(url).get('')
+        .expect('Set-Cookie',/idSiteSession=https:\/\/api.stormpath.com\/v1\/accounts\/.*/)
+        .end(done);
+    });
+  });
 });
