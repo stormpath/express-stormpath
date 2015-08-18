@@ -96,7 +96,7 @@ angular.module('stormpath.CONFIG',[])
     * }
     * ```
     */
-    AUTHENTICATION_ENDPOINT: '/oauth/token',
+    AUTHENTICATION_ENDPOINT: '/login',
 
 
     /**
@@ -116,7 +116,7 @@ angular.module('stormpath.CONFIG',[])
     *  if the user has an active session.
     *  * Respond with `401 Unauthorized` if the user has no session.
     */
-    CURRENT_USER_URI: '/api/users/current',
+    CURRENT_USER_URI: '/me',
 
 
     /**
@@ -251,21 +251,38 @@ angular.module('stormpath.CONFIG',[])
     /**
     * @ngdoc property
     *
-    * @name PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT
+    * @name FORGOT_PASSWORD_ENDPOINT
     *
     * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
     *
     * @description
     *
-    * Default: `/api/passwordResetTokens`
+    * Default: `/change`
+    *
+    * The endpoint that is used by
+    * {@link stormpath.userService.$user#methods_passwordResetRequest $user.passwordResetRequest()}
+    * to create password reset tokens.
+    */
+    FORGOT_PASSWORD_ENDPOINT: '/forgot',
+
+
+    /**
+    * @ngdoc property
+    *
+    * @name CHANGE_PASSWORD_ENDPOINT
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `/change`
     *
     * The endpoint that is used by
     * {@link stormpath.userService.$user#methods_verifyPasswordResetToken $user.verifyPasswordResetToken()} and
-    * {@link stormpath.userService.$user#methods_passwordResetRequest $user.passwordResetRequest()} and
     * {@link stormpath.userService.$user#methods_resetPassword $user.resetPassword()}
-    * to create, verify, and consume password reset tokens.
+    * to verify and consume password reset tokens (change a user's password with the token).
     */
-    PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
+    CHANGE_PASSWORD_ENDPOINT: '/change',
 
 
     /**

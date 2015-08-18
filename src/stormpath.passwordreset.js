@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stormpath')
-.controller('SpPasswordResetRequestCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+.controller('SpPasswordResetRequestCtrl', ['$scope','$user',function ($scope,$user) {
   $scope.sent = false;
   $scope.posting = false;
   $scope.formModel = {
@@ -23,8 +23,8 @@ angular.module('stormpath')
   };
 }])
 
-.controller('SpPasswordResetCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
-  var sptoken = $stateParams.sptoken;
+.controller('SpPasswordResetCtrl', ['$scope','$location','$user',function ($scope,$location,$user) {
+  var sptoken = $location.search().sptoken;
   $scope.showVerificationError = false;
   $scope.verifying = false;
   $scope.verified = false;
@@ -38,7 +38,7 @@ angular.module('stormpath')
     confirmPassword: ''
   };
 
-  if(sptoken){
+  if(typeof sptoken==='string'){
     $scope.verifying = true;
     $user.verifyPasswordResetToken(sptoken)
       .then(function(){
@@ -66,7 +66,7 @@ angular.module('stormpath')
         $scope.reset = true;
       })
       .catch(function(response){
-        $scope.error = response.data.errorMessage;
+        $scope.error = response.data.error;
       }).finally(function(){
         $scope.posting = false;
       });
