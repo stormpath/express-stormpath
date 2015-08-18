@@ -7,12 +7,6 @@ For immediate release:
 
 * need to enable/disable passwording changing, in response to directory policy config
 
-* ID site callback will need to contiue using a traditional session
-  cookie, until we implement an oauth workflow that allows us to get
-  an access token and refresh token after an ID site login.  So this
-  library will need to be able to do authentiation with access tokens
-  or the cookies that we create for ID site callbacks.
-
 * implement "agular root path" setting, this tells the framework where
   the root of an HTML5-based angular app should be served from (any time
   we need to render a view, serve the root of this path if this path
