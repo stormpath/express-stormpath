@@ -281,6 +281,59 @@ describe('register', function() {
     });
   });
 
+  it('should register new users and set default values for givenName and surname if these fields are not required',function(done){
+    var newUserData = helpers.newUser();
+    delete newUserData.givenName;
+    delete newUserData.surname;
+
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true,
+          fields: {
+            givenName: {
+              required: false
+            },
+            surname: {
+              required: false
+            }
+          }
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function() {
+      var config = app.get('stormpathConfig');
+
+      request(app)
+        .post('/register')
+        .type('form')
+        .send(newUserData)
+        .expect(302)
+        .expect('Location', config.web.login.uri+'?status=created')
+        .end(function(err) {
+          if (err) {
+            done(err);
+          } else {
+            stormpathApplication.getAccounts({ email:newUserData.email }, function(err, collection) {
+              if (err) {
+                done(err);
+              } else {
+                assert(collection.items.length === 1);
+                assert.equal(collection.items[0].givenName, 'Anonymous');
+                assert.equal(collection.items[0].surname, 'Anonymous');
+
+                done();
+              }
+            });
+          }
+        });
+    });
+  });
+
   it('should register new users and redirect to the nextUri with a session if autoAuthorize is enabled',function(done){
 
     var newUserData = helpers.newUser();
