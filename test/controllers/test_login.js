@@ -133,7 +133,7 @@ describe('login', function() {
         .post('/login')
         .type('json')
         .send({
-          login: username,
+          username: username,
           password: password
         })
         .set('Accept', 'application/json')
