@@ -243,7 +243,6 @@ describe('register', function() {
   });
 
   it('should register new users and redirect to the login view, with a "created" message, if autoAuthorize is not enabled',function(done){
-
     var newUserData = helpers.newUser();
 
     var app = helpers.createStormpathExpressApp({
