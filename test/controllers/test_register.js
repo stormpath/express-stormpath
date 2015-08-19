@@ -61,6 +61,47 @@ describe('register', function() {
     });
   });
 
+  it('should return an error if required fields are not present', function(done) {
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true,
+          fields: {
+            middleName: {
+              name: 'middleName',
+              required: true
+            }
+          }
+        }
+      }
+    }));
+
+    app.on('stormpath.ready', function() {
+      request(app)
+        .post('/register')
+        .type('json')
+        .set('Accept', 'application/json')
+        .expect(400)
+        .end(function(err, res) {
+          if (err) {
+            done(err);
+          } else {
+            var json = JSON.parse(res.text);
+            if (!json.error){
+              done(new Error('No JSON error returned.'));
+            } else {
+              done();
+            }
+          }
+        });
+    });
+  });
+
   it('should return a json error if the accept header supports json and the content type we post is json', function(done) {
     var app = express();
 
