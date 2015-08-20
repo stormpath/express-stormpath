@@ -18,9 +18,11 @@ angular.module('stormpath')
       }
 
       FormEncoderService.prototype.formPost = function formPost(httpRequest){
-        var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
-        h['Content-Type'] = STORMPATH_CONFIG.FORM_CONTENT_TYPE;
-        httpRequest.data = this.encodeUrlForm(httpRequest.data);
+        if(STORMPATH_CONFIG.FORM_CONTENT_TYPE==='application/x-www-form-urlencoded'){
+          var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
+          h['Content-Type'] = STORMPATH_CONFIG.FORM_CONTENT_TYPE;
+          httpRequest.data = this.encodeUrlForm(httpRequest.data);
+        }
         return httpRequest;
       };
 
