@@ -14,7 +14,7 @@ block body
           .box.row
             .email-password-area.col-xs-12.large.col-sm-12
               .header
-                if status==='unverified'
+                if status === 'unverified'
                   span.
                     Your account verification email has been sent!
                   p.
@@ -23,23 +23,23 @@ block body
                   p.
                     Didn't get the email? <a href="#{config.web.verifyEmail.uri}">Click Here</a>.
                   br
-                if status==='verified'
+                if status === 'verified'
                   span.
                     Your Account Has Been Verified
                   p.
                     You may now login.
-                if status==='created'
+                if status === 'created'
                   span.
                     Your Account Has Been Created
                   p.
                     You may now login.
-                if status==='reset'
+                if status === 'reset'
                   span.
                     Password Reset Successfuly
                   p.
                     You can now login with your new password.
                   br
-                if status==='forgot'
+                if status === 'forgot'
                   span.
                     Password Reset Requested
                   p.
