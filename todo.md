@@ -3,27 +3,17 @@ to the "config parser" branch of the `stormpath` module
 
 For immediate release:
 
-* Implement registration fields features (map, and fieldOrder array)
-
-* need to enable/disable passwording changing, in response to directory policy config
-
-* implement "agular root path" setting, this tells the framework where
-  the root of an HTML5-based angular app should be served from (any time
-  we need to render a view, serve the root of this path if this path
-  is defined)
-
-* 95% test coverage, as an assertion that will fail the build otherwise
-
-* read the docs of the current verion, and ensure that we haven't
+- convenience methods
+- write tests for apiauthentication stuff in express
+- write tests for enabling password reset
+- write tests for enabling registration
+- write tests for angular serving spa route stuffs
+- read the docs of the current verion, and ensure that we haven't
   removed any features accidentally
+- test what happens if an app has no account stores? error
 
-* update the language and styling of the password reset and email
-  verification workflows.  the wording is not my favorite right now,
-  and there are some styling bugs (things aren't aligned correctly)
+Post Launch:
 
-* update all the documentation
-
-* what to do when an application does not have a cloud account store mapped to it?
 
 Future goals:
 
@@ -42,4 +32,8 @@ Future goals:
     * authenticateUsernamePasswordForToken   <-- this should use our new token endpoint
 
 
+* update the language and styling of the password reset and email
+  verification workflows.  The wording is not my favorite right now,
+  and there are some styling bugs (things aren't aligned correctly)
 
+* move oauthpolicy configuration to a new place in the config object
