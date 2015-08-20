@@ -3,6 +3,7 @@ to the "config parser" branch of the `stormpath` module
 
 For immediate release:
 
+- fix login page with social login stuff
 - convenience methods
 - write tests for apiauthentication stuff in express
 - write tests for enabling password reset
