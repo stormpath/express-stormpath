@@ -41,7 +41,7 @@ Curious?  Here's some screenies that show you what's included:
 
     </td>
     <td width="33%" align="center" valign="top">
-      <p><strong>Logins Forms</strong></p>
+      <p><strong>Login Forms</strong></p>
       <center><img src="http://docs.stormpath.com/angularjs/guide/_images/login_form.png"></center>
 
     </td>
