@@ -108,7 +108,7 @@ If you would like to skip the guide and start using the example application, do 
 
 5) Copy the file `example/dashboard-app/server/config/local.env.sample.js` to
 `local.env.js` (in the same directory) and add your Stormpath variables for the
-Stormpath Applicaiton that you will be using.
+Stormpath Application that you will be using.
 
 6) Run `grunt serve` to start the example application, which will be
 available at http://localhost:9000
