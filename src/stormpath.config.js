@@ -147,7 +147,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/api/emailVerificationTokens`
+    * Default: `/verify`
     *
     * The endpoint that is used for verifying an account that requires email
     * verification.  Used by
@@ -163,7 +163,7 @@ angular.module('stormpath.CONFIG',[])
     * ```
     *
     */
-    EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+    EMAIL_VERIFICATION_ENDPOINT: '/verify',
 
 
     /**
@@ -288,31 +288,6 @@ angular.module('stormpath.CONFIG',[])
     /**
     * @ngdoc property
     *
-    * @name RESEND_EMAIL_VERIFICATION_ENDPOINT
-    *
-    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
-    *
-    * @description
-    *
-    * Default: `/api/verificationEmails`
-    *
-    * The endpoint that is used by
-    * {@link stormpath.userService.$user#methods_resendVerificationEmail $user.resendVerificationEmail()}
-    * to re-send a verification email to a user.
-    *
-    * This endpoint MUST accept a POST request with the following format:
-    * ```
-    * {
-    *   username: 'email or username'
-    * }
-    * ```
-    */
-    RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
-
-
-    /**
-    * @ngdoc property
-    *
     * @name SESSION_END_EVENT
     *
     * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
@@ -367,7 +342,7 @@ angular.module('stormpath.CONFIG',[])
     /**
     * @ngdoc property
     *
-    * @name USER_COLLECTION_URI
+    * @name REGISTER_URI
     *
     * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
     *
@@ -380,7 +355,25 @@ angular.module('stormpath.CONFIG',[])
     * to POST new users.  This endpoint MUST accept a stormpath account object
     * and use Stormpath to create the new user.
     */
-    USER_COLLECTION_URI: '/api/users'
+    REGISTER_URI: '/register',
+
+    /**
+    * @ngdoc property
+    *
+    * @name REGISTERED_EVENT_NAME
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$registered`
+    *
+    * The name of the event that is fired when
+    * {@link stormpath.userService.$user#methods_create $user.create()}
+    * is resolved with an account that was successfully created
+    */
+    REGISTERED_EVENT_NAME: '$registered',
+
   };
   c.getUrl = function(key) {
     return this.ENDPOINT_PREFIX + this[key];

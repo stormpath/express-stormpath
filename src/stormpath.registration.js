@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stormpath')
-.controller('SpRegistrationFormCtrl', ['$scope','$user','$auth','$state',function ($scope,$user,$auth,$state) {
+.controller('SpRegistrationFormCtrl', ['$scope','$user','$auth','$location',function ($scope,$user,$auth,$location) {
   $scope.formModel = (typeof $scope.formModel==='object') ? $scope.formModel : {
     givenName:'',
     surname: '',
@@ -16,22 +16,22 @@ angular.module('stormpath')
     $scope.creating = true;
     $scope.error = null;
     $user.create($scope.formModel)
-      .then(function(enabled){
+      .then(function(account){
         $scope.created = true;
-        $scope.enabled = enabled;
-        if(enabled && $scope.autoLogin){
+        $scope.enabled = account.status === 'ENABLED';
+        if($scope.enabled && $scope.autoLogin){
           $scope.authenticating = true;
           $auth.authenticate({
             username: $scope.formModel.email,
             password: $scope.formModel.password
           })
           .then(function(){
-            if($scope.postLoginState){
-              $state.go($scope.postLoginState);
+            if($scope.postLoginPath){
+              $location.path($scope.postLoginPath);
             }
           })
           .catch(function(response){
-            $scope.error = response.data.errorMessage;
+            $scope.error = response.data.error;
           })
           .finally(function(){
             $scope.authenticating = false;
@@ -43,7 +43,7 @@ angular.module('stormpath')
       })
       .catch(function(response){
         $scope.creating = false;
-        $scope.error = response.data.errorMessage;
+        $scope.error = response.data.error;
       });
   };
 }])

@@ -171,13 +171,15 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
         var op = $q.defer();
 
         $http($spFormEncoder.formPost({
-            url: STORMPATH_CONFIG.getUrl('USER_COLLECTION_URI'),
-            method: 'POST',
-            data: accountData
-          }))
-          .then(function(response){
-            op.resolve(response.status===201);
-          },op.reject);
+          url: STORMPATH_CONFIG.getUrl('REGISTER_URI'),
+          method: 'POST',
+          data: accountData
+        }))
+        .then(function(response){
+          op.resolve(response.data);
+          registeredEvent(response.data);
+        },op.reject);
+
         return op.promise;
       };
       UserService.prototype.get = function get() {
@@ -281,11 +283,11 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        * ```
        */
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
-        return $http($spFormEncoder.formPost({
+        return $http({
           method: 'POST',
-          url: STORMPATH_CONFIG.getUrl('RESEND_EMAIL_VERIFICATION_ENDPOINT'),
+          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT'),
           data: data
-        }));
+        });
       };
 
       /**
@@ -316,12 +318,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        * Verifies a new account, using the `sptoken` that was sent to the user
        * by email.
        */
-      UserService.prototype.verify = function verify(data){
-        return $http($spFormEncoder.formPost({
-          method: 'POST',
-          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT'),
-          data: data
-        }));
+      UserService.prototype.verify = function verify(token){
+        return $http({
+          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT') + '?sptoken='+token
+        });
       };
 
       /**
@@ -428,6 +428,33 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
           data: data
         }));
       };
+      function registeredEvent(account){
+        /**
+         * @ngdoc event
+         *
+         * @name stormpath.userService.$user#$registered
+         *
+         * @eventOf stormpath.userService.$user
+         *
+         * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
+         *
+         * @param {account} account
+         *
+         * The object of the account that was created.
+         *
+         * @description
+         *
+         * This event is broadcast when a call to
+         * {@link stormpath.userService.$user#methods_create $user.create()}
+         * is successful.  The account object is returned, and you can inspec
+         * the account's status to know if email verification is required.
+         */
+        $rootScope.$broadcast(STORMPATH_CONFIG.REGISTERED_EVENT_NAME,account);
+      }
       function currentUserEvent(user){
         /**
          * @ngdoc event

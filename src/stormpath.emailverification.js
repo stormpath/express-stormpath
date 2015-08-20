@@ -2,7 +2,7 @@
 
 angular.module('stormpath')
 
-.controller('SpEmailVerificationCtrl', ['$scope','$stateParams','$user',function ($scope,$stateParams,$user) {
+.controller('SpEmailVerificationCtrl', ['$scope','$location','$user',function ($scope,$location,$user) {
   $scope.showVerificationError = false;
   $scope.verifying = false;
   $scope.reVerificationSent = false;
@@ -11,9 +11,9 @@ angular.module('stormpath')
   $scope.formModel = {
     username: ''
   };
-  if($stateParams.sptoken){
+  if($location.search().sptoken){
     $scope.verifying = true;
-    $user.verify({sptoken:$stateParams.sptoken})
+    $user.verify($location.search().sptoken)
       .then(function(){
         $scope.verified = true;
       })
