@@ -1,8 +1,16 @@
+- var facebookClientId = null;
+
+each provider in config.socialProviders
+  each value, key in provider
+    if key === 'providerId' && value === 'facebook'
+      - facebookClientId = provider.clientId
+
 button.btn.btn-social.btn-facebook(onclick='facebookLogin()') Facebook
 script(type='text/javascript').
   function facebookLogin() {
     var FB = window.FB;
-    var facebookScopes = '#{app.get("stormpathSocial").facebook.scopes}';
+    // TODO: make this work
+    var facebookScopes = []; //'#[app.get("stormpathSocial").facebook.scopes]';
     var scopes = [];
 
     if (facebookScopes.length) {
@@ -14,10 +22,11 @@ script(type='text/javascript').
     FB.login(function(response) {
       if (response.status === 'connected') {
         var queryStr = window.location.search.replace('?', '');
+        // TODO make dynamic
         if (queryStr) {
-          window.location.replace('#{app.get("stormpathFacebookLoginUrl")}?' + queryStr + '&access_token=' + response.authResponse.accessToken);
+          window.location.replace('/callbacks/facebook?' + queryStr + '&access_token=' + response.authResponse.accessToken);
         } else {
-          window.location.replace('#{app.get("stormpathFacebookLoginUrl")}?access_token=' + response.authResponse.accessToken);
+          window.location.replace('/callbacks/facebook?access_token=' + response.authResponse.accessToken);
         }
       }
     }, {scope: 'email' + (scopes ? ',' + scopes : '')});
@@ -25,17 +34,17 @@ script(type='text/javascript').
 
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '#{app.get("stormpathSocial").facebook.appId}',
+      appId      : '#{facebookClientId}',
       cookie     : true,
       xfbml      : true,
-      version    : 'v2.0'
+      version    : 'v2.3'
     });
   };
 
   (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
