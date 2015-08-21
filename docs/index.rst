@@ -22,6 +22,7 @@ you're a new Express-Stormpath user, start here!
    sessions
    registration
    login
+   logout
    product
    help
    contributors

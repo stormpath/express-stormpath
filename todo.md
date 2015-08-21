@@ -17,6 +17,7 @@ For immediate release:
 - ensure all old req.app.get(...) stuff is replaced
 - ensure social login works everywhere
 - implemet password grant flow at /oauth/token, document it
+- revoke the refresh tokens when a user logs out
 
 Post Launch:
 
