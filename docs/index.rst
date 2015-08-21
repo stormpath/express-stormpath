@@ -15,7 +15,9 @@ you're a new Express-Stormpath user, start here!
 
    introduction
    setup
-   quickstart
+   configuration
+   user_data
+   registration
    product
    help
    contributors
