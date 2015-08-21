@@ -211,41 +211,6 @@ And in each template, you'll have access to ``extraData`` and the other variable
 you defined. Keep in mind that thosevalues might override the ones from
 Express-Stormpath. If you experience clashes, you might need to check your variable names first.
 
-
-
-Customize Redirect Logic
-------------------------
-
-As you might have already noticed by playing around with the registration and
-login pages -- when you first register or log into an account, you'll be
-immediately redirected to the URL ``/``.
-
-This is actually a configurable setting -- you can easily modify this default
-redirect URL by adding the following config setting::
-
-    app.use(stormpath.init(app, {
-      redirectUrl: '/dashboard',
-    }));
-
-This allows you to build nicer apps as you can do stuff like redirect newly
-registered users to a tutorial, dashboard, or something similar.
-
-What if someone visits the login route when they are logged in?  By default
-they will see the login screen again, but, but enabling the ``enableAutoLogin``
-feature, users who are already logged in will be automatically redirected to
-your ``redirectUrl`` -- skipping the login page all together::
-
-    app.use(stormpath.init(app, {
-      enableAutoLogin: true,
-    }));
-
-.. note::
-    If a user visits a page which has restricted access, they'll be redirected
-    to the login page.  Once the user logs in, they'll be immediately redirected
-    back to whatever page they were initially trying to access (*this behavior
-    overrides the ``redirectUrl`` setting*).
-
-
 Customize User Registration Fields
 ----------------------------------
 
@@ -308,67 +273,6 @@ optional*).  Just like the examples above, you can use the ``enable`` and
     }));
 
 And that's it!
-
-
-Customize User Login Fields
----------------------------
-
-If you visit your login page (``/login``), you will see (*by default*), two
-input boxes: one for ``email`` and one for ``password``.
-
-While this is fine for most purposes, sometimes you might want to let users log
-in with a ``username`` **or** ``email`` (especially if your site collects
-``username`` during registration).
-
-Doing this is simple: by enabling the ``enableUsername`` setting you'll not
-only make the ``username`` field available on the registration page,
-but also on the login page (*so users can log in by entering either their
-``username`` or ``email`` and ``password``*).
-
-To enable ``username`` support, just set the following config variable::
-
-    app.use(stormpath.init(app, {
-      enableUsername: true,
-    }));
-
-You should now see the following on your login page:
-
-.. image:: /_static/login-page.png
-
-.. note::
-    In the example above we didn't set the ``requireUsername`` field
-    to ``true`` -- if we did, this would ensure that when a new user registers
-    for the site, they **must** pick a ``username``.
-
-    The ``requireUsername`` field has no effect on the login page.
-
-
-Customize User Registration, Login, and Logout Routes
------------------------------------------------------
-
-By default, Express-Stormpath automatically enables three separate views and
-routes:
-
-- ``/register`` - the registration view
-- ``/login`` - the login view
-- ``/logout`` - the logout view
-
-Customizing the built-in URL routes is quite simple.  There are several config
-variables you can change to control these URL mappings.  To change them, just
-modify your app's config.
-
-- ``registrationUrl`` -- default: ``/register``
-- ``loginUrl`` -- default: ``/login``
-- ``logoutUrl`` -- default: ``/logout``
-
-If you were to modify your config such that::
-
-    app.use(stormpath.init(app, {
-      registrationUrl: '/welcome',
-    }));
-
-Then visit ``/welcome``, you'd see your registration page there, instead!
-
 
 Custom Views & Routes
 ---------------------

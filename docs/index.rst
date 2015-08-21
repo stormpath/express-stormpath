@@ -21,6 +21,7 @@ you're a new Express-Stormpath user, start here!
    authorization
    sessions
    registration
+   login
    product
    help
    contributors

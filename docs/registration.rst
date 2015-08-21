@@ -14,8 +14,30 @@ available at this URL:
 
 http://localhost:3000/register
 
+Configuration Options
+---------------------
 
-Default Fields
+This feature supports several options.  This example shows what is possible,
+we will cover them in detail below:
+
+ .. code-block:: javascript
+
+    {
+      web: {
+        register: {
+          enable: true,   // Explicit enable, if not using { web: true }
+          uri: '/signup',  // Use a different URL
+          nextUri: '/',    // Where to send the user to, if auto login is enabled
+          fields: {
+            /* see next section for documentation */
+          },
+          fieldOrder: [ /* see next section */ ]
+        }
+      }
+    }
+
+
+Customizing The Fields
 --------------------------
 
 The registration form will render these fields by default, and the will be
@@ -30,17 +52,14 @@ While email and password will always be required (you'll get an API error if
 you omit them), you may not need to require first and last name.  These
 can be configured, and we'll cover that in the next section
 
-Customizing The Fields
---------------------------
-
 You can modify the fields that we render by default.  For example, if you want
 to provide the last name field but not make it required, change the required
 property in your configuration::
 
-    "register": {
-      "fields": {
-        "surname": {
-          "required": false
+    register: {
+      fields: {
+        surname: {
+          required: false
         }
       }
     }
@@ -48,9 +67,10 @@ property in your configuration::
 If you want to remove all the extra fields, and only render the email and password
 fields, you can do so by modifying the field order array::
 
-    "register": {
-      "fieldOrder": [ "email", "password", "passwordConfirm" ],
+    register: {
+      fieldOrder: [ "email", "password", "passwordConfirm" ],
     }
+
 
 Password Strength Rules
 --------------------------
