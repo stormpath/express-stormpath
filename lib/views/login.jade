@@ -47,7 +47,7 @@ block body
                     receive an email shortly.
           br
         .box.row
-          if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+          if config.socialProviders
             - var cls = 'small col-sm-8'
           else
             - var cls = 'large col-sm-12'
@@ -74,29 +74,29 @@ block body
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
-                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                if config.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-4'
 
-                if app.get('stormpathEnableUsername')
+                if config.web.register.fields.username.enabled
                   label(class='#{cls}') Username or Email
                 else
                   label(class='#{cls}') Email
 
-                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                if config.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-8'
 
                 div(class='#{cls}')
                   - var value = form.data ? form.data.login : '';
-                  if app.get('stormpathEnableUsername')
+                  if config.web.register.fields.username.enabled
                     input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
                   else
                     input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
 
-              if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+              if config.socialProviders
                 - var cls = 'col-sm-12'
               else
                 - var cls = 'col-sm-4'
@@ -104,7 +104,7 @@ block body
               .form-group.group-password
                 label(class='#{cls}') Password
 
-                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                if config.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-8'
@@ -115,16 +115,18 @@ block body
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
 
-          if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+          if config.socialProviders
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              if app.get('stormpathEnableFacebook')
-                include facebook_login_form.jade
-              if app.get('stormpathEnableGoogle')
-                include google_login_form.jade
+              each provider in config.socialProviders
+                each value, key in provider
+                  if key === 'providerId' && value === 'facebook'
+                    include facebook_login_form.jade
+                  if key === 'providerId' && value === 'google'
+                    include google_login_form.jade
 
-        if app.get('stormpathEnableAccountVerification')
-          a.forgot(style="float:left", href="#{app.get('stormpathResendAccountVerificationEmailUrl')}") Resend Verification Email?
+        if config.web.verifyEmail.enabled
+          a.forgot(style="float:left", href="#{config.web.verifyEmail.uri}") Resend Verification Email?
         if config.web.forgotPassword.enabled
           a.forgot(style="float:right", href="#{config.web.forgotPassword.uri}") Forgot Password?
