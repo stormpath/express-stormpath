@@ -3,6 +3,8 @@ to the "config parser" branch of the `stormpath` module
 
 For immediate release:
 
+- registration form needs fixes:
+  * `required` should control input requirement, not field visibilty
 - fix login page with social login stuff
 - convenience methods
 - write tests for apiauthentication stuff in express
@@ -14,6 +16,7 @@ For immediate release:
 - test what happens if an app has no account stores? error
 - ensure all old req.app.get(...) stuff is replaced
 - ensure social login works everywhere
+- implemet password grant flow at /oauth/token, document it
 
 Post Launch:
 
