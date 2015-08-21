@@ -119,12 +119,10 @@ block body
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              each provider in config.socialProviders
-                each value, key in provider
-                  if key === 'providerId' && value === 'facebook'
-                    include facebook_login_form.jade
-                  if key === 'providerId' && value === 'google'
-                    include google_login_form.jade
+              if config.socialProviders.facebook
+                include facebook_login_form.jade
+              if config.socialProviders.google
+                include google_login_form.jade
 
         if config.web.verifyEmail.enabled
           a.forgot(style="float:left", href="#{config.web.verifyEmail.uri}") Resend Verification Email?
