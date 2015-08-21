@@ -23,6 +23,7 @@ you're a new Express-Stormpath user, start here!
    registration
    login
    logout
+   password_reset
    product
    help
    contributors
