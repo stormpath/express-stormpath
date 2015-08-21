@@ -17,6 +17,7 @@ you're a new Express-Stormpath user, start here!
    setup
    configuration
    user_data
+   authentication
    registration
    product
    help

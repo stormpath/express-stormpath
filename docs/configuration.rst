@@ -81,7 +81,10 @@ Startup
 --------------
 
 If you followed the step above, you will now have fully functional
-registration, login, and logout functionality active on your site!
+registration, login, and logout functionality active on your site!  Your site
+should be live on this URL:
+
+http://localhost:3000
 
 Don't believe me?  Test it out!  Start up your Express web server now, and I'll
 walk you through the basics:

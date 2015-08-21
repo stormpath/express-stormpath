@@ -14,6 +14,7 @@ For immediate release:
 - test what happens if an app has no account stores? error
 - ensure all old req.app.get(...) stuff is replaced
 - ensure social login works everywhere
+- implemet password grant flow at /oauth/token, document it
 
 Post Launch:
 
