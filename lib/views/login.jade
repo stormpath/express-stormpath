@@ -126,8 +126,7 @@ block body
                   if key === 'providerId' && value === 'google'
                     include google_login_form.jade
 
-        // TODO: figure out what to do with this.
-        //if app.get('stormpathEnableAccountVerification')
-        //  a.forgot(style="float:left", href="#{app.get('stormpathResendAccountVerificationEmailUrl')}") Resend Verification Email?
+        if config.web.verifyEmail.enabled
+          a.forgot(style="float:left", href="#{config.web.verifyEmail.uri}") Resend Verification Email?
         if config.web.forgotPassword.enabled
           a.forgot(style="float:right", href="#{config.web.forgotPassword.uri}") Forgot Password?
