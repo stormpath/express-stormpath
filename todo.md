@@ -18,6 +18,7 @@ For immediate release:
 - ensure social login works everywhere
 - implemet password grant flow at /oauth/token, document it
 - revoke the refresh tokens when a user logs out
+- test the post login handler
 
 Post Launch:
 
