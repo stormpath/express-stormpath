@@ -18,6 +18,7 @@ you're a new Express-Stormpath user, start here!
    configuration
    user_data
    authentication
+   authorization
    registration
    product
    help
