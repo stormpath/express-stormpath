@@ -23,6 +23,11 @@ should export your Stormpath information by running this in the shell:
     export STORMPATH_CLIENT_APIKEY_SECRET=YOUR-SECRET-HERE
     export STORMPATH_CLIENT_APPLICATION_HREF=YOUR-APP-HREF
 
+.. note::
+    If you're on Windows, that will look like::
+
+        set STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
+
 Initialize Express-Stormpath
 ----------------------------
 
@@ -59,22 +64,54 @@ Lastly, as of version **0.5.9** of this library -- if you're using Heroku you
 don't need to specify your credentials or application at all -- these values
 will be automatically populated for you.
 
-Options
---------
+Option Profiles
+----------------
 
-Web server or API server? Both?  These options can be used:
+Web server or API server? Both?  You can opt into one or both, and we'll
+automatically  attach the required middleware to your application.  The options
+are:
 
  .. code-block:: javascript
 
     {
         "web": true,      // serves HTML login pages
-        "api": true       // serves JSON API for browser apps and mobile apps
+        "api": true       // enabled OAuth client credentials and token authentication
     }
 
 Full documentation of the options will be coming soon.  In the meantime, please
 refer to this JSON config which shows you the default options:
 
 https://github.com/stormpath/stormpath-sdk-spec/blob/master/specifications/config.json
+
+Stormpath Client Options
+------------------------
+
+When you initialize this library, it creates an instance of a Stormpath Client.
+This comes from the `Stormpath Node SDK`_.  The client options allow you to
+control options such as which caching engine to use (in-memory, by default).  For
+a full reference of options, please see this link:
+
+https://docs.stormpath.com/nodejs/api/client
+
+If you would like to work directly with the client in your Express application,
+you can fetch it from the app object like this::
+
+    app.get('/secret', function(req, res) {
+      var client = req.app.get('stormpathClient');
+
+      /*
+        For example purposes - don't actually expose your tenant info to
+        your users :)
+       */
+
+      client.getCurrentTenant(function(err,tenant){
+        if(err){
+          res.status(400).json(err);
+        }else{
+          res.json(tenant);
+        }
+      });
+    });
 
 
 Startup
@@ -113,3 +150,4 @@ Wasn't that easy?!
 
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard
+.. _Stormpath Node SDK: http://github.com/stormpath/stormpath-sdk-node
