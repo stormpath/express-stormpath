@@ -14,11 +14,11 @@ script(type='text/javascript').
       clientId +
       '&scope=email' + scopes +
       '&include_granted_scopes=true&redirect_uri=' +
-      '#{url}#{app.get("stormpathGoogleLoginUrl")}';
+      '#{url}#{stormpathConfig.socialProviders.google.callbackUri}';
 
     if (hd) {
       finalUrl = finalUrl + '&hd=' + hd;
     }
 
-    window.location.replace(finalUrl);
+    window.location = finalUrl;
   }

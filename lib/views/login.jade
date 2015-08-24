@@ -119,9 +119,9 @@ block body
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              if stormpathConfig.socialProviders.facebook
+              if stormpathConfig.socialProviders.facebook.enabled
                 include facebook_login_form.jade
-              if stormpathConfig.socialProviders.google
+              if stormpathConfig.socialProviders.google.enabled
                 include google_login_form.jade
 
         if stormpathConfig.web.verifyEmail.enabled
