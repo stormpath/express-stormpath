@@ -11,8 +11,6 @@ For immediate release:
 - write tests for enabling password reset
 - write tests for enabling registration
 - write tests for angular serving spa route stuffs
-- read the docs of the current verion, and ensure that we haven't
-  removed any features accidentally
 - test what happens if an app has no account stores? error
 - ensure all old req.app.get(...) stuff is replaced
 - ensure social login works everywhere
