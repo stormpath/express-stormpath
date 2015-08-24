@@ -50,15 +50,16 @@ View Variables
 Our library will probivde these view locals to all templates that are
 rendered by this library:
 
-==========  ==========
-Variable    Description
-==========  ==========
-user        The account object of the logged in user (undefined otherwise)
-config      The Stormpath config that you passed to the ``init`` middleware,
-            it also holds information about which directory features you have
-            enabled (such as email verification and password reset)
++-----------------+-------------------------------------------------------------------+
+| **Variable**    | **Description**                                                   |
++-----------------+-------------------------------------------------------------------+
+| user            | The account object of the logged in user (undefined otherwise)    |
++-----------------+-------------------------------------------------------------------+
+| stormpathConfig | The Stormpath config that you passed to the ``init`` middleware,  |
+|                 | it also holds information about which directory features you have |
+|                 | enabled (such as email verification and password reset)           |
++-----------------+-------------------------------------------------------------------+
 
-==========  ==========
 
 If you are letting our library renderer your view (default or custom) you may
 want to pass some extra locals to the renderer.  You can do that with the
@@ -84,7 +85,7 @@ If you are rendering templates outside of our library, you can can get informati
 about the Stormpath configuration from the Express application, like so:
 
 +-------------------------------------+------------------------------------------------------------------+
-| Accessor                            | Description                                                      |
+| **Accessor**                        | **Description**                                                  |
 +-------------------------------------+------------------------------------------------------------------+
 | req.app.get('stormpathConfig')      | The Stormpath config that you passed to the ``init`` middleware, |
 |                                     | it also holds information about which directory features you have|

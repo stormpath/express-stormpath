@@ -3,8 +3,8 @@ block vars
   - var title = 'Create an Account'
   - var description = 'Create a new account.'
   - var bodytag = 'register'
-  - var registrationFields = config.web.register.fields
-  - var fieldOrder = config.web.register.fieldOrder
+  - var registrationFields = stormpathConfig.web.register.fields
+  - var fieldOrder = stormpathConfig.web.register.fieldOrder
   - var orderedFields = []
 
 block body
@@ -40,4 +40,4 @@ block body
 
               button.btn.btn-register.btn-sp-green(type='submit') Create Account
 
-        a.to-login(href=config.web.login.uri) Back to Log In
+        a.to-login(href=stormpathConfig.web.login.uri) Back to Log In

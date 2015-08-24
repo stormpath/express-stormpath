@@ -21,7 +21,7 @@ block body
                     Before you can log into your account, you need to activate your
                     account by clicking the link we sent to your inbox.
                   p.
-                    Didn't get the email? <a href="#{config.web.verifyEmail.uri}">Click Here</a>.
+                    Didn't get the email? <a href="#{stormpathConfig.web.verifyEmail.uri}">Click Here</a>.
                   br
                 if status === 'verified'
                   span.
@@ -47,16 +47,16 @@ block body
                     receive an email shortly.
           br
         .box.row
-          if config.socialProviders
+          if stormpathConfig.socialProviders
             - var cls = 'small col-sm-8'
           else
             - var cls = 'large col-sm-12'
 
           div(class='email-password-area col-xs-12 #{cls}')
             .header
-              if config.web.register.enabled
+              if stormpathConfig.web.register.enabled
                 span.
-                  Log In or <a href="#{config.web.register.uri}">Create Account</a>
+                  Log In or <a href="#{stormpathConfig.web.register.uri}">Create Account</a>
               else
                 span.
                   Log In
@@ -74,29 +74,29 @@ block body
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
-                if config.socialProviders
+                if stormpathConfig.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-4'
 
-                if config.web.register.fields.username.enabled
+                if stormpathConfig.web.register.fields.username.enabled
                   label(class='#{cls}') Username or Email
                 else
                   label(class='#{cls}') Email
 
-                if config.socialProviders
+                if stormpathConfig.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-8'
 
                 div(class='#{cls}')
                   - var value = form.data ? form.data.login : '';
-                  if config.web.register.fields.username.enabled
+                  if stormpathConfig.web.register.fields.username.enabled
                     input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
                   else
                     input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
 
-              if config.socialProviders
+              if stormpathConfig.socialProviders
                 - var cls = 'col-sm-12'
               else
                 - var cls = 'col-sm-4'
@@ -104,7 +104,7 @@ block body
               .form-group.group-password
                 label(class='#{cls}') Password
 
-                if config.socialProviders
+                if stormpathConfig.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-8'
@@ -115,16 +115,17 @@ block body
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
 
-          if config.socialProviders
+          if stormpathConfig.socialProviders
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              if config.socialProviders.facebook
+              if stormpathConfig.socialProviders.facebook
                 include facebook_login_form.jade
-              if config.socialProviders.google
+              if stormpathConfig.socialProviders.google
+                p google?
                 include google_login_form.jade
 
-        if config.web.verifyEmail.enabled
-          a.forgot(style="float:left", href="#{config.web.verifyEmail.uri}") Resend Verification Email?
-        if config.web.forgotPassword.enabled
-          a.forgot(style="float:right", href="#{config.web.forgotPassword.uri}") Forgot Password?
+        if stormpathConfig.web.verifyEmail.enabled
+          a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?
+        if stormpathConfig.web.forgotPassword.enabled
+          a.forgot(style="float:right", href="#{stormpathConfig.web.forgotPassword.uri}") Forgot Password?
