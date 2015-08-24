@@ -19,6 +19,7 @@ For immediate release:
 - implemet password grant flow at /oauth/token, document it
 - revoke the refresh tokens when a user logs out
 - test the post login handler
+- option to specify a view for 401 and 403 state
 
 Post Launch:
 
