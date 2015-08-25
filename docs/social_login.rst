@@ -1,19 +1,23 @@
-Product Guide
+Social Login
 =============
 
-This product guide covers more advanced Express-Stormpath usage.  You can
-selectively jump around from topic-to-topic to discover all the neat features
-that Express-Stormpath provides!
+Do you want users to authenticate with a social provider, such as Facebook?
+Stormpath provides integration with the following services:
 
+* Facebook
+* Github
+* Google
+* Linkedin
 
-Use Facebook Login
+In this guide we will cover Facebook and Google.  Github and Linkedin have very
+similar flows, and this guide will show you by example.
+
+Facebook Login
 ------------------
 
-Now that we've covered the basics: let's add Facebook Login support to your app!
-Stormpath makes it very easy to support social login with Facebook.
-
-In the next few minutes I'll walk you through *everything* you need to know to
-support Facebook login with your app.
+To use Facebook Login you must create a Facebook Application, this is done
+through their Developer site.  In the next few minutes I'll walk you through
+*everything* you need to know to support Facebook login with your app.
 
 
 Create a Facebook App
@@ -57,13 +61,14 @@ Your settings should now look something like this:
 Create a Facebook Directory
 ...........................
 
-Next, we need to input the Facebook app credentials into Stormpath.  This allows
-Stormpath to interact with the Facebook API on your behalf, which automates all
-OAuth flows.
+Next, we need to input the Facebook app credentials into Stormpath Directory.
+This allows Stormpath to interact with the Facebook API on your behalf, which
+automates all OAuth flows.
 
-To do this, you need to visit the `Directory dashboard`_ and create a new
-directory.  When you click the "Create Directory" button, click the "Facebook"
-button, then on the following screen enter your Facebook app information:
+To do this, you need to visit the `Stormpath Admin Console`_ and create a new
+directory.  When you click the "Create Directory" button you will choose
+"Facebook" as the provider, and enter the following information about your
+Facebook application:
 
 - For the "Name" field, you can insert whatever name you want.
 - For the "Facebook Client ID" field, insert your Facebook App ID which you got
@@ -71,50 +76,17 @@ button, then on the following screen enter your Facebook app information:
 - For the "Facebook Client Secret" field, insert your Facebook Client Secret
   which you got in the previous steps.
 
-Lastly, be sure to click the "Save" button at the bottom of the page.
+Make sure to click "Create" to finish creating your directory.
 
 Next, you need to hook your new Facebook Directory up to your Stormpath
-Application.  To do this, visit the `Application dashboard`_ and select your
-Application from the list.
+Application.  To do this, visit the `Stormpath Admin Console`_, navigate to
+Applications, and select your application from the list.
 
-On your Application page, click the "Account Stores" tab, then click the "Add
+On your application page, click the "Account Stores" tab, then click the "Add
 Account Store" button.  From the drop down list, select your newly created
 Facebook Directory, then save your changes.
 
 That's it!
-
-
-Configure Your Express App
-..........................
-
-Now that we've created a new Facebook App and configured our URLs -- we need to
-enter our Facebook App secrets into our Express app so that express-stormpath
-knows about them.
-
-You can find your Facebook App ID and Secret on your App dashboard page, at the
-top of the screen.
-
-In your app's config, you'll want to add the following settings (*don't forget
-to substitute in the proper credentials!*)::
-
-    app.use(stormpath.init(app, {
-      enableFacebook: true,
-      social: {
-        facebook: {
-          appId: 'xxx',
-          appSecret: 'xxx',
-        },
-      },
-    }));
-
-These two settings: ``enableFacebook`` and ``social`` work together to tell
-express-stormpath to enable social login support for Facebook, as well as
-provide the proper credentials so things work as expected.
-
-.. note::
-    We recommend storing your credentials in environment variables.  Please
-    don't hard code secret credentials into your source code!
-
 
 Test it Out
 ...........
@@ -140,13 +112,12 @@ website at the URL specified by ``redirectUrl`` in your app's config.
 Simple, right?!
 
 
-Use Google Login
+Google Login
 ----------------
 
-Google Login is incredibly popular -- let's enable it!
-
-In the next few minutes I'll walk you through *everything* you need to know to
-support Google login with your app.
+Integrating Google Login is very similar to Facebook.  You must create an application
+in the Google Developer Console, then create a Directory in Stormpath which holds
+settings for the Google application that you created.
 
 
 Create a Google Project
@@ -155,7 +126,7 @@ Create a Google Project
 The first thing you need to do is log into the `Google Developer Console`_ and
 create a new Google Project.
 
-You can do this by visiting the `Developer Console`_ and clicking the "Create
+You can do this by visiting the `Google Developer Console`_ and clicking the "Create
 Project" button.  You should see something like the following:
 
 .. image:: /_static/google-new-project.png
@@ -171,8 +142,8 @@ Now that you've got a Google Project -- let's enable Google Login.  The way
 Google Projects work is that you have to selectively enable what functionality
 each Project needs.
 
-From your `Console Dashboard`_ click on your new Project, then in the side panel
-click on the "APIs & auth" menu option.
+From your `Google Developer Console`_ click on your new Project, then in the
+side panel click on the "APIs & auth" menu option.
 
 Now, scroll through the API list until you see "Google+ API", then click the
 "OFF" button next to it to enable it.  You should now see the "Google+ API" as
@@ -187,8 +158,8 @@ Create OAuth Credentials
 The next thing we need to do is create a new OAuth client ID.  This is what
 we'll use to handle user login with Google.
 
-From your `Console Dashboard`_ click the "APIs & auth" menu, then click on the
-"Credentials" sub-menu.
+From your project, click the "APIs & auth" menu, then click on the "Credentials"
+sub-menu.
 
 You should see a big red button labeled "Create New Client ID" near the top of
 the page -- click that.
@@ -220,9 +191,10 @@ Next, we need to input the Google app credentials into Stormpath.  This allows
 Stormpath to interact with the Google API on your behalf, which automates all
 OAuth flows.
 
-To do this, you need to visit the `Directory dashboard`_ and create a new
-directory.  When you click the "Create Directory" button, click the "Google"
-button, then on the following screen enter your Google app information:
+To do this, you need to visit the `Stormpath Admin Console`_ and create a new
+directory from the Directories section.  When you click "Create Directory",
+choose "Google" as the provider, and enter the following information about your
+Google application:
 
 - For the "Name" field, you can insert whatever name you want.
 - For the "Google Client ID" field, insert your Google Client ID which you got
@@ -238,43 +210,14 @@ button, then on the following screen enter your Google app information:
 Lastly, be sure to click the "Save" button at the bottom of the page.
 
 Next, you need to hook your new Google Directory up to your Stormpath
-Application.  To do this, visit the `Application dashboard`_ and select your
-Application from the list.
+Application.  To do this, visit the Applications section and select your
+application from the list.
 
-On your Application page, click the "Account Stores" tab, then click the "Add
+On your application page, click the "Account Stores" tab, then click the "Add
 Account Store" button.  From the drop down list, select your newly created
 Google Directory, then save your changes.
 
 That's it!
-
-
-Configure Your Express App
-..........................
-
-Now that we've created a new Google Project and generated OAuth secrets -- we
-can now enter these secrets into our Express app so that express-stormpath
-knows about them.
-
-In your app's config, you'll want to add the following settings (*don't forget
-to substitute in the proper credentials!*)::
-
-    app.use(stormpath.init(app, {
-      enableGoogle: true,
-      social: {
-        google: {
-          clientId: 'xxx',
-          clientSecret: 'xxx',
-        },
-      },
-    }));
-
-These two settings: ``enableGoogle`` and ``social`` work together to tell
-express-stormpath to enable social login support for Google, as well as provide
-the proper credentials so things work as expected.
-
-.. note::
-    We recommend storing your credentials in environment variables.  Please
-    don't hard code secret credentials into your source code!
 
 
 Test it Out
@@ -303,20 +246,6 @@ Simple, right?!
 
 
 
-.. _ID Site dashboard: https://api.stormpath.com/v#!idSite
-.. _Application dashboard: https://api.stormpath.com/v#!applications
-.. _Directory dashboard: https://api.stormpath.com/v#!directories
-.. _createGroup: http://docs.stormpath.com/nodejs/api/application#createGroup
-.. _Account: http://docs.stormpath.com/rest/product-guide/#accounts
-.. _bootstrap: http://getbootstrap.com/
-.. _Jade: http://jade-lang.com/
-.. _memcached: http://memcached.org/
-.. _redis: http://redis.io/
-.. _Directory Dashboard: https://api.stormpath.com/v#!directories
+.. _Stormpath Admin Console: https://api.stormpath.com
 .. _Facebook Developer Site: https://developers.facebook.com/
 .. _Google Developer Console: https://console.developers.google.com/project
-.. _Developer Console: https://console.developers.google.com/project
-.. _Console Dashboard: https://console.developers.google.com/project
-.. _curl: http://curl.haxx.se/
-.. _client-sessions: https://github.com/mozilla/node-client-sessions
-.. _router: http://expressjs.com/api#router

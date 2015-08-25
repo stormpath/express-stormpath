@@ -22,10 +22,10 @@ you're a new Express-Stormpath user, start here!
    sessions
    registration
    login
+   social_login
    logout
    password_reset
    templates
-   product
    help
    contributors
 
