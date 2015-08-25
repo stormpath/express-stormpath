@@ -28,7 +28,7 @@ block body
             form.registration-form.form-horizontal.sp-form(method='post', role='form')
               each fieldName in fieldOrder
                 each fieldObject, key in registrationFields
-                  if fieldObject.required === true && fieldObject.name === fieldName
+                  if fieldObject.name === fieldName
                     - orderedFields.push(fieldObject)
 
               each field in orderedFields
