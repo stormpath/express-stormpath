@@ -1,9 +1,9 @@
 button.btn.btn-social.btn-google(onclick='googleLogin()') Google
 script(type='text/javascript').
   function googleLogin() {
-    var clientId = '#{app.get("stormpathSocial").google.clientId}';
-    var googleScopes = '#{app.get("stormpathSocial").google.scopes}';
-    var hd = '#{app.get("stormpathSocial").google.hd}';
+    var clientId = '#{stormpathConfig.socialProviders.google.clientId}';
+    var googleScopes = '#{stormpathConfig.socialProviders.google.scopes}';
+    var hd = '#{stormpathConfig.socialProviders.google.hd}';
     var scopes = '';
 
     if (googleScopes.length) {
@@ -14,11 +14,11 @@ script(type='text/javascript').
       clientId +
       '&scope=email' + scopes +
       '&include_granted_scopes=true&redirect_uri=' +
-      '#{url}#{app.get("stormpathGoogleLoginUrl")}';
+      '#{url}#{stormpathConfig.socialProviders.google.callbackUri}';
 
     if (hd) {
       finalUrl = finalUrl + '&hd=' + hd;
     }
 
-    window.location.replace(finalUrl);
+    window.location = finalUrl;
   }

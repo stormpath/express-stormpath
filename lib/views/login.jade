@@ -6,20 +6,57 @@ block vars
   - var bodytag = 'login'
 
 block body
+
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if status
+          .box.row
+            .email-password-area.col-xs-12.large.col-sm-12
+              .header
+                if status === 'unverified'
+                  span.
+                    Your account verification email has been sent!
+                  p.
+                    Before you can log into your account, you need to activate your
+                    account by clicking the link we sent to your inbox.
+                  p.
+                    Didn't get the email? <a href="#{stormpathConfig.web.verifyEmail.uri}">Click Here</a>.
+                  br
+                if status === 'verified'
+                  span.
+                    Your Account Has Been Verified
+                  p.
+                    You may now login.
+                if status === 'created'
+                  span.
+                    Your Account Has Been Created
+                  p.
+                    You may now login.
+                if status === 'reset'
+                  span.
+                    Password Reset Successfuly
+                  p.
+                    You can now login with your new password.
+                  br
+                if status === 'forgot'
+                  span.
+                    Password Reset Requested
+                  p.
+                    If an account exists for the email provided, you will
+                    receive an email shortly.
+          br
         .box.row
-          if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+          if stormpathConfig.socialProviders
             - var cls = 'small col-sm-8'
           else
             - var cls = 'large col-sm-12'
 
           div(class='email-password-area col-xs-12 #{cls}')
             .header
-              if app.get('stormpathEnableRegistration')
+              if stormpathConfig.web.register.enabled
                 span.
-                  Log In or <a href="#{app.get('stormpathRegistrationUrl')}">Create Account</a>
+                  Log In or <a href="#{stormpathConfig.web.register.uri}">Create Account</a>
               else
                 span.
                   Log In
@@ -33,33 +70,33 @@ block body
                 each error in formErrors
                   p #{error.error}
 
-            form.login-form.form-horizontal(method='post', role='form')
+            form.login-form.form-horizontal(method='post', role='form',action=formActionUri)
               input(name='_csrf', type='hidden', value=csrfToken)
 
               .form-group.group-email
-                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                if stormpathConfig.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-4'
 
-                if app.get('stormpathEnableUsername')
+                if stormpathConfig.web.register.fields.username.enabled
                   label(class='#{cls}') Username or Email
                 else
                   label(class='#{cls}') Email
 
-                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                if stormpathConfig.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-8'
 
                 div(class='#{cls}')
                   - var value = form.data ? form.data.login : '';
-                  if app.get('stormpathEnableUsername')
+                  if stormpathConfig.web.register.fields.username.enabled
                     input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
                   else
                     input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
 
-              if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+              if stormpathConfig.socialProviders
                 - var cls = 'col-sm-12'
               else
                 - var cls = 'col-sm-4'
@@ -67,7 +104,7 @@ block body
               .form-group.group-password
                 label(class='#{cls}') Password
 
-                if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+                if stormpathConfig.socialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-8'
@@ -78,16 +115,16 @@ block body
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
 
-          if app.get('stormpathEnableFacebook') || app.get('stormpathEnableGoogle')
+          if stormpathConfig.socialProviders
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              if app.get('stormpathEnableFacebook')
+              if stormpathConfig.socialProviders.facebook.enabled
                 include facebook_login_form.jade
-              if app.get('stormpathEnableGoogle')
+              if stormpathConfig.socialProviders.google.enabled
                 include google_login_form.jade
 
-        if app.get('stormpathEnableAccountVerification')
-          a.forgot(style="float:left", href="#{app.get('stormpathResendAccountVerificationEmailUrl')}") Resend Verification Email?
-        if app.get('stormpathEnableForgotPassword')
-          a.forgot(style="float:right", href="#{app.get('stormpathForgotPasswordUrl')}") Forgot Password?
+        if stormpathConfig.web.verifyEmail.enabled
+          a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?
+        if stormpathConfig.web.forgotPassword.enabled
+          a.forgot(style="float:right", href="#{stormpathConfig.web.forgotPassword.uri}") Forgot Password?
