@@ -159,7 +159,7 @@ describe('id site',function() {
 
                 config = app.get('stormpathConfig');
                 server = app.listen(function(){
-                  host = (server.address().address === '::' ? 'http://127.0.0.1' : server.address().address) + ':' + server.address().port;
+                  host = (server.address().address === '::' ? 'http://localhost' : server.address().address) + ':' + server.address().port;
                   callbackUri = host + config.web.idSite.uri;
                   prepeareIdSiteModel(app.get('stormpathClient'),host,callbackUri,done);
                 });
