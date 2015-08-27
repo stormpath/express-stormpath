@@ -1,26 +1,31 @@
-Express-Stormpath
+Express Library Guide
 =================
 
-Express-Stormpath is an extension for `Express`_ that makes it *incredibly* simple
-to add users and user data to your application.  It aims to completely abstract
-away all user registration, login, authentication, and authorization problems,
-and make building secure websites painless.  And the best part?  **You don't
-even need a database!**
+Express-Stormpath is an extension for `Express`_ that makes it *incredibly*
+simple to add users and user data to your application.  It aims to completely
+abstract away all user registration, login, authentication, and authorization
+problems, and make building secure websites painless.  And the best part?  **You
+don't even need a database!**
 
-
-User's Guide
-------------
-
-This part of the documentation will show you how to get started with
-Express-Stormpath.  If you're a new Express-Stormpath user, start here!
+This documentation will show you how to get started with Express-Stormpath.  If
+you're a new Express-Stormpath user, start here!
 
 .. toctree::
    :maxdepth: 2
 
-   about
+   introduction
    setup
-   quickstart
-   product
+   configuration
+   user_data
+   authentication
+   authorization
+   sessions
+   registration
+   login
+   social_login
+   logout
+   password_reset
+   templates
    help
    contributors
 

@@ -44,7 +44,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Express-Stormpath'
+project = u'Express Library Guide'
 copyright = u'2014, Stormpath, Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
