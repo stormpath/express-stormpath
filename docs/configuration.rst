@@ -11,8 +11,9 @@ Now that we've got all the prerequisites out of the way, let's take a look at
 some code!  Integrating Express-Stormpath into an application can take as little
 as **1 minute**!
 
+
 Environment Variables
---------------------------
+---------------------
 Most Node.js applications exepct your confidential information to be
 exposed by the environment (not hard-coded in the application).  You
 should export your Stormpath information by running this in the shell:
@@ -27,6 +28,7 @@ should export your Stormpath information by running this in the shell:
     If you're on Windows, that will look like::
 
         set STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
+
 
 Initialize Express-Stormpath
 ----------------------------
@@ -54,7 +56,6 @@ The Stormpath middleware is what initializes Stormpath, grabs configuration
 information, and manages sessions / user state.  It is the base of all
 Express-Stormpath functionality.
 
-
 .. note::
     The Stormpath middleware **must** always be the last initialized middleware,
     but must come **before** any custom route code.  If not, you may experience
@@ -64,8 +65,9 @@ Lastly, as of version **0.5.9** of this library -- if you're using Heroku you
 don't need to specify your credentials or application at all -- these values
 will be automatically populated for you.
 
+
 Option Profiles
-----------------
+---------------
 
 Web server or API server? Both?  You can opt into one or both, and we'll
 automatically  attach the required middleware to your application.  The options
@@ -74,7 +76,7 @@ are:
  .. code-block:: javascript
 
     {
-        "web": true,      // serves HTML login pages
+        "website": true,  // serves HTML login pages
         "api": true       // enabled OAuth client credentials and token authentication
     }
 
@@ -82,6 +84,7 @@ Full documentation of the options will be coming soon.  In the meantime, please
 refer to this JSON config which shows you the default options:
 
 https://github.com/stormpath/stormpath-sdk-spec/blob/master/specifications/config.json
+
 
 Stormpath Client Options
 ------------------------
@@ -115,7 +118,7 @@ you can fetch it from the app object like this::
 
 
 Startup
---------------
+-------
 
 If you followed the step above, you will now have fully functional
 registration, login, and logout functionality active on your site!  Your site

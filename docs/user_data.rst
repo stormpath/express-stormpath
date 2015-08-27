@@ -1,10 +1,11 @@
 .. _user_data:
 
 User Data
-==================
+=========
+
 
 req.user
-----------
+--------
 
 If you are writing your own middleware functions, you will
 likely want to use the account object.  If a user is logged in,
@@ -38,10 +39,8 @@ As you can see above, you can directly modify ``user`` attributes, then
 persist any changes by running ``req.user.save()``.
 
 
-
-
 Custom Data
------------------------------
+-----------
 
 In addition to managing basic user fields, Stormpath also allows you to store
 up to 10MB of JSON information with each user account!
@@ -74,8 +73,6 @@ model::
 
 As you can see above -- storing custom information on a ``user`` account is
 extremely simple!
-
-
 
 
 Automatic Expansion
@@ -121,8 +118,9 @@ You can expand any of these *"linked resources"*:
 - ``providerData`` - A user's provider data (*for social login providers*).
 - ``tenant`` - A user's tenant data.
 
+
 Collections
-------
+-----------
 
 Some of the linked resources are collections -- and they can't be queried in a single request.
 

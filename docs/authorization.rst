@@ -1,7 +1,8 @@
 .. _authorization:
 
+
 Authorization
-==============
+=============
 
 Stormpath supports extremely complex authorization rules.  This section aims to
 provide a basic introduction to Express-Stormpath's authorization enforcement
@@ -55,4 +56,3 @@ groups, let's take a look at how you can enforce selective group membership::
 The view above lists three groups, and sets the ``all`` parameter to ``false``
 -- signifying that a user must be a member of **at least one** of the listed
 groups in order to gain access.
-

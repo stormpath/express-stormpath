@@ -1,7 +1,8 @@
 .. _registration:
 
+
 Registration
-=========================
+============
 
 The registration feature of this library allows you to use Stormpath to create
 new accounts in a Stormpath directory.  You can create traditional password-
@@ -14,13 +15,14 @@ available at this URL:
 
 http://localhost:3000/register
 
+
 Configuration Options
 ---------------------
 
 This feature supports several options.  This example shows what is possible,
 we will cover them in detail below:
 
- .. code-block:: javascript
+.. code-block:: javascript
 
     {
       web: {
@@ -38,7 +40,7 @@ we will cover them in detail below:
 
 
 Customizing The Fields
---------------------------
+----------------------
 
 The registration form will render these fields by default, and the will be
 required by the user:
@@ -73,7 +75,7 @@ fields, you can do so by modifying the field order array::
 
 
 Password Strength Rules
---------------------------
+-----------------------
 
 Stormpath supports complex password strength rules, such as number of letters
 or special characters required.  These settings are controlled on a directory
@@ -83,8 +85,9 @@ to your application, and modify it's password policy.
 
 For more information see `Account Password Strength Policy`_.
 
+
 Email Verification
---------------------------
+------------------
 
 We **highly** recommend that you use email verification, as it adds a layer
 of security to your site (it makes it harder for bots to create spam accounts).
@@ -111,8 +114,9 @@ link is valid and hasn't already been used.  If the link is valid we will redire
 them to the login page.  If there is a problem with the link we provide a form
 that allows them to ask for a new link.
 
+
 Auto Login
-------------
+----------
 
 If you are *not* using email verificaion (not recommended) you may log users in
 automatically when they register.  This can be achieved with this config::
@@ -126,8 +130,9 @@ automatically when they register.  This can be achieved with this config::
 
 By default the nextUri is to the `/` page, but you can modify this.
 
+
 Post Registration Handler
---------------------------
+-------------------------
 
 Want to run some custom code after a user registers for your site?  If so, this
 is the event you want to handle!
@@ -188,6 +193,7 @@ populate on the user::
 If the user is created successfully you will get a 200 response and the body
 will the the account object that was created.  If there was an error you
 will get an object that looks like ``{ error: 'error message here'}``
+
 
 .. _Stormpath Admin Console: https://api.stormpath.com
 .. _Account Password Strength Policy: https://docs.stormpath.com/rest/product-guide/#account-password-strength-policy

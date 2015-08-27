@@ -1,11 +1,13 @@
 .. _password_reset:
 
+
 Password Reset
-======================
+==============
 
 Stormpath provides a self-service password reset flow for your users, allowing
 them to request a link that lets them reset their password.  This is a very
 secure feature and we highly suggest it for your application.
+
 
 Enable the Workflow
 -------------------
@@ -22,8 +24,9 @@ You should also set the **Link Base Url** to be the following URL:
 
     http://localhost:3000/change
 
+
 Using the Workflow
--------------------
+------------------
 
 After enabling the workflow, restart your Express application.  You can now
 complete a password reset workflow by doing the following steps:
@@ -34,8 +37,9 @@ complete a password reset workflow by doing the following steps:
 * You'll see a form that allows you to change your password
 * After changing your password, you are taken to the login form
 
+
 Auto Login
--------------------
+----------
 
 Our library implements the most secure workflow by default: the uesr must
 request a password reset link, then login again after changing their password.
@@ -53,7 +57,7 @@ with this option::
 
 
 Customizing the UX
--------------------
+------------------
 
 You may also change the URLs of the pages in this workflow, as well as the
 redirect URLs that we use during the workflow.  This example configuration shows
@@ -80,4 +84,3 @@ the default options that you can modify to suit your needs::
 
 
 .. _Stormpath Admin Console: https://api.stormpath.com
-

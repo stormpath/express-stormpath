@@ -1,11 +1,11 @@
 .. _sessions:
 
 Sessions
-===========
+========
 
 
 Browser-based Sessions
-------------------
+----------------------
 
 Express-Stormpath ships with a default, pre-configured session middleware by
 default.  It is backed by an OAuth Acess tokens, see :ref:`authentication` for more
@@ -52,7 +52,7 @@ You can do it this way::
 
 
 Configurable Expiration
---------------------------------------
+-----------------------
 
 For browser-based clients, you can control the idle time and expiration time
 of the session by modifying the OAuth Policy for the Stormpath Application
@@ -69,6 +69,3 @@ To change these settings, you should invoke a node client directly::
             policy.save();
         });
     });
-
-
-

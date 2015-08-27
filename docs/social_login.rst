@@ -1,5 +1,5 @@
 Social Login
-=============
+============
 
 Do you want users to authenticate with a social provider, such as Facebook?
 Stormpath provides integration with the following services:
@@ -12,8 +12,9 @@ Stormpath provides integration with the following services:
 In this guide we will cover Facebook and Google.  Github and Linkedin have very
 similar flows, and this guide will show you by example.
 
+
 Facebook Login
-------------------
+--------------
 
 To use Facebook Login you must create a Facebook Application, this is done
 through their Developer site.  In the next few minutes I'll walk you through
@@ -88,6 +89,7 @@ Facebook Directory, then save your changes.
 
 That's it!
 
+
 Test it Out
 ...........
 
@@ -113,7 +115,7 @@ Simple, right?!
 
 
 Google Login
-----------------
+------------
 
 Integrating Google Login is very similar to Facebook.  You must create an application
 in the Google Developer Console, then create a Directory in Stormpath which holds
@@ -243,7 +245,6 @@ then immediately redirected back to your website at the URL specified by
 ``redirectUrl`` in your app's settings.
 
 Simple, right?!
-
 
 
 .. _Stormpath Admin Console: https://api.stormpath.com

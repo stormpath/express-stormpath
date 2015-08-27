@@ -1,10 +1,12 @@
 .. _templates:
 
+
 Templates
-=============
+=========
+
 
 Default Views
---------------
+-------------
 
 By default this library will use it's own templates for rendering its views.
 The views that this library serves by default (if the features are enabled) are:
@@ -18,8 +20,9 @@ The views that this library serves by default (if the features are enabled) are:
 If you want to customize these pages, there are two strategies.  You can copy
 our default templates and modify them, or you can supply your own
 
+
 Custom Views
---------------
+------------
 
 If you want to supply your own view for a given feature, you need to let us
 know where it is.  You do this by telling us the specific path to the file.
@@ -43,6 +46,7 @@ in the source code: https://github.com/stormpath/stormpath-express/tree/master/l
   are using custom templates that are not written in Jade, you must enable a
   view renderer in your Express application.  Please see
   `Using template engines with Express`_.
+
 
 View Variables
 --------------
@@ -79,7 +83,7 @@ Or, if you prefer environment variables::
 
 
 Request Variables
-----------------
+-----------------
 
 If you are rendering templates outside of our library, you can can get information
 about the Stormpath configuration from the Express application, like so:
@@ -94,8 +98,9 @@ about the Stormpath configuration from the Express application, like so:
 | req.app.get('stormpathApplication') | The Stormpath Application that is being used                     |
 +-------------------------------------+------------------------------------------------------------------+
 
+
 Response Variables
---------------
+------------------
 
 Our library will probivde these objects on the response object
 

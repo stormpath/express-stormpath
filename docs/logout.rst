@@ -1,5 +1,6 @@
 .. _logout:
 
+
 Logout
 ======
 
@@ -9,6 +10,7 @@ logout and destroy their session cookies.
 If you've enabled ``{ web: true }`` this library will automatically provide a
 GET route at ``/logout``.  Simply make a request of this URL and the session
 cookies will be destroyed.
+
 
 Configuration Options
 ---------------------
@@ -25,4 +27,3 @@ following configuration::
         }
       }
     }
-

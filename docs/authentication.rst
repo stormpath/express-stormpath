@@ -3,8 +3,9 @@
 Authentication
 ==============
 
+
 Browser Based Authentication
-------------------------------
+----------------------------
 
 If you are building a webapp that serves traditional HTML pages, this library
 will handle the cookie sessions for you.  Behind the secnes we are issuing an
@@ -27,8 +28,9 @@ page if they don't have  a session::
       res.send('Your email address is: ' + req.user.email);
     });
 
+
 API Authentication: Basic Auth
---------------------------------
+------------------------------
 
 For any account in your application, you can provision API Keys for those accounts.
 Here is an example::
@@ -120,6 +122,7 @@ token as the bearer header in the request::
     $ curl -v -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEUExSSTVUTEVNMjFTQzNER0xHUjBJOFpYIiwiaXNzIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hcHBsaWNhdGlvbnMvNWpvQVVKdFZONHNkT3dUVVJEc0VDNSIsImlhdCI6MTQwNjY1OTkxMCwiZXhwIjoxNDA2NjYzNTEwLCJzY29wZSI6IiJ9.ypDMDMMCRCtDhWPMMc9l_Q-O-rj5LATalHYa3droYkY" http://localhost:3000/secret
     {"message":"Hello, Robert"}
 
+
 Configuring OAuth Token Settings
 --------------------------------
 
@@ -139,5 +142,3 @@ Here is an example::
         }
       }
     }));
-
-

@@ -2,13 +2,14 @@
 
 
 Introduction
-===============
+============
 
 Not sure if Express-Stormpath is for you?  Read along, and I'll help you decide
 whether or not Express-Stormpath is a good fit for your project!
 
+
 What does this library do?
-------------------
+--------------------------
 
 This library will add a user database and authentication system to your application.
 It will provide a way for users to create accounts and login to your application
@@ -24,6 +25,7 @@ That library is a low-level convience library for the `Stormpath API`_.  This
 Express library will cover most features that you need for your web application,
 but if you want to dig deepr into the `Stormpath API`, you may need the
 `Stormpath Node SDK`_.
+
 
 What is Stormpath?
 ------------------
@@ -87,13 +89,10 @@ great project for handling user authentication*).
 
 Want to use Stormpath?  OK, great!  Let's get started!
 
+
 .. _Stormpath Node SDK: http://github.com/stormpath/stormpath-sdk-node
 .. _Stormpath API: https://docs.stormpath.com/rest/product-guide/
 .. _Stormpath: https://stormpath.com/
 .. _Facebook: https://www.facebook.com/
 .. _Google: https://www.google.com/
 .. _Passport: http://passportjs.org/
-
-
-Which library to use?
-------------------
