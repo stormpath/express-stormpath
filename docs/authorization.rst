@@ -56,3 +56,7 @@ groups, let's take a look at how you can enforce selective group membership::
 The view above lists three groups, and sets the ``all`` parameter to ``false``
 -- signifying that a user must be a member of **at least one** of the listed
 groups in order to gain access.
+
+
+.. _Directory Dashboard: https://api.stormpath.com/ui2/index.html#/directories
+.. _createGroup: http://docs.stormpath.com/nodejs/api/directory#createGroup

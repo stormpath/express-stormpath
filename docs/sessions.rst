@@ -69,3 +69,6 @@ To change these settings, you should invoke a node client directly::
             policy.save();
         });
     });
+
+
+.. _router: http://expressjs.com/api.html#router
