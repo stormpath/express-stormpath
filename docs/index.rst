@@ -19,7 +19,6 @@ you're a new Express-Stormpath user, start here!
    user_data
    authentication
    authorization
-   sessions
    registration
    login
    social_login

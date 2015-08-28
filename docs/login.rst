@@ -5,10 +5,13 @@ Login
 =====
 
 This library can serve a login page for your application, this will happen
-if you opt into the ``{ web: true }`` configuration.  By default the login page
+if you opt into the ``{ website: true }`` configuration.  By default the login page
 will be availble at this URL:
 
 http://localhost:3000/login
+
+If the login attempt is successful, we will send the user to the Next URI
+and create the proper session cookies.
 
 
 Next URI
@@ -39,8 +42,9 @@ simply post a JSON body to the ``/login`` endpoint, with the following format::
       "password": "myPassword"
     }
 
-If the login attempt is successful, you will recieve a 200 OK response.  If
-there is an error we will send a 400 status with an error message in the body.
+If the login attempt is successful, you will recieve a 200 OK response and the
+session cookies will be set on the response.  If there is an error we will
+send a 400 status with an error message in the body.
 
 
 Post Login Handler

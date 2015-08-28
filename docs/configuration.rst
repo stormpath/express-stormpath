@@ -150,6 +150,35 @@ Wasn't that easy?!
     you can do so easily by visiting the `Stormpath dashboard`_, navigating to
     your user Directory, then changing the "Password Strength Policy".
 
+Single Page Applications
+------------------------
+
+This framework is designed to work with front-end frameworks like
+Angular and React.  This framework provides a JSON API for all the
+features, you will use this JSON API from your front end application.
+Each feature section in this guide has specific information the
+JSON API, please see those sections for feature documenation.
+
+In some cases you may need to specity the ``spaRoot`` option.  This
+is the absolute file path to the entry point for your SPA.  That option
+would be defined like this::
+
+    app.use(stormpath.init(app,{
+      web:{
+        spaRoot: path.join(__dirname, 'public','index.html')
+      }
+    }));
+
+This allows our famework to serve your SPA, for routes that
+this framework also wants to handle. You need this option if
+the following are true:
+
+ * Your SPA is using HTML5 history mode
+ * You want the default feature routes, such as ``/login`` to
+   serve your Angular Application
+ * You don't want to use our default login and registration views
+
+
 
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard

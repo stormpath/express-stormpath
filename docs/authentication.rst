@@ -4,17 +4,17 @@ Authentication
 ==============
 
 
-Browser Based Authentication
-----------------------------
+Browser Sessions
+----------------
 
-If you are building a webapp that serves traditional HTML pages, this library
-will handle the cookie sessions for you.  Behind the secnes we are issuing an
-OAuth Access Token and Refresh Token to the browser.
+If you are building a web application that serves traditional HTML pages, or a
+Single Page Application (Angular/React), this library will handle the cookie
+sessions for you.  Behind the secnes we are issuing an OAuth Access Token and
+Refresh Token to the browser.
 
-If you want to ensure that as user is logged into your application, from a
-traditional web browser environment, you should use the ``loginRequired``
-middleware.  It will set the cookies for you, and redirect the user to the login
-page if they don't have  a session::
+If you want to ensure that as user is logged into your application, you should
+use the ``loginRequired`` middleware.  It will force the user to login if
+requird, or continue into your middleware::
 
     app.get('/secret', stormpath.loginRequired, function(req, res) {
       /*
@@ -24,9 +24,29 @@ page if they don't have  a session::
       res.send('Hello, ' + req.user.fullname);
     });
 
-    app.get('/email', stormpath.loginRequired, function(req, res) {
-      res.send('Your email address is: ' + req.user.email);
+For browser-based clients, you can control the idle time and expiration time
+of the session by modifying the OAuth Policy for the Stormpath Application
+that you are using.
+
+To change these settings, you should invoke a node client directly::
+
+    var stormpath = require('stormpath'); // Using the Node SDK directly
+    var client = new stormpath.Client();
+
+    client.getApplication('your app href',function(err,application){
+        application.getOAuthPolicy(function(err,policy){
+            policy.accessTokenTtl = "PT1D"; // one day
+            policy.save();
+        });
     });
+
+.. note::
+    Express-Stormpath's session management will not interfere with any existing
+    session middleware you might have.  The sessions that Stormpath uses are
+    exclusively used for Stormpath purposes, so it's safe you create your own
+    separate sessions.
+
+    This works by utilizing the Express `router`_.
 
 
 API Authentication: Basic Auth
