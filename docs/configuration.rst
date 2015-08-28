@@ -47,7 +47,7 @@ initialize the Stormpath middleware:
     var app = express();
     app.use(stormpath.init(app, {
       /* optional configuration options */
-      web: true
+      website: true
     }));
 
     app.listen(3000);

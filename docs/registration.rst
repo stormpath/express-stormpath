@@ -9,7 +9,7 @@ new accounts in a Stormpath directory.  You can create traditional password-
 based accounts, or gather account data from other providers such as Facebook and
 Google.
 
-If you've opted into the ``{ web: true }`` option in your configuration, you
+If you've opted into the ``{ website: true }`` option in your configuration, you
 will have registration enabled by default.  The registration page will then be
 available at this URL:
 
@@ -27,7 +27,7 @@ we will cover them in detail below:
     {
       web: {
         register: {
-          enable: true,   // Explicit enable, if not using { web: true }
+          enable: true,   // Explicit enable, if not using { website: true }
           uri: '/signup',  // Use a different URL
           nextUri: '/',    // Where to send the user to, if auto login is enabled
           fields: {
