@@ -8,6 +8,84 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 1.0.6 -> Version 2.0.0
+------------------------------
+
+**Many changes needed!**
+
+This is a **major release** in the life of this library.  This release includes
+tons of new features, refactorings, etc.
+
+To upgrade from **1.0.6**, please pay careful attention to the below notes.
+
+Firstly, this library now takes new configuration options.  When you initialize
+the middleware, you'll need to pass in the following basic options:
+
+.. code-block:: javascript
+
+    stormpath.init(app, {
+      client: {
+        apiKey: {
+          id: 'xxx',
+          secret: 'yyy'
+        }
+      },
+      application: {
+        href: 'https://api.stormpath.com/v1/applications/xxx'
+      }
+    });
+
+Every setting in the new configuration can also be set via environment
+variables.  The way it works is that all nested fields are expanded out to their
+full path.  For instance, if you wanted to set `client.apiKey.id`, you could
+create an environment variable called::
+
+    STORMPATH_CLIENT_APIKEY_ID=xxx
+
+Likewise, for the rest of the settings above::
+
+    STORMPATH_CLIENT_APIKEY_SECRET=yyy
+    STORMPATH_APPLICATION_HREF=https://api.stormpath.com/v1/applications/xxx
+
+Next, we've disabled default login, registration, and logout routes.  To enable
+them, you'll want to do the following:
+
+.. code-block:: javascript
+
+    stormpath.init(app, {
+      website: true
+    });
+
+This will enable the default *website* features this library provides:
+
+- A login page (`/login`).
+- A registration page (`/register`).
+- A logout route (`/logout`).
+
+Next, we've disabled the `/oauth` endpoint we previously enabled by default.  If
+you want to enable this, with its default settings, you can now do the
+following:
+
+.. code-block:: javascript
+
+    stormpath.init(app, {
+      api: true
+    });
+
+Another important thing to note, our old OAuth functionality created a route
+that lived at `/oauth`.  When you enable the *new* OAuth endpoint, it will live
+at `/oauth/token` instead.  This was done to comply with the OAuth2 spec more
+closely, and ensure compatibility between libraries / frameworks.
+
+Other than the above, your upgrade process should go smoothly.  There are, of
+course, lots of new features / configuration options, so please read through the
+new library documentation to get a feeling for it!
+
+Thanks for reading,
+
+-Randall
+
+
 Version 1.0.5 -> Version 1.0.6
 ------------------------------
 

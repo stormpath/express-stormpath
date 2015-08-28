@@ -7,14 +7,75 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.0
+-------------
+
+**Released on August 27, 2015**
+
+Hello everyone!  If you're reading this, then I want to take a moment to explain
+what is new in this major **2.0.0** release!
+
+This is a brand new release which changes a LOT of the way this library works.
+This is NOT backwards compatible with previous releases, so please be sure to
+checkout the :ref:`upgrading` for more information on how to port your code
+from **1.X.X**.
+
+Next -- this release has several motivations:
+
+Firstly, since writing the original version of this library, we've all learned a
+lot about what problems users have, what things need to be simpler, and what
+things people really want to *do* with their authentication libraries.
+
+After talking with many, many developers, we realized that the initial approach
+we took, while awesome, was not nearly awesome enough.
+
+One of the main features of this release is the default library behavior: from
+now on, when you initialize the Stormpath middleware, you'll no longer get a
+bunch of routes created automatically.  Instead, you'll activate the ones you
+want.  This makes your applications much more secure, and gives you a lot more
+flexibility in terms of what you're building.
+
+While our old library was previously not that well suited for building API
+services -- it now is =)
+
+Next up: browser authentication.  The way we handled browser authentication
+previously was a bit simplistic.  What we did was we created typical session
+cookies, using normal cookie middleware.  While there's nothing wrong with this
+-- we've since moved to a new approach that utilizes sessions + JWTs (JSON Web
+Tokens).  This new approach makes your applications faster, more secure, and
+most importantly -- it makes building SPAs (Single Page Apps) much easier.
+
+If you're using Angular, React, or any other front-end Javascript framework,
+you'll now be able to seamlessly make your SPAs work with this library, yey!
+
+On top of all this, we've refactored a LOT of the internal workings of this
+library to be more efficient.  We've greatly improved our test coverage.  And
+we've resolved tons of issues that were causing users problems.
+
+This new release is faster, more secure, more flexible, and just overall:
+better.
+
+In the coming days and weeks we'll be resolving whatever bugs we find, and we
+are dedicated to making this the absolute best authentication library that
+Node.js has ever seen!
+
+Thank you for reading.
+
+-Randall
+
+
 Version 1.0.6
 -------------
+
+**Released on August 10, 2015.**
 
 - Fixing broken Google login redirection.
 
 
 Version 1.0.5
 -------------
+
+**Released on May 1, 2015.**
 
 - Adding note for Windows users regarding setting environment variables.
 - Added option ``sessionActiveDuration``, which can be used to extend a
