@@ -8,6 +8,12 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 2.0.0 -> Version 2.0.1
+------------------------------
+
+**No changes needed!**
+
+
 Version 1.0.6 -> Version 2.0.0
 ------------------------------
 

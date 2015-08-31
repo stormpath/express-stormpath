@@ -7,6 +7,21 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.1
+-------------
+
+**Released on August 31, 2015.**
+
+- Fixing packaging bug.  In the previous release we introduced a bug that
+  required users to install a dependency manually.  This release fixes the bug,
+  ensuring packaging installs are smooth =)
+- Updating our `package.json` so it finally uses a valid SPX license.  This
+  makes licensing simpler in NPM.
+- Making our Travis CI tests more reliable by retrying failed tests.  This is
+  nice because sometimes we fail due to eventual consistency issues on the API
+  side.
+
+
 Version 2.0.0
 -------------
 
