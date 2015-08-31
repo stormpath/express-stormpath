@@ -3,7 +3,7 @@ node_js:
   - '0.10'
   - '0.11'
 script:
-  - npm test
+  - travis_retry npm test
 env:
   global:
     - secure: i1N4nwO06M3bC6qIldBtMkt31ygLxBYjSr5CxenY08X+HH+2ftB0dj/luBlVhfId+Z4GFxTgjqcRnk27p2K7Hm0h00/PPv674soT36YqJG4CKZ6cIQG/nG8X0PvH5Yg3gBFC7o8jmvuY8U/DnRib54ack3iUnbRmx44Mp5O9+BA=
