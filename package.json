@@ -16,7 +16,7 @@
   },
   "repository": "stormpath/stormpath-express",
   "author": "Stormpath, Inc.",
-  "license": "Apache",
+  "license": "Apache-2.0",
   "main": "./index",
   "dependencies": {
     "body-parser": "^1.10.0",
