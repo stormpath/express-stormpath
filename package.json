@@ -19,19 +19,20 @@
   "license": "Apache",
   "main": "./index",
   "dependencies": {
+    "async": "^1.4.2",
     "body-parser": "^1.10.0",
+    "cookie-parser": "^1.3.5",
     "cookies": "^0.5.0",
     "csurf": "^1.8.0",
     "express": "^4.10.6",
     "forms": "^1.1.1",
     "jade": "^1.8.2",
     "njwt": "^0.2.0",
+    "parse-iso-duration": "^0.1.1",
     "stormpath": "^0.11.1",
     "utils-merge": "^1.0.0",
-    "winston": "^0.8.3",
-    "cookie-parser": "^1.3.5",
-    "parse-iso-duration": "^0.1.1",
-    "async": "^1.4.2"
+    "uuid": "^2.0.1",
+    "winston": "^0.8.3"
   },
   "devDependencies": {
     "cheerio": "^0.18.0",
@@ -39,7 +40,6 @@
     "istanbul": "^0.3.15",
     "mocha": "^2.1.0",
     "mocha-lcov-reporter": "0.0.2",
-    "supertest": "^0.15.0",
-    "uuid": "^2.0.1"
+    "supertest": "^0.15.0"
   }
 }
