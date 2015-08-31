@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
@@ -16,7 +16,7 @@
   },
   "repository": "stormpath/stormpath-express",
   "author": "Stormpath, Inc.",
-  "license": "Apache",
+  "license": "Apache-2.0",
   "main": "./index",
   "dependencies": {
     "async": "^1.4.2",
