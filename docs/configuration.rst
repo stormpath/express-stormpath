@@ -46,11 +46,14 @@ initialize the Stormpath middleware:
 
     var app = express();
     app.use(stormpath.init(app, {
-      /* optional configuration options */
+      // Optional configuration options.
       website: true
     }));
 
-    app.listen(3000);
+    // Once Stormpath has initialized itself, start your web server!
+    app.on('stormpath.ready', function() {
+      app.listen(3000);
+    });
 
 The Stormpath middleware is what initializes Stormpath, grabs configuration
 information, and manages sessions / user state.  It is the base of all
@@ -76,8 +79,8 @@ are:
  .. code-block:: javascript
 
     {
-        "website": true,  // serves HTML login pages
-        "api": true       // enabled OAuth client credentials and token authentication
+      "website": true,  // serves HTML login pages
+      "api": true       // enabled OAuth client credentials and token authentication
     }
 
 Full documentation of the options will be coming soon.  In the meantime, please
@@ -102,17 +105,14 @@ you can fetch it from the app object like this::
     app.get('/secret', function(req, res) {
       var client = req.app.get('stormpathClient');
 
-      /*
-        For example purposes - don't actually expose your tenant info to
-        your users :)
-       */
-
-      client.getCurrentTenant(function(err,tenant){
-        if(err){
-          res.status(400).json(err);
-        }else{
-          res.json(tenant);
+      // For example purposes only -- you probably don't want to actually expose
+      // this information to your users =)
+      client.getCurrentTenant(function(err, tenant) {
+        if (err) {
+          return res.status(400).json(err);
         }
+
+        res.json(tenant);
       });
     });
 
@@ -150,6 +150,7 @@ Wasn't that easy?!
     you can do so easily by visiting the `Stormpath dashboard`_, navigating to
     your user Directory, then changing the "Password Strength Policy".
 
+
 Single Page Applications
 ------------------------
 
@@ -163,9 +164,9 @@ In some cases you may need to specity the ``spaRoot`` option.  This
 is the absolute file path to the entry point for your SPA.  That option
 would be defined like this::
 
-    app.use(stormpath.init(app,{
-      web:{
-        spaRoot: path.join(__dirname, 'public','index.html')
+    app.use(stormpath.init(app, {
+      web: {
+        spaRoot: path.join(__dirname, 'public', 'index.html')
       }
     }));
 
@@ -177,7 +178,6 @@ the following are true:
  * You want the default feature routes, such as ``/login`` to
    serve your Angular Application
  * You don't want to use our default login and registration views
-
 
 
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
