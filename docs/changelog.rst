@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.2
+-------------
+
+**Released on September 4, 2015.**
+
+- Improving documentation, showcasing the ``app.on('stormpath.ready')`` to
+  prevent users from starting a web server before Stormpath has been
+  initialized.
+- Improving test coverage.
+
+
 Version 2.0.1
 -------------
 
