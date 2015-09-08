@@ -73,7 +73,7 @@ describe('groupsRequired', function() {
     });
   });
 
-  it.only('should show an unauthorized page to authenticated users who do not meet group criteria', function(done) {
+  it('should show an unauthorized page to authenticated users who do not meet group criteria', function(done) {
     var app = express();
 
     app.use(stormpath.init(app, {
