@@ -110,4 +110,76 @@ describe('groupsRequired', function() {
         });
     });
   });
+
+  it('should show allow users through whoe pass group assertion checks', function(done) {
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        login: {
+          enabled: true
+        }
+      }
+    }));
+
+    app.get('/private', stormpath.groupsRequired(['admins', 'developers'], false), function(req, res) {
+      res.send('Ok!');
+    });
+
+    app.on('stormpath.ready', function() {
+      var adminsGroup, developersGroup;
+      var agent = request.agent(app);
+
+      async.series([
+        function(callback) {
+          app.get('stormpathApplication').createGroup({ name: 'admins' }, function(err, group) {
+            if (err) {
+              return callback(err);
+            }
+
+            adminsGroup = group;
+            callback();
+          });
+        },
+        function(callback) {
+          app.get('stormpathApplication').createGroup({ name: 'developers' }, function(err, group) {
+            if (err) {
+              return callback(err);
+            }
+
+            developersGroup = group;
+            callback();
+          });
+        },
+        function(callback) {
+          stormpathAccount.addToGroup(developersGroup, function(err) {
+            callback(err);
+          });
+        }
+      ], function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        agent
+          .post('/login')
+          .send({
+            login: stormpathAccountData.email,
+            password: stormpathAccountData.password
+          })
+          .expect(302)
+          .expect('Location', '/')
+          .end(function() {
+            agent
+              .get('/private')
+              .expect(200)
+              .expect('Ok!')
+              .end(done);
+          });
+      });
+    });
+  });
 });
