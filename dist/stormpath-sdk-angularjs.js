@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.5.2-dev-2015-08-20
+ * @version v0.5.3-dev-2015-09-09
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -504,9 +504,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -535,9 +535,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       });
     }
@@ -614,9 +614,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       function evalElement(){
         var user = $user.currentUser;
         if(user && user.groupTest(expr)){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       }
 
@@ -666,9 +666,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       function evalElement(){
         var user = $user.currentUser;
         if(user && user.groupTest(expr)){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       }
 
@@ -701,9 +701,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser || ($user.currentUser===false)){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       });
     }
@@ -739,9 +739,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser || ($user.currentUser===false)){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -771,9 +771,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser === null){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -898,6 +898,31 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          *
          * });
          * </pre>
+         *
+         * ## Social Login example
+         *
+         * <pre>
+         * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
+         *   $scope.errorMessage = null;
+         *   $scope.formData = {
+         *     providerId: 'facebook',         // Get access token from FB sdk login
+         *     accessToken: 'CABTmZxAZBxBADbr1l7ZCwHpjivBt9T0GZBqjQdTmgyO0OkUq37HYaBi4F23f49f5',
+         *   };
+         *
+         *   // Use this method with ng-submit on your form
+         *   $scope.login = function login(formData){
+         *     $auth.authenticate(formData)
+         *      .then(function(){
+         *        console.log('login success');
+         *        $state.go('home');
+         *      })
+         *      .catch(function(httpResponse){
+         *        $scope.errorMessage = response.data.message;
+         *      });
+         *   }
+         *
+         * });
+         * </pre>
          */
         var op = $http($spFormEncoder.formPost({
             url: STORMPATH_CONFIG.getUrl('AUTHENTICATION_ENDPOINT'),
@@ -905,7 +930,9 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
             withCredentials: true,
             data: data,
             params: {
-              'grant_type': 'password'
+              'grant_type': data.providerId
+                  ? 'social'
+                  : 'password'
             }
           })
         );
