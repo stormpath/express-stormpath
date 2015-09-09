@@ -27,7 +27,7 @@
     "express": "^4.10.6",
     "forms": "^1.1.1",
     "jade": "^1.8.2",
-    "stormpath": "^0.8.0",
+    "stormpath": "^0.10.2",
     "utils-merge": "^1.0.0",
     "winston": "^0.8.3"
   },
