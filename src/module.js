@@ -489,9 +489,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -520,9 +520,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       });
     }
@@ -599,9 +599,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       function evalElement(){
         var user = $user.currentUser;
         if(user && user.groupTest(expr)){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       }
 
@@ -651,9 +651,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
       function evalElement(){
         var user = $user.currentUser;
         if(user && user.groupTest(expr)){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       }
 
@@ -686,9 +686,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser || ($user.currentUser===false)){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       });
     }
@@ -724,9 +724,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser || ($user.currentUser===false)){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -756,9 +756,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser === null){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
