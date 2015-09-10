@@ -9,5 +9,5 @@ script:
   - travis_retry npm test
 env:
   global:
-    - secure: i1N4nwO06M3bC6qIldBtMkt31ygLxBYjSr5CxenY08X+HH+2ftB0dj/luBlVhfId+Z4GFxTgjqcRnk27p2K7Hm0h00/PPv674soT36YqJG4CKZ6cIQG/nG8X0PvH5Yg3gBFC7o8jmvuY8U/DnRib54ack3iUnbRmx44Mp5O9+BA=
-    - secure: DZUEYuXblnRUbCvuSqOqrqncuHUa1HdQVf33mGE5uAx9IP0ktJiiaGW56hOTpPH3FugEY/7lIoC3RExh7aKgZWU8NU0qTxs1BtW5hdRrS31LAvtAheZnY5aq2DDUvIYno0ejrRSNspeWdjIDzSia/0ysfpMlReYXnpb4Rk1pSwg=
+    - secure: SIFjFoLiYyZSqxltulANunQMyT6cPWr9isJJ0Lm8qr2pB30lLwsXFhkoisO2+J/K0Jk/e3pC4WTUXjpq1Sr/J3frXzZeLwE//Sed+92uxTGaZz+/1B08CWcelY09TLqtfVl1VIJZ+qihDcDdWhFGZPmuqpHCdTXzu2QJ6SiNrcs=
+    - secure: f3XAu4HdzVFS4kOpEAKyYg+Iv9BHOZfRxzRpj15utYNbuhLhZitAjC/IWuchALm4u9EFPdowkIuB/9n2+VajrR8UKQcy23S6ClBCUP5eptwrMTWTbRP1vx3A4mdeoUy2FW7DVgZCWh5oe6o8MwX8rd1f6ZYAucBub4gMpp3GcEU=
