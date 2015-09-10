@@ -22,7 +22,7 @@ should export your Stormpath information by running this in the shell:
 
     export STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
     export STORMPATH_CLIENT_APIKEY_SECRET=YOUR-SECRET-HERE
-    export STORMPATH_CLIENT_APPLICATION_HREF=YOUR-APP-HREF
+    export STORMPATH_APPLICATION_HREF=YOUR-APP-HREF
 
 .. note::
     If you're on Windows, that will look like::
