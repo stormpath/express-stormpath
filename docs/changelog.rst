@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.4
+-------------
+
+**Released on September 8, 2015.**
+
+- Cleaning up some code.
+- Updating broken documentation.
+
+
 Version 2.0.3
 -------------
 
