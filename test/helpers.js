@@ -172,10 +172,6 @@ module.exports.destroyApplication = function(application, callback) {
         // Ignore all errors here, because we might be trying to delete a Group
         // which no longer exists.
         store.delete(function(err) {
-          if (err) {
-            return cb(err);
-          }
-
           cb();
         });
       });
