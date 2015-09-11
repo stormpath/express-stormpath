@@ -35,4 +35,13 @@ describe('.init', function() {
       });
     });
   });
+
+  it('should throw an error when an invalid configuration is supplied', function() {
+    var stormpath = require('../index');
+    var app = express();
+
+    assert.throws(function() {
+      app.use(stormpath.init(app, { application: {}, client: {} }));
+    }, Error);
+  });
 });
