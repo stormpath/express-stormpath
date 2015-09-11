@@ -11,7 +11,7 @@ var uuid = require('uuid');
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
-describe('groupsRequired', function() {
+describe('#groupsRequired', function() {
   var stormpathAccount;
   var stormpathAccountData = {
     givenName: uuid.v4(),
