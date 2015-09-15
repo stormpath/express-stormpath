@@ -598,7 +598,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       function evalElement(){
         var user = $user.currentUser;
-        if(user && user.groupTest(expr)){
+        if(user && user.groupTest(expr || attrExpr)){
           element.removeClass('ng-hide');
         }else{
           element.addClass('ng-hide');
@@ -650,7 +650,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       function evalElement(){
         var user = $user.currentUser;
-        if(user && user.groupTest(expr)){
+        if(user && user.groupTest(expr || attrExpr)){
           element.addClass('ng-hide');
         }else{
           element.removeClass('ng-hide');
