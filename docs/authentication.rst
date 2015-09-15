@@ -9,7 +9,7 @@ Browser Sessions
 
 If you are building a web application that serves traditional HTML pages, or a
 Single Page Application (Angular/React), this library will handle the cookie
-sessions for you.  Behind the secnes we are issuing an OAuth Access Token and
+sessions for you.  Behind the scenes we are issuing an OAuth Access Token and
 Refresh Token to the browser.
 
 If you want to ensure that as user is logged into your application, you should
