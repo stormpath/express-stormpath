@@ -1,3 +1,12 @@
+# 0.6.0
+
+### Breaking Changes
+
+Stormpath's password reset API accepts email address only,
+not username.  This library was allowing a username to be
+sent, but that will not work.  If using the [Stormpath Express SDK]
+you will also need to update that library to `>=0.5.0`
+
 # 0.5.5
 
 Fix a redirect loop in the state change interceptor
@@ -124,7 +133,7 @@ directives.
 * [`whileResolvingUser`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.whileResolvingUser:while-resolving-user)
 would break after logout (user state was not properly reflected after logout)
 
-
+[Stormpath Express SDK]: https://github.com/stormpath/stormpath-sdk-express
 [$stateChangeUnauthenticated]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.$stormpath#events_$statechangeunauthenticated
 [$stateChangeUnauthorized]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.$stormpath#events_$statechangeunauthorized
 [ifUserInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup

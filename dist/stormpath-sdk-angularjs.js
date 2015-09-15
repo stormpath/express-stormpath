@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.5.5-dev-2015-09-15
+ * @version v0.6.0-dev-2015-09-15
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -1655,7 +1655,7 @@ angular.module('stormpath')
   $scope.submit = function(){
     $scope.posting = true;
     $scope.requestFailed = false;
-    $user.passwordResetRequest({username: $scope.formModel.username})
+    $user.passwordResetRequest({email: $scope.formModel.email})
       .then(function(){
         $scope.sent = true;
       })
@@ -2321,10 +2321,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        *
        * @param  {Object} data
        *
-       * An object literal for passing the username or email.
+       * An object literal for passing the email address.
        * ```
        * {
-       *   username: 'email address or username'
+       *   email: 'email address of the user'
        * }
        * ```
        */

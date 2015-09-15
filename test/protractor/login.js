@@ -24,7 +24,7 @@ describe('Demo Login Form', function() {
   });
 
   /*
-    This test is broken in 0.5.5, because I removed something that would
+    This test is broken since 0.5.5, because I removed something that would
     wait for the auth state.  I need to bring that functionality back,
     or just suggest the use of 'waitForUser' sp config option.
    */
