@@ -373,10 +373,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        *
        * @param  {Object} data
        *
-       * An object literal for passing the username or email.
+       * An object literal for passing the email address.
        * ```
        * {
-       *   username: 'email address or username'
+       *   email: 'email address of the user'
        * }
        * ```
        */
