@@ -11,7 +11,7 @@ angular.module('stormpath')
   $scope.submit = function(){
     $scope.posting = true;
     $scope.requestFailed = false;
-    $user.passwordResetRequest({username: $scope.formModel.username})
+    $user.passwordResetRequest({email: $scope.formModel.email})
       .then(function(){
         $scope.sent = true;
       })
