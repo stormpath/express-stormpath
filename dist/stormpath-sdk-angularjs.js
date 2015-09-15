@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.5.3-dev-2015-09-09
+ * @version v0.5.4-dev-2015-09-14
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -613,7 +613,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       function evalElement(){
         var user = $user.currentUser;
-        if(user && user.groupTest(expr)){
+        if(user && user.groupTest(expr || attrExpr)){
           element.removeClass('ng-hide');
         }else{
           element.addClass('ng-hide');
@@ -665,7 +665,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       function evalElement(){
         var user = $user.currentUser;
-        if(user && user.groupTest(expr)){
+        if(user && user.groupTest(expr || attrExpr)){
           element.addClass('ng-hide');
         }else{
           element.removeClass('ng-hide');
