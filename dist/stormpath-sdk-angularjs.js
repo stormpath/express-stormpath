@@ -2,7 +2,7 @@
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
  * 
- * @version v0.5.4-dev-2015-09-14
+ * @version v0.5.5-dev-2015-09-15
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
@@ -251,19 +251,14 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
               stateChangeUnauthorizedEvent(toState,toParams);
             }
           }else if(toState.name===config.loginState){
+            /*
+              If the user is already logged in, we will redirect
+              away from the login page and send the user to the
+              post login state.
+             */
             if($user.currentUser && $user.currentUser.href){
               e.preventDefault();
               $state.go(config.defaultPostLoginState);
-            }
-            else if($user.currentUser===null){
-              e.preventDefault();
-              $user.get().finally(function(){
-                if($user.currentUser){
-                  $state.go(config.defaultPostLoginState);
-                }else{
-                  $state.go(toState.name,toParams);
-                }
-              });
             }
           }
         });

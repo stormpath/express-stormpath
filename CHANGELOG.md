@@ -1,3 +1,18 @@
+# 0.5.5
+
+Fix a redirect loop in the state change interceptor
+
+# 0.5.4
+
+Fix an undefined attribute bug with the group membership directives
+
+# 0.5.3
+
+Adding social login support.  **NOTE**: this is overloading oauth grant_type,
+and we will change this API in the future so use with this disclaimer.
+
+### Bug Fixes
+
 # 0.5.2
 
 ### Improvements
