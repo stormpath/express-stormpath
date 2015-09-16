@@ -7,6 +7,17 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.5
+-------------
+
+**Not yet released.**
+
+- Improving option validation.
+- Adding human-readable errors that help people fix their configuration data in
+  a simpler manner.
+- Refactoring integration tests to work with stricter validation rules.
+
+
 Version 2.0.4
 -------------
 

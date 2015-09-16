@@ -134,9 +134,16 @@ module.exports.setPasswordResetStatus = function(application, status, cb){
 };
 
 module.exports.createStormpathExpressApp = function(config){
-  var app = express();
+  config.client = {
+    apiKey: {
+      id: process.env.STORMPATH_CLIENT_APIKEY_ID,
+      secret: process.env.STORMPATH_CLIENT_APIKEY_SECRET
+    }
+  };
 
+  var app = express();
   app.use(stormpathExpress.init(app, config));
+
   return app;
 };
 
@@ -152,11 +159,15 @@ module.exports.createStormpathExpressApp = function(config){
  */
 module.exports.destroyApplication = function(application, callback) {
   application.getAccountStoreMappings(function(err, mappings) {
-    if (err) return callback(err);
+    if (err) {
+      return callback(err);
+    }
 
     mappings.each(function(mapping, cb) {
       mapping.getAccountStore(function(err, store) {
-        if (err) return cb(err);
+        if (err) {
+          return cb(err);
+        }
 
         // Ignore all errors here, because we might be trying to delete a Group
         // which no longer exists.

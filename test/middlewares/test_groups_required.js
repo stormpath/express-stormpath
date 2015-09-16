@@ -11,7 +11,7 @@ var uuid = require('uuid');
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
-describe('groupsRequired', function() {
+describe('#groupsRequired', function() {
   var stormpathAccount;
   var stormpathAccountData = {
     givenName: uuid.v4(),
@@ -24,7 +24,6 @@ describe('groupsRequired', function() {
 
   before(function(done) {
     stormpathClient = helpers.createClient();
-
     helpers.createApplication(stormpathClient, function(err, application) {
       if (err) {
         return done(err);
@@ -47,9 +46,7 @@ describe('groupsRequired', function() {
   });
 
   it('should redirect unauthenticated users to the login url', function(done) {
-    var app = express();
-
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
@@ -58,7 +55,7 @@ describe('groupsRequired', function() {
           enabled: true
         }
       }
-    }));
+    });
 
     app.get('/private', stormpath.groupsRequired(['admins']), function(req, res) {
       res.send('Ok!');
@@ -74,9 +71,7 @@ describe('groupsRequired', function() {
   });
 
   it('should show an unauthorized page to authenticated users who do not meet group criteria', function(done) {
-    var app = express();
-
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
@@ -85,7 +80,7 @@ describe('groupsRequired', function() {
           enabled: true
         }
       }
-    }));
+    });
 
     app.get('/private', stormpath.groupsRequired(['admins']), function(req, res) {
       res.send('Ok!');
@@ -112,9 +107,7 @@ describe('groupsRequired', function() {
   });
 
   it('should show allow users through whoe pass group assertion checks', function(done) {
-    var app = express();
-
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
@@ -123,7 +116,7 @@ describe('groupsRequired', function() {
           enabled: true
         }
       }
-    }));
+    });
 
     app.get('/private', stormpath.groupsRequired(['admins', 'developers'], false), function(req, res) {
       res.send('Ok!');

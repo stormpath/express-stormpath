@@ -25,6 +25,7 @@
     "cookies": "^0.5.0",
     "csurf": "^1.8.0",
     "express": "^4.10.6",
+    "express-stormpath-config": "0.0.2",
     "forms": "^1.1.1",
     "jade": "^1.8.2",
     "njwt": "^0.2.0",

@@ -2,35 +2,33 @@
 
 var express = require('express');
 var request = require('supertest');
+
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
 describe('logout', function() {
+  var app;
   var stormpathApplication;
-  var stormpathClient;
-
-  var app = express();
 
   before(function(done) {
-    stormpathClient = helpers.createClient();
-
-    helpers.createApplication(stormpathClient, function(err, _app) {
-      if (err){
-        done(err);
-      }else{
-        stormpathApplication = _app;
-        app.use(stormpath.init(app, {
-          application: {
-            href: stormpathApplication.href
-          },
-          web: {
-            logout: {
-              enabled: true
-            }
-          }
-        }));
-        app.on('stormpath.ready',done);
+    helpers.createApplication(helpers.createClient(), function(err, a) {
+      if (err) {
+        return done(err);
       }
+
+      stormpathApplication = a;
+      app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          logout: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', done);
     });
   });
 
@@ -46,13 +44,12 @@ describe('logout', function() {
       .end(done);
   });
 
-  it('should delete the access token and refresh token cookies', function(done){
+  it('should delete the access token and refresh token cookies', function(done) {
     var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)
-      .expect('Set-Cookie',/access_token=;/)
-      .expect('Set-Cookie',/refresh_token=;/)
+      .expect('Set-Cookie', /access_token=;/)
+      .expect('Set-Cookie', /refresh_token=;/)
       .end(done);
   });
-
 });
