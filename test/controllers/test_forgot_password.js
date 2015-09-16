@@ -23,12 +23,12 @@ describe('forgotPassword', function() {
   before(function(done) {
     stormpathClient = helpers.createClient();
     helpers.createApplication(stormpathClient, function(err, app) {
-      if (err){
-        done(err);
-      }else{
-        stormpathApplication = app;
-        done();
+      if (err) {
+        return done(err);
       }
+
+      stormpathApplication = app;
+      done();
     });
   });
 
@@ -48,15 +48,13 @@ describe('forgotPassword', function() {
         return done(err);
       }
 
-      var app = express();
-
-      app.use(stormpath.init(app, {
+      var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href,
         }
-      }));
+      });
 
-      app.on('stormpath.ready', function(){
+      app.on('stormpath.ready', function() {
         var config = app.get('stormpathConfig');
         request(app)
           .get(config.web.forgotPassword.uri)
@@ -67,9 +65,7 @@ describe('forgotPassword', function() {
   });
 
   it('should bind to /forgot if enabled', function(done) {
-    var app = express();
-
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href,
       },
@@ -78,9 +74,9 @@ describe('forgotPassword', function() {
           enabled: true
         }
       }
-    }));
+    });
 
-    app.on('stormpath.ready',function(){
+    app.on('stormpath.ready', function() {
       var config = app.get('stormpathConfig');
       request(app)
         .get('/forgot')
@@ -93,16 +89,14 @@ describe('forgotPassword', function() {
           var $ = cheerio.load(res.text);
 
           // Assert that the form was rendered.
-          assert.equal($('form[action="'+config.web.forgotPassword.uri+'"]').length, 1);
+          assert.equal($('form[action="' + config.web.forgotPassword.uri + '"]').length, 1);
           done();
         });
     });
   });
 
   it('should return an error if the posted email is not an email', function(done) {
-    var app = express();
-
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href,
       },
@@ -111,15 +105,13 @@ describe('forgotPassword', function() {
           enabled: true
         }
       }
-    }));
+    });
 
-    app.on('stormpath.ready',function(){
+    app.on('stormpath.ready', function() {
       request(app)
         .post('/forgot')
         .type('form')
-        .send({
-          email: 'not a real email'
-        })
+        .send({ email: 'not a real email' })
         .expect(200)
         .end(function(err, res) {
           if (err) {
@@ -132,10 +124,8 @@ describe('forgotPassword', function() {
     });
   });
 
-  it('should show an info message if the user is redirected here afer an invalid sptoken',function(done){
-    var app = express();
-
-    app.use(stormpath.init(app, {
+  it('should show an info message if the user is redirected here afer an invalid sptoken', function(done) {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href,
       },
@@ -144,9 +134,9 @@ describe('forgotPassword', function() {
           enabled: true
         }
       }
-    }));
+    });
 
-    app.on('stormpath.ready',function(){
+    app.on('stormpath.ready', function() {
       request(app)
         .get('/forgot?status=invalid_sptoken')
         .expect(200)
@@ -158,9 +148,7 @@ describe('forgotPassword', function() {
   });
 
   it('should redirect to the next uri if an email is given', function(done) {
-    var app = express();
-
-    app.use(stormpath.init(app, {
+    var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href,
       },
@@ -169,18 +157,16 @@ describe('forgotPassword', function() {
           enabled: true
         }
       }
-    }));
+    });
 
-    app.on('stormpath.ready',function(){
+    app.on('stormpath.ready', function() {
       var config = app.get('stormpathConfig');
       request(app)
         .post('/forgot')
         .type('form')
-        .send({
-          email: uuid.v4() + '@stormpath.com',
-        })
-        .expect('Location',config.web.forgotPassword.nextUri)
-        .expect(302,done);
+        .send({ email: uuid.v4() + '@stormpath.com' })
+        .expect('Location', config.web.forgotPassword.nextUri)
+        .expect(302, done);
     });
   });
 });
