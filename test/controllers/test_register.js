@@ -16,7 +16,7 @@ describe('register', function() {
   var existingUserData = {
     givenName: uuid.v4(),
     surname: uuid.v4(),
-    email: 'robert+'+uuid.v4() + '@stormpath.com',
+    email: 'robert+' + uuid.v4() + '@stormpath.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
   };
 
