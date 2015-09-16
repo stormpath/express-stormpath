@@ -16,6 +16,8 @@ Version 2.0.5
 - Adding human-readable errors that help people fix their configuration data in
   a simpler manner.
 - Refactoring integration tests to work with stricter validation rules.
+- Fixing a bug in the registration page, courtesy of `@suryod
+  <https://github.com/suryod>`_.
 
 
 Version 2.0.4
