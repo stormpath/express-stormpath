@@ -72,5 +72,13 @@ Cannibal has contributed a major feature to the project.
 - Github: https://github.com/CannibalVox
 
 
+Indra Setiawan
+**************
+
+Indra has contributed a patch to the project.
+
+- Github: https://github.com/suryod
+
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
