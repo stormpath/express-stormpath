@@ -36,7 +36,7 @@ describe('register', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to /register if enabled', function(done) {
+  it('should bind to GET /register if enabled', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
