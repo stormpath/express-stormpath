@@ -58,6 +58,28 @@ describe('register', function() {
     });
   });
 
+  it('should bind to POST /register if enabled', function(done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function() {
+      request(app)
+        .post('/register')
+        .end(function(err, res) {
+          assert.notEqual(res.statusCode, 404);
+          done(err);
+        });
+    });
+  });
+
   it('should return an error if required fields are not present', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
