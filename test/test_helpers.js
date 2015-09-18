@@ -75,6 +75,10 @@ describe('validateAccount', function() {
           password: {
             name: 'password',
             required: true
+          },
+          passwordConfirm: {
+            name: 'passwordConfirm',
+            required: true
           }
         }
       }
@@ -86,7 +90,8 @@ describe('validateAccount', function() {
       givenName: 'Randall',
       surname: 'Degges',
       email: 'randall@stormpath.com',
-      password: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX'
+      password: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX',
+      passwordConfirm: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX'
     };
 
     helpers.validateAccount(accountData, config, function(errors) {
@@ -99,7 +104,9 @@ describe('validateAccount', function() {
     var accountData = {
       givenName: 'Randall',
       surname: 'Degges',
-      email: 'randall@stormpath.com'
+      email: 'randall@stormpath.com',
+      password: 'woot',
+      passwordConfirm: 'woothi'
     };
 
     helpers.validateAccount(accountData, config, function(errors) {
@@ -115,7 +122,7 @@ describe('validateAccount', function() {
     };
 
     helpers.validateAccount(accountData, config, function(errors) {
-      assert.equal(errors.length, 2);
+      assert.equal(errors.length, 3);
       done();
     });
   });
