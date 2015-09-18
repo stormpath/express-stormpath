@@ -16,14 +16,10 @@ block body
             .header
               span Create Account
 
-            if error
+            if errors
               .alert.alert-danger
-                p #{error}
-
-            if formErrors
-              .alert.alert-danger
-                each error in formErrors
-                  p #{error.error}
+                each error in errors
+                  p #{error.message}
 
             form.registration-form.form-horizontal.sp-form(method='post', role='form')
               each fieldName in fieldOrder
