@@ -31,7 +31,7 @@ block body
                 div(form-group='true', class='form-group group-#{field.name}')
                   label.col-sm-4 #{field.placeholder}
                   .col-sm-8
-                    - var value = form.data ? form.data[field.name] : '';
+                    - var value = form ? form[field.name] : '';
                     input.form-control(placeholder=field.placeholder, name=field.name, value=value, required=field.required, type=field.type)
 
               button.btn.btn-register.btn-sp-green(type='submit') Create Account
