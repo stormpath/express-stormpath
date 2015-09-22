@@ -83,6 +83,37 @@ describe('register', function() {
     });
   });
 
+  it('should bind to another URL if specified', function(done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        register: {
+          enabled: true,
+          uri: '/newregister'
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function() {
+      async.parallel([
+        function(cb) {
+          request(app)
+            .get('/newregister')
+            .expect(200)
+            .end(cb);
+        },
+        function(cb) {
+          request(app)
+            .get('/register')
+            .expect(404)
+            .end(cb);
+        }
+      ], done);
+    });
+  });
+
   describe('via JSON API', function() {
     it('should trigger JSON responses if an accept: application/json header is provided', function(done) {
       var app = helpers.createStormpathExpressApp({
