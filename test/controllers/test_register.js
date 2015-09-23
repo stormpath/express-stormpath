@@ -328,16 +328,22 @@ describe('register', function() {
             }
 
             var json = JSON.parse(res.text);
-            app.get('stormpathClient').getAccount(json.href, { expand: 'customData' }, function(err, account) {
+            app.get('stormpathClient').getAccount(json.href, function(err, account) {
               if (err) {
                 return done(err);
               }
 
-              assert.equal(account.href, json.href);
-              assert.equal(account.customData.color, color);
-              assert.equal(account.customData.music, music);
+              account.getCustomData(function(err, data) {
+                if (err) {
+                  return done(err);
+                }
 
-              done();
+                assert.equal(account.href, json.href);
+                assert.equal(data.color, color);
+                assert.equal(data.music, music);
+
+                done();
+              });
             });
           });
       });
@@ -724,7 +730,7 @@ describe('register', function() {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: email }, { expand: 'customData' }, function(err, accounts) {
+            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -734,12 +740,17 @@ describe('register', function() {
               }
 
               var account = accounts.items[0];
+              account.getCustomData(function(err, data) {
+                if (err) {
+                  return done(err);
+                }
 
-              assert.equal(account.email, email);
-              assert.equal(account.customData.color, color);
-              assert.equal(account.customData.music, music);
+                assert.equal(account.email, email);
+                assert.equal(data.color, color);
+                assert.equal(data.music, music);
 
-              done();
+                done();
+              });
             });
           });
       });
