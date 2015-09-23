@@ -18,6 +18,13 @@ Version 2.0.5
 - Refactoring integration tests to work with stricter validation rules.
 - Fixing a bug in the registration page, courtesy of `@suryod
   <https://github.com/suryod>`_.
+- Adding support for Node 4.1.
+- Adding tests for the registration controller.
+- Refactoring the registration controller for styling.
+- Fixing several registration bugs: customData not being included, field
+  validation, etc.
+- Various style fixes.
+- Various controller refactoring.
 
 
 Version 2.0.4
