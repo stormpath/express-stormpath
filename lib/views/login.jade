@@ -123,6 +123,8 @@ block body
                 include facebook_login_form.jade
               if stormpathConfig.socialProviders.google.enabled
                 include google_login_form.jade
+              if stormpathConfig.socialProviders.linkedin.enabled
+                include linkedin_login_form.jade
 
         if stormpathConfig.web.verifyEmail.enabled
           a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?
