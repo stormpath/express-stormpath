@@ -25,6 +25,8 @@ Version 2.0.5
   validation, etc.
 - Various style fixes.
 - Various controller refactoring.
+- Fixing option validation upon startup.
+- Adding support for LinkedIn login button.
 
 
 Version 2.0.4
