@@ -30,7 +30,7 @@
     "jade": "^1.8.2",
     "njwt": "^0.2.0",
     "parse-iso-duration": "^0.1.1",
-    "stormpath": "^0.11.4",
+    "stormpath": "^0.12.1",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
     "winston": "^0.8.3"
