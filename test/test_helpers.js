@@ -187,3 +187,51 @@ describe('sanitizeFormData', function() {
     );
   });
 });
+
+describe('prepAccountData', function() {
+  it('should throw an error if formData is not supplied', function() {
+    assert.throws(function() {
+      helpers.prepAccountData();
+    }, Error);
+  });
+
+  it('should throw an error if callback is not supplied', function() {
+    assert.throws(function() {
+      helpers.prepAccountData({});
+    }, Error);
+  });
+
+  it('should remove extra keys from formData', function(done) {
+    helpers.prepAccountData({
+      givenName: 'Randall',
+      surname: 'Degges',
+      email: 'r@rdegges.com',
+      password: 'woot!!!!omgHAX',
+      extraData: 'hithere'
+    }, function(accountData) {
+      assert.equal(accountData.extraData, undefined);
+      done();
+    });
+  });
+
+  it('should add extra keys to customData', function(done) {
+    helpers.prepAccountData({
+      givenName: 'Randall',
+      surname: 'Degges',
+      email: 'r@rdegges.com',
+      password: 'woot!!!!omgHAX',
+      extraData: 'hithere'
+    }, function(accountData) {
+      assert.deepEqual(accountData, {
+        givenName: 'Randall',
+        surname: 'Degges',
+        email: 'r@rdegges.com',
+        password: 'woot!!!!omgHAX',
+        customData: {
+          extraData: 'hithere'
+        }
+      });
+      done();
+    });
+  });
+});
