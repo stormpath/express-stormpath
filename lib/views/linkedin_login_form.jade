@@ -1,0 +1,50 @@
+- var linkedInProvider = stormpathConfig.socialProviders.linkedin
+
+button.btn.btn-social.btn-linkedin(onclick='linkedinLogin()') LinkedIn
+script(type='text/javascript').
+  function buildUrl(baseUrl, queryString) {
+    var result = baseUrl;
+
+    if (queryString) {
+      var serializedQueryString = '';
+
+      for (var key in queryString) {
+        var value = queryString[key];
+
+        if (serializedQueryString.length) {
+          serializedQueryString += '&';
+        }
+
+        serializedQueryString += key + '=' + encodeURIComponent(value);
+      }
+
+      result += '?' + serializedQueryString;
+    }
+
+    return result;
+  }
+
+  function linkedinLogin() {
+    var oauthStateToken = '#{oauthStateToken}';
+    var authorizationUrl = 'https://www.linkedin.com/uas/oauth2/authorization';
+
+    var clientId = '#{linkedInProvider.clientId}';
+    var redirectUri = '#{url}#{linkedInProvider.callbackUri}';
+
+    var scopes = ['r_basicprofile', 'r_emailaddress'];
+    var providerScopes = '#{linkedInProvider.scopes}'.split(',');
+
+    providerScopes.forEach(function (scope) {
+      if (scope.length && scopes.indexOf(scope) !== -1) {
+        scopes.push(scope);
+      }
+    });
+
+    window.location = buildUrl(authorizationUrl, {
+      response_type: 'code',
+      client_id: clientId,
+      scope: scopes.join(' '),
+      redirect_uri: redirectUri,
+      state: oauthStateToken
+    });
+  }
