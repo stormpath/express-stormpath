@@ -42,8 +42,8 @@ Below are some resources you might find useful!
 
 ## Contributing
 
-You can make your own contributions by forking the `develop` branch of this
-repository, making your changes, and issuing pull request on the `develop` branch.
+You can make your own contributions by forking the `master` branch of this
+repository, making your changes, and issuing pull request on the `master` branch.
 
 We regularly maintain this repository, and are quick to review pull requests
 and accept changes!
