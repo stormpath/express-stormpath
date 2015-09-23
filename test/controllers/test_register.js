@@ -1,7 +1,10 @@
 'use strict';
 
+var fs = require('fs');
+
 var assert = require('assert');
 var async = require('async');
+var cheerio = require('cheerio');
 var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
@@ -16,7 +19,7 @@ describe('register', function() {
   var existingUserData = {
     givenName: uuid.v4(),
     surname: uuid.v4(),
-    email: 'robert+'+uuid.v4() + '@stormpath.com',
+    email: 'robert+' + uuid.v4() + '@stormpath.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
   };
 
@@ -36,7 +39,7 @@ describe('register', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to /register if enabled', function(done) {
+  it('should bind to GET /register if enabled', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -58,46 +61,7 @@ describe('register', function() {
     });
   });
 
-  it('should return an error if required fields are not present', function(done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true,
-          fields: {
-            middleName: {
-              name: 'middleName',
-              required: true
-            }
-          }
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function() {
-      request(app)
-        .post('/register')
-        .type('json')
-        .set('Accept', 'application/json')
-        .expect(400)
-        .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-          if (!json.error) {
-            return done(new Error('No JSON error returned.'));
-          }
-
-          done();
-        });
-    });
-  });
-
-  it('should return a json error if the accept header supports json and the content type we post is json', function(done) {
+  it('should bind to POST /register if enabled', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -112,98 +76,9 @@ describe('register', function() {
     app.on('stormpath.ready', function() {
       request(app)
         .post('/register')
-        .type('json')
-        .set('Accept', 'application/json')
-        .expect(400)
         .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-          if (!json.error) {
-            return done(new Error('No JSON error returned.'));
-          }
-
-          done();
-        });
-    });
-  });
-
-  it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function() {
-      request(app)
-        .post('/register')
-        .type('json')
-        .send({
-          givenName: uuid.v4(),
-          surname: uuid.v4(),
-          email: uuid.v4() + '@test.com',
-          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
-        .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-          if (!json.status) {
-            return done(new Error('No JSON status fields returned.'));
-          }
-
-          done();
-        });
-    });
-  });
-
-  it('should return a successful json response with a status field if the accept header supports json and the content type we post is form data and we supply all user data fields', function(done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function() {
-      request(app)
-        .post('/register')
-        .type('form')
-        .send({
-          givenName: uuid.v4(),
-          surname: uuid.v4(),
-          email: uuid.v4() + '@test.com',
-          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
-        .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-          if (!json.status) {
-            return done(new Error('No JSON status fields returned.'));
-          }
-
-          done();
+          assert.notEqual(res.statusCode, 404);
+          done(err);
         });
     });
   });
@@ -239,276 +114,842 @@ describe('register', function() {
     });
   });
 
-  it('should register new users and redirect to the login view, with a "created" message, if autoAuthorize is not enabled', function(done) {
-    var newUserData = helpers.newUser();
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post('/register')
-        .type('form')
-        .send(newUserData)
-        .expect(302)
-        .expect('Location', config.web.login.uri + '?status=created')
-        .end(function(err) {
-          if (err) {
-            return done(err);
+  describe('via JSON API', function() {
+    it('should trigger JSON responses if an accept: application/json header is provided', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
           }
+        }
+      });
 
-          stormpathApplication.getAccounts({ email: newUserData.email },function(err, collection) {
+      app.on('stormpath.ready', function() {
+        request(app)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .expect(400)
+          .end(function(err, res) {
             if (err) {
               return done(err);
             }
 
-            assert.equal(collection.items.length, 1);
+            var json = JSON.parse(res.text);
+            if (!json.error) {
+              return done(new Error('No JSON error returned.'));
+            }
+
             done();
           });
-        });
+      });
     });
-  });
 
-  it('should register new users and set default values for givenName and surname if these fields are not required', function(done) {
-    var newUserData = helpers.newUser();
-    delete newUserData.givenName;
-    delete newUserData.surname;
-
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true,
-          fields: {
-            givenName: {
-              required: false
+    it('should return a JSON error if the account data is not valid', function(done) {
+      async.series([
+        function(cb) {
+          var app = helpers.createStormpathExpressApp({
+            application: {
+              href: stormpathApplication.href
             },
-            surname: {
-              required: false
+            web: {
+              register: {
+                enabled: true
+              }
             }
-          }
+          });
+
+          app.on('stormpath.ready', function() {
+            request(app)
+              .post('/register')
+              .set('Accept', 'application/json')
+              .type('json')
+              .expect(400)
+              .end(function(err, res) {
+                if (err) {
+                  return done(err);
+                }
+
+                var json = JSON.parse(res.text);
+                if (!json.error) {
+                  return done(new Error('No JSON error returned.'));
+                }
+
+                cb();
+              });
+          });
+        },
+        function(cb) {
+          var app = helpers.createStormpathExpressApp({
+            application: {
+              href: stormpathApplication.href
+            },
+            web: {
+              register: {
+                enabled: true,
+                fields: {
+                  color: {
+                    name: 'color',
+                    placeholder: 'Color',
+                    required: true,
+                    type: 'text'
+                  }
+                },
+                fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+              }
+            }
+          });
+
+          app.on('stormpath.ready', function() {
+            request(app)
+              .post('/register')
+              .set('Accept', 'application/json')
+              .type('json')
+              .send({
+                givenName: uuid.v4(),
+                surname: uuid.v4(),
+                email: uuid.v4() + '@test.com',
+                password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+              })
+              .expect(400)
+              .end(function(err, res) {
+                if (err) {
+                  return done(err);
+                }
+
+                var json = JSON.parse(res.text);
+                if (!json.error) {
+                  return done(new Error('No JSON error returned.'));
+                }
+
+                cb();
+              });
+          });
         }
-      }
+      ], function() {
+        done();
+      });
     });
 
-    app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post('/register')
-        .type('form')
-        .send(newUserData)
-        .expect(302)
-        .expect('Location', config.web.login.uri + '?status=created')
-        .end(function(err) {
-          if (err) {
-            return done(err);
+    it('should create an account if the data is valid', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
           }
+        }
+      });
 
-          stormpathApplication.getAccounts({ email:newUserData.email }, function(err, collection) {
+      app.on('stormpath.ready', function() {
+        var givenName = uuid.v4();
+        var surname = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            givenName: givenName,
+            surname: surname,
+            email: email,
+            password: password
+          })
+          .expect(200)
+          .end(function(err, res) {
             if (err) {
               return done(err);
             }
 
-            assert.equal(collection.items.length, 1);
-            assert.equal(collection.items[0].givenName, 'Anonymous');
-            assert.equal(collection.items[0].surname, 'Anonymous');
+            var json = JSON.parse(res.text);
+
+            assert(json.href);
+            assert.equal(json.givenName, givenName);
+            assert.equal(json.surname, surname);
+            assert.equal(json.email, email);
 
             done();
           });
-        });
-    });
-  });
-
-  it('should register new users and redirect to the nextUri with a session if autoAuthorize is enabled', function(done) {
-    var newUserData = helpers.newUser();
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true,
-          autoAuthorize: true
-        }
-      }
+      });
     });
 
-    app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post('/register')
-        .type('form')
-        .send(newUserData)
-        .expect(302)
-        .expect('Location', config.web.register.nextUri)
-        .expect('Set-Cookie', /access_token/)
-        .expect('Set-Cookie', /refresh_token/)
-        .end(function(err) {
-          if (err) {
-            return done(err);
+    it('should store additional account data in customData if the data is valid', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true,
+            fields: {
+              color: {
+                name: 'color',
+                placeholder: 'Color',
+                required: true,
+                type: 'text'
+              },
+              music: {
+                name: 'music',
+                placeholder: 'Music',
+                required: false,
+                type: 'text',
+              }
+            }
           }
+        }
+      });
 
-          stormpathApplication.getAccounts({ email: newUserData.email },function(err, collection) {
+      app.on('stormpath.ready', function() {
+        var color = 'black';
+        var music = 'rock';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            givenName: uuid.v4(),
+            surname: uuid.v4(),
+            email: uuid.v4() + '@test.com',
+            password: uuid.v4() + uuid.v4().toUpperCase() + '!',
+            color: color,
+            music: music
+          })
+          .expect(200)
+          .end(function(err, res) {
             if (err) {
               return done(err);
             }
 
-            assert.equal(collection.items.length, 1);
+            var json = JSON.parse(res.text);
+            app.get('stormpathClient').getAccount(json.href, function(err, account) {
+              if (err) {
+                return done(err);
+              }
+
+              account.getCustomData(function(err, data) {
+                if (err) {
+                  return done(err);
+                }
+
+                assert.equal(account.href, json.href);
+                assert.equal(data.color, color);
+                assert.equal(data.music, music);
+
+                done();
+              });
+            });
+          });
+      });
+    });
+  });
+
+  describe('via HTML API', function() {
+    it('should trigger HTML responses if an accept: text/html header is provided', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        request(app)
+          .get('/register')
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+
+            assert($('html').html());
+            assert($('head').html());
+            assert($('body').html());
+
             done();
           });
-        });
+      });
     });
-  });
 
-  it('should show an error if that email address is already registered', function(done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true
+    it('should return a SPA page if config.web.spaRoot is provided', function(done) {
+      var filename = '/tmp/' + uuid.v4();
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          },
+          spaRoot: filename
         }
-      }
+      });
+
+      fs.writeFile(filename, '<html><head><script></script></head><body><p>hi</p></body></html>', function(err) {
+        if (err) {
+          return done(err);
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        request(app)
+          .get('/register')
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+
+            assert($('html').html());
+            assert($('head').html());
+            assert.equal($('body p').html(), 'hi');
+
+            fs.unlink(filename, function(err) {
+              return done(err);
+            });
+          });
+      });
     });
 
-    app.on('stormpath.ready', function() {
-      request(app)
-        .post('/register')
-        .type('form')
-        .send(existingUserData)
-        .expect(200)
-        .end(function(err, res) {
-          if (err) {
-            return done(err);
+    it('should render an HTML form with all fields on a GET request', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true,
+            fields: {
+              color: {
+                name: 'color',
+                placeholder: 'Color',
+                required: false,
+                type: 'text'
+              }
+            },
+            fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
           }
+        }
+      });
 
-          assert(res.text.match(/Account with that email already exists/));
-          done();
-        });
+      app.on('stormpath.ready', function() {
+        var config = app.get('stormpathConfig');
+        request(app)
+          .get('/register')
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+
+            assert($('form input[name=givenName]').length);
+            assert.equal($('form input[name=givenName]').attr('placeholder'), config.web.register.fields.givenName.placeholder);
+            assert.equal($('form input[name=givenName]').attr('required') === 'required', config.web.register.fields.givenName.required);
+            assert.equal($('form input[name=givenName]').attr('type'), config.web.register.fields.givenName.type);
+
+            assert($('form input[name=surname]').length);
+            assert.equal($('form input[name=surname]').attr('placeholder'), config.web.register.fields.surname.placeholder);
+            assert.equal($('form input[name=surname]').attr('required') === 'required', config.web.register.fields.surname.required);
+            assert.equal($('form input[name=surname]').attr('type'), config.web.register.fields.surname.type);
+
+            assert($('form input[name=color]').length);
+            assert.equal($('form input[name=color]').attr('placeholder'), config.web.register.fields.color.placeholder);
+            assert.equal($('form input[name=color]').attr('required') === 'required', config.web.register.fields.color.required);
+            assert.equal($('form input[name=color]').attr('type'), config.web.register.fields.color.type);
+
+            assert($('form input[name=email]').length);
+            assert.equal($('form input[name=email]').attr('placeholder'), config.web.register.fields.email.placeholder);
+            assert.equal($('form input[name=email]').attr('required') === 'required', config.web.register.fields.email.required);
+            assert.equal($('form input[name=email]').attr('type'), config.web.register.fields.email.type);
+
+            assert($('form input[name=password]').length);
+            assert.equal($('form input[name=password]').attr('placeholder'), config.web.register.fields.password.placeholder);
+            assert.equal($('form input[name=password]').attr('required') === 'required', config.web.register.fields.password.required);
+            assert.equal($('form input[name=password]').attr('type'), config.web.register.fields.password.type);
+
+            done();
+          });
+      });
+    });
+
+    it('should render HTML errors if all required data is not supplied', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true,
+            fields: {
+              color: {
+                name: 'color',
+                placeholder: 'Color',
+                required: true,
+                type: 'text'
+              }
+            },
+            fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var givenName = uuid.v4();
+        var surname = uuid.v4();
+        var color = 'black';
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            givenName: givenName,
+            surname: surname,
+            email: email,
+            password: password
+          })
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+            assert($('.alert.alert-danger p').length);
+            assert.notEqual($('.alert.alert-danger p').text().indexOf('color'), -1);
+
+            done();
+          });
+      });
+    });
+
+    it('should create a user even if givenName is not supplied', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var surname = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            surname: surname,
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function(err) {
+            if (err) {
+              return done(err);
+            }
+
+            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+              if (err) {
+                return done(err);
+              }
+
+              if (accounts.items.length === 0) {
+                return done(new Error('No account was created!'));
+              }
+
+              var account = accounts.items[0];
+              assert.equal(account.email, email);
+
+              done();
+            });
+          });
+      });
+    });
+
+    it('should create a user even if surname is not supplied', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var givenName = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            givenName: givenName,
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function(err) {
+            if (err) {
+              return done(err);
+            }
+
+            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+              if (err) {
+                return done(err);
+              }
+
+              if (accounts.items.length === 0) {
+                return done(new Error('No account was created!'));
+              }
+
+              var account = accounts.items[0];
+              assert.equal(account.email, email);
+
+              done();
+            });
+          });
+      });
+    });
+
+    it('should re-render form data if a registration is unsuccessful', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var email = uuid.v4() + '@test.com';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({ email: email })
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+            assert.equal($('input[name=email]').val(), email);
+            done();
+          });
+      });
+    });
+
+    it('should store additional account data in customData if the data is valid', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true,
+            fields: {
+              color: {
+                name: 'color',
+                placeholder: 'Color',
+                required: true,
+                type: 'text'
+              },
+              music: {
+                name: 'music',
+                placeholder: 'Music',
+                required: false,
+                type: 'text',
+              }
+            },
+            fieldOrder: [ 'givenName', 'surname', 'email', 'color', 'music', 'password' ]
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var givenName = uuid.v4();
+        var surname = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var color = 'black';
+        var music = 'rock';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            givenName: givenName,
+            surname: surname,
+            email: email,
+            color: color,
+            music: music,
+            password: password
+          })
+          .expect(302)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+              if (err) {
+                return done(err);
+              }
+
+              if (accounts.items.length === 0) {
+                return done(new Error('No account was created!'));
+              }
+
+              var account = accounts.items[0];
+              account.getCustomData(function(err, data) {
+                if (err) {
+                  return done(err);
+                }
+
+                assert.equal(account.email, email);
+                assert.equal(data.color, color);
+                assert.equal(data.music, music);
+
+                done();
+              });
+            });
+          });
+      });
+    });
+
+    it('should return the user to the login page with ?status=unverified if the account is unverified', function(done) {
+      var application;
+      var client = helpers.createClient();
+
+      async.series([
+        function(callback) {
+          client.createApplication({ name: uuid.v4() }, { createDirectory: true }, function(err, app) {
+            if (err) {
+              return callback(err);
+            }
+
+            application = app;
+            callback();
+          });
+        },
+        function(callback) {
+          application.getDefaultAccountStore(function(err, mapping) {
+            if (err) {
+              return callback(err);
+            }
+
+            mapping.getAccountStore(function(err, store) {
+              if (err) {
+                return callback(err);
+              }
+
+              store.getAccountCreationPolicy(function(err, policy) {
+                if (err) {
+                  return callback(err);
+                }
+
+                policy.verificationEmailStatus = 'ENABLED';
+                policy.save(function(err) {
+                  if (err) {
+                    return callback(err);
+                  }
+
+                  callback();
+                });
+              });
+            });
+          });
+        },
+        function(callback) {
+          var app = helpers.createStormpathExpressApp({
+            application: {
+              href: application.href
+            },
+            web: {
+              register: {
+                enabled: true
+              }
+            }
+          });
+
+          app.on('stormpath.ready', function() {
+            var email = uuid.v4() + '@test.com';
+            var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+            var config = app.get('stormpathConfig');
+
+            request(app)
+              .post('/register')
+              .set('Accept', 'text/html')
+              .type('form')
+              .send({
+                email: email,
+                password: password
+              })
+              .expect(302)
+              .end(function(err, res) {
+                if (err) {
+                  return callback(err);
+                }
+
+                assert.equal(res.headers.location, config.web.login.uri + '?status=unverified');
+                callback();
+              });
+          });
+        }
+      ], function(err) {
+        done(err);
+      });
+    });
+
+    it('should redirect the user to the nextUri if authoAuthorize is enabled', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            autoAuthorize: true,
+            enabled: true,
+            nextUri: '/woot'
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.headers.location, '/woot');
+            done();
+          });
+      });
+    });
+
+    it('should redirect the user to the ?next uri if authoAuthorize is enabled', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            autoAuthorize: true,
+            enabled: true,
+            nextUri: '/woot'
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register?next=%2Fyo')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.headers.location, '/yo');
+            done();
+          });
+      });
+    });
+
+    it('should redirect the user to the login page with ?status=created if autoAuthorize is not enabled', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.headers.location, '/login?status=created');
+            done();
+          });
+      });
     });
   });
-
-  // TODO bring back this test after we finalize our config for form fields
-
-  // it('should not require givenName if requireGivenName is false', function(done) {
-  //   var app = express();
-  //   var agent = request.agent(app);
-
-  //   app.use(stormpath.init(app, {
-  //     apiKeyId:         process.env.STORMPATH_API_KEY_ID,
-  //     apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
-  //     application:      stormpathApplication.href,
-  //     requireGivenName: false,
-  //   }));
-
-  //   agent
-  //     .get('/register')
-  //     .expect(200)
-  //     .end(function(err, res) {
-  //       if (err) {
-  //         return done(err);
-  //       }
-
-  //       var $ = cheerio.load(res.text);
-  //       var email = uuid.v4() + '@test.com';
-
-  //       app.on('stormpath.ready',function(){
-  //         agent
-  //           .post('/register')
-  //           .type('form')
-  //           .send({ surname: uuid.v4() })
-  //           .send({ email: email })
-  //           .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-  //           .end(function(err, res) {
-  //             if (err) {
-  //               return done(err);
-  //             }
-
-  //             stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
-  //               if (err) {
-  //                 return done(err);
-  //               }
-
-  //               accounts.each(function(account, cb) {
-  //                 if (account.email === email) {
-  //                   return done();
-  //                 }
-
-  //                 cb();
-  //               }, function() {
-  //                 done(new Error('Account not created.'));
-  //               });
-  //             });
-  //           });
-  //       });
-  //     });
-  // });
-  //
-
-  // TODO bring back this test after we finalize our config for form fields
-
-  // it('should not require surname if requireSurname is false', function(done) {
-  //   var app = express();
-  //   var agent = request.agent(app);
-
-  //   app.use(stormpath.init(app, {
-  //     apiKeyId:         process.env.STORMPATH_API_KEY_ID,
-  //     apiKeySecret:     process.env.STORMPATH_API_KEY_SECRET,
-  //     application:      stormpathApplication.href,
-  //     requireSurname:   false,
-  //   }));
-
-  //   agent
-  //     .get('/register')
-  //     .expect(200)
-  //     .end(function(err, res) {
-  //       if (err) {
-  //         return done(err);
-  //       }
-
-  //       var $ = cheerio.load(res.text);
-  //       var email = uuid.v4() + '@test.com';
-
-  //       app.on('stormpath.ready',function(){
-  //         agent
-  //           .post('/register')
-  //           .type('form')
-  //           .send({ givenName: uuid.v4() })
-  //           .send({ email: email })
-  //           .send({ password: uuid.v4() + uuid.v4().toUpperCase() + '!' })
-  //           .end(function(err, res) {
-  //             if (err) {
-  //               return done(err);
-  //             }
-
-  //             stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
-  //               if (err) {
-  //                 return done(err);
-  //               }
-
-  //               accounts.each(function(account, cb) {
-  //                 if (account.email === email) {
-  //                   return done();
-  //                 }
-
-  //                 cb();
-  //               }, function() {
-  //                 done(new Error('Account not created.'));
-  //               });
-  //             });
-  //           });
-  //       });
-  //     });
-  // });
 });
