@@ -7,7 +7,7 @@ Change Log
 All library changes, in descending order.
 
 
-Version 2.0.5
+Version 2.0.6
 -------------
 
 **Not yet released.**
@@ -28,6 +28,12 @@ Version 2.0.5
 - Fixing option validation upon startup.
 - Adding support for LinkedIn login button.
 
+Version 2.0.5
+-------------
+
+**Released on September 23, 2015.**
+
+Fixing a bug with the config parser, it was not reading environment variables before running the validation step
 
 Version 2.0.4
 -------------
