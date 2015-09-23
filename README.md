@@ -23,14 +23,14 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
   The Stormpath module is only compatible with the [UI-Router][], so ensure that your application is using it.
 
-2. **Integrate Your Back-End Server**
+2. **Integrate Your Back-End**
 
   This module requires Stormpath on your back-end to work properly. At the moment we
-  have a fully-featured integration for Express.js, [express-stormpath][].
+  have a fully-featured integration for **Express.js**, [express-stormpath][].
 
-  For other frameworks, please see the [Server Integration Guide][].
+  For **other frameworks**, please see the [Server Integration Guide][].
 
-  For a quick setup, you use our [Stormpath SPA Development Server][].
+  For a **quick setup**, use our [Stormpath SPA Development Server][].
 
 3. **Download and Include the SDK**
 
@@ -56,7 +56,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   var app = angular.module('myApp', [..., 'stormpath', 'stormpath.templates']);
   ```
 
-5. **Configure The UI-Router**
+5. **Configure the UI-Router**
 
   In your `run()` block in *app.js*, configure the login state and the default state after login:
 
@@ -69,7 +69,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   });
   ```
 
-  Set `loginState` to your login state. If you don't have one, create one.
+  Set `loginState` to your login state. If you don't have one, create one.  
   Set `defaultPostLoginState` to your default state after login.
 
 6. **Protect Your States**
@@ -94,7 +94,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   });
   ```
 
-7. **Add states for login and signup**
+7. **Add States for Login and Signup**
 
   Create states and views for your login and signup page. Use the [`sp-login-form`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:spLoginForm) and [`sp-registration-form`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:spRegistrationForm) directives to inject the forms into your templates. E.g.
 
@@ -102,7 +102,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   <div sp-login-form></div>
   ```
 
-8. **Add login and logout links to your menu**
+8. **Add Login and Logout Links**
 
   Use the [`sp-logout`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLogout:spLogout) directive to end the session:
 
@@ -116,7 +116,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   <a ui-sref="login">Login</a>
   ```
 
-9. **Hide elements that should only be visible when logged in**
+9. **Hide Elements When Logged In**
 
   Use the [`if-user`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:ifUser) directive:
 
@@ -124,7 +124,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   <a ui-sref="main" sp-logout if-user>Logout</a>
   ```
 
-10. **Hide elements that should only be visible when logged out**
+10. **Hide Elements When Logged Out**
 
   Use the [`if-not-user`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:ifNotUser) directive:
 
@@ -132,7 +132,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   <a ui-sref="login" if-not-user>Login</a>
   ```
 
-11. **That's it!**
+11. **That's It!**
 
   You just added user authentication to your app with Stormpath. See the [documentation](https://docs.stormpath.com/angularjs/sdk/) for further information on how Stormpath can be used with your AngularJS app.
 
