@@ -19,21 +19,25 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 *Don't have an app? Use our [example](example/) as a boilerplate - it has Stormpath already integrated!*
 
-1. **Make sure you use ui-router**
+1. **Install UI-Router**
 
-  The Stormpath module is only compatible with the [ui-router](https://github.com/angular-ui/ui-router). So make sure that your application is using it.
+  The Stormpath module is only compatible with the [UI-Router][], so ensure that your application is using it.
 
-2. **Install the back-end development server**
+2. **Integrate Your Back-End Server**
 
-  This module requires a back-end to work properly. So in order to get your integration to work, we recommend that you install the development server until your back-end is fully integrated.
 
-  [Stormpath Development Server](https://github.com/timothyej/stormpath-dev-server)
+  This module requires Stormpath on your back-end to work properly. At the moment we
+  have a fully-featured integration for Express.js, [express-stormpath][].
 
-3. **Download and include the SDK**
+  For other frameworks, please see the [Server Integration Guide][]
+
+  For a quick setup, you may also use our [Stormpath Express Development Server][]
+
+3. **Download and Include the SDK**
 
   Download these two files:
 
-  * [stormpath-sdk-angularjs.min.js](https://raw.githubusercontent.com/stormpath/stormpath-sdk-angularjs/master/dist/stormpath-sdk-angularjs.min.js)  
+  * [stormpath-sdk-angularjs.min.js](https://raw.githubusercontent.com/stormpath/stormpath-sdk-angularjs/master/dist/stormpath-sdk-angularjs.min.js)
   * [stormpath-sdk-angularjs.tpls.min.js](https://raw.githubusercontent.com/stormpath/stormpath-sdk-angularjs/master/dist/stormpath-sdk-angularjs.tpls.min.js)
 
   Then include them in your *index.html* file:
@@ -45,7 +49,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
   Or install with bower: `$ bower install --save stormpath-sdk-angularjs`
 
-4. **Add the module to your app's dependencies**
+4. **Add the Module to Your App's Dependencies**
 
   Add the `stormpath` module and templates to your app's dependencies in *app.js*:
 
@@ -53,7 +57,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   var app = angular.module('myApp', [..., 'stormpath', 'stormpath.templates']);
   ```
 
-5. **Configure the ui-router**
+5. **Configure The UI-Router**
 
   In your `run()` block in *app.js*, configure the login state and the default state after login:
 
@@ -66,10 +70,10 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   });
   ```
 
-  Set `loginState` to your login state. If you don't have one, create one.  
+  Set `loginState` to your login state. If you don't have one, create one.
   Set `defaultPostLoginState` to your default state after login.
 
-6. **Protect your states**
+6. **Protect Your States**
 
   On all states that you want to protect, add:
 
@@ -149,3 +153,8 @@ Contact us via email at support@stormpath.com or visit our [support center](http
 
 Found something you want to change? Please see the [Contribution Guide](CONTRIBUTING.md),
 we love your input!
+
+[Server Integration Guide]: https://docs.stormpath.com/angularjs/sdk/#/server
+[express-stormpath]: https://github.com/stormpath/stormpath-express
+[Stormpath Express Development Server]: https://github.com/timothyej/stormpath-dev-server
+[UI-Router]: https://github.com/angular-ui/ui-router
