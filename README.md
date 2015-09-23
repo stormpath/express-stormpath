@@ -25,13 +25,12 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 2. **Integrate Your Back-End Server**
 
-
   This module requires Stormpath on your back-end to work properly. At the moment we
   have a fully-featured integration for Express.js, [express-stormpath][].
 
-  For other frameworks, please see the [Server Integration Guide][]
+  For other frameworks, please see the [Server Integration Guide][].
 
-  For a quick setup, you may also use our [Stormpath Express Development Server][]
+  For a quick setup, you use our [Stormpath SPA Development Server][].
 
 3. **Download and Include the SDK**
 
@@ -156,5 +155,5 @@ we love your input!
 
 [Server Integration Guide]: https://docs.stormpath.com/angularjs/sdk/#/server
 [express-stormpath]: https://github.com/stormpath/stormpath-express
-[Stormpath Express Development Server]: https://github.com/timothyej/stormpath-dev-server
+[Stormpath SPA Development Server]: https://github.com/stormpath/stormpath-spa-dev-server
 [UI-Router]: https://github.com/angular-ui/ui-router
