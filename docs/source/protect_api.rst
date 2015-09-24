@@ -43,9 +43,13 @@ We want to initialize the Stormpath middleware and add it before our API
 declaration, so that the API will be automatically protected.
 
 First things first, you need to require the SDK - place this at the top of the
-file::
+file, under the other require statements::
 
     var ExpressStormpath = require('express-stormpath');
+
+We're also going to use the ``path``, so you should require that as well::
+
+   var path = require('path');
 
 Then you want to create an instance of the Stormpath middleware.  You can pass
 options, but in our case, we are just going to make a simple call and use all
@@ -65,8 +69,12 @@ where all of the Angular assets live)
 Open the file ``server/routes.js``.
 
 This file is attaching some routes to the Express application that is setup in
-``server/app.js``.  You'll want to require `stormpath-express` again, and then
+``server/app.js``.  You'll want to require ``express-stormpath`` again, and then
 use it to secure your API::
+
+    var ExpressStormpath = require('express-stormpath');
+
+    // ..
 
     app.use('/api/things', ExpressStormpath.apiAuthenticationRequired, require('./api/thing'));
 

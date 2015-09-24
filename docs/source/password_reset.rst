@@ -112,7 +112,7 @@ Don't forget to press save!
 
 Here is what that screen looks like:
 
-.. image:: _static/password_reset.png
+.. image:: _static/directory-password-reset.png
 
 
 Try It, Reset your Password!

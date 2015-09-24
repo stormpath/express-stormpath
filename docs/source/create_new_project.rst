@@ -85,14 +85,6 @@ It should automatically open this page in your browser:
 
 .. image:: _static/fullstack-new-project.png
 
-Now would be a good time to start using Git with your project. You can
-stop the server by pressing ``Ctrl+C`` - then use these git commands::
-
-    $ git init
-    $ git add .
-    $ git commit -m "Begin dasbhoard app project"
-
-
 Install the Stormpath Packages
 --------------------------
 
@@ -114,6 +106,17 @@ this command to get the latest::
 
 In the next section, we will get your Stormpath Tenant information, so that we can
 continue with the latter sections.
+
+Git Tracking
+--------------------------
+Now would be a good time to start using Git with your project. You can
+stop the server by pressing ``Ctrl+C`` - then use these git commands::
+
+    $ git init
+    $ git add .
+    $ git commit -m "Begin dasbhoard app project"
+
+
 
 .. _Stormpath Admin Console: https://api.stormpath.com
 .. _Stormpath Angular SDK: https://github.com/stormpath/stormpath-sdk-angularjs
