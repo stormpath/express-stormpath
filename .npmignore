@@ -3,4 +3,5 @@ test
 .env
 .travis.yml
 .gitignore
+build-docs.sh
 README.md
