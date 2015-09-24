@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.7
+-------------
+
+**Released on September 24, 2015.**
+
+- Fixing bug with missing dependency: ``request``.  Hotfix release.
+
+
 Version 2.0.6
 -------------
 
