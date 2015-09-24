@@ -9,8 +9,8 @@ Stormpath provides integration with the following services:
 * Google
 * Linkedin
 
-In this guide we will cover Facebook and Google.  Github and Linkedin have very
-similar flows, and this guide will show you by example.
+In this guide we will cover Facebook, Google, and LinkedIn. GitHub has a very
+similar flow, and this guide will show you by example.
 
 
 Facebook Login
@@ -247,6 +247,108 @@ then immediately redirected back to your website at the URL specified by
 Simple, right?!
 
 
+LinkedIn Login
+--------------
+
+Integrating LinkedIn Login is very similar to Google. You must create an application
+in the LinkedIn Console, then create a Directory in Stormpath which holds
+settings for the LinkedIn application that you created.
+
+
+Create a LinkedIn Application
+.............................
+
+The first thing you need to do is log into the `LinkedIn Developer Console`_ and
+create a new LinkedIn Application.
+
+You can do this by visiting the `LinkedIn Developer Console`_ and clicking the "Create
+Application" button.  You should see something like the following:
+
+.. image:: /_static/linkedin-new-application.gif
+
+Continue by filling out all the required fields.
+
+
+Enable LinkedIn Permissions
+...........................
+
+Now that you've got a LinkedIn Application -- let's enable LinkedIn permissions.  The way
+LinkedIn Applications work is that you have to selectively enable what permissions
+each Application requires.
+
+Under the "Default Application Permissions" section, be sure to enable the "r_basicprofile"
+and the "r_emailaddress" permissions. These permissions allow Stormpath to access the basic
+profile properties (first, middle, and last name) and email (*these permissions are required*).
+
+.. image:: /_static/linkedin-add-permissions.gif
+
+The next thing we need to do is add in all of the allowed Redirect URLs for our application.  Well do this by 
+entering all of our absolute redirect URLs under the "OAuth 2.0" section.  For instance, if I was running
+my site locally on port 3000, as well as under the "www.example.com" domain, I'd add two redirect URIs:
+
+- http://localhost:3000/callbacks/linkedin
+- https://www.example.com/callbacks/linkedin
+
+.. image:: /_static/linkedin-add-authorized-urls.gif
+
+
+Create a LinkedIn Directory
+...........................
+
+Next, we need to input the LinkedIn Application credentials into Stormpath.  This allows
+Stormpath to interact with the LinkedIn API on your behalf, which automates all
+OAuth flows.
+
+To do this, you need to visit the `Stormpath Admin Console`_ and create a new
+directory from the Directories section.  When you click "Create Directory",
+choose "LinkedIn" as the provider, and enter the following information about your
+LinkedIn Application:
+
+- For the "Name" field, you can insert whatever name you want.
+- For the "LinkedIn Client ID" field, insert your LinkedIn Client ID which you got
+  in the previous steps.
+- For the "LinkedIn Client Secret" field, insert your LinkedIn Client Secret
+  which you got in the previous steps.
+
+Lastly, be sure to click the "Save" button at the bottom of the page.
+
+Next, you need to hook your new LinkedIn Directory up to your Stormpath
+Application.  To do this, visit the Applications section and select your
+application from the list.
+
+On your application page, click the "Account Stores" tab, then click the "Add
+Account Store" button.  From the drop down list, select your newly created
+LinkedIn Directory, then save your changes.
+
+That's it!
+
+
+Test it Out
+...........
+
+Now that you've plugged your LinkedIn credentials into express-stormpath, social
+login should already be working!
+
+Open your Express app in a browser, and try logging in by visiting the login page
+(``/login``).  If you're using the default login page included with this
+library, you should see the following:
+
+.. image:: /_static/login-page-linkedin.png
+
+You now have a fancy new LinkedIn enabled login button!  Try logging in!  When you
+click the new LinkedIn button you'll be redirected to LinkedIn, and prompted to
+select your LinkedIn account:
+
+.. image:: /_static/linkedin-permissions-page.png
+
+After selecting your account you'll then be prompted to accept any permissions,
+then immediately redirected back to your website at the URL specified by
+``redirectUrl`` in your app's settings.
+
+Simple, right?!
+
+
 .. _Stormpath Admin Console: https://api.stormpath.com
 .. _Facebook Developer Site: https://developers.facebook.com/
 .. _Google Developer Console: https://console.developers.google.com/project
+.. _LinkedIn Developer Console: https://www.linkedin.com/developer/apps
