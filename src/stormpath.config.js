@@ -84,7 +84,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/oauth/token`
+    * Default: `/login`
     *
     * The URI that the login form will post to.  The endpoint MUST accept data
     * in the following format:
@@ -108,7 +108,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/api/users/current`
+    * Default: `/me`
     *
     * The URI that is used to fetch the account object of
     * the currently logged in user.  This endpoint MUST:
@@ -257,7 +257,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/change`
+    * Default: `/forgot`
     *
     * The endpoint that is used by
     * {@link stormpath.userService.$user#methods_passwordResetRequest $user.passwordResetRequest()}
@@ -348,7 +348,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/api/users`
+    * Default: `/register`
     *
     * The endpoint that is used by
     * {@link stormpath.userService.$user#methods_create $user.create()}

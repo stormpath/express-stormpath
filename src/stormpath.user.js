@@ -139,32 +139,24 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @description
          *
          * Attempts to create a new user by submitting the given `accountData` as
-         * JSON to `/api/users`.  The POST endpoint can be modified via the
-         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
-         *
-         * This method expects a `201` response if the account does NOT require email
-         * verification.
-         *
-         * If email verification is enabled, you should send a `202` response instead.
-         *
-         * If you are using our Express.JS SDK, you can simply attach the
-         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
-         * to your application and these responses will be handled automatically for you.
+         * JSON to `/register`.  The POST endpoint can be modified via the
+         * {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_REGISTER_URI REGISTER_URI}
+         * config option.
          *
          * @example
          *
          * <pre>
          * $user.create(accountData)
-         *   .then(function(created){
-         *     if(created){
+         *   .then(function(account){
+         *     if(account.status === 'ENABLED'){
          *       // The account is enabled and ready to use
-         *     }else{
+         *     }else if(account.status === 'UNVERIFIED'){
          *       // The account requires email verification
          *     }
          *   })
          *   .catch(function(response){
          *     // Show the error message to the user
-         *     $scope.error = response.data.errorMessage;
+         *     $scope.error = response.data.error;
          *   });
          * </pre>
          */
