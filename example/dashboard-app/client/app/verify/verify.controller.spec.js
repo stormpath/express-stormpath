@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: PasswordResetRequestCtrl', function () {
+describe('Controller: VerifyCtrl', function () {
 
   // load the controller's module
   beforeEach(module('dashboardApp'));
 
-  var PasswordResetRequestCtrl, scope;
+  var VerifyCtrl, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    PasswordResetRequestCtrl = $controller('PasswordResetRequestCtrl', {
+    VerifyCtrl = $controller('VerifyCtrl', {
       $scope: scope
     });
   }));

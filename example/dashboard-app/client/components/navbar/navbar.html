@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="/" class="navbar-brand">dashboard-app</a>
+      <a href="/" class="navbar-brand">dashboard</a>
     </div>
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
@@ -15,7 +15,7 @@
             <a ng-href="{{item.link}}">{{item.title}}</a>
         </li>
         <li if-user ng-class="{active: isActive('/profile')}">
-            <a ng-href="/profile">Profile</a>
+            <a ui-sref="profile">Profile</a>
         </li>
         <li if-not-user ng-class="{active: isActive('/register')}">
             <a ui-sref="register">Register</a>

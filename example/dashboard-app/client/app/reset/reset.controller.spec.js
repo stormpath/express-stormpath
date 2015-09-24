@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: EmailVerificationCtrl', function () {
+describe('Controller: ResetCtrl', function () {
 
   // load the controller's module
   beforeEach(module('dashboardApp'));
 
-  var EmailVerificationCtrl, scope;
+  var ResetCtrl, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    EmailVerificationCtrl = $controller('EmailVerificationCtrl', {
+    ResetCtrl = $controller('ResetCtrl', {
       $scope: scope
     });
   }));

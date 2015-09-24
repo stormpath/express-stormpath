@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('dashboardApp')
-  .controller('PasswordResetRequestCtrl', function ($scope) {
+  .controller('ForgotCtrl', function ($scope) {
     $scope.message = 'Hello';
   });

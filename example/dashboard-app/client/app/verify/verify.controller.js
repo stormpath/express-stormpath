@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('dashboardApp')
-  .controller('EmailVerificationCtrl', function ($scope) {
+  .controller('VerifyCtrl', function ($scope) {
     $scope.message = 'Hello';
   });
