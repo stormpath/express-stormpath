@@ -70,7 +70,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
   });
   ```
 
-  Set `loginState` to your login state. If you don't have one, create one.  
+  Set `loginState` to your login state. If you don't have one, create one.
   Set `defaultPostLoginState` to your default state after login.
 
 6. **Protect Your States**
@@ -139,7 +139,10 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 ## Documentation
 
-For all available directives and services, see the [documentation](https://docs.stormpath.com/angularjs/sdk/).
+For all available directives and services, see the [API Documentation].
+
+If you are using Yeomon, please see our [Yeoman Guide][].  It will walk
+you through the creation of an Angular application from scratch, using Yeoman.
 
 ## Example
 
@@ -158,7 +161,9 @@ we love your input!
 
 Apache 2.0, see [LICENSE](LICENSE).
 
+[API Documentation]: https://docs.stormpath.com/angularjs/sdk/
 [Server Integration Guide]: https://docs.stormpath.com/angularjs/sdk/#/server
 [express-stormpath]: https://github.com/stormpath/stormpath-express
 [Stormpath SPA Development Server]: https://github.com/stormpath/stormpath-spa-dev-server
 [UI-Router]: https://github.com/angular-ui/ui-router
+[Yeoman Guide]: https://docs.stormpath.com/angularjs/guide
