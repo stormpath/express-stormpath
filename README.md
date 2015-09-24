@@ -135,11 +135,11 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 11. **That's It!**
 
-  You just added user authentication to your app with Stormpath. See the [documentation](https://docs.stormpath.com/angularjs/sdk/) for further information on how Stormpath can be used with your AngularJS app.
+  You just added user authentication to your app with Stormpath. See the [API Documentation][] for further information on how Stormpath can be used with your AngularJS app.
 
 ## Documentation
 
-For all available directives and services, see the [API Documentation].
+For all available directives and services, see the [API Documentation][].
 
 If you are using Yeomon, please see our [Yeoman Guide][].  It will walk
 you through the creation of an Angular application from scratch, using Yeoman.
