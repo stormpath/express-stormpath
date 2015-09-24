@@ -12,6 +12,7 @@ This module provides services and directives for AngularJS that will allow you t
 * [Example](#example)
 * [Help](#help)
 * [Contributing](#contributing)
+* [License](#license)
 
 ## Getting Started
 
@@ -152,6 +153,10 @@ Contact us via email at support@stormpath.com or visit our [support center](http
 
 Found something you want to change? Please see the [Contribution Guide](CONTRIBUTING.md),
 we love your input!
+
+## License
+
+Apache 2.0, see [LICENSE](LICENSE).
 
 [Server Integration Guide]: https://docs.stormpath.com/angularjs/sdk/#/server
 [express-stormpath]: https://github.com/stormpath/stormpath-express
