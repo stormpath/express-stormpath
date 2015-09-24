@@ -10,7 +10,7 @@ All library changes, in descending order.
 Version 2.0.6
 -------------
 
-**Released on September 23, 2015.**
+**Released on September 24, 2015.**
 
 - Improving option validation.
 - Adding human-readable errors that help people fix their configuration data in
