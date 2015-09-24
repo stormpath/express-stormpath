@@ -351,4 +351,4 @@ Simple, right?!
 .. _Stormpath Admin Console: https://api.stormpath.com
 .. _Facebook Developer Site: https://developers.facebook.com/
 .. _Google Developer Console: https://console.developers.google.com/project
-.. _LinkedIn Admin Console: https://www.linkedin.com/developer/apps
+.. _LinkedIn Developer Console: https://www.linkedin.com/developer/apps
