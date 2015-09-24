@@ -1,5 +1,6 @@
 docs
 test
+.editorconfig
 .env
 .travis.yml
 .gitignore
