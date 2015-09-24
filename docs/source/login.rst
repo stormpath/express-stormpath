@@ -34,7 +34,7 @@ Use the Login Form Directive
 --------------------------------
 
 Open the file ``client/app/login/login.html`` and then replace
-its contents with this
+its contents with this:
 
 .. code-block:: html
 

@@ -210,8 +210,8 @@ will go into the ``customData`` object on the Account object.
 
 .. note::
   You need to ensure that your server-side framework is decoding complex form
-  objects.  In our Yeoman example, you will need to open ``sever/config/express.js``
-  and modify this line to enable that option::
+  objects in POST bodies.  If you are using the common ``body-parser`` library, you can
+  enable that with the ``extended`` option::
 
     app.use(bodyParser.urlencoded({ extended: true }));
 

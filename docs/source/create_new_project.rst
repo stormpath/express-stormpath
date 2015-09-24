@@ -96,12 +96,12 @@ stop the server by pressing ``Ctrl+C`` - then use these git commands::
 Install the Stormpath Packages
 --------------------------
 
-We need to add two packages to this project: the `Stormpath Express SDK`_ and the `Stormpath Angular SDK`_.
+We need to add two packages to this project: the `Stormpath Express Module`_ and the `Stormpath Angular SDK`_.
 Because the Angular SDK is a front-end application, it is managed with `Bower`_.
 
 Install them with these commands, which will also persist them to your ``package.json`` and ``bower.json`` files::
 
-    $ npm install --save stormpath-sdk-express
+    $ npm install --save express-stormpath
     $ bower install --save stormpath-sdk-angularjs
 
 Upgrade Express
@@ -117,4 +117,4 @@ continue with the latter sections.
 
 .. _Stormpath Admin Console: https://api.stormpath.com
 .. _Stormpath Angular SDK: https://github.com/stormpath/stormpath-sdk-angularjs
-.. _Stormpath Express SDK: https://github.com/stormpath/stormpath-sdk-express
+.. _Stormpath Express Module: https://github.com/stormpath/stormpath-express

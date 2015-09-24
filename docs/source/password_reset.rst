@@ -3,47 +3,42 @@
 Password Reset Flow
 ============================
 
-Stormpath has your back when it comes to password reset!  We have
-a complete, secure solution that allows your users to request a password
-reset by email.  We send the user a link with a verification token; when
+Stormpath provides a secure solution that allows your users to request a password
+reset token by email.  We send the user a link with a verification token; when
 they click on this link, they arrive back at your site.  You then validate
-that this token came from us and allow the user to set a new password.
-We do all the heavy lifting for you!
+that this token came from Stormpath and ask the user to set a new password.
 
-We are going to create two separate UI routes for this flow:
+This Angular SDK provides forms that faciliate this process for you.
 
-* ``/password/requestReset`` will serve a form, which allows the user to ask for a new email.
-* ``/password/reset`` will be the page they land on when they click on the link in their email.
+We need two separate UI routes for this flow:
+
+* ``/forgot`` will serve a form that asks the user for their email address.  When
+  this form is submited we will send the email with a password reset link.
+* ``/reset`` will be the page they land on when they click on the link in their email.
 
 
 Generate the Routes
 --------------------------------
 
-Using the generator command, create a route named ``passwordResetRequest``, but make sure
-that you set the URL to ``/password/requestReset`` when prompted.  We will use this
-route to render a form which asks them for their email address:
+Using the generator command, create a routes for ``forgot`` and ``reset``:
 
 .. code-block:: bash
 
-    $ yo angular-fullstack:route passwordResetRequest
-
-.. code-block:: bash
-
-    ? Where would you like to create this route? client/app/
-    ? What will the url of your route be? /password/requestReset
-
-Then we want to make a form, which allows them to set a new password after we verify
-that they have arrived with a valid reset token.  We will name this view ``passwordReset``
-and give it a URL of ``/password/reset`` - make sure to set this when prompted:
-
-.. code-block:: bash
-
-    $ yo angular-fullstack:route passwordReset
+    $ yo angular-fullstack:route forgot
 
 .. code-block:: bash
 
     ? Where would you like to create this route? client/app/
-    ? What will the url of your route be? /password/reset
+    ? What will the url of your route be? /forgot
+
+.. code-block:: bash
+
+    $ yo angular-fullstack:route reset
+
+.. code-block:: bash
+
+    ? Where would you like to create this route? client/app/
+    ? What will the url of your route be? /reset
 
 
 Add the sptoken Parameter
@@ -51,11 +46,10 @@ Add the sptoken Parameter
 
 When the user clicks on the link in their email, they will be sent to your
 application with a url parameter called ``sptoken`` - we need to let the UI
-router know about this.  Open the file
-``client/app/passwordReset/passwordReset.js`` and modify the ``url``
-string to include this parameter:
-::
-    url: '/password/reset?sptoken',
+router know about this.  Open the file ``client/app/reset/reset.js`` and modify
+the ``url`` string to include this parameter::
+
+    url: '/reset?sptoken',
 
 
 Use the Password Reset Directives
@@ -63,7 +57,24 @@ Use the Password Reset Directives
 
 We want to modify the two views that we created in the last steps.
 
-Open ``client/app/passwordReset/passwordReset.html`` and replace its contents with this:
+Open ``client/app/forgot/forgot.html`` and replace its contents with this:
+
+.. code-block:: html
+
+    <div ng-include="'components/navbar/navbar.html'"></div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>Forgot Password</h3>
+          <hr>
+        </div>
+      </div>
+      <div sp-password-reset-request-form></div>
+    </div>
+
+
+Next, open ``client/app/reset/reset.html`` and replace its contents with this:
 
 .. code-block:: html
 
@@ -79,21 +90,6 @@ Open ``client/app/passwordReset/passwordReset.html`` and replace its contents wi
       <div sp-password-reset-form></div>
     </div>
 
-Next find ``client/app/passwordResetRequest/passwordResetRequest.html`` and replace its contents with this:
-
-.. code-block:: html
-
-    <div ng-include="'components/navbar/navbar.html'"></div>
-
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12">
-          <h3>Request Password Reset</h3>
-          <hr>
-        </div>
-      </div>
-      <div sp-password-reset-request-form></div>
-    </div>
 
 
 Configure the Directory
@@ -110,7 +106,7 @@ to point to your application.  At the moment that URL will be:
 
 .. code-block:: bash
 
-    http://localhost:9000/password/reset
+    http://localhost:9000/reset
 
 Don't forget to press save!
 
