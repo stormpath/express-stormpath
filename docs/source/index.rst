@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Stormpath's AngularJS Guide!
+Welcome to Stormpath's AngularJS + Yeoman Guide!
 =================================================
 
 .. image:: _static/awesome.png
