@@ -1,3 +1,77 @@
+# 0.7.0
+
+### ! ** Many Breaking Changes ** !
+
+This library has been upgraded to conform to our framework specification,
+this means that many of the endpoints and default URLs have changed.
+
+If you have built a server integration by hand, you will need to read this changelog
+to know which URLs and HTTP responses that you will need to change.
+
+If you are using [Stormpath Express SDK][], that module is being deprecated. You
+will need to start using [Express-Stormpath][] if you want to use this and
+future versions of this Angular SDK.  We suggest that you read the [Server
+Configuration][] section of our [Yeoman Guide][], it will show you the new way
+of initializing [Express-Stormpath][] and attaching it to your application
+
+#### Login Changes
+
+The login feature now uses `/login` as the location where posts the login
+form.  Previously this was `/oauth/token`.  This can be configured with the
+`AUTHENTICATION_ENDPOINT` property in `STORMPATH_CONFIG`
+
+#### User Context Changes
+
+This SDK now uses the `/me` URL to determine the context of the current user.
+Previously this was `/api/users/current`.  This can be configured with the
+`CURRENT_USER_URI` property in `STORMPATH_CONFIG`
+
+#### Email Verification Changes
+
+This SDK now uses the `/verify` URL to consume email verification tokens.
+Previously this was `/api/emailVerificationTokens`.  This can be configured with the
+`EMAIL_VERIFICATION_ENDPOINT` property in `STORMPATH_CONFIG`
+
+The same URL, `/verify`, is now used to request a re-send of a verification email.
+POST a JSON body with an `email` property to trigger this action.  Previously
+this was `/api/verificationEmails` and the `RESEND_EMAIL_VERIFICATION_ENDPOINT`
+property has been removed from `STORMPATH_CONFIG`.
+
+#### Password Reset Changes
+
+This SDK now uses `/forgot` to request a password reset email, POST a JSON body
+to this endpoint with an `email` property to trigger this action.  Previously
+this was `/api/passwordResetTokens` and the
+`PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT` property has been removed from
+`STORMPATH_CONFIG`.  The new property is `FORGOT_PASSWORD_ENDPOINT`
+
+The `/change` URL is now used to POST a new password, with a valid `sptoken`.
+Previously this feature was supported with the `/api/passwordResetTokens` URL
+and the `PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT` property has been removed
+from `STORMPATH_CONFIG`.  The new property is `CHANGE_PASSWORD_ENDPOINT`
+
+The default login form now links to the forgot password flow via an href link
+to `/forgot`. Previously it was using a UI Router state name of
+`passwordResetRequest`
+
+#### Registration Changes
+
+The SDK now uses `/register` to POST data for a new account, previously this
+was `/api/users` and the `USER_COLLECTION_URI` property has been removed from
+`STORMPATH_CONFIG`.  The new property is `REGISTER_URI`.
+
+The callback for `$user.create()` will now give you the entire account object.
+Previously it gave you a truthy value that would indicate if the account required
+email verification.  Now that the entire account object is passed, you need to
+inspect the account object's `status` property to see if it is `UNVERIFIED`.
+
+#### Error responses
+
+This SDK now expects any HTTP call which results in a `4xx` error to supply an
+`error` property on the JSON body of the response.  Previously it expected
+an `errorMessage` property
+
+
 # 0.6.0
 
 ### Breaking Changes
@@ -26,7 +100,7 @@ and we will change this API in the future so use with this disclaimer.
 
 ### Improvements
 
-* Remove un-used `$cookieStore` depdency
+* Remove un-used `$cookieStore` dependency
 
 ### Bug Fixes
 
@@ -138,3 +212,6 @@ would break after logout (user state was not properly reflected after logout)
 [$stateChangeUnauthorized]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.$stormpath#events_$statechangeunauthorized
 [ifUserInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup
 [ifUserNotInGroup]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserNotInGroup:ifUserNotInGroup
+[Express-Stormpath]: https://github.com/stormpath/stormpath-express
+[Server Configuration]: http://docs.stormpath.com/angularjs/guide/protect_api.html
+[Yeoman Guide]: http://docs.stormpath.com/angularjs/guide/
