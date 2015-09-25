@@ -1,15 +1,15 @@
 /**
  * stormpath-sdk-angularjs
  * Copyright Stormpath, Inc. 2015
- *
- * @version v0.5.1-dev-2015-06-11
+ * 
+ * @version v0.6.0-dev-2015-09-15
  * @link https://github.com/stormpath/stormpath-sdk-angularjs
  * @license Apache-2.0
  */
 
 /* commonjs package manager support (eg componentjs) */
 if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
-  module.exports = 'stormpath';
+  module.exports = 'ui.router';
 }
 
 (function (window, angular, undefined) {
@@ -128,8 +128,8 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
    */
 
   this.$get = [
-    '$user','$state','$cookieStore','STORMPATH_CONFIG','$rootScope',
-    function stormpathServiceFactory($user,$state,$cookieStore,STORMPATH_CONFIG,$rootScope){
+    '$user','$state','STORMPATH_CONFIG','$rootScope',
+    function stormpathServiceFactory($user,$state,STORMPATH_CONFIG,$rootScope){
 
       function StormpathService(){
         var encoder = new UrlEncodedFormParser();
@@ -251,19 +251,14 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
               stateChangeUnauthorizedEvent(toState,toParams);
             }
           }else if(toState.name===config.loginState){
+            /*
+              If the user is already logged in, we will redirect
+              away from the login page and send the user to the
+              post login state.
+             */
             if($user.currentUser && $user.currentUser.href){
               e.preventDefault();
               $state.go(config.defaultPostLoginState);
-            }
-            else if($user.currentUser===null){
-              e.preventDefault();
-              $user.get().finally(function(){
-                if($user.currentUser){
-                  $state.go(config.defaultPostLoginState);
-                }else{
-                  $state.go(toState.name,toParams);
-                }
-              });
             }
           }
         });
@@ -504,9 +499,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -535,9 +530,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(user){
         if(user && user.href){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       });
     }
@@ -613,10 +608,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       function evalElement(){
         var user = $user.currentUser;
-        if(user && user.groupTest(expr)){
-          element.show();
+        if(user && user.groupTest(expr || attrExpr)){
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       }
 
@@ -665,10 +660,10 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
 
       function evalElement(){
         var user = $user.currentUser;
-        if(user && user.groupTest(expr)){
-          element.hide();
+        if(user && user.groupTest(expr || attrExpr)){
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       }
 
@@ -701,9 +696,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser || ($user.currentUser===false)){
-          element.hide();
+          element.addClass('ng-hide');
         }else{
-          element.show();
+          element.removeClass('ng-hide');
         }
       });
     }
@@ -739,9 +734,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser || ($user.currentUser===false)){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -771,9 +766,9 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     link: function(scope,element){
       $rootScope.$watch('user',function(){
         if($user.currentUser === null){
-          element.show();
+          element.removeClass('ng-hide');
         }else{
-          element.hide();
+          element.addClass('ng-hide');
         }
       });
     }
@@ -804,6 +799,7 @@ angular.module('stormpath',['stormpath.CONFIG','stormpath.auth','stormpath.userS
     }
   };
 }]);
+
 'use strict';
 /**
  * @ngdoc overview
@@ -897,6 +893,31 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          *
          * });
          * </pre>
+         *
+         * ## Social Login example
+         *
+         * <pre>
+         * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
+         *   $scope.errorMessage = null;
+         *   $scope.formData = {
+         *     providerId: 'facebook',         // Get access token from FB sdk login
+         *     accessToken: 'CABTmZxAZBxBADbr1l7ZCwHpjivBt9T0GZBqjQdTmgyO0OkUq37HYaBi4F23f49f5',
+         *   };
+         *
+         *   // Use this method with ng-submit on your form
+         *   $scope.login = function login(formData){
+         *     $auth.authenticate(formData)
+         *      .then(function(){
+         *        console.log('login success');
+         *        $state.go('home');
+         *      })
+         *      .catch(function(httpResponse){
+         *        $scope.errorMessage = response.data.message;
+         *      });
+         *   }
+         *
+         * });
+         * </pre>
          */
         var op = $http($spFormEncoder.formPost({
             url: STORMPATH_CONFIG.getUrl('AUTHENTICATION_ENDPOINT'),
@@ -904,7 +925,9 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
             withCredentials: true,
             data: data,
             params: {
-              'grant_type': 'password'
+              'grant_type': data.providerId
+                  ? 'social'
+                  : 'password'
             }
           })
         );
@@ -1452,9 +1475,11 @@ angular.module('stormpath')
       }
 
       FormEncoderService.prototype.formPost = function formPost(httpRequest){
-        var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
-        h['Content-Type'] = STORMPATH_CONFIG.FORM_CONTENT_TYPE;
-        httpRequest.data = this.encodeUrlForm(httpRequest.data);
+        if(STORMPATH_CONFIG.FORM_CONTENT_TYPE==='application/x-www-form-urlencoded'){
+          var h = httpRequest.headers ? httpRequest.headers : (httpRequest.headers = {});
+          h['Content-Type'] = STORMPATH_CONFIG.FORM_CONTENT_TYPE;
+          httpRequest.data = this.encodeUrlForm(httpRequest.data);
+        }
         return httpRequest;
       };
 
@@ -1630,7 +1655,7 @@ angular.module('stormpath')
   $scope.submit = function(){
     $scope.posting = true;
     $scope.requestFailed = false;
-    $user.passwordResetRequest({username: $scope.formModel.username})
+    $user.passwordResetRequest({email: $scope.formModel.email})
       .then(function(){
         $scope.sent = true;
       })
@@ -2296,10 +2321,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        *
        * @param  {Object} data
        *
-       * An object literal for passing the username or email.
+       * An object literal for passing the email address.
        * ```
        * {
-       *   username: 'email address or username'
+       *   email: 'email address of the user'
        * }
        * ```
        */

@@ -91,6 +91,31 @@ angular.module('stormpath.auth',['stormpath.CONFIG'])
          *
          * });
          * </pre>
+         *
+         * ## Social Login example
+         *
+         * <pre>
+         * myApp.controller('LoginCtrl', function ($scope, $auth, $state) {
+         *   $scope.errorMessage = null;
+         *   $scope.formData = {
+         *     providerId: 'facebook',         // Get access token from FB sdk login
+         *     accessToken: 'CABTmZxAZBxBADbr1l7ZCwHpjivBt9T0GZBqjQdTmgyO0OkUq37HYaBi4F23f49f5',
+         *   };
+         *
+         *   // Use this method with ng-submit on your form
+         *   $scope.login = function login(formData){
+         *     $auth.authenticate(formData)
+         *      .then(function(){
+         *        console.log('login success');
+         *        $state.go('home');
+         *      })
+         *      .catch(function(httpResponse){
+         *        $scope.errorMessage = response.data.message;
+         *      });
+         *   }
+         *
+         * });
+         * </pre>
          */
         var op = $http($spFormEncoder.formPost({
             url: STORMPATH_CONFIG.getUrl('AUTHENTICATION_ENDPOINT'),
