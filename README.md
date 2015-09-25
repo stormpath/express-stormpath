@@ -18,7 +18,7 @@ This module provides services and directives for AngularJS that will allow you t
 
 Follow these steps to add Stormpath user authentication to your AngularJS app.
 
-*Don't have an app? Use our [example app](example/dashboard-app/) as a boilerplate - it has Stormpath already integrated!*
+*Don't have an app? Use our [example app][] as a boilerplate - it has Stormpath already integrated!*
 
 1. **Install UI-Router**
 
@@ -97,7 +97,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 7. **Add States for Login and Signup**
 
-  Create states and views for your login and signup page. Use the [`sp-login-form`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:spLoginForm) and [`sp-registration-form`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:spRegistrationForm) directives to inject the forms into your templates. E.g.
+  Create states and views for your login and signup page. Use the [`sp-login-form`][] and [`sp-registration-form`][] directives to inject the forms into your templates. E.g.
 
   ```html
   <div sp-login-form></div>
@@ -105,7 +105,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 8. **Add Login and Logout Links**
 
-  Use the [`sp-logout`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLogout:spLogout) directive to end the session:
+  Use the [`sp-logout`][] directive to end the session:
 
   ```html
   <a ui-sref="main" sp-logout>Logout</a>
@@ -119,7 +119,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 9. **Hide Elements When Logged In**
 
-  Use the [`if-user`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:ifUser) directive:
+  Use the [`if-user`][] directive:
 
   ```html
   <a ui-sref="main" sp-logout if-user>Logout</a>
@@ -127,7 +127,7 @@ Follow these steps to add Stormpath user authentication to your AngularJS app.
 
 10. **Hide Elements When Logged Out**
 
-  Use the [`if-not-user`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:ifNotUser) directive:
+  Use the [`if-not-user`][] directive:
 
   ```html
   <a ui-sref="login" if-not-user>Login</a>
@@ -146,11 +146,11 @@ you through the creation of an Angular application from scratch, using Yeoman.
 
 ## Example
 
-See [example/dashboard-app/](example/dashboard-app/) for an example application.
+See the [example app][] in this repository for an example application.
 
 ## Help
 
-Contact us via email at support@stormpath.com or visit our [support center](https://support.stormpath.com).
+Contact us via email at support@stormpath.com or visit our [support center][].
 
 ## Contributing
 
@@ -161,9 +161,16 @@ we love your input!
 
 Apache 2.0, see [LICENSE](LICENSE).
 
+[`if-user`]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:ifUser
+[`if-not-user`]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:ifNotUser
+[`sp-login-form`]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:spLoginForm
+[`sp-logout`]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLogout:spLogout
+[`sp-registration-form`]: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:spRegistrationForm
+[example app]: https://github.com/stormpath/stormpath-sdk-angularjs/tree/master/example/dashboard-app
 [API Documentation]: https://docs.stormpath.com/angularjs/sdk/
 [Server Integration Guide]: https://docs.stormpath.com/angularjs/sdk/#/server
 [express-stormpath]: https://github.com/stormpath/stormpath-express
 [Stormpath SPA Development Server]: https://github.com/stormpath/stormpath-spa-dev-server
 [UI-Router]: https://github.com/angular-ui/ui-router
 [Yeoman Guide]: https://docs.stormpath.com/angularjs/guide
+[support center]: https://support.stormpath.com
