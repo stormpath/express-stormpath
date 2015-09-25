@@ -4,101 +4,79 @@ Configure the Server
 ====================
 
 In the previous section, :ref:`create_new_project`, we created a simple
-Express.js and installed the `Stormpath Express SDK`_.  We are going to use that
+Express.js and installed the `Stormpath Express Module`_.  We are going to use that
 SDK to secure the API endpoints in the Express server.
 
 
 Setting Environment Variables
 ------------------------------------
 
-The `Stormpath Express SDK`_ needs the API Key and Application information that
+The `Stormpath Express Module`_ needs the API Key and Application information that
 we collected in the section :ref:`create_tenant`.  We will provide this
 information to the SDK by exporting it to the environment.
 
-The ``Gruntfile`` of this project has a task that will automatically export the
-properties that are added to ``server/config/local.env.js``.  Open that file,
-add modify the export block, filling in your values::
 
-    module.exports = {
-      // Control debug level for modules using visionmedia/debug
-      DEBUG: '',
-      STORMPATH_API_KEY_ID: 'YOUR_KEY_ID',
-      STORMPATH_API_KEY_SECRET: 'YOUR_KEY_SECRET',
-      STORMPATH_APP_HREF: 'YOUR_APP_HREF'
-    };
+You can manually export the values to the environment by using the ``export``
+or ``set`` commands in your terminal.
 
-Grunt will automatically export these values to the environment, and the
-`Stormpath Express SDK`_ will pick them up automatically.
+**Unix/Linux/Mac**::
 
-.. note::
+  export STORMPATH_CLIENT_APIKEY_ID=xxxx
+  export STORMPATH_CLIENT_APIKEY_SECRET=xxxx
+  export STORMPATH_APPLICATION_HREF=xxxx
 
-  We've removed the ``DOMAIN`` and ``SESSION_SECRET`` properties, as we do not
-  use those features in this demonstration application.
+**Windows**::
 
-.. note::
-
-  This file will be hidden from Git and never checked into your repo, this
-  is for security purposes.  When you deploy your application to production
-  you should use the features of your deployment system to export these
-  variables to your environment.  For example if you are using Herkou, you
-  would use the `Configuration and Config Vars`_ feature.
-
-.. note::
-
-  You can manually export the values to the environment by using the ``export``
-  or ``set`` commands in your terminal.
-
-  **Unix/Linux/Mac**::
-
-    export STORMPATH_API_KEY_ID=YOUR_STORMPATH_API_KEY_ID
-    export STORMPATH_API_KEY_SECRET=YOUR_STORMPATH_API_KEY_SECRET
-    export STORMPATH_APP_HREF=YOUR_STORMPATH_APP_HREF
-
-  **Windows**::
-
-    set STORMPATH_API_KEY_ID=YOUR_STORMPATH_API_KEY_ID
-    set STORMPATH_API_KEY_SECRET=YOUR_STORMPATH_API_KEY_SECRET
-    set STORMPATH_APP_HREF=YOUR_STORMPATH_APP_HREF
+  set STORMPATH_CLIENT_APIKEY_ID=xxxx
+  set STORMPATH_CLIENT_APIKEY_SECRET=xxxx
+  set STORMPATH_APPLICATION_HREF=xxxx
 
 
 
-Add the Stormpath Middleware
+Require the Stormpath Module
 ---------------------------
 
-Find the file ``server/routes.js``.
-
-This file is attaching some routes to the Express application that is setup in
-``server/app.js``.
+Open the file ``server/app.js``.  This file is the entry point for our API
+server, it will run the server.
 
 We want to initialize the Stormpath middleware and add it before our API
 declaration, so that the API will be automatically protected.
 
 First things first, you need to require the SDK - place this at the top of the
-file::
+file, under the other require statements::
 
-    var stormpathExpressSdk = require('stormpath-sdk-express');
+    var ExpressStormpath = require('express-stormpath');
+
+We're also going to use the ``path``, so you should require that as well::
+
+   var path = require('path');
 
 Then you want to create an instance of the Stormpath middleware.  You can pass
 options, but in our case, we are just going to make a simple call and use all
-the default options.  Add this line before the ``module.exports`` statement::
+the default options.  Add this line after the ``var app = express();`` statement::
 
-    var spMiddleware = stormpathExpressSdk.createMiddleware();
+    app.use(ExpressStormpath.init(app,{
+      website: true,
+      web: {
+        spaRoot: path.join(__dirname, '..','client','index.html')
+      }
+    }));
 
-Then inside the module.exports, before any other `app` statements::
+That block of code will attach Stormpath to your Express application, and let
+Stormpath know where the root of your Angular application is (the folder
+where all of the Angular assets live)
 
-    spMiddleware.attachDefaults(app);
+Open the file ``server/routes.js``.
 
-This will attach the following route handlers to your Express app:
+This file is attaching some routes to the Express application that is setup in
+``server/app.js``.  You'll want to require ``express-stormpath`` again, and then
+use it to secure your API::
 
-* ``POST /oauth/token`` (accepts the login form POST, returns an access token)
-* ``POST /api/users`` (for creating new users)
-* ``GET /api/users/current`` (for getting info about the current user, as permitted by the access token)
-* ``GET /logout`` (for ending the current session, the access token is destroyed)
+    var ExpressStormpath = require('express-stormpath');
 
-The last thing we need to do is secure the things endpoint.  Modify that line
-to use the authenticate middleware::
+    // ..
 
-    app.use('/api/things', spMiddleware.authenticate, require('./api/thing'));
+    app.use('/api/things', ExpressStormpath.apiAuthenticationRequired, require('./api/thing'));
 
 Reload the App
 ---------------
@@ -116,4 +94,4 @@ sections, we will show you how to create a registration form and a login form.
 At that point, you will be able to login and have access to the API.
 
 .. _Configuration and Config Vars: https://devcenter.heroku.com/articles/config-vars
-.. _Stormpath Express SDK: https://github.com/stormpath/stormpath-sdk-express
+.. _Stormpath Express Module: https://github.com/stormpath/stormpath-express

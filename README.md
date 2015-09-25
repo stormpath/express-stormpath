@@ -1,123 +1,169 @@
-# Stormpath AngularJS SDK [BETA]
-
+# Stormpath AngularJS SDK
 
 [![Bower Version](https://img.shields.io/bower/v/stormpath-sdk-angularjs.svg?style=flat)](https://bower.io)
 [![Build Status](https://img.shields.io/travis/stormpath/stormpath-sdk-angularjs.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-sdk-angularjs)
 
-*A simple user authentication library for AngularJS.*
+This module provides services and directives for AngularJS that will allow you to solve common user management tasks using [Stormpath](https://stormpath.com/), such as *login* and *signup*.
 
+*Stormpath is a User Management API that reduces development time with instant-on, scalable user infrastructure. Stormpath's intuitive API and expert support make it easy for developers to authenticate, manage and secure users and roles in any application.*
 
-This library provides services and directives for [AngularJS] that will allow
-you to solve these common user management tasks in your AngularJS application:
+* [Getting Started](#getting-started)
+* [Documentation](#documentation)
+* [Example](#example)
+* [Help](#help)
+* [Contributing](#contributing)
+* [License](#license)
 
-* Register new users
-* Login users
-* Verify new accounts via email tokens
-* Secure password reset via email tokens
-* Conditionally render parts of your UI, based on login state
-* Control access to application routes
+## Getting Started
 
-Under the hood, this library uses Oauth Access Tokens (JWTs) as the authentication
-mechanism.  This library implements the best-practice approaches that we outline in
-[Token Based Authentication for Single Page Apps (SPAs)](https://stormpath.com/blog/token-auth-spa/).
+Follow these steps to add Stormpath user authentication to your AngularJS app.
 
-If you have feedback about this library, please get in touch and share your
-thoughts! support@stormpath.com
+*Don't have an app? Use our [example app](example/dashboard-app/) as a boilerplate - it has Stormpath already integrated!*
 
-[Stormpath](https://stormpath.com) is a User Management API that reduces
-development time with instant-on, scalable user infrastructure.  Stormpath's
-intuitive API and expert support make it easy for developers to authenticate,
-manage, and secure users and roles in any application.
+1. **Install UI-Router**
 
-## Hot screenshots
+  The Stormpath module is only compatible with the [UI-Router][], so ensure that your application is using it.
 
-Curious?  Here's some screenies that show you what's included:
+2. **Integrate Your Back-End**
 
-<table>
-  <tr>
-    <td width="33%" align="center" valign="top">
-      <p><strong>Registration Forms</strong></p>
-      <img src="http://docs.stormpath.com/angularjs/guide/_images/registration_form.png">
+  This module requires Stormpath on your back-end to work properly. At the moment we
+  have a fully-featured integration for **Express.js**, [express-stormpath][].
 
-    </td>
-    <td width="33%" align="center" valign="top">
-      <p><strong>Login Forms</strong></p>
-      <center><img src="http://docs.stormpath.com/angularjs/guide/_images/login_form.png"></center>
+  For **other frameworks**, please see the [Server Integration Guide][].
 
-    </td>
-    <td width="33%" align="center" valign="top">
-      <p><strong>User Profile Information</strong></p>
-      <center><img src="http://docs.stormpath.com/angularjs/guide/_images/profile_view.png"></center>
+  For a **quick setup**, use our [Stormpath SPA Development Server][].
 
-    </td>
-  </tr>
-</table>
+3. **Download and Include the SDK**
 
-## Installation
+  Download these two files:
 
-If you are using Bower, simply install it:
+  * [stormpath-sdk-angularjs.min.js](https://raw.githubusercontent.com/stormpath/stormpath-sdk-angularjs/master/dist/stormpath-sdk-angularjs.min.js)
+  * [stormpath-sdk-angularjs.tpls.min.js](https://raw.githubusercontent.com/stormpath/stormpath-sdk-angularjs/master/dist/stormpath-sdk-angularjs.tpls.min.js)
 
-```bash
-bower install --save stormpath-sdk-angularjs
-```
+  Then include them in your *index.html* file:
 
-If you want to manually load the minified scripts, you can grab them from the `dist`
-folder in this repo and include them manually:
+  ```html
+  <script src="stormpath-sdk-angularjs.min.js"></script>
+  <script src="stormpath-sdk-angularjs.tpls.min.js"></script>
+  ```
 
-```html
-<script src="stormpath-sdk-angularjs.min.js"></script>
-<script src="stormpath-sdk-angularjs.tpls.min.js"></script>
-```
+  Or install with bower: `$ bower install --save stormpath-sdk-angularjs`
 
-You can then require the Stormpath modules in your application:
+4. **Add the Module to Your App's Dependencies**
 
-```javascript
+  Add the `stormpath` module and templates to your app's dependencies in *app.js*:
 
-var myApp = angular.module('myApp', ['stormpath','stormpath.templates']);
+  ```javascript
+  var app = angular.module('myApp', [..., 'stormpath', 'stormpath.templates']);
+  ```
 
-```
+5. **Configure the UI-Router**
 
-The templates are optional, see the documentation for more information.
+  In your `run()` block in *app.js*, configure the login state and the default state after login:
 
+  ```javascript
+  app.run(function($stormpath){
+    $stormpath.uiRouter({
+      loginState: 'login',
+      defaultPostLoginState: 'home'
+    });
+  });
+  ```
 
-## Documentation & Guide
+  Set `loginState` to your login state. If you don't have one, create one.
+  Set `defaultPostLoginState` to your default state after login.
 
-If you are starting a new project, the
-[Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html)
-will be your best choice.  It will help you get started with a new project and an API
-server for your application.
+6. **Protect Your States**
 
-If you already have an Angular project, you will want to visit the
-[Stormpath AngularJS SDK API Documenation](https://docs.stormpath.com/angularjs/sdk/).
-That documentation will show you all the available directives and services that you
-can use in your application.
+  On all states that you want to protect, add:
 
-## Example application
+  ```javascript
+  sp: {
+    authenticate: true
+  }
+  ```
 
-This repository contains a working example application in the `example/dashboard-app` folder.
-This is the application that we build in the [Stormpath AngularJS Guide](http://docs.stormpath.com/angularjs/guide/index.html).
-If you would like to skip the guide and start using the example application, do the following:
+  For example:
 
-1) Install [Bower] and [Grunt] if you don't already have them
+  ```javascript
+  $stateProvider.state('secret', {
+    url: '/secret',
+    views: {...},
+    sp: {
+      authenticate: true
+    }
+  });
+  ```
 
-2) Clone this repo
+7. **Add States for Login and Signup**
 
-3) In your terminal, change directories to the `example/dashboard-app` folder
+  Create states and views for your login and signup page. Use the [`sp-login-form`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLoginForm:spLoginForm) and [`sp-registration-form`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spRegistrationForm:spRegistrationForm) directives to inject the forms into your templates. E.g.
 
-4) Run `npm install && bower install`
+  ```html
+  <div sp-login-form></div>
+  ```
 
-5) Copy the file `example/dashboard-app/server/config/local.env.sample.js` to
-`local.env.js` (in the same directory) and add your Stormpath variables for the
-Stormpath Application that you will be using.
+8. **Add Login and Logout Links**
 
-6) Run `grunt serve` to start the example application, which will be
-available at http://localhost:9000
+  Use the [`sp-logout`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.spLogout:spLogout) directive to end the session:
 
-[Bower]: http://bower.io "Bower"
-[Grunt]: http://gruntjs.com "Grunt"
-[AngularJS]: https://angularjs.org "AngularJS"
+  ```html
+  <a ui-sref="main" sp-logout>Logout</a>
+  ```
+
+  For the login link, just point the user to your login state:
+
+  ```html
+  <a ui-sref="login">Login</a>
+  ```
+
+9. **Hide Elements When Logged In**
+
+  Use the [`if-user`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUser:ifUser) directive:
+
+  ```html
+  <a ui-sref="main" sp-logout if-user>Logout</a>
+  ```
+
+10. **Hide Elements When Logged Out**
+
+  Use the [`if-not-user`](https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifNotUser:ifNotUser) directive:
+
+  ```html
+  <a ui-sref="login" if-not-user>Login</a>
+  ```
+
+11. **That's It!**
+
+  You just added user authentication to your app with Stormpath. See the [API Documentation][] for further information on how Stormpath can be used with your AngularJS app.
+
+## Documentation
+
+For all available directives and services, see the [API Documentation][].
+
+If you are using Yeomon, please see our [Yeoman Guide][].  It will walk
+you through the creation of an Angular application from scratch, using Yeoman.
+
+## Example
+
+See [example/dashboard-app/](example/dashboard-app/) for an example application.
+
+## Help
+
+Contact us via email at support@stormpath.com or visit our [support center](https://support.stormpath.com).
 
 ## Contributing
 
-Found something you want to change?  Please see the [Contribution Guide](CONTRIBUTING.md),
+Found something you want to change? Please see the [Contribution Guide](CONTRIBUTING.md),
 we love your input!
+
+## License
+
+Apache 2.0, see [LICENSE](LICENSE).
+
+[API Documentation]: https://docs.stormpath.com/angularjs/sdk/
+[Server Integration Guide]: https://docs.stormpath.com/angularjs/sdk/#/server
+[express-stormpath]: https://github.com/stormpath/stormpath-express
+[Stormpath SPA Development Server]: https://github.com/stormpath/stormpath-spa-dev-server
+[UI-Router]: https://github.com/angular-ui/ui-router
+[Yeoman Guide]: https://docs.stormpath.com/angularjs/guide

@@ -139,45 +139,39 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
          * @description
          *
          * Attempts to create a new user by submitting the given `accountData` as
-         * JSON to `/api/users`.  The POST endpoint can be modified via the
-         * {@link stormpath.config#USER_COLLECTION_URI USER_COLLECTION_URI} config option.
-         *
-         * This method expects a `201` response if the account does NOT require email
-         * verification.
-         *
-         * If email verification is enabled, you should send a `202` response instead.
-         *
-         * If you are using our Express.JS SDK, you can simply attach the
-         *  <a href="https://github.com/stormpath/stormpath-sdk-express#register" target="_blank">`register`</a> middleware
-         * to your application and these responses will be handled automatically for you.
+         * JSON to `/register`.  The POST endpoint can be modified via the
+         * {@link api/stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG#properties_REGISTER_URI REGISTER_URI}
+         * config option.
          *
          * @example
          *
          * <pre>
          * $user.create(accountData)
-         *   .then(function(created){
-         *     if(created){
+         *   .then(function(account){
+         *     if(account.status === 'ENABLED'){
          *       // The account is enabled and ready to use
-         *     }else{
+         *     }else if(account.status === 'UNVERIFIED'){
          *       // The account requires email verification
          *     }
          *   })
          *   .catch(function(response){
          *     // Show the error message to the user
-         *     $scope.error = response.data.errorMessage;
+         *     $scope.error = response.data.error;
          *   });
          * </pre>
          */
         var op = $q.defer();
 
         $http($spFormEncoder.formPost({
-            url: STORMPATH_CONFIG.getUrl('USER_COLLECTION_URI'),
-            method: 'POST',
-            data: accountData
-          }))
-          .then(function(response){
-            op.resolve(response.status===201);
-          },op.reject);
+          url: STORMPATH_CONFIG.getUrl('REGISTER_URI'),
+          method: 'POST',
+          data: accountData
+        }))
+        .then(function(response){
+          op.resolve(response.data);
+          registeredEvent(response.data);
+        },op.reject);
+
         return op.promise;
       };
       UserService.prototype.get = function get() {
@@ -281,11 +275,11 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        * ```
        */
       UserService.prototype.resendVerificationEmail = function resendVerificationEmail(data){
-        return $http($spFormEncoder.formPost({
+        return $http({
           method: 'POST',
-          url: STORMPATH_CONFIG.getUrl('RESEND_EMAIL_VERIFICATION_ENDPOINT'),
+          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT'),
           data: data
-        }));
+        });
       };
 
       /**
@@ -316,12 +310,10 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        * Verifies a new account, using the `sptoken` that was sent to the user
        * by email.
        */
-      UserService.prototype.verify = function verify(data){
-        return $http($spFormEncoder.formPost({
-          method: 'POST',
-          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT'),
-          data: data
-        }));
+      UserService.prototype.verify = function verify(token){
+        return $http({
+          url: STORMPATH_CONFIG.getUrl('EMAIL_VERIFICATION_ENDPOINT') + '?sptoken='+token
+        });
       };
 
       /**
@@ -351,7 +343,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        * The `sptoken` that was delivered to the user by email
        */
       UserService.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(token){
-        return $http.get(STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT')+'/'+token);
+        return $http.get(STORMPATH_CONFIG.getUrl('CHANGE_PASSWORD_ENDPOINT')+'?sptoken='+token);
       };
 
       /**
@@ -383,7 +375,7 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
       UserService.prototype.passwordResetRequest = function passwordResetRequest(data){
         return $http($spFormEncoder.formPost({
           method: 'POST',
-          url: STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT'),
+          url: STORMPATH_CONFIG.getUrl('FORGOT_PASSWORD_ENDPOINT'),
           data: data
         }));
       };
@@ -421,12 +413,40 @@ angular.module('stormpath.userService',['stormpath.CONFIG'])
        * ```
        */
       UserService.prototype.resetPassword = function resetPassword(token,data){
+        data.sptoken = token;
         return $http($spFormEncoder.formPost({
           method: 'POST',
-          url:STORMPATH_CONFIG.getUrl('PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT')+'/'+token,
+          url:STORMPATH_CONFIG.getUrl('CHANGE_PASSWORD_ENDPOINT'),
           data: data
         }));
       };
+      function registeredEvent(account){
+        /**
+         * @ngdoc event
+         *
+         * @name stormpath.userService.$user#$registered
+         *
+         * @eventOf stormpath.userService.$user
+         *
+         * @eventType broadcast on root scope
+         *
+         * @param {Object} event
+         *
+         * Angular event object.
+         *
+         * @param {account} account
+         *
+         * The object of the account that was created.
+         *
+         * @description
+         *
+         * This event is broadcast when a call to
+         * {@link stormpath.userService.$user#methods_create $user.create()}
+         * is successful.  The account object is returned, and you can inspec
+         * the account's status to know if email verification is required.
+         */
+        $rootScope.$broadcast(STORMPATH_CONFIG.REGISTERED_EVENT_NAME,account);
+      }
       function currentUserEvent(user){
         /**
          * @ngdoc event

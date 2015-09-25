@@ -7,11 +7,8 @@
 
 module.exports = {
   DOMAIN:           'http://localhost:9000',
-  SESSION_SECRET:   'dashboardapp-secret',
+  SESSION_SECRET:   'dashboard-secret',
 
   // Control debug level for modules using visionmedia/debug
-  DEBUG: '',
-  STORMPATH_API_KEY_ID: 'YOUR_KEY_ID',
-  STORMPATH_API_KEY_SECRET: 'YOUR_KEY_SECRET',
-  STORMPATH_APP_HREF: 'YOUR_APP_HREF'
+  DEBUG: ''
 };

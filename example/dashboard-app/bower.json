@@ -1,5 +1,5 @@
 {
-  "name": "dashboard-app",
+  "name": "dashboard",
   "version": "0.0.0",
   "dependencies": {
     "angular": ">=1.2.*",
@@ -13,7 +13,7 @@
     "font-awesome": ">=4.1.0",
     "lodash": "~2.4.1",
     "angular-ui-router": "~0.2.10",
-    "stormpath-sdk-angularjs": "0.6.0"
+    "stormpath-sdk-angularjs": "~0.7.0"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",

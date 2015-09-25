@@ -62,11 +62,11 @@ API Security
 
 Don't forget to secure your API!  While we provide these convenience
 methods in AngularJS, you need to protect your server APIs as well.
-If you are using our Express SDK, you can use the `groupsRequired Middleware`_
+If you are using our Express SDK, you can use the `Authorization Middleware`_
 to help with this.
 
 
 .. _ifUserInGroup: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserInGroup:ifUserInGroup
 .. _ifUserNotInGroup: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.ifUserNotInGroup:ifUserNotInGroup
-.. _groupsRequired Middleware: https://github.com/stormpath/stormpath-sdk-express#groupsRequired
+.. _Authorization Middleware: http://docs.stormpath.com/nodejs/express/latest/authorization.html
 .. _SpStateConfig documentation: https://docs.stormpath.com/angularjs/sdk/#/api/stormpath.SpStateConfig:SpStateConfig

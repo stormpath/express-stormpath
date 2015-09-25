@@ -84,7 +84,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/oauth/token`
+    * Default: `/login`
     *
     * The URI that the login form will post to.  The endpoint MUST accept data
     * in the following format:
@@ -96,7 +96,7 @@ angular.module('stormpath.CONFIG',[])
     * }
     * ```
     */
-    AUTHENTICATION_ENDPOINT: '/oauth/token',
+    AUTHENTICATION_ENDPOINT: '/login',
 
 
     /**
@@ -108,7 +108,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/api/users/current`
+    * Default: `/me`
     *
     * The URI that is used to fetch the account object of
     * the currently logged in user.  This endpoint MUST:
@@ -116,7 +116,7 @@ angular.module('stormpath.CONFIG',[])
     *  if the user has an active session.
     *  * Respond with `401 Unauthorized` if the user has no session.
     */
-    CURRENT_USER_URI: '/api/users/current',
+    CURRENT_USER_URI: '/me',
 
 
     /**
@@ -147,7 +147,7 @@ angular.module('stormpath.CONFIG',[])
     *
     * @description
     *
-    * Default: `/api/emailVerificationTokens`
+    * Default: `/verify`
     *
     * The endpoint that is used for verifying an account that requires email
     * verification.  Used by
@@ -163,7 +163,7 @@ angular.module('stormpath.CONFIG',[])
     * ```
     *
     */
-    EMAIL_VERIFICATION_ENDPOINT: '/api/emailVerificationTokens',
+    EMAIL_VERIFICATION_ENDPOINT: '/verify',
 
 
     /**
@@ -251,46 +251,38 @@ angular.module('stormpath.CONFIG',[])
     /**
     * @ngdoc property
     *
-    * @name PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT
+    * @name FORGOT_PASSWORD_ENDPOINT
     *
     * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
     *
     * @description
     *
-    * Default: `/api/passwordResetTokens`
+    * Default: `/forgot`
     *
     * The endpoint that is used by
-    * {@link stormpath.userService.$user#methods_verifyPasswordResetToken $user.verifyPasswordResetToken()} and
-    * {@link stormpath.userService.$user#methods_passwordResetRequest $user.passwordResetRequest()} and
-    * {@link stormpath.userService.$user#methods_resetPassword $user.resetPassword()}
-    * to create, verify, and consume password reset tokens.
+    * {@link stormpath.userService.$user#methods_passwordResetRequest $user.passwordResetRequest()}
+    * to create password reset tokens.
     */
-    PASSWORD_RESET_TOKEN_COLLECTION_ENDPOINT: '/api/passwordResetTokens',
+    FORGOT_PASSWORD_ENDPOINT: '/forgot',
 
 
     /**
     * @ngdoc property
     *
-    * @name RESEND_EMAIL_VERIFICATION_ENDPOINT
+    * @name CHANGE_PASSWORD_ENDPOINT
     *
     * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
     *
     * @description
     *
-    * Default: `/api/verificationEmails`
+    * Default: `/change`
     *
     * The endpoint that is used by
-    * {@link stormpath.userService.$user#methods_resendVerificationEmail $user.resendVerificationEmail()}
-    * to re-send a verification email to a user.
-    *
-    * This endpoint MUST accept a POST request with the following format:
-    * ```
-    * {
-    *   username: 'email or username'
-    * }
-    * ```
+    * {@link stormpath.userService.$user#methods_verifyPasswordResetToken $user.verifyPasswordResetToken()} and
+    * {@link stormpath.userService.$user#methods_resetPassword $user.resetPassword()}
+    * to verify and consume password reset tokens (change a user's password with the token).
     */
-    RESEND_EMAIL_VERIFICATION_ENDPOINT: '/api/verificationEmails',
+    CHANGE_PASSWORD_ENDPOINT: '/change',
 
 
     /**
@@ -350,20 +342,38 @@ angular.module('stormpath.CONFIG',[])
     /**
     * @ngdoc property
     *
-    * @name USER_COLLECTION_URI
+    * @name REGISTER_URI
     *
     * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
     *
     * @description
     *
-    * Default: `/api/users`
+    * Default: `/register`
     *
     * The endpoint that is used by
     * {@link stormpath.userService.$user#methods_create $user.create()}
     * to POST new users.  This endpoint MUST accept a stormpath account object
     * and use Stormpath to create the new user.
     */
-    USER_COLLECTION_URI: '/api/users'
+    REGISTER_URI: '/register',
+
+    /**
+    * @ngdoc property
+    *
+    * @name REGISTERED_EVENT_NAME
+    *
+    * @propertyOf stormpath.STORMPATH_CONFIG:STORMPATH_CONFIG
+    *
+    * @description
+    *
+    * Default: `$registered`
+    *
+    * The name of the event that is fired when
+    * {@link stormpath.userService.$user#methods_create $user.create()}
+    * is resolved with an account that was successfully created
+    */
+    REGISTERED_EVENT_NAME: '$registered',
+
   };
   c.getUrl = function(key) {
     return this.ENDPOINT_PREFIX + this[key];

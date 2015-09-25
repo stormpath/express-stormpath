@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: PasswordResetCtrl', function () {
+describe('Controller: ForgotCtrl', function () {
 
   // load the controller's module
   beforeEach(module('dashboardApp'));
 
-  var PasswordResetCtrl, scope;
+  var ForgotCtrl, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    PasswordResetCtrl = $controller('PasswordResetCtrl', {
+    ForgotCtrl = $controller('ForgotCtrl', {
       $scope: scope
     });
   }));

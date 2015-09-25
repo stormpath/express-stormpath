@@ -6,9 +6,6 @@ angular.module('dashboardApp')
       .state('main', {
         url: '/',
         templateUrl: 'app/main/main.html',
-        controller: 'MainCtrl',
-        sp:{
-          waitForUser: true
-        }
+        controller: 'MainCtrl'
       });
   });

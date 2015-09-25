@@ -43,7 +43,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Stormpath AngularJS Guide'
+project = u'Stormpath AngularJS + Yeoman Guide'
 copyright = u'2015, Stormpath'
 
 # The version info for the project you're documenting, acts as replacement for

@@ -36,11 +36,6 @@ The following files will be created:
     create client/app/register/register.css
     create client/app/register/register.html
 
-Start the server and then click on the Register link in the menu bar in your
-browser. You will see that the default view was created:
-
-
-.. image:: _static/default-register-view.png
 
 Add the Registration Form Directive
 -----------------------------------
@@ -79,7 +74,7 @@ please see the API documentation for the
 `spRegistrationForm`_ directive.
 The most useful feature is the ability to specify your own template.
 
-Generate the /register/verify Route
+Generate the /verify Route
 --------------------------------
 
 The `Stormpath Email Verification`_ feature will allow you to confirm a user's
@@ -87,22 +82,25 @@ identity by sending them a link that they must click on.
 We handle all the email and links for you!  (If you don't want to use this
 feature, you can skip this section.)
 
-However, we must decide where the user should go when they click on that
+However, we must have a place for the user to land when they click on that
 link in their email.  We will implement a default view for this in our application
 and configure the Stormpath Directory accordingly.
 
 The first thing is to generate another route.  In this situation, we will
-call the controller ``emailVerification``, but use the URL of ``/register/verify``:
+call the controller ``verify``:
 
 .. code-block:: bash
 
-  $ yo angular-fullstack:route emailVerification
+  $ yo angular-fullstack:route verify
+
+.. code-block:: bash
+
   ? Where would you like to create this route? client/app/
   ? What will the url of your route be? /register/verify
-     create client/app/emailVerification/emailVerification.js
-     create client/app/emailVerification/emailVerification.controller.js
-     create client/app/emailVerification/emailVerification.controller.spec.js
-     create client/app/emailVerification/emailVerification.css
+     create client/app/verify/verify.js
+     create client/app/verify/verify.controller.js
+     create client/app/verify/verify.controller.spec.js
+     create client/app/verify/verify.css
 
 
 Add the sptoken Parameter
@@ -110,27 +108,24 @@ Add the sptoken Parameter
 
 When the user clicks on the link in their email, they will be sent to your
 application with a url parameter called ``sptoken`` - we need to let the UI
-router know about this.  Open the file
-``client/app/emailVerification/emailVerification.js`` and modify the ``url``
-string to include this parameter:
-:
+router know about this.  Open the file ``client/app/verify/verify.js`` and
+modify the ``url`` string to include this parameter:
 
 .. code-block:: js
 
-    url: '/register/verify?sptoken',
+    url: '/verify?sptoken',
 
 
 Use the Email Verification Directive
 ------------------------------------
 
-We have a pre-built view that shows the necessary informational
-messages when someone is trying to complete the email verification process.
-It will:
+We have a pre-built view that shows the necessary informational messages when
+someone is trying to complete the email verification process. It will:
 
 * Show a success message and prompt them to login.
 * Allow them to request another email if the link has expired.
 
-Open the file ``client/app/emailVerification/emailVerification.html`` and
+Open the file ``client/app/verify/verify.html`` and
 replace its contents with the following:
 
 .. code-block:: html
@@ -161,7 +156,7 @@ to your application.  At the moment, that URL will be:
 
 .. code-block:: html
 
-    http://localhost:9000/register/verify
+    http://localhost:9000/verify
 
 
 Don't forget to press save!
@@ -210,8 +205,8 @@ will go into the ``customData`` object on the Account object.
 
 .. note::
   You need to ensure that your server-side framework is decoding complex form
-  objects.  In our Yeoman example, you will need to open ``sever/config/express.js``
-  and modify this line to enable that option::
+  objects in POST bodies.  If you are using the common ``body-parser`` library, you can
+  enable that with the ``extended`` option::
 
     app.use(bodyParser.urlencoded({ extended: true }));
 

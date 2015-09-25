@@ -84,3 +84,5 @@ adding Stormpath to your server and supporting your Angular application.
   }
  }
  </pre>
+
+[ui-router]: https://github.com/angular-ui/ui-router
