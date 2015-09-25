@@ -18,7 +18,7 @@ This module provides services and directives for AngularJS that will allow you t
 
 Follow these steps to add Stormpath user authentication to your AngularJS app.
 
-*Don't have an app? Use our [example](example/) as a boilerplate - it has Stormpath already integrated!*
+*Don't have an app? Use our [example app](example/dashboard-app/) as a boilerplate - it has Stormpath already integrated!*
 
 1. **Install UI-Router**
 
@@ -146,7 +146,7 @@ you through the creation of an Angular application from scratch, using Yeoman.
 
 ## Example
 
-See [example/](example/) for an example application.
+See [example/dashboard-app/](example/dashboard-app/) for an example application.
 
 ## Help
 
