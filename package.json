@@ -12,7 +12,7 @@
     "accounts"
   ],
   "scripts": {
-    "docs": "cd docs && make html",
+    "docs": "cd docs && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --recursive --no-timeouts; cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; rm -rf ./coverage"
   },
   "repository": "stormpath/stormpath-express",
