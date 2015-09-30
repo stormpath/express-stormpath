@@ -26,7 +26,8 @@ function prepeareIdSiteModel(client, currentHost, callbckUri, cb) {
     if (err) {
       throw err;
     }
-    client.getResource(tenant.href + '/idSites',function(err,collection){
+
+    client.getResource(tenant.href + '/idSites', function(err, collection) {
       if (err) {
         throw err;
       }
@@ -157,7 +158,9 @@ describe('id site', function() {
           app.on('stormpath.ready', function() {
             config = app.get('stormpathConfig');
             server = app.listen(function() {
-              host = (server.address().address === '::' ? 'http://localhost' : server.address().address) + ':' + server.address().port;
+              var address = server.address().address === '::' ? 'http://localhost' : server.address().address;
+              address = address === '0.0.0.0' ? 'http://localhost' : address;
+              host = address + ':' + server.address().port;
               callbackUri = host + config.web.idSite.uri;
               prepeareIdSiteModel(app.get('stormpathClient'), host, callbackUri, done);
             });
