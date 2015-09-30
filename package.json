@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "docs": "cd docs && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --recursive --no-timeouts; cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; rm -rf ./coverage"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report text -- --reporter spec --recursive --growl --no-timeouts",
+    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
   "repository": "stormpath/stormpath-express",
   "author": "Stormpath, Inc.",
