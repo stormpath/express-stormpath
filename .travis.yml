@@ -7,7 +7,8 @@ node_js:
   - '4.0'
   - '4.1'
 script:
-  - travis_retry npm test
+  - travis_retry npm run test-travis
+after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 env:
   global:
     - secure: SIFjFoLiYyZSqxltulANunQMyT6cPWr9isJJ0Lm8qr2pB30lLwsXFhkoisO2+J/K0Jk/e3pC4WTUXjpq1Sr/J3frXzZeLwE//Sed+92uxTGaZz+/1B08CWcelY09TLqtfVl1VIJZ+qihDcDdWhFGZPmuqpHCdTXzu2QJ6SiNrcs=
