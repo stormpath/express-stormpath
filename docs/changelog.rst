@@ -7,6 +7,14 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.9
+-------------
+
+**Not yet released.**
+
+- Fixing bug with customData expansion.
+
+
 Version 2.0.8
 -------------
 
