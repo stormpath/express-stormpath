@@ -7,6 +7,18 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.0.8
+-------------
+
+**Released on September 29, 2015.**
+
+- Refactoring code base, big time.  Style updated for consistency.  Code
+  simplified.  Functions modularized.  Tests modularized.
+- Making Travis CI tests run properly.
+- Only running coveralls when build succeeds.
+- Improving coverage reports on the CLI.
+
+
 Version 2.0.7
 -------------
 
