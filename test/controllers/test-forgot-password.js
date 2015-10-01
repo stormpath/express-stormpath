@@ -169,4 +169,29 @@ describe('forgotPassword', function() {
         .expect(302, done);
     });
   });
+
+  describe('as json',function(){
+
+    it('should respond with 200 if a valid email is given', function(done){
+       var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href,
+        },
+        web: {
+          forgotPassword: {
+            enabled: true
+          }
+        }
+      });
+      app.on('stormpath.ready', function() {
+        request(app)
+          .post('/forgot')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({ email: uuid.v4() + '@stormpath.com' })
+          .expect(200, done);
+      });
+    });
+
+  });
 });
