@@ -3,7 +3,6 @@
 var assert = require('assert');
 
 var async = require('async');
-var cheerio = require('cheerio');
 var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
