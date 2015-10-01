@@ -175,8 +175,12 @@ module.exports.destroyApplication = function(application, callback) {
         });
       });
     }, function(err) {
-      application.delete(function(appErr) {
-        callback(err || appErr);
+      if (err) {
+        return callback(err);
+      }
+
+      application.delete(function(err) {
+        callback(err);
       });
     });
   });
