@@ -13,6 +13,9 @@ Version 2.0.9
 **Not yet released.**
 
 - Fixing bug with customData expansion.
+- Fixing ``/forgot`` JSON endpoint to accept an ``email`` property.  Previously
+  was ``username`` but this is incorrect: the Stormpath API only accepts an
+  email address for the forgot password workflow.
 
 
 Version 2.0.8
