@@ -12,7 +12,7 @@ Version 2.0.8 -> Version 2.0.9
 ------------------------------
 
 If you are using the ``/forgot`` endpoint and posting JSON, you need to change
-the ``username`` property to ``email``
+the ``username`` property to ``email``.
 
 
 Version 2.0.7 -> Version 2.0.8

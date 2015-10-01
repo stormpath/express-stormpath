@@ -173,9 +173,9 @@ describe('forgotPassword', function() {
   describe('as json',function(){
 
     it('should respond with 200 if a valid email is given', function(done){
-       var app = helpers.createStormpathExpressApp({
+      var app = helpers.createStormpathExpressApp({
         application: {
-          href: stormpathApplication.href,
+          href: stormpathApplication.href
         },
         web: {
           forgotPassword: {
@@ -183,6 +183,7 @@ describe('forgotPassword', function() {
           }
         }
       });
+
       app.on('stormpath.ready', function() {
         request(app)
           .post('/forgot')
@@ -192,6 +193,5 @@ describe('forgotPassword', function() {
           .expect(200, done);
       });
     });
-
   });
 });
