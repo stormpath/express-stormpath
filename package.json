@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
@@ -12,8 +12,9 @@
     "accounts"
   ],
   "scripts": {
-    "docs": "cd docs && make html",
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --recursive --no-timeouts; cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js; rm -rf ./coverage"
+    "docs": "cd docs && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report text -- --reporter spec --recursive --growl --no-timeouts",
+    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
   "repository": "stormpath/stormpath-express",
   "author": "Stormpath, Inc.",

@@ -11,7 +11,7 @@ var uuid = require('uuid');
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
-describe('#groupsRequired', function() {
+describe('groupsRequired', function() {
   var stormpathAccount;
   var stormpathAccountData = {
     givenName: uuid.v4(),
@@ -106,7 +106,7 @@ describe('#groupsRequired', function() {
     });
   });
 
-  it('should show allow users through whoe pass group assertion checks', function(done) {
+  it('should show allow users through who pass group assertion checks', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
