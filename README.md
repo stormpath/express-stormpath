@@ -2,8 +2,8 @@
 
 [![NPM Version](https://img.shields.io/npm/v/express-stormpath.svg?style=flat)](https://npmjs.org/package/express-stormpath)
 [![NPM Downloads](http://img.shields.io/npm/dm/express-stormpath.svg?style=flat)](https://npmjs.org/package/express-stormpath)
-[![Build Status](https://img.shields.io/travis/stormpath/stormpath-express.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-express)
-[![Coverage Status](https://coveralls.io/repos/stormpath/stormpath-express/badge.svg?branch=master)](https://coveralls.io/r/stormpath/stormpath-express?branch=master)
+[![Build Status](https://img.shields.io/travis/stormpath/express-stormpath.svg?style=flat)](https://travis-ci.org/stormpath/express-stormpath)
+[![Coverage Status](https://coveralls.io/repos/stormpath/express-stormpath/badge.svg?branch=master)](https://coveralls.io/r/stormpath/express-stormpath?branch=master)
 
 Express-Stormpath is an extension for [Express.js](http://expressjs.com/) that makes it incredibly simple to add user authentication to your application, such as login, signup, authorization, and social login.
 
