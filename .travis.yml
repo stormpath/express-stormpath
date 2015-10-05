@@ -6,10 +6,9 @@ node_js:
   - '0.12'
   - '4.0'
   - '4.1'
-script:
-  - travis_retry npm run test-travis
+script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 env:
   global:
-    - secure: SIFjFoLiYyZSqxltulANunQMyT6cPWr9isJJ0Lm8qr2pB30lLwsXFhkoisO2+J/K0Jk/e3pC4WTUXjpq1Sr/J3frXzZeLwE//Sed+92uxTGaZz+/1B08CWcelY09TLqtfVl1VIJZ+qihDcDdWhFGZPmuqpHCdTXzu2QJ6SiNrcs=
-    - secure: f3XAu4HdzVFS4kOpEAKyYg+Iv9BHOZfRxzRpj15utYNbuhLhZitAjC/IWuchALm4u9EFPdowkIuB/9n2+VajrR8UKQcy23S6ClBCUP5eptwrMTWTbRP1vx3A4mdeoUy2FW7DVgZCWh5oe6o8MwX8rd1f6ZYAucBub4gMpp3GcEU=
+    - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
+    - secure: LC2v9W0Nx8oviv+AajnXV1DOaiht+/1Hy92loa4a4Lbwz/NW0DmM9k1ollBFHpBhWVai3HaZKPl0XqdHqdq1fA2HppdJv8YbT/Hwkj1WdX+LRE/VUNevVc+MszlDJq1FOrgaEjiKyBqQP07RkZl4tg2kwpIET2Q0zmCubE7pezo=
