@@ -16,7 +16,7 @@
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report text -- --reporter spec --recursive --growl --no-timeouts",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
-  "repository": "stormpath/stormpath-express",
+  "repository": "stormpath/express-stormpath",
   "author": "Stormpath, Inc.",
   "license": "Apache-2.0",
   "main": "./index",
