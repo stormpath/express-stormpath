@@ -80,5 +80,13 @@ Indra has contributed a patch to the project.
 - Github: https://github.com/suryod
 
 
+David Gisser
+************
+
+David has contributed a patch to the project.
+
+- Github: https://github.com/dgisser
+
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
