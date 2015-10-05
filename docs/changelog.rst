@@ -13,6 +13,8 @@ Version 2.0.9
 **Not yet released.**
 
 - Fixing bug with customData expansion.
+- Removing unnecessary JS code from the Google Login form, courtesy of `David
+  Gisser <https://github.com/dgisser>`_.
 
 
 Version 2.0.8
