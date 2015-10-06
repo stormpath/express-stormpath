@@ -8,6 +8,7 @@
 for tag in `git tag -l`; do
     git checkout $tag;
     cd docs;
+    rm -rf _build/html;
     make html && cp -r _build/html ~/Desktop/$tag;
     cd ..;
 done
