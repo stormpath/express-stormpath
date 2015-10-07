@@ -1,15 +1,10 @@
 'use strict';
 
 var assert = require('assert');
-
-var async = require('async');
-var cheerio = require('cheerio');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 describe('getToken', function() {
   var username = uuid.v4() + '@stormpath.com';
@@ -67,7 +62,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .get('/oauth/token')
         .expect(404)
@@ -89,7 +83,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token')
         .expect(401)
@@ -111,7 +104,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token')
         .expect(404)
@@ -133,7 +125,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token')
         .auth('woot', 'woot')
@@ -156,7 +147,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token')
         .auth('woot', 'woot')
@@ -189,7 +179,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
@@ -212,7 +201,6 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token?grant_type=test')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
