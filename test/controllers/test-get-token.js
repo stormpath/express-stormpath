@@ -221,7 +221,7 @@ describe('getToken', function() {
     });
   });
 
-  it('should return a 200 if valid API credentials are provided and grant_type is valid', function(done) {
+  it('should return a 200 and an access token response if valid API credentials are provided and grant_type is valid', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -235,12 +235,13 @@ describe('getToken', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var config = app.get('stormpathConfig');
       request(app)
         .post('/oauth/token?grant_type=client_credentials')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(200)
-        .end(done);
+        .expect(200,function(err,res){
+          assert(res.body && res.body.access_token);
+          done();
+        });
     });
   });
 });
