@@ -51,7 +51,9 @@ describe('getUser', function() {
    *    used.
    */
   function fakeInit(app) {
-    var config = require('stormpath/lib/config.json');
+    var defaultConfig = require('stormpath/lib/config.json');
+
+    var config = deepExtend({},defaultConfig);
 
     deepExtend(config, {
       application: {
