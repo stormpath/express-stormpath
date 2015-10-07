@@ -85,7 +85,7 @@ describe('getToken', function() {
     app.on('stormpath.ready', function() {
       request(app)
         .post('/oauth/token')
-        .expect(401)
+        .expect(401,{error:'Must provide access_token.'})
         .end(done);
     });
   });
@@ -126,41 +126,10 @@ describe('getToken', function() {
 
     app.on('stormpath.ready', function() {
       request(app)
-        .post('/oauth/token')
+        .post('/oauth/token?grant_type=client_credentials')
         .auth('woot', 'woot')
-        .expect(401)
+        .expect(401,{error:'Invalid Client Credentials'})
         .end(done);
-    });
-  });
-
-  it('should return JSON if invalid API credentials are specified', function(done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function() {
-      request(app)
-        .post('/oauth/token')
-        .auth('woot', 'woot')
-        .expect(401)
-        .end(function(err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-          assert(json.error);
-
-          done();
-        });
     });
   });
 
@@ -187,7 +156,7 @@ describe('getToken', function() {
     });
   });
 
-  it.skip('should return a 400 if valid API credentials are provided but an invalid grant_type is specified', function(done) {
+  it('should return a 400 if valid API credentials are provided but an invalid grant_type is specified', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -204,7 +173,7 @@ describe('getToken', function() {
       request(app)
         .post('/oauth/token?grant_type=test')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(400)
+        .expect(400,{error:'Unsupported grant_type'})
         .end(done);
     });
   });
@@ -228,6 +197,7 @@ describe('getToken', function() {
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
         .expect(200,function(err,res){
           assert(res.body && res.body.access_token);
+          assert(res.body && res.body.expires_in && res.body.expires_in===3600);
           done();
         });
     });
