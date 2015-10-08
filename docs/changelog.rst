@@ -12,6 +12,7 @@ Version 2.0.9
 
 **Not yet released.**
 
+- Fixing support for client_credentials workflow, with account keys
 - Fixing bug with customData expansion.
 
 
