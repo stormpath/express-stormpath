@@ -11,7 +11,8 @@ Express-Stormpath releases.
 Version 2.0.8 -> Version 2.0.9
 ------------------------------
 
-**No changes needed!**
+If you are using the ``/forgot`` endpoint and posting JSON, you need to change
+the ``username`` property to ``email``.
 
 
 Version 2.0.7 -> Version 2.0.8

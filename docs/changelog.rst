@@ -13,9 +13,11 @@ Version 2.0.9
 **Not yet released.**
 
 - Fixing bug with customData expansion.
+- Fixing ``/forgot`` JSON endpoint to accept an ``email`` property.  Previously
+  was ``username`` but this is incorrect: the Stormpath API only accepts an
+  email address for the forgot password workflow.
 - Removing unnecessary JS code from the Google Login form, courtesy of `David
   Gisser <https://github.com/dgisser>`_.
-
 
 Version 2.0.8
 -------------
