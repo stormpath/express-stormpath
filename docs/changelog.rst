@@ -6,11 +6,15 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.0.10
+-------------
+
+**Not yet released.**
 
 Version 2.0.9
 -------------
 
-**Not yet released.**
+**Released on October 7, 2015.**
 
 - Fixing support for client_credentials workflow, with account keys
 - Fixing bug with customData expansion.
