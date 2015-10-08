@@ -12,6 +12,7 @@ Version 2.0.9
 
 **Not yet released.**
 
+- Fixing support for client_credentials workflow, with account keys
 - Fixing bug with customData expansion.
 - Fixing ``/forgot`` JSON endpoint to accept an ``email`` property.  Previously
   was ``username`` but this is incorrect: the Stormpath API only accepts an
