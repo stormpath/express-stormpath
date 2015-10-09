@@ -1,16 +1,13 @@
 'use strict';
 
-var fs = require('fs');
-
 var assert = require('assert');
 var async = require('async');
 var cheerio = require('cheerio');
-var express = require('express');
+var fs = require('fs');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 describe('register', function() {
   var stormpathApplication;
@@ -847,7 +844,7 @@ describe('register', function() {
         },
         web: {
           register: {
-            autoAuthorize: true,
+            autoLogin: true,
             enabled: true,
             nextUri: '/woot'
           }
@@ -885,7 +882,7 @@ describe('register', function() {
         },
         web: {
           register: {
-            autoAuthorize: true,
+            autoLogin: true,
             enabled: true,
             nextUri: '/woot'
           }
@@ -916,7 +913,7 @@ describe('register', function() {
       });
     });
 
-    it('should redirect the user to the login page with ?status=created if autoAuthorize is not enabled', function(done) {
+    it('should redirect the user to the login page with ?status=created if autoLogin is not enabled', function(done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
