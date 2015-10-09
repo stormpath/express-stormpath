@@ -4,7 +4,6 @@ var assert = require('assert');
 
 var async = require('async');
 var cheerio = require('cheerio');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
@@ -20,7 +19,7 @@ describe('login', function() {
     givenName: uuid.v4(),
     surname: uuid.v4()
   };
-  var stormpathAccount;
+
   var stormpathApplication;
 
   before(function(done) {
@@ -30,14 +29,7 @@ describe('login', function() {
       }
 
       stormpathApplication = app;
-      app.createAccount(accountData, function(err, account) {
-        if (err) {
-          return done(err);
-        }
-
-        stormpathAccount = account;
-        done();
-      });
+      app.createAccount(accountData, done);
     });
   });
 

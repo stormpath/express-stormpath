@@ -1,13 +1,9 @@
 'use strict';
 
-var assert = require('assert');
-
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 function isIdSiteRedirect(res) {
   var location = res && res.headers && res.headers.location;

@@ -2,12 +2,10 @@
 
 var assert = require('assert');
 var cheerio = require('cheerio');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 function requestResetPage(app, sptoken) {
   var config = app.get('stormpathConfig');
@@ -95,7 +93,7 @@ describe('resetPassword', function() {
 
       var app = helpers.createStormpathExpressApp({
         application: {
-          href: stormpathApplication.href,
+          href: stormpathApplication.href
         }
       });
 
@@ -110,7 +108,7 @@ describe('resetPassword', function() {
   it('should redirect to the /forgot view is no sptoken is given', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         changePassword: {
@@ -131,7 +129,7 @@ describe('resetPassword', function() {
   it('should redirect to the /forgot view is the sptoken is invalid, with an invlaid token status', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {
@@ -152,7 +150,7 @@ describe('resetPassword', function() {
   it('should render the password reset form if the token is valid', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {
@@ -174,7 +172,7 @@ describe('resetPassword', function() {
   it('should error if the passwords do not match', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {
@@ -204,7 +202,7 @@ describe('resetPassword', function() {
   it('should error if the password is too short (does not meet policy requirements)', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {
@@ -234,7 +232,7 @@ describe('resetPassword', function() {
   it('should error if the the password is not entered twice', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {
@@ -263,7 +261,7 @@ describe('resetPassword', function() {
   it('should allow me to change the password, with a valid token, and send me to the login page', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {
@@ -301,7 +299,7 @@ describe('resetPassword', function() {
     // The token was consumed by the previous test, above.
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         resetPassword: {

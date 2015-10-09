@@ -58,7 +58,7 @@ describe('sanitizeFormData', function() {
       {
         givenName: 'Randall',
         surname: 'Degges',
-        extraData: 'woot',
+        extraData: 'woot'
       }
     );
   });

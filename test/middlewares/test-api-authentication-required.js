@@ -17,7 +17,6 @@ describe('apiAuthenticationRequired', function() {
     surname: uuid.v4()
   };
   var stormpathAccount;
-  var accountApiKey;
   var stormpathApplication;
 
   before(function(done) {
@@ -33,12 +32,11 @@ describe('apiAuthenticationRequired', function() {
         }
 
         stormpathAccount = account;
-        stormpathAccount.createApiKey(function(err, key) {
+        stormpathAccount.createApiKey(function(err) {
           if (err) {
             return done(err);
           }
 
-          accountApiKey = key;
           done();
         });
       });

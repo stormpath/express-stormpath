@@ -18,7 +18,6 @@ var getToken = require('../../lib/controllers/get-token');
 var getUser = require('../../lib/helpers/get-user');
 var helpers = require('../helpers');
 var login = require('../../lib/controllers/login');
-var stormpath = require('../../index');
 
 describe('getUser', function() {
   var username = 'test+' + uuid.v4() + '@stormpath.com';
@@ -115,7 +114,7 @@ describe('getUser', function() {
    *    used.
    */
   function createCookieRoute(cookieName, cookieValue) {
-    return function(req, res, next) {
+    return function(req, res) {
       var cookies = new Cookies(req, res);
       cookies.set(cookieName, cookieValue, { overwrite: true });
       res.status(200).end();

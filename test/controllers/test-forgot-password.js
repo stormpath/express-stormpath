@@ -2,12 +2,10 @@
 
 var assert = require('assert');
 var cheerio = require('cheerio');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 function assertInvalidSpTokenMessage(res){
   var $ = cheerio.load(res.text);
@@ -50,7 +48,7 @@ describe('forgotPassword', function() {
 
       var app = helpers.createStormpathExpressApp({
         application: {
-          href: stormpathApplication.href,
+          href: stormpathApplication.href
         }
       });
 
@@ -67,7 +65,7 @@ describe('forgotPassword', function() {
   it('should bind to /forgot if enabled', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -98,7 +96,7 @@ describe('forgotPassword', function() {
   it('should return an error if the posted email is not an email', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -127,7 +125,7 @@ describe('forgotPassword', function() {
   it('should show an info message if the user is redirected here afer an invalid sptoken', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -150,7 +148,7 @@ describe('forgotPassword', function() {
   it('should redirect to the next uri if an email is given', function(done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {

@@ -35,36 +35,35 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb){
 
 function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb){
 
-  var newAccount = helpers.newUser();
+  var fixture = {
+    expressApp: null,
+    newAccountObject: helpers.newUser(),
+    sideEffectData: uuid.v4(),
+    sideEffect: null
+  };
 
-  var sideEffectData = uuid.v4();
-
-  var app = helpers.createStormpathExpressApp({
+  fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
     postRegistrationHandler: function(account,req,res,next){
-      fixture.sideEffect = sideEffectData;
+      fixture.sideEffect = fixture.sideEffectData;
       next();
     }
   });
 
-  var fixture = {
-    expressApp: app,
-    newAccountObject: newAccount,
-    sideEffectData: sideEffectData,
-    sideEffect: null
-  };
-
-  app.on('stormpath.ready', cb.bind(null,fixture));
+  fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
 }
 
 function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb){
 
-  var newAccount = helpers.newUser();
+  var fixture = {
+    expressApp: null,
+    newAccountObject: helpers.newUser(),
+    sideEffectData: uuid.v4(),
+    sideEffect: null
+  };
 
-  var sideEffectData = uuid.v4();
-
-  var app = helpers.createStormpathExpressApp({
+  fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     web:{
       register: {
@@ -73,19 +72,14 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb){
       }
     },
     postRegistrationHandler: function(account,req,res,next){
-      fixture.sideEffect = sideEffectData;
+      fixture.sideEffect = fixture.sideEffectData;
       next();
     }
   });
 
-  var fixture = {
-    expressApp: app,
-    newAccountObject: newAccount,
-    sideEffectData: sideEffectData,
-    sideEffect: null
-  };
 
-  app.on('stormpath.ready', cb.bind(null,fixture));
+
+  fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
 }
 
 describe('Post-Registration Handler',function() {

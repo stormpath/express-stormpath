@@ -1,14 +1,11 @@
 'use strict';
 
 var assert = require('assert');
-
 var cheerio = require('cheerio');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 function requestVerifyPage(app,sptoken){
   var config = app.get('stormpathConfig');

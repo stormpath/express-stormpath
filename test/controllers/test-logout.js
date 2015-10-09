@@ -1,10 +1,8 @@
 'use strict';
 
-var express = require('express');
 var request = require('supertest');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 describe('logout', function() {
   var app;

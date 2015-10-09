@@ -32,7 +32,13 @@ function preparePostLoginPassThroughTestFixture(stormpathApplication,cb){
 
   var sideEffectData = uuid.v4();
 
-  var app = helpers.createStormpathExpressApp({
+  var fixture = {
+    expressApp: null,
+    sideEffectData: sideEffectData,
+    sideEffect: null
+  };
+
+  fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
     postLoginHandler: function(account,req,res,next){
@@ -41,13 +47,7 @@ function preparePostLoginPassThroughTestFixture(stormpathApplication,cb){
     }
   });
 
-  var fixture = {
-    expressApp: app,
-    sideEffectData: sideEffectData,
-    sideEffect: null
-  };
-
-  app.on('stormpath.ready', cb.bind(null,fixture));
+  fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
 }
 
 describe('Post-Login Handler',function() {

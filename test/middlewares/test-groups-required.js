@@ -1,9 +1,6 @@
 'use strict';
 
-var assert = require('assert');
-
 var async = require('async');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
@@ -122,17 +119,16 @@ describe('groupsRequired', function() {
     });
 
     app.on('stormpath.ready', function() {
-      var adminsGroup, developersGroup;
+      var developersGroup = null;
       var agent = request.agent(app);
 
       async.series([
         function(callback) {
-          app.get('stormpathApplication').createGroup({ name: 'admins' }, function(err, group) {
+          app.get('stormpathApplication').createGroup({ name: 'admins' }, function(err) {
             if (err) {
               return callback(err);
             }
 
-            adminsGroup = group;
             callback();
           });
         },

@@ -299,13 +299,12 @@ describe('register', function() {
                 name: 'music',
                 placeholder: 'Music',
                 required: false,
-                type: 'text',
+                type: 'text'
               }
             }
           }
         }
       });
-
       app.on('stormpath.ready', function() {
         var color = 'black';
         var music = 'rock';
@@ -516,7 +515,6 @@ describe('register', function() {
       app.on('stormpath.ready', function() {
         var givenName = uuid.v4();
         var surname = uuid.v4();
-        var color = 'black';
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -697,7 +695,7 @@ describe('register', function() {
                 name: 'music',
                 placeholder: 'Music',
                 required: false,
-                type: 'text',
+                type: 'text'
               }
             },
             fieldOrder: [ 'givenName', 'surname', 'email', 'color', 'music', 'password' ]
@@ -726,7 +724,7 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err, res) {
+          .end(function(err) {
             if (err) {
               return done(err);
             }
