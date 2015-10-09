@@ -11,6 +11,8 @@ Version 2.0.11
 
 **Not yet released**
 
+- Fixing google login so that it creates a local session
+
 Version 2.0.10
 --------------
 
