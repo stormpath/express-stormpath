@@ -112,37 +112,6 @@ describe('register', function() {
   });
 
   describe('via JSON API', function() {
-    it('should trigger JSON responses if an accept: application/json header is provided', function(done) {
-      var app = helpers.createStormpathExpressApp({
-        application: {
-          href: stormpathApplication.href
-        },
-        web: {
-          register: {
-            enabled: true
-          }
-        }
-      });
-
-      app.on('stormpath.ready', function() {
-        request(app)
-          .post('/register')
-          .set('Accept', 'application/json')
-          .expect(400)
-          .end(function(err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var json = JSON.parse(res.text);
-            if (!json.error) {
-              return done(new Error('No JSON error returned.'));
-            }
-
-            done();
-          });
-      });
-    });
 
     it('should return a JSON error if the account data is not valid', function(done) {
       async.series([
@@ -169,10 +138,7 @@ describe('register', function() {
                   return done(err);
                 }
 
-                var json = JSON.parse(res.text);
-                if (!json.error) {
-                  return done(new Error('No JSON error returned.'));
-                }
+                assert.equal(res.body.error,'email required.');
 
                 cb();
               });
@@ -271,6 +237,44 @@ describe('register', function() {
             assert.equal(json.surname, surname);
             assert.equal(json.email, email);
 
+            done();
+          });
+      });
+    });
+
+    it('should set givenName and surname to \'Anonymous\' if not provided', function(done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      app.on('stormpath.ready', function() {
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            email: email,
+            password: password
+          })
+          .expect(200)
+          .end(function(err,res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.givenName, 'Anonymous');
+            assert.equal(res.body.surname, 'Anonymous');
+            assert.equal(res.body.email, email);
             done();
           });
       });
@@ -541,7 +545,7 @@ describe('register', function() {
       });
     });
 
-    it('should create a user even if givenName is not supplied', function(done) {
+    it('should set givenName and surname to \'Anonymous\' if not provided', function(done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -554,7 +558,6 @@ describe('register', function() {
       });
 
       app.on('stormpath.ready', function() {
-        var surname = uuid.v4();
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -563,7 +566,6 @@ describe('register', function() {
           .set('Accept', 'text/html')
           .type('form')
           .send({
-            surname: surname,
             email: email,
             password: password
           })
@@ -584,6 +586,8 @@ describe('register', function() {
 
               var account = accounts.items[0];
               assert.equal(account.email, email);
+              assert.equal(account.givenName, 'Anonymous');
+              assert.equal(account.surname, 'Anonymous');
 
               done();
             });
