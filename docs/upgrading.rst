@@ -10,7 +10,7 @@ Express-Stormpath releases.
 Version 2.0.9 -> Version 2.0.10
 -------------------------------
 
-We were looking for the option ``config.web.regisgter.autoAuthorize``, to
+We were looking for the option ``config.web.register.autoAuthorize``, to
 enable the auto-login-after-registration feature.   This should actually be
 ``autoLogin``, and it is documented as this. The library is now looking for
 this option as ``autoLogin``, so you will need to change your configuration it
