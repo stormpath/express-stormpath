@@ -112,37 +112,6 @@ describe('register', function() {
   });
 
   describe('via JSON API', function() {
-    it('should trigger JSON responses if an accept: application/json header is provided', function(done) {
-      var app = helpers.createStormpathExpressApp({
-        application: {
-          href: stormpathApplication.href
-        },
-        web: {
-          register: {
-            enabled: true
-          }
-        }
-      });
-
-      app.on('stormpath.ready', function() {
-        request(app)
-          .post('/register')
-          .set('Accept', 'application/json')
-          .expect(400)
-          .end(function(err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var json = JSON.parse(res.text);
-            if (!json.error) {
-              return done(new Error('No JSON error returned.'));
-            }
-
-            done();
-          });
-      });
-    });
 
     it('should return a JSON error if the account data is not valid', function(done) {
       async.series([
