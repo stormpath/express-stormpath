@@ -12,6 +12,8 @@ Version 2.0.11
 **Not yet released**
 
 - Fixing google login so that it creates a local session
+- Fixing registration to allow ``givenName`` and ``surname`` to be populated as
+  ``Anonymous``, from JSON requests
 
 Version 2.0.10
 --------------
