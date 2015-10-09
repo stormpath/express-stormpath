@@ -7,9 +7,12 @@ Change Log
 All library changes, in descending order.
 
 Version 2.0.10
--------------
+--------------
 
-**Not yet released.**
+**Not yet released**
+
+- Fixing the ``postRegistrationHandler``, it is now called even if ``config.web.register.autoLogin`` is ``false``.  It now receives an expanded account object.
+- Fixing the ``postLoginHandler``, it now receives an expanded account object.
 
 Version 2.0.9
 -------------
