@@ -6,10 +6,15 @@ Change Log
 
 All library changes, in descending order.
 
-Version 2.0.11
+Version 2.0.12
 --------------
 
 **Not yet released**
+
+Version 2.0.11
+--------------
+
+**Released on October 9, 2015.**
 
 - Fixing google login so that it creates a local session
 - Fixing registration to allow ``givenName`` and ``surname`` to be populated as
