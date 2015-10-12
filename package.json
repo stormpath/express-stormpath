@@ -40,7 +40,7 @@
     "winston": "^0.8.3"
   },
   "devDependencies": {
-    "cheerio": "^0.18.0",
+    "cheerio": "^0.19.0",
     "coveralls": "^2.11.2",
     "istanbul": "^0.3.15",
     "mocha": "^2.1.0",
