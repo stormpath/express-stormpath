@@ -72,12 +72,28 @@ Cannibal has contributed a major feature to the project.
 - Github: https://github.com/CannibalVox
 
 
+Luke Hertert
+**************
+
+Luke has contributed a patch to the project.
+
+- Github: https://github.com/ldhertert
+
+
 Indra Setiawan
 **************
 
 Indra has contributed a patch to the project.
 
 - Github: https://github.com/suryod
+
+
+David Gisser
+************
+
+David has contributed a patch to the project.
+
+- Github: https://github.com/dgisser
 
 
 .. _Stormpath: https://stormpath.com/

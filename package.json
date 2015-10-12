@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "2.0.8",
+  "version": "2.0.11",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
@@ -12,11 +12,11 @@
     "accounts"
   ],
   "scripts": {
-    "docs": "cd docs && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
+    "docs": "cd docs && rm -rf _build/html && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report text -- --reporter spec --recursive --growl --no-timeouts",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
-  "repository": "stormpath/stormpath-express",
+  "repository": "stormpath/express-stormpath",
   "author": "Stormpath, Inc.",
   "license": "Apache-2.0",
   "main": "./index",
@@ -33,7 +33,7 @@
     "njwt": "^0.2.0",
     "parse-iso-duration": "^0.1.1",
     "request": "^2.63.0",
-    "stormpath": "^0.12.2",
+    "stormpath": "^0.13.1",
     "stormpath-config": "0.0.4",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",

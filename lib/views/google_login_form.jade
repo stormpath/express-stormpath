@@ -6,19 +6,12 @@ script(type='text/javascript').
    * @param  {String} url   The URL to get the value from (optional)
    * @return {String}       The field value
    */
-  function getQueryString(field, url) {
-      var href = url ? url : window.location.href;
-      var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
-      var string = reg.exec(href);
-      return string ? string[1] : null;
-  }
 
   function googleLogin() {
     var clientId = '#{stormpathConfig.socialProviders.google.clientId}';
     var googleScopes = '#{stormpathConfig.socialProviders.google.scopes}';
     var hd = '#{stormpathConfig.socialProviders.google.hd}';
     var scopes = '';
-    var next = getQueryString('next').replace(/^\s+|\s+$/g, '');
 
     if (googleScopes.length) {
       scopes = '+' + googleScopes.split(',').join('+');
