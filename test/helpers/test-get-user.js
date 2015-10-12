@@ -1,8 +1,11 @@
 'use strict';
 
-var assert = require('assert');
-
 var Cookies = require('cookies');
+
+var assert = require('assert');
+var fs = require('fs');
+var yaml = require('js-yaml');
+var path = require('path');
 var async = require('async');
 var cookieParser = require('cookie-parser');
 var deepExtend = require('deep-extend');
@@ -51,9 +54,11 @@ describe('getUser', function() {
    *    used.
    */
   function fakeInit(app) {
-    var defaultConfig = require('stormpath/lib/config.json');
+    var defaultSdkConfig = yaml.load(fs.readFileSync(path.join(path.dirname(require.resolve('stormpath')), 'config.yml'), 'utf8'));
+    var defaultIntegrationConfig = yaml.load(fs.readFileSync('./lib/config.yml', 'utf8'));
 
-    var config = deepExtend({},defaultConfig);
+    var config = deepExtend({}, defaultSdkConfig);
+    var config = deepExtend(config, defaultIntegrationConfig);
 
     deepExtend(config, {
       application: {
@@ -80,8 +85,8 @@ describe('getUser', function() {
       ]
     }));
     app.set('stormpathConfig', config);
-
     app.use(cookieParser());
+
     return function(req, res, next) {
       req.app = app;
       next();
