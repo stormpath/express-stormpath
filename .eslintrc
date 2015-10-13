@@ -45,6 +45,10 @@
       2,
       "outside"
     ],
+    "strict": [
+      2,
+      "global"
+    ],
   },
   "globals": {
     "after": true,
