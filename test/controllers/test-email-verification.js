@@ -7,7 +7,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function requestVerifyPage(app,sptoken){
+function requestVerifyPage(app,sptoken) {
   var config = app.get('stormpathConfig');
   return request(app)
     .get(config.web.verifyEmail.uri + (sptoken?('?sptoken='+sptoken):''));
@@ -19,13 +19,13 @@ function assertVerifyFormExists(res) {
   assert.equal($('input[name="email"]').length, 1);
 }
 
-function assertSpTokenWarning(res){
+function assertSpTokenWarning(res) {
   var $ = cheerio.load(res.text);
   // Assert that the form was rendered.
   assert.equal($('.invalid-sp-token-warning').length, 1);
 }
 
-function assertInvalidEmailError(res){
+function assertInvalidEmailError(res) {
   var $ = cheerio.load(res.text);
   // Assert that the error was shown
   assert($('.alert-danger').html().match(/Please enter a valid email address/));

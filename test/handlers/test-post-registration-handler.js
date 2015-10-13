@@ -6,10 +6,8 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb){
-
+function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb) {
   var newAccount = helpers.newUser();
-
   newAccount.favoriteColor = uuid.v4();
 
   var app = helpers.createStormpathExpressApp({
@@ -18,7 +16,7 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb){
     expand: {
       customData: true
     },
-    postRegistrationHandler: function(account,req,res){
+    postRegistrationHandler: function(account,req,res) {
       // Simply return the user object, so that we can
       // assert that the custom data was expanded
       res.json(account);
@@ -33,7 +31,7 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb){
   app.on('stormpath.ready', cb.bind(null,fixture));
 }
 
-function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb){
+function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb) {
 
   var fixture = {
     expressApp: null,
@@ -45,7 +43,7 @@ function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb){
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
-    postRegistrationHandler: function(account,req,res,next){
+    postRegistrationHandler: function(account,req,res,next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
     }
@@ -54,7 +52,7 @@ function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb){
   fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
 }
 
-function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb){
+function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb) {
 
   var fixture = {
     expressApp: null,
@@ -71,7 +69,7 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb){
         autoLogin: true
       }
     },
-    postRegistrationHandler: function(account,req,res,next){
+    postRegistrationHandler: function(account,req,res,next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
     }
@@ -122,9 +120,9 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('should allow me to do work, then call next (let framework end the response)', function(done){
+    it('should allow me to do work, then call next (let framework end the response)', function(done) {
 
-      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function(fixture){
+      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function(fixture) {
         request(fixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
@@ -142,9 +140,9 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('shoud call the postRegistrationHandler, even if autoLogin is true', function(done){
+    it('shoud call the postRegistrationHandler, even if autoLogin is true', function(done) {
 
-      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function(fixture){
+      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function(fixture) {
         request(fixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
@@ -164,11 +162,9 @@ describe('Post-Registration Handler', function() {
     });
   });
 
-  describe('with a Form-Encoded post', function(){
-
-    it('should be given the expanded account object', function(done){
-
-      preparePostRegistrationExpansionTestFixture(stormpathApplication, function(fixture){
+  describe('with a Form-Encoded post', function() {
+    it('should be given the expanded account object', function(done) {
+      preparePostRegistrationExpansionTestFixture(stormpathApplication, function(fixture) {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)
@@ -184,9 +180,9 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('should allow me to do work, then call next (let framework end the response)', function(done){
+    it('should allow me to do work, then call next (let framework end the response)', function(done) {
 
-      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function(fixture){
+      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function(fixture) {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)
@@ -202,9 +198,9 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('shoud call the postRegistrationHandler, even if autoLogin is true', function(done){
+    it('shoud call the postRegistrationHandler, even if autoLogin is true', function(done) {
 
-      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function(fixture){
+      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function(fixture) {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)

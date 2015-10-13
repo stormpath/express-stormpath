@@ -7,12 +7,11 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function assertInvalidSpTokenMessage(res){
+function assertInvalidSpTokenMessage(res) {
   var $ = cheerio.load(res.text);
   // Assert that the warning was rendered
   assert.equal($('.invalid-sp-token-warning').length, 1);
 }
-
 
 describe('forgotPassword', function() {
   var stormpathApplication;
@@ -168,9 +167,8 @@ describe('forgotPassword', function() {
     });
   });
 
-  describe('as json', function(){
-
-    it('should respond with 200 if a valid email is given', function(done){
+  describe('as json', function() {
+    it('should respond with 200 if a valid email is given', function(done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href

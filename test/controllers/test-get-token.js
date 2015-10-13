@@ -195,7 +195,7 @@ describe('getToken', function() {
       request(app)
         .post('/oauth/token?grant_type=client_credentials')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(200, function(err,res){
+        .expect(200, function(err,res) {
           assert(res.body && res.body.access_token);
           assert(res.body && res.body.expires_in && res.body.expires_in===3600);
           done();

@@ -66,23 +66,23 @@ module.exports.createApplication = function(client, callback) {
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setEmailVerificationStatus = function(application,status,cb){
-  function done(err){
+module.exports.setEmailVerificationStatus = function(application,status,cb) {
+  function done(err) {
     if (err) {
       throw err;
     } else {
       cb();
     }
   }
-  application.getDefaultAccountStore(function(err,accountStoreMapping){
+  application.getDefaultAccountStore(function(err,accountStoreMapping) {
     if (err) {
       done(err);
     } else {
-      accountStoreMapping.getAccountStore(function(err,directory){
+      accountStoreMapping.getAccountStore(function(err,directory) {
         if (err) {
           done(err);
         } else {
-          directory.getAccountCreationPolicy(function(err,policy){
+          directory.getAccountCreationPolicy(function(err,policy) {
             if (err) {
               done(err);
             } else {
@@ -106,23 +106,23 @@ module.exports.setEmailVerificationStatus = function(application,status,cb){
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setPasswordResetStatus = function(application, status, cb){
-  function done(err){
+module.exports.setPasswordResetStatus = function(application, status, cb) {
+  function done(err) {
     if (err) {
       throw err;
     } else {
       cb();
     }
   }
-  application.getDefaultAccountStore(function(err,accountStoreMapping){
+  application.getDefaultAccountStore(function(err,accountStoreMapping) {
     if (err) {
       done(err);
     } else {
-      accountStoreMapping.getAccountStore(function(err,directory){
+      accountStoreMapping.getAccountStore(function(err,directory) {
         if (err) {
           done(err);
         } else {
-          directory.getPasswordPolicy(function(err,policy){
+          directory.getPasswordPolicy(function(err,policy) {
             if (err) {
               done(err);
             } else {
@@ -136,7 +136,7 @@ module.exports.setPasswordResetStatus = function(application, status, cb){
   });
 };
 
-module.exports.createStormpathExpressApp = function(config){
+module.exports.createStormpathExpressApp = function(config) {
   config.client = {
     apiKey: {
       id: process.env.STORMPATH_CLIENT_APIKEY_ID,
