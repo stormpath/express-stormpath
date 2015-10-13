@@ -49,6 +49,7 @@
       2,
       "global"
     ],
+    "brace-style": 2
   },
   "globals": {
     "after": true,
