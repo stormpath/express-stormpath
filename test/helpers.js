@@ -68,24 +68,24 @@ module.exports.createApplication = function(client, callback) {
  */
 module.exports.setEmailVerificationStatus = function(application,status,cb){
   function done(err){
-    if(err){
+    if (err) {
       throw err;
-    }else{
+    } else {
       cb();
     }
   }
   application.getDefaultAccountStore(function(err,accountStoreMapping){
-    if(err){
+    if (err) {
       done(err);
-    }else{
+    } else {
       accountStoreMapping.getAccountStore(function(err,directory){
-        if(err){
+        if (err) {
           done(err);
-        }else{
+        } else {
           directory.getAccountCreationPolicy(function(err,policy){
-            if(err){
+            if (err) {
               done(err);
-            }else{
+            } else {
               policy.verificationEmailStatus = status;
               policy.save(done);
             }
@@ -108,24 +108,24 @@ module.exports.setEmailVerificationStatus = function(application,status,cb){
  */
 module.exports.setPasswordResetStatus = function(application, status, cb){
   function done(err){
-    if(err){
+    if (err) {
       throw err;
     } else {
       cb();
     }
   }
   application.getDefaultAccountStore(function(err,accountStoreMapping){
-    if(err){
+    if (err) {
       done(err);
-    }else{
+    } else {
       accountStoreMapping.getAccountStore(function(err,directory){
-        if(err){
+        if (err) {
           done(err);
-        }else{
+        } else {
           directory.getPasswordPolicy(function(err,policy){
-            if(err){
+            if (err) {
               done(err);
-            }else{
+            } else {
               policy.resetEmailStatus = status;
               policy.save(done);
             }

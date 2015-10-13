@@ -49,7 +49,13 @@
       2,
       "global"
     ],
-    "brace-style": 2
+    "brace-style": 2,
+    "block-spacing": [
+      2,
+      "always"
+    ],
+    "space-before-keywords": 2,
+    "space-after-keywords": 2
   },
   "globals": {
     "after": true,

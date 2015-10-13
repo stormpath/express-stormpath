@@ -168,7 +168,7 @@ describe('forgotPassword', function() {
     });
   });
 
-  describe('as json',function(){
+  describe('as json', function(){
 
     it('should respond with 200 if a valid email is given', function(done){
       var app = helpers.createStormpathExpressApp({
