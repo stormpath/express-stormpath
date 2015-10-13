@@ -13,8 +13,9 @@
   ],
   "scripts": {
     "docs": "cd docs && rm -rf _build/html && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
-    "test": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/** && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report html -- --reporter spec --recursive --growl --no-timeouts",
-    "test-travis": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/** && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
+    "lint": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/**",
+    "test": "npm run-script lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report html -- --reporter spec --recursive --growl --no-timeouts",
+    "test-travis": "npm run-script lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
   "repository": "stormpath/express-stormpath",
   "author": "Stormpath, Inc.",
