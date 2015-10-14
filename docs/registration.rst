@@ -192,12 +192,12 @@ populate on the user::
 
 If the user is created successfully you will get a 200 response and the body
 will the the account object that was created.  If there was an error you
-will get an object that looks like ``{ error: 'error message here'}``
+will get an object that looks like ``{ error: 'error message here'}``.
 
 .. note::
 
   You may have to explicitly tell your client library that you want a JSON
-  response from the server.Not all libraries do this automatically.If the
+  response from the server. Not all libraries do this automatically. If the
   library does not set the ``Accept: application/json`` header on the request,
   you'll get back the HTML registration form - not the JSON response that you
   expect.
