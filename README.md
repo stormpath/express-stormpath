@@ -63,7 +63,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
 7. **Initialize It**
 
-  You need to initalize the middlware and use it with your application.  We have
+  You need to initialize the middlware and use it with your application.  We have
   options for various use cases.
 
   **If your app is a traditional website:**
