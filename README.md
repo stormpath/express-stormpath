@@ -33,7 +33,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   $ export STORMPATH_CLIENT_APIKEY_SECRET=<YOUR-SECRET-HERE>
   ```
 
-  *On Windows, use the `setx` command instead of `export`.*
+  *On Windows, use the `set` or `setx` command instead of `export`.*
 
 3. **Get Your Stormpath App HREF**
 
@@ -47,7 +47,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   $ export STORMPATH_APPLICATION_HREF=<YOUR-STORMPATH-APP-HREF>
   ```
 
-  *On Windows, use the `setx` command instead of `export`.*
+  *On Windows, use the `set` or `setx` command instead of `export`.*
 
 5. **Install The SDK**
 
@@ -63,26 +63,40 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
 7. **Initialize It**
 
-  **If your app is an API:**
+  You need to initalize the middlware and use it with your application.  We have
+  options for various use cases.
 
-  Set `api` to `true` and point `web.spaRoot` to where your front-end app is located. This will serve your app and create default API routes for login, registration, etc.
-
-  ```javascript
-  app.use(stormpath.init(app, {
-    api: true,
-    web: {
-      spaRoot: path.join(SPA_ROOT, 'index.html')
-    }
-  }));
-  ```
-
-  **If your app is a website:**
+  **If your app is a traditional website:**
 
   Set `website` to `true`. This will setup default views for login, registration, etc.
 
   ```javascript
   app.use(stormpath.init(app, {
     website: true
+  }));
+  ```
+
+  If your app is a single page application (Angular, React), you will need to
+  tell our library where the root file is.  For example, if your Angular app is
+  in the `client/` folder in your project:
+
+  ```javascript
+  app.use(stormpath.init(app, {
+    website: true,
+    web: {
+      spaRoot: path.join(__dirname, 'client' 'index.html')
+    }
+  }));
+  ```
+
+  **If your app is an API service:**
+
+  If your application is an API service that requires the use of OAuth Bearer
+  Tokens, then enable the API option:
+
+  ```javascript
+  app.use(stormpath.init(app, {
+    api: true
   }));
   ```
 
@@ -116,9 +130,13 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
   To access a protected route, the user must first login.
 
-  **If your app is an API:**
+  **Traditional Websites:**
 
-  Log them in by posting their username and password as JSON to the `/login` endpoint:
+  You can login by visiting the `/login` URL and submitting the login form
+
+  **Single Page Apps:**
+
+  Your front-end client should POST this data to the `/login` endpoint:
 
   ```javascript
   {
@@ -127,11 +145,23 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   }
   ```
 
-  If the login attempt was successful, you will receive a 200 response and a session cookie will be set on the response. If an error occurred, we will send a 400 status with an error message in the body.
+  *Note: make sure that your client is setting the `Accept: application/json`
+  header on the request.*
 
-  **If your app is a website:**
+  *Using AngularJS?  Try our [Stormpath Angular SDK][]*
 
-  Log them in by sending them to `/login` and fill in the login form.
+  **API Services**
+
+  If your app is an API service that uses our client_crential workflow, your API consumers
+  can obtain access tokens by making this POST to your server:
+
+  ```
+  POST /oauth/token
+  Authorization: Basic <Base64Endoded(ACCOUNT_API_KEY_ID:ACCOUNT_API_KEY_SECRET);
+  Content-Type: application/x-www-form-urlencoded
+
+  grant_type=client_credentials
+  ```
 
   *[Read more about login in the documentation →](https://docs.stormpath.com/nodejs/express/latest/login.html)*
 
@@ -139,9 +169,14 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
   To be able to login, your users first need an account.
 
-  **If your app is an API:**
+  **Traditional Websites:**
 
-  Sign them up by posting their information as JSON to the `/register` endpoint:
+  Users can register by visiting the `/register` URL and submitting the
+  registration form.
+
+  **Single Page Applications:**
+
+  Your front-end client should POST this data to the `/register` endpoint:
 
   ```javascript
   {
@@ -150,11 +185,14 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   }
   ```
 
-  If the user was created successfully, you will receive a 200 response and the body will contain the account that was created. If an error occurred, we will send a 400 status with an error message in the body.
+  If the user was created successfully, you will receive a 200 response and the
+  body will contain the account that was created. If an error occurred, we will
+  send a 400 status with an error message in the body.
 
-  **If your app is a website:**
+  *Note: make sure that your client is setting the `Accept: application/json`
+  header on the request.*
 
-  Sign them up by sending them to `/register` and fill in the form.
+  *Using AngularJS?  Try our [Stormpath Angular SDK][]*
 
   *[Read more about registration in the documentation →](https://docs.stormpath.com/nodejs/express/latest/registration.html)*
 
@@ -184,3 +222,5 @@ Below are some resources you might find useful.
 ## License
 
 Apache 2.0, see [LICENSE](LICENSE).
+
+[Stormpath Angular SDK]: https://github.com/stormpath/stormpath-sdk-angularjs
