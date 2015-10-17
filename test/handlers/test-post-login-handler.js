@@ -70,6 +70,10 @@ describe('Post-Login Handler',function() {
     });
   });
 
+  after(function(done) {
+    helpers.destroyApplication(stormpathApplication, done);
+  });
+
   describe('with a JSON post',function(){
 
     it('should be given the expanded account object',function(done){

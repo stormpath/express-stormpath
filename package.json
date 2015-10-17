@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
@@ -30,7 +30,7 @@
     "express": "^4.10.6",
     "express-stormpath-config": "0.0.2",
     "forms": "^1.1.1",
-    "jade": "^1.8.2",
+    "jade": "^1.11.0",
     "njwt": "^0.2.0",
     "parse-iso-duration": "^0.1.1",
     "request": "^2.63.0",
@@ -40,7 +40,7 @@
     "winston": "^0.8.3"
   },
   "devDependencies": {
-    "cheerio": "^0.18.0",
+    "cheerio": "^0.19.0",
     "coveralls": "^2.11.2",
     "istanbul": "^0.3.15",
     "mocha": "^2.1.0",
