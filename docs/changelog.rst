@@ -6,8 +6,15 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.0.13
+--------------
+
+** Not Yet Released **
+
 Version 2.0.12
 --------------
+
+**Released on October 16, 2015.**
 
 - Fixed bug that caused /logout to send you to ID site if you had logged in via a directory provider.
 
