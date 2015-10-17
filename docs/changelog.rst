@@ -9,7 +9,7 @@ All library changes, in descending order.
 Version 2.0.12
 --------------
 
-**Not yet released**
+- Fixed bug that caused /logout to send you to ID site if you had logged in via a directory provider.
 
 Version 2.0.11
 --------------
