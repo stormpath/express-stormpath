@@ -100,7 +100,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   }));
   ```
 
-  *[Read more about the initialization in the documentation →](https://docs.stormpath.com/nodejs/express/latest/configuration.html#initialize-express-stormpath)*
+  *[Read more about the initialization in the documentation →][]*
 
 8. **Wait For The SDK**
 
@@ -163,7 +163,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   grant_type=client_credentials
   ```
 
-  *[Read more about login in the documentation →](https://docs.stormpath.com/nodejs/express/latest/login.html)*
+  *[Read more about login in the documentation →][]*
 
 11. **Register**
 
@@ -194,19 +194,19 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
   *Using AngularJS?  Try our [Stormpath Angular SDK][]*
 
-  *[Read more about registration in the documentation →](https://docs.stormpath.com/nodejs/express/latest/registration.html)*
+  *[Read more about registration in the documentation →][]*
 
 12. **That's It!**
 
-  You just added user authentication to your app with Stormpath. See the [documentation](https://docs.stormpath.com/nodejs/express/) for further information on how Stormpath can be used with your Express.js app.
+  You just added user authentication to your app with Stormpath. See the [documentation][] for further information on how Stormpath can be used with your Express.js app.
 
 ## Documentation
 
-For a full documentation of this library, see the [documentation](https://docs.stormpath.com/nodejs/express/).
+For a full documentation of this library, see the [documentation][].
 
 ## Help
 
-Contact us via email at support@stormpath.com or visit our [support center](https://support.stormpath.com).
+Contact us via email at support@stormpath.com or visit our [support center][].
 
 ## Example
 
@@ -223,4 +223,9 @@ Below are some resources you might find useful.
 
 Apache 2.0, see [LICENSE](LICENSE).
 
+[documentation]: https://docs.stormpath.com/nodejs/express/
+[Read more about login in the documentation →]: https://docs.stormpath.com/nodejs/express/latest/login.html
+[Read more about registration in the documentation →]: https://docs.stormpath.com/nodejs/express/latest/registration.html
+[Read more about the initialization in the documentation →]: https://docs.stormpath.com/nodejs/express/latest/configuration.html#initialize-express-stormpath
 [Stormpath Angular SDK]: https://github.com/stormpath/stormpath-sdk-angularjs
+[support center]: https://support.stormpath.com
