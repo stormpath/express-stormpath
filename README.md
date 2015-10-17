@@ -84,7 +84,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   app.use(stormpath.init(app, {
     website: true,
     web: {
-      spaRoot: path.join(__dirname, 'client' 'index.html')
+      spaRoot: path.join(__dirname, 'client', 'index.html')
     }
   }));
   ```
@@ -132,7 +132,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
   **Traditional Websites:**
 
-  You can login by visiting the `/login` URL and submitting the login form
+  You can login by visiting the `/login` URL and submitting the login form.
 
   **Single Page Apps:**
 
@@ -152,12 +152,12 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
   **API Services**
 
-  If your app is an API service that uses our client_crential workflow, your API consumers
+  If your app is an API service that uses our client_credentials workflow, your API consumers
   can obtain access tokens by making this POST to your server:
 
   ```
   POST /oauth/token
-  Authorization: Basic <Base64Endoded(ACCOUNT_API_KEY_ID:ACCOUNT_API_KEY_SECRET);
+  Authorization: Basic <Base64Endoded(ACCOUNT_API_KEY_ID:ACCOUNT_API_KEY_SECRET)>;
   Content-Type: application/x-www-form-urlencoded
 
   grant_type=client_credentials
