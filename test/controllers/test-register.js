@@ -758,52 +758,15 @@ describe('register', function() {
     });
 
     it('should return the user to the login page with ?status=unverified if the account is unverified', function(done) {
-      var application;
-      var client = helpers.createClient();
 
       async.series([
         function(callback) {
-          client.createApplication({ name: uuid.v4() }, { createDirectory: true }, function(err, app) {
-            if (err) {
-              return callback(err);
-            }
-
-            application = app;
-            callback();
-          });
-        },
-        function(callback) {
-          application.getDefaultAccountStore(function(err, mapping) {
-            if (err) {
-              return callback(err);
-            }
-
-            mapping.getAccountStore(function(err, store) {
-              if (err) {
-                return callback(err);
-              }
-
-              store.getAccountCreationPolicy(function(err, policy) {
-                if (err) {
-                  return callback(err);
-                }
-
-                policy.verificationEmailStatus = 'ENABLED';
-                policy.save(function(err) {
-                  if (err) {
-                    return callback(err);
-                  }
-
-                  callback();
-                });
-              });
-            });
-          });
+          helpers.setEmailVerificationStatus(stormpathApplication,'ENABLED',callback);
         },
         function(callback) {
           var app = helpers.createStormpathExpressApp({
             application: {
-              href: application.href
+              href: stormpathApplication.href
             },
             web: {
               register: {
@@ -837,7 +800,7 @@ describe('register', function() {
           });
         }
       ], function(err) {
-        done(err);
+        helpers.setEmailVerificationStatus(stormpathApplication,'DISABLED',done);
       });
     });
 
