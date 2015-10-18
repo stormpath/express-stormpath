@@ -8,13 +8,16 @@ node_js:
   - '4.1'
 install:
   - npm install
-  - pip install --user sphinx
+  - test -z "$BUILD_DOCS" || pip install --user sphinx
 script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_script:
-  - cd docs
-  - make html
+  - test -z "$BUILD_DOCS" || cd docs
+  - test -z "$BUILD_DOCS" || make html
 env:
   global:
     - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
     - secure: LC2v9W0Nx8oviv+AajnXV1DOaiht+/1Hy92loa4a4Lbwz/NW0DmM9k1ollBFHpBhWVai3HaZKPl0XqdHqdq1fA2HppdJv8YbT/Hwkj1WdX+LRE/VUNevVc+MszlDJq1FOrgaEjiKyBqQP07RkZl4tg2kwpIET2Q0zmCubE7pezo=
+matrix:
+  include:
+    - env: BUILD_DOCS=true
