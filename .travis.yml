@@ -9,6 +9,12 @@ node_js:
 install:
 - npm install
 - test -z "$BUILD_DOCS" || pip install --user sphinx
+script: travis_retry npm run test-travis
+after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+after_script:
+- test -z "$BUILD_DOCS" || cd docs
+- test -z "$BUILD_DOCS" || make html
+- test -z "$BUILD_DOCS" || cd ..
 - test -z "$BUILD_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$BUILD_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
 - test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
@@ -24,12 +30,7 @@ install:
 - test -z "$BUILD_DOCS" || rake generate
 - test -z "$BUILD_DOCS" || cd _deploy
 - test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-- test -z "$BUILD_DOCS" || cd ..
-script: travis_retry npm run test-travis
-after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-after_script:
-- test -z "$BUILD_DOCS" || cd docs
-- test -z "$BUILD_DOCS" || make html
+- test -z "$BUILD_DOCS" || cd ../..
 env:
   global:
   - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
