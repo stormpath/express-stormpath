@@ -21,3 +21,4 @@ env:
 matrix:
   include:
     - env: BUILD_DOCS=true
+      node_js: '4.1'
