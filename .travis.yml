@@ -8,7 +8,7 @@ node_js:
   - '4.1'
 install:
   - npm install
-  - pip install sphinx
+  - pip install --user sphinx
 script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 env:
