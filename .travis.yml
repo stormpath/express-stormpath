@@ -9,6 +9,21 @@ node_js:
 install:
   - npm install
   - test -z "$BUILD_DOCS" || pip install --user sphinx
+  - test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
+  - test -z "$BUILD_DOCS" || cd stormpath.github.io
+  - test -z "$BUILD_DOCS" || git fetch origin source:source
+  - test -z "$BUILD_DOCS" || git checkout source
+  - test -z "$BUILD_DOCS" || gem install bundler
+  - test -z "$BUILD_DOCS" || bundle install
+  - test -z "$BUILD_DOCS" || rake setup_github_pages[git@github.com:stormpath/stormpath.github.io.git]
+  - test -z "$BUILD_DOCS" || cd _deploy
+  - test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
+  - test -z "$BUILD_DOCS" || cd ..
+  - test -z "$BUILD_DOCS" || rake generate
+  - test -z "$BUILD_DOCS" || cd _deploy
+  - test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
+  - test -z "$BUILD_DOCS" || cd ..
+  #- test -z "$BUILD_DOCS" || rake deploy
 script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_script:
