@@ -9,6 +9,8 @@ node_js:
 install:
 - npm install
 - test -z "$BUILD_DOCS" || pip install --user sphinx
+- test -z "$BUILD_DOCS" || git config --global user.email "evangelists@stormpath.com"
+- test -z "$BUILD_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
 - test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
 - test -z "$BUILD_DOCS" || cd stormpath.github.io
 - test -z "$BUILD_DOCS" || git fetch origin source:source
@@ -41,4 +43,3 @@ before_install:
   -in deploy-key-stormpath-github-io-id-rsa.enc -out ~/.ssh/id_rsa
   -d
 - chmod 600 ~/.ssh/id_rsa
-
