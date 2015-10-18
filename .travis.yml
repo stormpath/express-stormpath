@@ -12,6 +12,7 @@ install:
 script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_script:
+- test -z "$BUILD_DOCS" || git checkout `git tag -l | head -n 1`
 - test -z "$BUILD_DOCS" || cd docs
 - test -z "$BUILD_DOCS" || make html
 - test -z "$BUILD_DOCS" || cd ..
@@ -30,7 +31,9 @@ after_script:
 - test -z "$BUILD_DOCS" || rake generate
 - test -z "$BUILD_DOCS" || cd _deploy
 - test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-- test -z "$BUILD_DOCS" || cd ../..
+- test -z "$BUILD_DOCS" || cd ..
+#- test -z "$BUILD_DOCS" || rake deploy
+- test -z "$BUILD_DOCS" || cd ..
 env:
   global:
   - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
