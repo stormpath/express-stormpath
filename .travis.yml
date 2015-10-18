@@ -9,13 +9,16 @@ node_js:
 install:
 - npm install
 - test -z "$BUILD_DOCS" || pip install --user sphinx
-script: travis_retry npm run test-travis
-after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-after_script:
-- test -z "$BUILD_DOCS" || git checkout `git tag -l | head -n 1`
+script:
+- travis_retry npm run test-travis
 - test -z "$BUILD_DOCS" || cd docs
 - test -z "$BUILD_DOCS" || make html
 - test -z "$BUILD_DOCS" || cd ..
+after_success:
+- cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+- VERSION=`cat package.json | grep version | sed 's/\"//g' | sed 's/  version: //g' | sed 's/,//g'`
+- echo $VERSION
+# TODO: only do the below stuff if this is a RELEASE
 - test -z "$BUILD_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$BUILD_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
 - test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
