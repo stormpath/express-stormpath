@@ -1,39 +1,43 @@
 language: node_js
 sudo: false
 node_js:
-  - '0.10'
-  - '0.11'
-  - '0.12'
-  - '4.0'
-  - '4.1'
+- '0.10'
+- '0.11'
+- '0.12'
+- '4.0'
+- '4.1'
 install:
-  - npm install
-  - test -z "$BUILD_DOCS" || pip install --user sphinx
-  - test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
-  - test -z "$BUILD_DOCS" || cd stormpath.github.io
-  - test -z "$BUILD_DOCS" || git fetch origin source:source
-  - test -z "$BUILD_DOCS" || git checkout source
-  - test -z "$BUILD_DOCS" || gem install bundler
-  - test -z "$BUILD_DOCS" || bundle install
-  - test -z "$BUILD_DOCS" || rake setup_github_pages[git@github.com:stormpath/stormpath.github.io.git]
-  - test -z "$BUILD_DOCS" || cd _deploy
-  - test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-  - test -z "$BUILD_DOCS" || cd ..
-  - test -z "$BUILD_DOCS" || rake generate
-  - test -z "$BUILD_DOCS" || cd _deploy
-  - test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-  - test -z "$BUILD_DOCS" || cd ..
-  #- test -z "$BUILD_DOCS" || rake deploy
+- npm install
+- test -z "$BUILD_DOCS" || pip install --user sphinx
+- test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
+- test -z "$BUILD_DOCS" || cd stormpath.github.io
+- test -z "$BUILD_DOCS" || git fetch origin source:source
+- test -z "$BUILD_DOCS" || git checkout source
+- test -z "$BUILD_DOCS" || gem install bundler
+- test -z "$BUILD_DOCS" || bundle install
+- test -z "$BUILD_DOCS" || rake setup_github_pages[git@github.com:stormpath/stormpath.github.io.git]
+- test -z "$BUILD_DOCS" || cd _deploy
+- test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
+- test -z "$BUILD_DOCS" || cd ..
+- test -z "$BUILD_DOCS" || rake generate
+- test -z "$BUILD_DOCS" || cd _deploy
+- test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
+- test -z "$BUILD_DOCS" || cd ..
 script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 after_script:
-  - test -z "$BUILD_DOCS" || cd docs
-  - test -z "$BUILD_DOCS" || make html
+- test -z "$BUILD_DOCS" || cd docs
+- test -z "$BUILD_DOCS" || make html
 env:
   global:
-    - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
-    - secure: LC2v9W0Nx8oviv+AajnXV1DOaiht+/1Hy92loa4a4Lbwz/NW0DmM9k1ollBFHpBhWVai3HaZKPl0XqdHqdq1fA2HppdJv8YbT/Hwkj1WdX+LRE/VUNevVc+MszlDJq1FOrgaEjiKyBqQP07RkZl4tg2kwpIET2Q0zmCubE7pezo=
+  - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
+  - secure: LC2v9W0Nx8oviv+AajnXV1DOaiht+/1Hy92loa4a4Lbwz/NW0DmM9k1ollBFHpBhWVai3HaZKPl0XqdHqdq1fA2HppdJv8YbT/Hwkj1WdX+LRE/VUNevVc+MszlDJq1FOrgaEjiKyBqQP07RkZl4tg2kwpIET2Q0zmCubE7pezo=
 matrix:
   include:
-    - env: BUILD_DOCS=true
-      node_js: '4.1'
+  - env: BUILD_DOCS=true
+    node_js: '4.1'
+before_install:
+- openssl aes-256-cbc -K $encrypted_3f9d201aa5b8_key -iv $encrypted_3f9d201aa5b8_iv
+  -in deploy-key-stormpath-github-io-id-rsa.enc -out ~/.ssh/id_rsa
+  -d
+- chmod 600 ~/.ssh/id_rsa
