@@ -11,6 +11,9 @@ install:
   - pip install --user sphinx
 script: travis_retry npm run test-travis
 after_success: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+after_script:
+  - cd docs
+  - make html
 env:
   global:
     - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
