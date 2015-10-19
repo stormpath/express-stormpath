@@ -19,7 +19,7 @@ after_success:
 - CURRENT_HASH=`git rev-parse HEAD`
 - RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
 - RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
-- if [ "$CURRENT_HASH" != "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
+- if [ "$CURRENT_HASH" = "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
 - echo $DEPLOY_DOCS
 # TODO: only do the below stuff if this is a RELEASE
 - test -z "$DEPLOY_DOCS" || git config --global user.email "evangelists@stormpath.com"
