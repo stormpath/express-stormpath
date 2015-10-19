@@ -19,28 +19,26 @@ after_success:
 - CURRENT_HASH=`git rev-parse HEAD`
 - RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
 - RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
-- echo $CURRENT_HASH
-- echo $RELEASE_VERSION
-- echo $RELEASE_HASH
+- if ["$CURRENT_HASH" -eq "$RELEASE_HASH"]; DEPLOY_DOCS=true; fi
 # TODO: only do the below stuff if this is a RELEASE
-- test -z "$BUILD_DOCS" || git config --global user.email "evangelists@stormpath.com"
-- test -z "$BUILD_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
-- test -z "$BUILD_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
-- test -z "$BUILD_DOCS" || cd stormpath.github.io
-- test -z "$BUILD_DOCS" || git fetch origin source:source
-- test -z "$BUILD_DOCS" || git checkout source
-- test -z "$BUILD_DOCS" || gem install bundler
-- test -z "$BUILD_DOCS" || bundle install
-- test -z "$BUILD_DOCS" || rake setup_github_pages[git@github.com:stormpath/stormpath.github.io.git]
-- test -z "$BUILD_DOCS" || cd _deploy
-- test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-- test -z "$BUILD_DOCS" || cd ..
-- test -z "$BUILD_DOCS" || rake generate
-- test -z "$BUILD_DOCS" || cd _deploy
-- test -z "$BUILD_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-- test -z "$BUILD_DOCS" || cd ..
-#- test -z "$BUILD_DOCS" || rake deploy
-- test -z "$BUILD_DOCS" || cd ..
+- test -z "$DEPLOY_DOCS" || git config --global user.email "evangelists@stormpath.com"
+- test -z "$DEPLOY_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
+- test -z "$DEPLOY_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
+- test -z "$DEPLOY_DOCS" || cd stormpath.github.io
+- test -z "$DEPLOY_DOCS" || git fetch origin source:source
+- test -z "$DEPLOY_DOCS" || git checkout source
+- test -z "$DEPLOY_DOCS" || gem install bundler
+- test -z "$DEPLOY_DOCS" || bundle install
+- test -z "$DEPLOY_DOCS" || rake setup_github_pages[git@github.com:stormpath/stormpath.github.io.git]
+- test -z "$DEPLOY_DOCS" || cd _deploy
+- test -z "$DEPLOY_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
+- test -z "$DEPLOY_DOCS" || cd ..
+- test -z "$DEPLOY_DOCS" || rake generate
+- test -z "$DEPLOY_DOCS" || cd _deploy
+- test -z "$DEPLOY_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
+- test -z "$DEPLOY_DOCS" || cd ..
+#- test -z "$DEPLOY_DOCS" || rake deploy
+- test -z "$DEPLOY_DOCS" || cd ..
 env:
   global:
   - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
