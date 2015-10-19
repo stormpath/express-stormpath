@@ -16,11 +16,11 @@ script:
 - test -z "$BUILD_DOCS" || cd ..
 after_success:
 - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-- CURRENT_HASH=`git rev-parse HEAD`
-- RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
-- RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
-- if [ "$CURRENT_HASH" = "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
-- echo $DEPLOY_DOCS
+- test -z "$BUILD_DOCS" || CURRENT_HASH=`git rev-parse HEAD`
+- test -z "$BUILD_DOCS" || RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
+- test -z "$BUILD_DOCS" || RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
+- test -z "$BUILD_DOCS" || if [ "$CURRENT_HASH" = "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
+- test -z "$BUILD_DOCS" || echo $DEPLOY_DOCS
 - test -z "$DEPLOY_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$DEPLOY_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
 - test -z "$DEPLOY_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
