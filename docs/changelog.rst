@@ -6,6 +6,15 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.0.14
+--------------
+
+** Released on October 18, 2015.**
+
+- Testing new documentation deployment stuff.
+- No code changes.
+
+
 Version 2.0.13
 --------------
 
