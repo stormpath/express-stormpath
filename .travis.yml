@@ -10,7 +10,7 @@ install:
 - npm install
 - test -z "$BUILD_DOCS" || pip install --user sphinx
 script:
-#- travis_retry npm run test-travis
+- travis_retry npm run test-travis
 - test -z "$BUILD_DOCS" || cd docs
 - test -z "$BUILD_DOCS" || make html
 - test -z "$BUILD_DOCS" || cd ..
@@ -20,8 +20,6 @@ after_success:
 - RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
 - RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
 - if [ "$CURRENT_HASH" = "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
-- echo $DEPLOY_DOCS
-# TODO: only do the below stuff if this is a RELEASE
 - test -z "$DEPLOY_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$DEPLOY_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
 - test -z "$DEPLOY_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
@@ -38,7 +36,7 @@ after_success:
 - test -z "$DEPLOY_DOCS" || cd _deploy
 - test -z "$DEPLOY_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
 - test -z "$DEPLOY_DOCS" || cd ..
-#- test -z "$DEPLOY_DOCS" || rake deploy
+- test -z "$DEPLOY_DOCS" || rake deploy
 - test -z "$DEPLOY_DOCS" || cd ..
 env:
   global:
