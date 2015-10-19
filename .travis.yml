@@ -17,7 +17,9 @@ script:
 after_success:
 - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 - VERSION=`cat package.json | grep version | sed 's/[^0-9.]*//g'`
+- RELEASE=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
 - echo $VERSION
+- echo $RELEASE
 # TODO: only do the below stuff if this is a RELEASE
 - test -z "$BUILD_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$BUILD_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
