@@ -7,6 +7,13 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+
+Version 2.0.12 -> Version 2.0.13
+--------------------------------
+
+Testing out new doc deployments.
+
+
 Version 2.0.9 -> Version 2.0.10
 -------------------------------
 
