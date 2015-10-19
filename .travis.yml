@@ -20,6 +20,9 @@ after_success:
 - test -z "$BUILD_DOCS" || RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
 - test -z "$BUILD_DOCS" || RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
 - test -z "$BUILD_DOCS" || if [ "$CURRENT_HASH" = "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
+- test -z "$BUILD_DOCS" || echo $RELEASE_VERSION
+- test -z "$BUILD_DOCS" || echo $CURRENT_HASH
+- test -z "$BUILD_DOCS" || echo $RELEASE_HASH
 - test -z "$BUILD_DOCS" || echo $DEPLOY_DOCS
 - test -z "$DEPLOY_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$DEPLOY_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
