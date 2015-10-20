@@ -40,7 +40,7 @@ describe('logout', function() {
     var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)
-      .expect(302)
+      .expect(200)
       .end(done);
   });
 
@@ -51,5 +51,27 @@ describe('logout', function() {
       .expect('Set-Cookie', /access_token=;/)
       .expect('Set-Cookie', /refresh_token=;/)
       .end(done);
+  });
+
+  describe('when Accept header is set to text/html', function() {
+    it('should respond with 302', function(done) {
+      var config = app.get('stormpathConfig');
+      request(app)
+        .get(config.web.logout.uri)
+        .set('Accept', 'text/html')
+        .expect(302)
+        .end(done);
+    });
+  });
+
+  describe('when Accept header is set to application/json', function() {
+    it('should respond with 200', function(done) {
+      var config = app.get('stormpathConfig');
+      request(app)
+        .get(config.web.logout.uri)
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end(done);
+    });
   });
 });
