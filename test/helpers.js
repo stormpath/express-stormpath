@@ -8,6 +8,10 @@ var stormpathExpress = require('../');
 
 var express = require('express');
 
+var pkg = require('../package.json');
+
+var testRunId = uuid.v4().split('-')[0];
+
 /**
  * Build a new Stormpath Client for usage in tests.
  *
@@ -46,7 +50,7 @@ module.exports.newUser = function() {
  * @param {Object} application - The initialized Stormpath Application object.
  */
 module.exports.createApplication = function(client, callback) {
-  var appData = { name: uuid.v4() };
+  var appData = { name: pkg.name + ':' + testRunId + ':' + uuid.v4() };
   var opts = { createDirectory: true };
 
   client.createApplication(appData, opts, callback);

@@ -22,7 +22,10 @@ describe('#init()', function() {
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
       
       app.on('stormpath.error', done);
-      app.on('stormpath.ready', done);
+
+      app.on('stormpath.ready', function() {
+        helpers.destroyApplication(application, done);
+      });
     });
   });
 
@@ -54,7 +57,10 @@ describe('#init()', function() {
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
 
       app.on('stormpath.error', done);
-      app.on('stormpath.ready', done);
+
+      app.on('stormpath.ready', function() {
+        helpers.destroyApplication(application, done);
+      });
     });
   });
 });
