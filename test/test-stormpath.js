@@ -23,7 +23,7 @@ describe('#init()', function() {
 
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
       app.on('stormpath.ready', function() {
-        done();
+        helpers.destroyApplication(application, done);
       });
     });
   });
@@ -48,7 +48,7 @@ describe('#init()', function() {
 
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
       app.on('stormpath.ready', function() {
-        done();
+        helpers.destroyApplication(application, done);
       });
     });
   });

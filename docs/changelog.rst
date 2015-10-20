@@ -6,16 +6,61 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.0.14
+--------------
+
+** Released on October 18, 2015.**
+
+- Testing new documentation deployment stuff.
+- No code changes.
+
+
+Version 2.0.13
+--------------
+
+** Released on October 18, 2015.**
+
+- Testing new documentation deployment stuff.
+- No code changes.
+
+
+Version 2.0.12
+--------------
+
+**Released on October 16, 2015.**
+
+- Fixed bug that caused /logout to send you to ID site if you had logged in via a directory provider.
+
+
+Version 2.0.11
+--------------
+
+**Released on October 9, 2015.**
+
+- Fixing google login so that it creates a local session
+- Fixing registration to allow ``givenName`` and ``surname`` to be populated as
+  ``Anonymous``, from JSON requests
+
+Version 2.0.10
+--------------
+
+**Released on October 8, 2015.**
+
+- Fixing the ``postRegistrationHandler``, it is now called even if ``config.web.register.autoLogin`` is ``false``.  It now receives an expanded account object.
+- Fixing the ``postLoginHandler``, it now receives an expanded account object.
 
 Version 2.0.9
 -------------
 
-**Not yet released.**
+**Released on October 7, 2015.**
 
+- Fixing support for client_credentials workflow, with account keys
 - Fixing bug with customData expansion.
+- Fixing ``/forgot`` JSON endpoint to accept an ``email`` property.  Previously
+  was ``username`` but this is incorrect: the Stormpath API only accepts an
+  email address for the forgot password workflow.
 - Removing unnecessary JS code from the Google Login form, courtesy of `David
   Gisser <https://github.com/dgisser>`_.
-
 
 Version 2.0.8
 -------------

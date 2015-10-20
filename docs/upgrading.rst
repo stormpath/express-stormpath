@@ -8,10 +8,33 @@ This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
 
+Version 2.0.13 -> Version 2.0.14
+--------------------------------
+
+Testing out new doc deployments.
+
+
+Version 2.0.12 -> Version 2.0.13
+--------------------------------
+
+Testing out new doc deployments.
+
+
+Version 2.0.9 -> Version 2.0.10
+-------------------------------
+
+We were looking for the option ``config.web.register.autoAuthorize``, to
+enable the auto-login-after-registration feature.   This should actually be
+``autoLogin``, and it is documented as this. The library is now looking for
+this option as ``autoLogin``, so you will need to change your configuration it
+if you were using ``autoAuthorize``.
+
+
 Version 2.0.8 -> Version 2.0.9
 ------------------------------
 
-**No changes needed!**
+If you are using the ``/forgot`` endpoint and posting JSON, you need to change
+the ``username`` property to ``email``.
 
 
 Version 2.0.7 -> Version 2.0.8
