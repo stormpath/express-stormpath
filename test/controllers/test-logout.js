@@ -40,7 +40,7 @@ describe('logout', function() {
     var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)
-      .expect(200)
+      .expect(302)
       .end(done);
   });
 
