@@ -59,11 +59,7 @@ describe('email verification', function() {
   });
 
   after(function(done) {
-    if (stormpathApplication) {
-      helpers.destroyApplication(stormpathApplication, done);
-    } else {
-      done();
-    }
+    helpers.destroyApplication(stormpathApplication, done);
   });
 
   it('should show an "unverified" message after registration', function(done) {
