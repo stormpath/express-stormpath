@@ -9,7 +9,7 @@ var async = require('async');
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
-describe('oauthProviders', function() {
+describe('/spa-config/social-providers', function() {
   var app;
   var stormpathClient;
   var stormpathApplication;
@@ -39,7 +39,7 @@ describe('oauthProviders', function() {
 
   function performRequest(done) {
     request(app)
-      .get('/oauth/providers')
+      .get('/spa-config/social-providers')
       .end(function(err, result) {
         if (err) {
           return done(err);
