@@ -6,10 +6,22 @@ Change Log
 
 All library changes, in descending order.
 
+
+Version 2.0.15
+--------------
+
+**Not yet released.**
+
+- Fixing postLogin / postRegistration handlers not being fired when using Google
+  / LinkedIn logins.  Thanks to `@cdaniel <https://github.com/cdaniel>`_ for the
+  pull request!
+- Adding `@cdaniel <https://github.com/cdaniel>`_ to the contributors list.
+
+
 Version 2.0.14
 --------------
 
-** Released on October 18, 2015.**
+**Released on October 18, 2015.**
 
 - Testing new documentation deployment stuff.
 - No code changes.
