@@ -1099,6 +1099,7 @@ describe('getUser', function() {
     var agent = request.agent(app);
 
     app.post('/oauth/token', getToken);
+
     app.get('/', getUser, function(req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
       assert.equal(req.user.surname, accountData.surname);

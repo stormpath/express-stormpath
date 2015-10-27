@@ -11,6 +11,7 @@ describe('apiAuthenticationRequired', function() {
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var successResponse = uuid.v4();
   var accountData = {
+    username: username,
     email: username,
     password: password,
     givenName: uuid.v4(),
@@ -82,18 +83,16 @@ describe('apiAuthenticationRequired', function() {
     });
 
     app.on('stormpath.ready', function() {
-
       var input = {
         username: accountData.email,
         password: accountData.password
       };
 
       stormpathApplication.authenticateAccount(input,function(err,authResult){
-
         var access_token = authResult.getAccessToken();
 
         if(err){
-          return done (err);
+          return done(err);
         }
 
         request(app)
@@ -101,9 +100,46 @@ describe('apiAuthenticationRequired', function() {
           .set('Authorization','Bearer ' + access_token )
           .expect(200,successResponse,done);
       });
-
-
     });
   });
 
+  it('should return error response if invalid oauth credentials are supplied', function(done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      api: true
+    });
+
+    app.post('/protected',apiAuthenticationRequired,function(req,res){
+      res.end();
+    });
+
+    app.on('stormpath.ready', function() {
+      var authRequest = {
+        username: accountData.email,
+        password: accountData.password
+      };
+
+      stormpathApplication.authenticateAccount(authRequest,function(err,authResult){
+        var refreshToken = 'invalid';
+
+        if(err){
+          return done(err);
+        }
+
+        var grantRequest = {
+          grant_type: 'refresh_token',
+          refresh_token: refreshToken
+        };
+
+        request(app)
+          .post('/protected')
+          .type('json')
+          .set('Accept', 'application/json')
+          .send(grantRequest)
+          .expect(401, done);
+      });
+    });
+  });
 });
