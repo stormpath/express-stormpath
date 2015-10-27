@@ -41,7 +41,7 @@ complete a password reset workflow by doing the following steps:
 Auto Login
 ----------
 
-Our library implements the most secure workflow by default: the uesr must
+Our library implements the most secure workflow by default: the user must
 request a password reset link, then login again after changing their password.
 We recommend these settings for security purposes, but if you wish to automatically
 log the user in after they reset their password you can enable that functionality
