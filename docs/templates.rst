@@ -14,7 +14,7 @@ The views that this library serves by default (if the features are enabled) are:
 * Login Page
 * Registration Page
 * Forgot Password Page
-* Chagne Password Page
+* Change Password Page
 * Email Verifiation Page
 
 If you want to customize these pages, there are two strategies.  You can copy
@@ -42,7 +42,7 @@ in the source code: https://github.com/stormpath/stormpath-express/tree/master/l
 
 .. note::
 
-  Our library includes Jade and our default templates are written in Jad.  If you
+  Our library includes Jade and our default templates are written in Jade.  If you
   are using custom templates that are not written in Jade, you must enable a
   view renderer in your Express application.  Please see
   `Using template engines with Express`_.
@@ -65,7 +65,7 @@ rendered by this library:
 +-----------------+-------------------------------------------------------------------+
 
 
-If you are letting our library renderer your view (default or custom) you may
+If you are letting our library render your view (default or custom) you may
 want to pass some extra locals to the renderer.  You can do that with the
 ``templateContext`` option::
 
