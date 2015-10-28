@@ -27,7 +27,7 @@ Create a Facebook App
 The first thing you need to do is log into the `Facebook Developer Site`_ and
 create a new Facebook App.
 
-You can do this by visiting the `Facebook Developer Site`_ and click the "Apps"
+You can do this by visiting the `Facebook Developer Site`_ and clicking the "Apps"
 menu at the top of the screen, then select the "Create a New App" button.  You
 should see something like the following:
 

@@ -36,7 +36,7 @@ easily accomplish this with the following code::
     });
 
 As you can see above, you can directly modify ``user`` attributes, then
-persist any changes by running ``req.user.save()``.
+save any changes by running ``req.user.save()``.
 
 
 Custom Data
@@ -79,7 +79,7 @@ Automatic Expansion
 -------------------
 
 In Stormpath, all objects are connected in a graph.  You
-have to expand a resource to get it's child resources, and this
+have to expand a resource to get its child resources, and this
 is an asynchronous operation.  We can pre-fetch the expanded
 user data for you.  Simply use the `expand` config option::
 
@@ -96,7 +96,7 @@ they are statically available inside your handler::
       res.json(req.user.customData);
     });
 
-Without enaling this expansion, the response would only contain
+Without enabling this expansion, the response would only contain
 an object which has an href to the resource, that would look
 like this::
 

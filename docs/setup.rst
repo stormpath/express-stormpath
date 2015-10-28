@@ -11,7 +11,7 @@ with Express-Stormpath.
 Create a Stormpath Account
 --------------------------
 
-Now that you've decided to use Stormpath, the first thing you'll want to use is
+Now that you've decided to use Stormpath, the first thing you'll want to do is
 create a new Stormpath account: https://api.stormpath.com/register
 
 
@@ -20,7 +20,7 @@ Create an API Key Pair
 
 Once you've created a new account, create a new API key pair by logging into
 your dashboard and clicking the "Create an API Key" button.  This will generate
-a new API key for you, and prompt you to download your keypair.
+a new API key for you, and prompt you to download your key pair.
 
 .. note::
     Please keep the API key pair file you just downloaded safe!  These two keys
