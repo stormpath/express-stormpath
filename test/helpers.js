@@ -19,8 +19,8 @@ var testRunId = uuid.v4().split('-')[0];
  *
  * @return {Object} Returns an initialized Stormpath Client object.
  */
-module.exports.createClient = function() {
-  return new stormpath.Client();
+module.exports.createClient = function(opts) {
+  return require('./../lib/client')(opts || {});
 };
 
 /**
@@ -145,6 +145,7 @@ module.exports.createStormpathExpressApp = function(config){
   };
 
   var app = express();
+
   app.use(stormpathExpress.init(app, config));
 
   return app;

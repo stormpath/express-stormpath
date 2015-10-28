@@ -21,7 +21,7 @@ account to continue.
 
 
 You may have noticed that we have another library, the `Stormpath Node SDK`_.
-That library is a low-level convience library for the `Stormpath API`_.  This
+That library is a low-level convenience library for the `Stormpath API`_.  This
 Express library will cover most features that you need for your web application,
 but if you want to dig deepr into the `Stormpath API`, you may need the
 `Stormpath Node SDK`_.

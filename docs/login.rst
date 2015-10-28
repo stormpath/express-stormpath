@@ -6,7 +6,7 @@ Login
 
 This library can serve a login page for your application, this will happen
 if you opt into the ``{ website: true }`` configuration.  By default the login page
-will be availble at this URL:
+will be available at this URL:
 
 http://localhost:3000/login
 
@@ -17,7 +17,7 @@ and create the proper session cookies.
 Next URI
 --------
 
-The form will render with two fields for username and passsowrd, and this form
+The form will render with two fields for username and password, and this form
 will be posted to ``/login``.  If login is successful, we will redirect the user
 to ``/``.  If you wish to change this, use the ``nextUri`` config option::
 
