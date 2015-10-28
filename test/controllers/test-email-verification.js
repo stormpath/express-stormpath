@@ -38,15 +38,23 @@ describe('email verification', function() {
   var stormpathApplication;
   var stormpathClient;
 
-  before(function(done) {
+  before(function (done) {
     stormpathClient = helpers.createClient();
-    helpers.createApplication(stormpathClient, function(err, app) {
-      if (err) {
-        return done(err);
-      }
 
-      stormpathApplication = app;
-      helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', done);
+    stormpathClient.on('error', function (err) {
+      throw err;
+    });
+
+    stormpathClient.on('ready', function () {
+      helpers.createApplication(stormpathClient, function (err, app) {
+        if (err) {
+          return done(err);
+        }
+
+        stormpathApplication = app;
+
+        helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', done);
+      });
     });
   });
 

@@ -7,6 +7,10 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 2.0.14 -> Version 2.1.0
+--------------------------------
+
+**No changes needed!**
 
 Version 2.0.14 -> Version 2.0.15
 --------------------------------

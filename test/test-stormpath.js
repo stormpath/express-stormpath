@@ -1,15 +1,13 @@
 'use strict';
 
 var assert = require('assert');
-
 var express = require('express');
-
 var helpers = require('./helpers');
 
 describe('#init()', function() {
   it('should export stormpath.init when express-stormpath is required', function() {
     assert.doesNotThrow(function() {
-        require('../index').init;
+      require('../index').init;
     }, Error);
   });
 
@@ -22,6 +20,9 @@ describe('#init()', function() {
       }
 
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
+      
+      app.on('stormpath.error', done);
+
       app.on('stormpath.ready', function() {
         helpers.destroyApplication(application, done);
       });
@@ -29,13 +30,20 @@ describe('#init()', function() {
   });
 
   // Can't figure out how to properly test an async throw...
-  it.skip('should throw an error when an invalid configuration is supplied', function() {
+  it.skip('should throw an error when an invalid configuration is supplied', function (done) {
     var stormpath = require('../index');
 
-    assert.throws(function() {
-      var app = express();
-      app.use(stormpath.init(app, { application: {}, client: {} }));
-    }, Error);
+    var app = express();
+
+    app.on('stormpath.error', function (err) {
+      console.log(err);
+      assert.equal(err !== null);
+      done();
+    });
+
+    app.on('stormpath.ready', done);
+
+    app.use(stormpath.init(app, { application: {}, client: {} }));
   });
 
   it('should not throw an error if a valid configuration is supplied', function(done) {
@@ -47,6 +55,9 @@ describe('#init()', function() {
       }
 
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
+
+      app.on('stormpath.error', done);
+
       app.on('stormpath.ready', function() {
         helpers.destroyApplication(application, done);
       });

@@ -6,6 +6,13 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.1.0
+--------------
+
+**Not Yet Released**
+
+- Internal refactor of config parser
+
 
 Version 2.0.15
 --------------

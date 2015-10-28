@@ -118,6 +118,7 @@ function getIdSiteCallbackUrl(host, config, app, accountData, done) {
 
 describe('id site', function() {
   var stormpathApplication, app, config, server, host, callbackUri;
+
   var accountData = {
     givenName: uuid.v4(),
     surname: uuid.v4(),
@@ -133,6 +134,7 @@ describe('id site', function() {
         }
 
         stormpathApplication = _app;
+
         stormpathApplication.createAccount(accountData, function(err) {
           if (err) {
             return done(err);
