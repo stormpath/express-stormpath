@@ -12,16 +12,22 @@ Version 2.0.14 -> Version 2.1.0
 
 **No changes needed!**
 
+Version 2.0.14 -> Version 2.0.15
+--------------------------------
+
+**No changes needed!**
+
+
 Version 2.0.13 -> Version 2.0.14
 --------------------------------
 
-Testing out new doc deployments.
+**No changes needed!**
 
 
 Version 2.0.12 -> Version 2.0.13
 --------------------------------
 
-Testing out new doc deployments.
+**No changes needed!**
 
 
 Version 2.0.9 -> Version 2.0.10

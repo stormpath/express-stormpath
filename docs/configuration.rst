@@ -14,7 +14,7 @@ as **1 minute**!
 
 Environment Variables
 ---------------------
-Most Node.js applications exepct your confidential information to be
+Most Node.js applications expect your confidential information to be
 exposed by the environment (not hard-coded in the application).  You
 should export your Stormpath information by running this in the shell:
 
@@ -155,12 +155,12 @@ Single Page Applications
 ------------------------
 
 This framework is designed to work with front-end frameworks like
-Angular and React.  This framework provides a JSON API for all the
+Angular and React.  This framework provides a JSON API for all of the
 features, you will use this JSON API from your front end application.
-Each feature section in this guide has specific information the
+Each feature section in this guide has specific information for the
 JSON API, please see those sections for feature documenation.
 
-In some cases you may need to specity the ``spaRoot`` option.  This
+In some cases you may need to specify the ``spaRoot`` option.  This
 is the absolute file path to the entry point for your SPA.  That option
 would be defined like this::
 

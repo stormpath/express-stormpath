@@ -5,8 +5,7 @@ Registration
 ============
 
 The registration feature of this library allows you to use Stormpath to create
-new accounts in a Stormpath directory.  You can create traditional password-
-based accounts, or gather account data from other providers such as Facebook and
+new accounts in a Stormpath directory.  You can create traditional password-based accounts, or gather account data from other providers such as Facebook and
 Google.
 
 If you've opted into the ``{ website: true }`` option in your configuration, you
@@ -42,7 +41,7 @@ we will cover them in detail below:
 Customizing The Fields
 ----------------------
 
-The registration form will render these fields by default, and the will be
+The registration form will render these fields by default, and they will be
 required by the user:
 
 * giveName
@@ -52,7 +51,7 @@ required by the user:
 
 While email and password will always be required (you'll get an API error if
 you omit them), you may not need to require first and last name.  These
-can be configured, and we'll cover that in the next section
+can be configured, and we'll cover that in the next section.
 
 You can modify the fields that we render by default.  For example, if you want
 to provide the last name field but not make it required, change the required

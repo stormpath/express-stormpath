@@ -10,11 +10,11 @@ Browser Sessions
 If you are building a web application that serves traditional HTML pages, or a
 Single Page Application (Angular/React), this library will handle the cookie
 sessions for you.  Behind the scenes we are issuing an OAuth Access Token and
-Refresh Token to the browser.
+Refresh Token to authenticate the browser.
 
-If you want to ensure that as user is logged into your application, you should
+If you want to ensure that the user is logged into your application, you should
 use the ``loginRequired`` middleware.  It will force the user to login if
-requird, or continue into your middleware::
+required, or continue into your middleware::
 
     app.get('/secret', stormpath.loginRequired, function(req, res) {
       /*
@@ -43,7 +43,7 @@ To change these settings, you should invoke a node client directly::
 .. note::
     Express-Stormpath's session management will not interfere with any existing
     session middleware you might have.  The sessions that Stormpath uses are
-    exclusively used for Stormpath purposes, so it's safe you create your own
+    exclusively used for Stormpath's purposes, so it's safe you create your own
     separate sessions.
 
     This works by utilizing the Express `router`_.
@@ -74,7 +74,7 @@ is how you would protect the secret endpoint with basic authentication::
       });
     });
 
-In order for your API clients to authenticate with this endpoing, they need
+In order for your API clients to authenticate with this endpoint, they need
 to supply an HTTP Authorization header, like this::
 
     Authentication: Bearer <Base64UrlSafe(apiKeyId:apiKeySecret)>
@@ -87,7 +87,7 @@ You can use Curl to achieve the same request::
 API Authentication: Access Tokens
 ---------------------------------
 
-In the previous example we showd you how to use HTP Basic Auth.  An alternative
+In the previous example we showed you how to use HTTP Basic Auth.  An alternative
 scheme is the access token scheme, where we exhange our api keys for an access
 token.  The benefit of this approach is that the access tokens are short lived
 and we can refresh or revoke them, without having to use our api credentials

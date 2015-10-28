@@ -13,10 +13,22 @@ Version 2.1.0
 
 - Internal refactor of config parser
 
+
+Version 2.0.15
+--------------
+
+**Not yet released.**
+
+- Fixing postLogin / postRegistration handlers not being fired when using Google
+  / LinkedIn logins.  Thanks to `@cdaniel <https://github.com/cdaniel>`_ for the
+  pull request!
+- Adding `@cdaniel <https://github.com/cdaniel>`_ to the contributors list.
+
+
 Version 2.0.14
 --------------
 
-** Released on October 18, 2015.**
+**Released on October 18, 2015.**
 
 - Testing new documentation deployment stuff.
 - No code changes.
@@ -136,7 +148,7 @@ Version 2.0.3
 **Released on September 8, 2015.**
 
 - Fixing bug in the ``groupsRequired`` authorization middleware -- it was using
-  a deprecated option, which was causing the library to throw an error if a user
+  a depreciated option, which was causing the library to throw an error if a user
   was NOT a member of the required Groups.
 
 
@@ -238,7 +250,7 @@ Version 1.0.5
 
 - Adding note for Windows users regarding setting environment variables.
 - Added option ``sessionActiveDuration``, which can be used to extend a
-  session if a request is made within the active duration timeframe. This
+  session if a request is made within the active duration time frame. This
   is passed to the ``client-sessions`` library and the default is 5 minutes.
 
 
@@ -432,7 +444,7 @@ Version 0.5.9
   file in the current directory, and as a backup, we'll check for
   ``~/.stormpath/apiKey.properties`` (*platform independent*).
 - Making ``secretKey`` configuration optional.  If no ``secretKey`` is specified
-  when the Stormpath middleware is initialized, we'll create on automatically.
+  when the Stormpath middleware is initialized, we'll create one automatically.
   This makes it easy to do test apps without hard coding a secret key value.
   This is a very bad idea for production apps, though.
 - Making ``application`` an optional field -- if no application href is
@@ -694,7 +706,7 @@ Version 0.2.9
   displayed in a human-readable way.
 - Improving ``enableAutoLogin`` behavior: it now successfully redirects to the
   URL specified by the ``next`` querystring (*if it exists*).
-- Fixing issue with session max duration.  Adding in workaround to get around
+- Fixing issue with session max duration.  Adding in a workaround to get around
   the mozilla bug.
 
 

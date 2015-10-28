@@ -96,5 +96,13 @@ David has contributed a patch to the project.
 - Github: https://github.com/dgisser
 
 
+Chris Daniel
+************
+
+Chris has contributed a patch to the project.
+
+- Github: https://github.com/cdaniel
+
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
