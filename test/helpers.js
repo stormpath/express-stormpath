@@ -30,7 +30,7 @@ module.exports.createClient = function(opts) {
  *
  * @return {Object} Object literal for passing to createAccount functions.
  */
-module.exports.newUser = function() {
+module.exports.newUser = function () {
   return {
     givenName: uuid.v4(),
     surname: uuid.v4(),
@@ -66,7 +66,7 @@ module.exports.createApplication = function(client, callback) {
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setEmailVerificationStatus = function(application,status,cb) {
+module.exports.setEmailVerificationStatus = function (application,status,cb) {
   function done(err) {
     if (err) {
       throw err;
@@ -74,15 +74,15 @@ module.exports.setEmailVerificationStatus = function(application,status,cb) {
       cb();
     }
   }
-  application.getDefaultAccountStore(function(err,accountStoreMapping) {
+  application.getDefaultAccountStore(function (err,accountStoreMapping) {
     if (err) {
       done(err);
     } else {
-      accountStoreMapping.getAccountStore(function(err,directory) {
+      accountStoreMapping.getAccountStore(function (err,directory) {
         if (err) {
           done(err);
         } else {
-          directory.getAccountCreationPolicy(function(err,policy) {
+          directory.getAccountCreationPolicy(function (err,policy) {
             if (err) {
               done(err);
             } else {
@@ -106,7 +106,7 @@ module.exports.setEmailVerificationStatus = function(application,status,cb) {
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setPasswordResetStatus = function(application, status, cb) {
+module.exports.setPasswordResetStatus = function (application, status, cb) {
   function done(err) {
     if (err) {
       throw err;
@@ -114,15 +114,15 @@ module.exports.setPasswordResetStatus = function(application, status, cb) {
       cb();
     }
   }
-  application.getDefaultAccountStore(function(err,accountStoreMapping) {
+  application.getDefaultAccountStore(function (err,accountStoreMapping) {
     if (err) {
       done(err);
     } else {
-      accountStoreMapping.getAccountStore(function(err,directory) {
+      accountStoreMapping.getAccountStore(function (err,directory) {
         if (err) {
           done(err);
         } else {
-          directory.getPasswordPolicy(function(err,policy) {
+          directory.getPasswordPolicy(function (err,policy) {
             if (err) {
               done(err);
             } else {
@@ -136,7 +136,7 @@ module.exports.setPasswordResetStatus = function(application, status, cb) {
   });
 };
 
-module.exports.createStormpathExpressApp = function(config) {
+module.exports.createStormpathExpressApp = function (config) {
   config.client = {
     apiKey: {
       id: process.env.STORMPATH_CLIENT_APIKEY_ID,
@@ -161,14 +161,14 @@ module.exports.createStormpathExpressApp = function(config) {
  * @param {Function} callback - A callback to run when done.
  * @param {Error} err - An error (if there was one).
  */
-module.exports.destroyApplication = function(application, callback) {
-  application.getAccountStoreMappings(function(err, mappings) {
+module.exports.destroyApplication = function (application, callback) {
+  application.getAccountStoreMappings(function (err, mappings) {
     if (err) {
       return callback(err);
     }
 
-    mappings.each(function(mapping, cb) {
-      mapping.getAccountStore(function(err, store) {
+    mappings.each(function (mapping, cb) {
+      mapping.getAccountStore(function (err, store) {
         if (err) {
           return cb(err);
         }
@@ -177,12 +177,12 @@ module.exports.destroyApplication = function(application, callback) {
         // which no longer exists.
         store.delete(cb);
       });
-    }, function(err) {
+    }, function (err) {
       if (err) {
         return callback(err);
       }
 
-      application.delete(function(err) {
+      application.delete(function (err) {
         callback(err);
       });
     });

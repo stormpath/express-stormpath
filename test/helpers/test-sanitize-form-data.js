@@ -4,7 +4,7 @@ var assert = require('assert');
 
 var helpers = require('../../lib/helpers');
 
-describe('sanitizeFormData', function() {
+describe('sanitizeFormData', function () {
   var config = {
     web: {
       register: {
@@ -34,19 +34,19 @@ describe('sanitizeFormData', function() {
     }
   };
 
-  it('should throw an error if formData is not supplied', function() {
-    assert.throws(function() {
+  it('should throw an error if formData is not supplied', function () {
+    assert.throws(function () {
       helpers.sanitizeFormData();
     }, Error);
   });
 
-  it('should throw an error if stormpathConfig is not supplied', function() {
-    assert.throws(function() {
+  it('should throw an error if stormpathConfig is not supplied', function () {
+    assert.throws(function () {
       helpers.sanitizeFormData({});
     }, Error);
   });
 
-  it('should remove any sensitive data from formData', function() {
+  it('should remove any sensitive data from formData', function () {
     assert.deepEqual(
       helpers.sanitizeFormData({
         givenName: 'Randall',

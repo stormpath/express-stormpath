@@ -147,7 +147,7 @@ To use a ``postRegistrationHandler``, you need to define your handler function
 in the Stormpath middleware setup::
 
     app.use(stormpath.init(app, {
-      postRegistrationHandler: function(account, req, res, next) {
+      postRegistrationHandler: function (account, req, res, next) {
         console.log('User:', account.email, 'just registered!');
         next();
       },
@@ -169,7 +169,7 @@ In the example below, we'll use the ``postRegistrationHandler`` to redirect the
 user to a special page (*instead of the normal registration flow*)::
 
     app.use(stormpath.init(app, {
-      postRegistrationHandler: function(account, req, res, next) {
+      postRegistrationHandler: function (account, req, res, next) {
         res.redirect(302, '/secretpage').end();
       },
     }));

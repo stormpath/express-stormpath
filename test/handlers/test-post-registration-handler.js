@@ -16,7 +16,7 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb) {
     expand: {
       customData: true
     },
-    postRegistrationHandler: function(account,req,res) {
+    postRegistrationHandler: function (account,req,res) {
       // Simply return the user object, so that we can
       // assert that the custom data was expanded
       res.json(account);
@@ -43,7 +43,7 @@ function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb) 
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
-    postRegistrationHandler: function(account,req,res,next) {
+    postRegistrationHandler: function (account,req,res,next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
     }
@@ -69,7 +69,7 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb) {
         autoLogin: true
       }
     },
-    postRegistrationHandler: function(account,req,res,next) {
+    postRegistrationHandler: function (account,req,res,next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
     }
@@ -80,11 +80,11 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb) {
   fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
 }
 
-describe('Post-Registration Handler', function() {
+describe('Post-Registration Handler', function () {
   var stormpathApplication = null;
-  before(function(done) {
+  before(function (done) {
 
-    helpers.createApplication(helpers.createClient(), function(err, app) {
+    helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
         return done(err);
       }
@@ -109,7 +109,7 @@ describe('Post-Registration Handler', function() {
           .type('json')
           .send(fixture.newAccountObject)
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -120,16 +120,16 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('should allow me to do work, then call next (let framework end the response)', function(done) {
+    it('should allow me to do work, then call next (let framework end the response)', function (done) {
 
-      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function(fixture) {
+      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
           .send(fixture.newAccountObject)
           .expect(200)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
@@ -140,9 +140,9 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('shoud call the postRegistrationHandler, even if autoLogin is true', function(done) {
+    it('shoud call the postRegistrationHandler, even if autoLogin is true', function (done) {
 
-      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function(fixture) {
+      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
@@ -150,7 +150,7 @@ describe('Post-Registration Handler', function() {
           .send(fixture.newAccountObject)
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(200)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
@@ -162,14 +162,14 @@ describe('Post-Registration Handler', function() {
     });
   });
 
-  describe('with a Form-Encoded post', function() {
-    it('should be given the expanded account object', function(done) {
-      preparePostRegistrationExpansionTestFixture(stormpathApplication, function(fixture) {
+  describe('with a Form-Encoded post', function () {
+    it('should be given the expanded account object', function (done) {
+      preparePostRegistrationExpansionTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -180,14 +180,14 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('should allow me to do work, then call next (let framework end the response)', function(done) {
+    it('should allow me to do work, then call next (let framework end the response)', function (done) {
 
-      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function(fixture) {
+      preparePostRegistrationPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)
           .expect(302)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
@@ -198,15 +198,15 @@ describe('Post-Registration Handler', function() {
       });
     });
 
-    it('shoud call the postRegistrationHandler, even if autoLogin is true', function(done) {
+    it('shoud call the postRegistrationHandler, even if autoLogin is true', function (done) {
 
-      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function(fixture) {
+      preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(302)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }

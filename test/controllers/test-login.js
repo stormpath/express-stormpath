@@ -10,7 +10,7 @@ var uuid = require('uuid');
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
-describe('login', function() {
+describe('login', function () {
   var username = 'test+' + uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var accountData = {
@@ -22,8 +22,8 @@ describe('login', function() {
 
   var stormpathApplication;
 
-  before(function(done) {
-    helpers.createApplication(helpers.createClient(), function(err, app) {
+  before(function (done) {
+    helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
         return done(err);
       }
@@ -33,11 +33,11 @@ describe('login', function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to /login if enabled', function(done) {
+  it('should bind to /login if enabled', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -49,12 +49,12 @@ describe('login', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .get('/login')
         .expect(200)
-        .end(function(err, res) {
+        .end(function (err, res) {
           var $ = cheerio.load(res.text);
 
           // Assert that the form was rendered.
@@ -64,7 +64,7 @@ describe('login', function() {
     });
   });
 
-  it('should return a json error if the accept header supports json and the content type we post is json', function(done) {
+  it('should return a json error if the accept header supports json and the content type we post is json', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -76,13 +76,13 @@ describe('login', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/login')
         .type('json')
         .set('Accept', 'application/json')
         .expect(400)
-        .end(function(err, res) {
+        .end(function (err, res) {
           if (err) {
             return done(err);
           }
@@ -99,7 +99,7 @@ describe('login', function() {
     });
   });
 
-  it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function(done) {
+  it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -111,7 +111,7 @@ describe('login', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/login')
         .type('json')
@@ -122,7 +122,7 @@ describe('login', function() {
     });
   });
 
-  it('should retain the requested url when redirecting to the login page', function(done) {
+  it('should retain the requested url when redirecting to the login page', function (done) {
     var protectedUri = '/' + uuid.v4();
     var app = helpers.createStormpathExpressApp({
       application: {
@@ -136,7 +136,7 @@ describe('login', function() {
     });
 
     app.get(protectedUri, stormpath.loginRequired);
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .get(protectedUri)
         .expect(302)
@@ -145,7 +145,7 @@ describe('login', function() {
     });
   });
 
-  it('should retain the requested url in the form action url', function(done) {
+  it('should retain the requested url in the form action url', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -157,13 +157,13 @@ describe('login', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var config = app.get('stormpathConfig');
       var nextUri = uuid.v4();
       request(app)
         .get('/login?next=' + encodeURIComponent(nextUri))
         .expect(200)
-        .end(function(err, res) {
+        .end(function (err, res) {
           var $ = cheerio.load(res.text);
 
           // Assert that the form was rendered.
@@ -173,7 +173,7 @@ describe('login', function() {
     });
   });
 
-  it('should redirect me to the next url if given', function(done) {
+  it('should redirect me to the next url if given', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -185,7 +185,7 @@ describe('login', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var nextUri = uuid.v4();
       request(app)
         .post('/login?next=' + encodeURIComponent(nextUri))
@@ -196,7 +196,7 @@ describe('login', function() {
     });
   });
 
-  it('should bind to another URL if specified', function(done) {
+  it('should bind to another URL if specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -209,15 +209,15 @@ describe('login', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       async.parallel([
-        function(cb) {
+        function (cb) {
           request(app)
             .get('/newlogin')
             .expect(200)
             .end(cb);
         },
-        function(cb) {
+        function (cb) {
           request(app)
             .get('/login')
             .expect(404)

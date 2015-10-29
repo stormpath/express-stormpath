@@ -7,7 +7,7 @@ var uuid = require('uuid');
 var helpers = require('../helpers');
 var stormpath = require('../../index');
 
-describe('groupsRequired', function() {
+describe('groupsRequired', function () {
   var stormpathAccount;
   var stormpathAccountData = {
     givenName: uuid.v4(),
@@ -18,15 +18,15 @@ describe('groupsRequired', function() {
   var stormpathApplication;
   var stormpathClient;
 
-  before(function(done) {
+  before(function (done) {
     stormpathClient = helpers.createClient();
-    helpers.createApplication(stormpathClient, function(err, application) {
+    helpers.createApplication(stormpathClient, function (err, application) {
       if (err) {
         return done(err);
       }
 
       stormpathApplication = application;
-      application.createAccount(stormpathAccountData, function(err, account) {
+      application.createAccount(stormpathAccountData, function (err, account) {
         if (err) {
           return done(err);
         }
@@ -37,11 +37,11 @@ describe('groupsRequired', function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should redirect unauthenticated users to the login url', function(done) {
+  it('should redirect unauthenticated users to the login url', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -53,11 +53,11 @@ describe('groupsRequired', function() {
       }
     });
 
-    app.get('/private', stormpath.groupsRequired(['admins']), function(req, res) {
+    app.get('/private', stormpath.groupsRequired(['admins']), function (req, res) {
       res.send('Ok!');
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .get('/private')
         .expect(302)
@@ -66,7 +66,7 @@ describe('groupsRequired', function() {
     });
   });
 
-  it('should show an unauthorized page to authenticated users who do not meet group criteria', function(done) {
+  it('should show an unauthorized page to authenticated users who do not meet group criteria', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -78,11 +78,11 @@ describe('groupsRequired', function() {
       }
     });
 
-    app.get('/private', stormpath.groupsRequired(['admins']), function(req, res) {
+    app.get('/private', stormpath.groupsRequired(['admins']), function (req, res) {
       res.send('Ok!');
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var agent = request.agent(app);
 
       agent
@@ -93,7 +93,7 @@ describe('groupsRequired', function() {
         })
         .expect(302)
         .expect('Location', '/')
-        .end(function() {
+        .end(function () {
           agent
             .get('/private')
             .expect(200)
@@ -102,7 +102,7 @@ describe('groupsRequired', function() {
     });
   });
 
-  it('should show allow users through who pass group assertion checks', function(done) {
+  it('should show allow users through who pass group assertion checks', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -114,17 +114,17 @@ describe('groupsRequired', function() {
       }
     });
 
-    app.get('/private', stormpath.groupsRequired(['admins', 'developers'], false), function(req, res) {
+    app.get('/private', stormpath.groupsRequired(['admins', 'developers'], false), function (req, res) {
       res.send('Ok!');
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var developersGroup = null;
       var agent = request.agent(app);
 
       async.series([
-        function(callback) {
-          app.get('stormpathApplication').createGroup({ name: 'admins' }, function(err) {
+        function (callback) {
+          app.get('stormpathApplication').createGroup({ name: 'admins' }, function (err) {
             if (err) {
               return callback(err);
             }
@@ -132,8 +132,8 @@ describe('groupsRequired', function() {
             callback();
           });
         },
-        function(callback) {
-          app.get('stormpathApplication').createGroup({ name: 'developers' }, function(err, group) {
+        function (callback) {
+          app.get('stormpathApplication').createGroup({ name: 'developers' }, function (err, group) {
             if (err) {
               return callback(err);
             }
@@ -142,12 +142,12 @@ describe('groupsRequired', function() {
             callback();
           });
         },
-        function(callback) {
-          stormpathAccount.addToGroup(developersGroup, function(err) {
+        function (callback) {
+          stormpathAccount.addToGroup(developersGroup, function (err) {
             callback(err);
           });
         }
-      ], function(err) {
+      ], function (err) {
         if (err) {
           return done(err);
         }
@@ -160,7 +160,7 @@ describe('groupsRequired', function() {
           })
           .expect(302)
           .expect('Location', '/')
-          .end(function() {
+          .end(function () {
             agent
               .get('/private')
               .expect(200)

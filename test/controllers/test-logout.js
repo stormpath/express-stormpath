@@ -4,12 +4,12 @@ var request = require('supertest');
 
 var helpers = require('../helpers');
 
-describe('logout', function() {
+describe('logout', function () {
   var app;
   var stormpathApplication;
 
-  before(function(done) {
-    helpers.createApplication(helpers.createClient(), function(err, a) {
+  before(function (done) {
+    helpers.createApplication(helpers.createClient(), function (err, a) {
       if (err) {
         return done(err);
       }
@@ -30,11 +30,11 @@ describe('logout', function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to /logout by default', function(done) {
+  it('should bind to /logout by default', function (done) {
     var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)
@@ -42,7 +42,7 @@ describe('logout', function() {
       .end(done);
   });
 
-  it('should delete the access token and refresh token cookies', function(done) {
+  it('should delete the access token and refresh token cookies', function (done) {
     var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)

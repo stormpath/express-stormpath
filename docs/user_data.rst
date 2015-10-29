@@ -15,7 +15,7 @@ Let's say we've defined a simple view that should simply display a user's email
 address.  We can make use of the magical ``req.user`` context variable to
 do this::
 
-    app.get('/email', stormpath.loginRequired, function(req, res) {
+    app.get('/email', stormpath.loginRequired, function (req, res) {
       res.send('Your email address is: ' + req.user.email);
     });
 
@@ -27,7 +27,7 @@ Perhaps you want to change a user's ``givenName`` (*first name*).  You could
 easily accomplish this with the following code::
 
     req.user.givenName = 'Randall';
-    req.user.save(function(err) {
+    req.user.save(function (err) {
       if (err) {
         res.status(400).end('Oops!  There was an error: ' + err.userMessage);
       }else{
@@ -63,7 +63,7 @@ model::
 
     // And then save it all at once
 
-    req.user.customData.save(function(err) {
+    req.user.customData.save(function (err) {
       if (err) {
         res.status(400).end('Oops!  There was an error: ' + err.userMessage);
       }else{
@@ -92,7 +92,7 @@ user data for you.  Simply use the `expand` config option::
 Our library will pre-expand those resources for you, so that
 they are statically available inside your handler::
 
-    app.get('/', stormpath.loginRequired, function(req, res) {
+    app.get('/', stormpath.loginRequired, function (req, res) {
       res.json(req.user.customData);
     });
 
@@ -131,7 +131,7 @@ efficient*) -- so instead, you have to iterate over the collection.
 Below is an example which shows how you can iterate over a collection resource
 (*groups, in this case*)::
 
-    app.get('/', stormpath.loginRequired, function(req, res) {
+    app.get('/', stormpath.loginRequired, function (req, res) {
       req.user.groups.each(function iterator(group, cb) {
         console.log('group:', group);
         cb();
@@ -141,18 +141,18 @@ Below is an example which shows how you can iterate over a collection resource
     });
 
 Each collection resource has an ``each`` method which takes in two functions
-with signature: ``function(data, callback), function()``.  The first function
+with signature: ``function (data, callback), function ()``.  The first function
 will be called for each resource in the collection.  The second function will be
 called when you've finished iterating through all of the available resources.
 
 So, given the example above, we could just as easily iterate over all of a
 user's ``apiKeys``::
 
-    app.get('/', stormpath.loginRequired, function(req, res) {
-      req.user.apiKeys.each(function(apiKey, callback) {
+    app.get('/', stormpath.loginRequired, function (req, res) {
+      req.user.apiKeys.each(function (apiKey, callback) {
         console.log('apiKey:', apiKey);
         callback();
-      }, function() {
+      }, function () {
         res.send('Finished logging all apiKeys to the console!')
       });
     });

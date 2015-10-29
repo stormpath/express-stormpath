@@ -4,7 +4,7 @@ var assert = require('assert');
 
 var helpers = require('../../lib/helpers');
 
-describe('prepAccountData', function() {
+describe('prepAccountData', function () {
   var config = {
     web: {
       register: {
@@ -34,25 +34,25 @@ describe('prepAccountData', function() {
     }
   };
 
-  it('should throw an error if formData is not supplied', function() {
-    assert.throws(function() {
+  it('should throw an error if formData is not supplied', function () {
+    assert.throws(function () {
       helpers.prepAccountData();
     }, Error);
   });
 
-  it('should throw an error if stormpathConfig is not supplied', function() {
-    assert.throws(function() {
+  it('should throw an error if stormpathConfig is not supplied', function () {
+    assert.throws(function () {
       helpers.prepAccountData({});
     }, Error);
   });
 
-  it('should throw an error if callback is not supplied', function() {
-    assert.throws(function() {
+  it('should throw an error if callback is not supplied', function () {
+    assert.throws(function () {
       helpers.prepAccountData({}, config);
     }, Error);
   });
 
-  it('should remove extra keys from formData', function(done) {
+  it('should remove extra keys from formData', function (done) {
     helpers.prepAccountData({
       givenName: 'Randall',
       surname: 'Degges',
@@ -60,7 +60,7 @@ describe('prepAccountData', function() {
       password: 'woot!!!!omgHAX',
       passwordConfirmWoo: 'woot!!!!omgHAX',
       extraData: 'hithere'
-    }, config, function(accountData) {
+    }, config, function (accountData) {
       assert.equal(accountData.passwordConfirmWoo, undefined);
       assert.equal(accountData.customData.passwordConfirmWoo, undefined);
       assert.equal(accountData.extraData, undefined);
@@ -68,7 +68,7 @@ describe('prepAccountData', function() {
     });
   });
 
-  it('should add extra keys to customData', function(done) {
+  it('should add extra keys to customData', function (done) {
     helpers.prepAccountData({
       givenName: 'Randall',
       surname: 'Degges',
@@ -76,7 +76,7 @@ describe('prepAccountData', function() {
       password: 'woot!!!!omgHAX',
       passwordConfirmWoo: 'woot!!!!omgHAX',
       extraData: 'hithere'
-    }, config, function(accountData) {
+    }, config, function (accountData) {
       assert.deepEqual(accountData, {
         givenName: 'Randall',
         surname: 'Degges',

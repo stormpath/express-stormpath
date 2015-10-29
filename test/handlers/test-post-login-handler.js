@@ -14,7 +14,7 @@ function preparePostLoginExpansionTestFixture(stormpathApplication,cb) {
     expand: {
       customData: true
     },
-    postLoginHandler: function(account,req,res) {
+    postLoginHandler: function (account,req,res) {
       // Simply return the user object, so that we can
       // assert that the custom data was expanded
       res.json(account);
@@ -41,7 +41,7 @@ function preparePostLoginPassThroughTestFixture(stormpathApplication,cb) {
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
-    postLoginHandler: function(account,req,res,next) {
+    postLoginHandler: function (account,req,res,next) {
       fixture.sideEffect = sideEffectData;
       next();
     }
@@ -50,7 +50,7 @@ function preparePostLoginPassThroughTestFixture(stormpathApplication,cb) {
   fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
 }
 
-describe('Post-Login Handler', function() {
+describe('Post-Login Handler', function () {
 
   var stormpathApplication = null;
   var newUser = helpers.newUser();
@@ -59,8 +59,8 @@ describe('Post-Login Handler', function() {
     favoriteColor: uuid.v4()
   };
 
-  before(function(done) {
-    helpers.createApplication(helpers.createClient(), function(err, app) {
+  before(function (done) {
+    helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
         return done(err);
       }
@@ -74,9 +74,9 @@ describe('Post-Login Handler', function() {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  describe('with a JSON post',function(){
-
-      preparePostLoginExpansionTestFixture(stormpathApplication, function(fixture) {
+  describe('with a JSON post', function () {
+    it('should be given the expanded account object', function (done) {
+      preparePostLoginExpansionTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/login')
           .set('Accept', 'application/json')
@@ -84,7 +84,7 @@ describe('Post-Login Handler', function() {
           .send({username: newUser.email, password: newUser.password})
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -95,9 +95,9 @@ describe('Post-Login Handler', function() {
       });
     });
 
-    it('should allow me to do work, then call next (let framework end the response)', function(done) {
+    it('should allow me to do work, then call next (let framework end the response)', function (done) {
 
-      preparePostLoginPassThroughTestFixture(stormpathApplication, function(fixture) {
+      preparePostLoginPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/login')
           .set('Accept', 'application/json')
@@ -105,7 +105,7 @@ describe('Post-Login Handler', function() {
           .send({username: newUser.email, password: newUser.password})
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(200)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
@@ -117,17 +117,17 @@ describe('Post-Login Handler', function() {
     });
   });
 
-  describe('with a Form-Encoded post', function() {
+  describe('with a Form-Encoded post', function () {
 
-    it('should be given the expanded account object', function(done) {
+    it('should be given the expanded account object', function (done) {
 
-      preparePostLoginExpansionTestFixture(stormpathApplication, function(fixture) {
+      preparePostLoginExpansionTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/login')
           .send({login: newUser.email, password: newUser.password})
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -138,15 +138,15 @@ describe('Post-Login Handler', function() {
       });
     });
 
-    it('should allow me to do work, then call next (let framework end the response)', function(done) {
+    it('should allow me to do work, then call next (let framework end the response)', function (done) {
 
-      preparePostLoginPassThroughTestFixture(stormpathApplication, function(fixture) {
+      preparePostLoginPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/login')
           .send({login: newUser.email, password: newUser.password})
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(302)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
