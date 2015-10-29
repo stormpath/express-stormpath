@@ -28,7 +28,7 @@
     "csurf": "^1.8.0",
     "deep-extend": "^0.4.0",
     "express": "^4.10.6",
-    "forms": "^1.1.1",
+    "forms": "^1.1.4",
     "jade": "^1.11.0",
     "njwt": "^0.2.0",
     "parse-iso-duration": "^0.1.1",
