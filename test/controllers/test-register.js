@@ -159,7 +159,7 @@ describe('register', function () {
                     type: 'text'
                   }
                 },
-                fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+                fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
               }
             }
           });
@@ -442,7 +442,7 @@ describe('register', function () {
                 type: 'text'
               }
             },
-            fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+            fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
           }
         }
       });
@@ -506,7 +506,7 @@ describe('register', function () {
                 type: 'text'
               }
             },
-            fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+            fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
           }
         }
       });
@@ -697,7 +697,7 @@ describe('register', function () {
                 type: 'text'
               }
             },
-            fieldOrder: [ 'givenName', 'surname', 'email', 'color', 'music', 'password' ]
+            fieldOrder: ['givenName', 'surname', 'email', 'color', 'music', 'password']
           }
         }
       });
