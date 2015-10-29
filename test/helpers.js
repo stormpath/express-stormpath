@@ -2,8 +2,6 @@
 
 var uuid = require('uuid');
 
-var stormpath = require('stormpath');
-
 var stormpathExpress = require('../');
 
 var express = require('express');
@@ -19,7 +17,7 @@ var testRunId = uuid.v4().split('-')[0];
  *
  * @return {Object} Returns an initialized Stormpath Client object.
  */
-module.exports.createClient = function(opts) {
+module.exports.createClient = function (opts) {
   return require('./../lib/client')(opts || {});
 };
 
@@ -49,7 +47,7 @@ module.exports.newUser = function () {
  * @param {Error} err - An error (if there was one).
  * @param {Object} application - The initialized Stormpath Application object.
  */
-module.exports.createApplication = function(client, callback) {
+module.exports.createApplication = function (client, callback) {
   var appData = { name: pkg.name + ':' + testRunId + ':' + uuid.v4() };
   var opts = { createDirectory: true };
 

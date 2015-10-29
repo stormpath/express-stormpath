@@ -19,10 +19,10 @@ describe('#init()', function () {
       }
 
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
-      
+
       app.on('stormpath.error', done);
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         helpers.destroyApplication(application, done);
       });
     });
@@ -35,7 +35,6 @@ describe('#init()', function () {
     var app = express();
 
     app.on('stormpath.error', function (err) {
-      console.log(err);
       assert.equal(err !== null);
       done();
     });
@@ -53,10 +52,10 @@ describe('#init()', function () {
       }
 
       var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
-      
+
       app.on('stormpath.error', done);
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         helpers.destroyApplication(application, done);
       });
     });

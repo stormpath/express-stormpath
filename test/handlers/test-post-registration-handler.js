@@ -94,15 +94,15 @@ describe('Post-Registration Handler', function () {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  describe('with a JSON post', function(){
+  describe('with a JSON post', function () {
 
-    it('should be given the expanded account object', function(done){
+    it('should be given the expanded account object', function (done) {
 
-      preparePostRegistrationExpansionTestFixture(stormpathApplication, function(fixture){
+      preparePostRegistrationExpansionTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')

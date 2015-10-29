@@ -57,7 +57,7 @@ describe('getUser', function () {
     var defaultIntegrationConfig = yaml.load(fs.readFileSync('./lib/config.yml', 'utf8'));
 
     var config = deepExtend({}, defaultSdkConfig);
-    var config = deepExtend(config, defaultIntegrationConfig);
+    config = deepExtend(config, defaultIntegrationConfig);
 
     deepExtend(config, {
       application: {
@@ -86,7 +86,7 @@ describe('getUser', function () {
     app.set('stormpathConfig', config);
     app.use(cookieParser());
 
-    return function(req, res, next) {
+    return function (req, res, next) {
       req.app = app;
       next();
     };

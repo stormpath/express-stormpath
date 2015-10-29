@@ -70,7 +70,7 @@ describe('Post-Login Handler', function () {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 

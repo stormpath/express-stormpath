@@ -131,7 +131,7 @@ describe('id site', function () {
 
         stormpathApplication = _app;
 
-        stormpathApplication.createAccount(accountData, function(err) {
+        stormpathApplication.createAccount(accountData, function (err) {
           if (err) {
             return done(err);
           }

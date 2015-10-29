@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "docs": "cd docs && rm -rf _build/html && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
-    "lint": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/**",
+    "lint": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/** --ignore-pattern **/*.yml --quiet",
     "test": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report html -- --reporter spec --recursive --growl --no-timeouts",
     "test-travis": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },

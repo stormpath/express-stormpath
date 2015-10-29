@@ -48,12 +48,12 @@ describe('current user (/me) route', function () {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should respond with the expanded account object', function(done){
-    prepateMeTestFixture(stormpathApplication, function(fixture){
+  it('should respond with the expanded account object', function (done) {
+    prepateMeTestFixture(stormpathApplication, function (fixture) {
       var agent = request.agent(fixture.expressApp);
       agent
         .post('/login')

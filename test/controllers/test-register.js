@@ -111,7 +111,7 @@ describe('register', function () {
     });
   });
 
-  describe('via JSON API', function() {
+  describe('via JSON API', function () {
     it('should return a JSON error if the account data is not valid', function (done) {
       async.series([
         function (cb) {
@@ -137,7 +137,7 @@ describe('register', function () {
                   return done(err);
                 }
 
-                assert.equal(res.body.error,'email required.');
+                assert.equal(res.body.error, 'email required.');
 
                 cb();
               });
@@ -241,7 +241,7 @@ describe('register', function () {
       });
     });
 
-    it('should set givenName and surname to \'Anonymous\' if not provided', function(done) {
+    it('should set givenName and surname to \'Anonymous\' if not provided', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -253,7 +253,7 @@ describe('register', function () {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -266,7 +266,7 @@ describe('register', function () {
             password: password
           })
           .expect(200)
-          .end(function(err,res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -279,7 +279,7 @@ describe('register', function () {
       });
     });
 
-    it('should store additional account data in customData if the data is valid', function(done) {
+    it('should store additional account data in customData if the data is valid', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -542,7 +542,7 @@ describe('register', function () {
       });
     });
 
-    it('should set givenName and surname to \'Anonymous\' if not provided', function(done) {
+    it('should set givenName and surname to \'Anonymous\' if not provided', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -554,7 +554,7 @@ describe('register', function () {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -754,11 +754,11 @@ describe('register', function () {
       });
     });
 
-    it('should return the user to the login page with ?status=unverified if the account is unverified', function(done) {
+    it('should return the user to the login page with ?status=unverified if the account is unverified', function (done) {
 
       async.series([
-        function(callback) {
-          helpers.setEmailVerificationStatus(stormpathApplication,'ENABLED',callback);
+        function (callback) {
+          helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', callback);
         },
         function (callback) {
           var app = helpers.createStormpathExpressApp({
@@ -796,8 +796,8 @@ describe('register', function () {
               });
           });
         }
-      ], function(err) {
-        helpers.setEmailVerificationStatus(stormpathApplication,'DISABLED',done);
+      ], function () {
+        helpers.setEmailVerificationStatus(stormpathApplication, 'DISABLED', done);
       });
     });
 
