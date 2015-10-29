@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function prepateMeTestFixture(stormpathApplication,cb) {
+function prepateMeTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
@@ -25,7 +25,7 @@ function prepateMeTestFixture(stormpathApplication,cb) {
     expressApp: app
   };
 
-  app.on('stormpath.ready', cb.bind(null,fixture));
+  app.on('stormpath.ready', cb.bind(null, fixture));
 }
 
 describe('current user (/me) route', function () {
@@ -73,7 +73,7 @@ describe('current user (/me) route', function () {
           agent
             .get('/me')
             .expect(200)
-            .end(function (err,res) {
+            .end(function (err, res) {
               if (err) {
                 return done(err);
               }

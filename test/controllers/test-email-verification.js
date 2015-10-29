@@ -7,7 +7,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function requestVerifyPage(app,sptoken) {
+function requestVerifyPage(app, sptoken) {
   var config = app.get('stormpathConfig');
   return request(app)
     .get(config.web.verifyEmail.uri + (sptoken?('?sptoken='+sptoken):''));

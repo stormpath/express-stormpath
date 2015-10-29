@@ -55,7 +55,7 @@ describe('apiAuthenticationRequired', function () {
       api: true
     });
 
-    app.get('/protected',apiAuthenticationRequired, function (req,res) {
+    app.get('/protected', apiAuthenticationRequired, function (req, res) {
       res.end(successResponse);
     });
 
@@ -75,7 +75,7 @@ describe('apiAuthenticationRequired', function () {
       api: true
     });
 
-    app.get('/protected',apiAuthenticationRequired, function (req,res) {
+    app.get('/protected', apiAuthenticationRequired, function (req, res) {
       res.end(successResponse);
     });
 
@@ -86,7 +86,7 @@ describe('apiAuthenticationRequired', function () {
         password: accountData.password
       };
 
-      stormpathApplication.authenticateAccount(input, function (err,authResult) {
+      stormpathApplication.authenticateAccount(input, function (err, authResult) {
 
         var access_token = authResult.getAccessToken();
 
@@ -96,8 +96,8 @@ describe('apiAuthenticationRequired', function () {
 
         request(app)
           .get('/protected')
-          .set('Authorization','Bearer ' + access_token )
-          .expect(200,successResponse,done);
+          .set('Authorization', 'Bearer ' + access_token)
+          .expect(200, successResponse, done);
       });
 
 

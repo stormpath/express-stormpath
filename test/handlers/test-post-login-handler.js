@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function preparePostLoginExpansionTestFixture(stormpathApplication,cb) {
+function preparePostLoginExpansionTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
@@ -14,7 +14,7 @@ function preparePostLoginExpansionTestFixture(stormpathApplication,cb) {
     expand: {
       customData: true
     },
-    postLoginHandler: function (account,req,res) {
+    postLoginHandler: function (account, req, res) {
       // Simply return the user object, so that we can
       // assert that the custom data was expanded
       res.json(account);
@@ -25,10 +25,10 @@ function preparePostLoginExpansionTestFixture(stormpathApplication,cb) {
     expressApp: app
   };
 
-  app.on('stormpath.ready', cb.bind(null,fixture));
+  app.on('stormpath.ready', cb.bind(null, fixture));
 }
 
-function preparePostLoginPassThroughTestFixture(stormpathApplication,cb) {
+function preparePostLoginPassThroughTestFixture(stormpathApplication, cb) {
 
   var sideEffectData = uuid.v4();
 
@@ -41,13 +41,13 @@ function preparePostLoginPassThroughTestFixture(stormpathApplication,cb) {
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
-    postLoginHandler: function (account,req,res,next) {
+    postLoginHandler: function (account, req, res, next) {
       fixture.sideEffect = sideEffectData;
       next();
     }
   });
 
-  fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
+  fixture.expressApp.on('stormpath.ready', cb.bind(null, fixture));
 }
 
 describe('Post-Login Handler', function () {
@@ -66,7 +66,7 @@ describe('Post-Login Handler', function () {
       }
 
       stormpathApplication = app;
-      stormpathApplication.createAccount(newUser,done);
+      stormpathApplication.createAccount(newUser, done);
     });
   });
 

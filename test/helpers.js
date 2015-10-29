@@ -66,7 +66,7 @@ module.exports.createApplication = function(client, callback) {
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setEmailVerificationStatus = function (application,status,cb) {
+module.exports.setEmailVerificationStatus = function (application, status, cb) {
   function done(err) {
     if (err) {
       throw err;
@@ -74,15 +74,15 @@ module.exports.setEmailVerificationStatus = function (application,status,cb) {
       cb();
     }
   }
-  application.getDefaultAccountStore(function (err,accountStoreMapping) {
+  application.getDefaultAccountStore(function (err, accountStoreMapping) {
     if (err) {
       done(err);
     } else {
-      accountStoreMapping.getAccountStore(function (err,directory) {
+      accountStoreMapping.getAccountStore(function (err, directory) {
         if (err) {
           done(err);
         } else {
-          directory.getAccountCreationPolicy(function (err,policy) {
+          directory.getAccountCreationPolicy(function (err, policy) {
             if (err) {
               done(err);
             } else {
@@ -114,15 +114,15 @@ module.exports.setPasswordResetStatus = function (application, status, cb) {
       cb();
     }
   }
-  application.getDefaultAccountStore(function (err,accountStoreMapping) {
+  application.getDefaultAccountStore(function (err, accountStoreMapping) {
     if (err) {
       done(err);
     } else {
-      accountStoreMapping.getAccountStore(function (err,directory) {
+      accountStoreMapping.getAccountStore(function (err, directory) {
         if (err) {
           done(err);
         } else {
-          directory.getPasswordPolicy(function (err,policy) {
+          directory.getPasswordPolicy(function (err, policy) {
             if (err) {
               done(err);
             } else {

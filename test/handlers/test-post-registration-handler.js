@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb) {
+function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
   var newAccount = helpers.newUser();
   newAccount.favoriteColor = uuid.v4();
 
@@ -16,7 +16,7 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb) {
     expand: {
       customData: true
     },
-    postRegistrationHandler: function (account,req,res) {
+    postRegistrationHandler: function (account, req, res) {
       // Simply return the user object, so that we can
       // assert that the custom data was expanded
       res.json(account);
@@ -28,10 +28,10 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication,cb) {
     newAccountObject: newAccount
   };
 
-  app.on('stormpath.ready', cb.bind(null,fixture));
+  app.on('stormpath.ready', cb.bind(null, fixture));
 }
 
-function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb) {
+function preparePostRegistrationPassThroughTestFixture(stormpathApplication, cb) {
 
   var fixture = {
     expressApp: null,
@@ -43,16 +43,16 @@ function preparePostRegistrationPassThroughTestFixture(stormpathApplication,cb) 
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     website: true,
-    postRegistrationHandler: function (account,req,res,next) {
+    postRegistrationHandler: function (account, req, res, next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
     }
   });
 
-  fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
+  fixture.expressApp.on('stormpath.ready', cb.bind(null, fixture));
 }
 
-function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb) {
+function preparePostRegistrationAutoLoginTestFixture(stormpathApplication, cb) {
 
   var fixture = {
     expressApp: null,
@@ -69,7 +69,7 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb) {
         autoLogin: true
       }
     },
-    postRegistrationHandler: function (account,req,res,next) {
+    postRegistrationHandler: function (account, req, res, next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
     }
@@ -77,7 +77,7 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication,cb) {
 
 
 
-  fixture.expressApp.on('stormpath.ready', cb.bind(null,fixture));
+  fixture.expressApp.on('stormpath.ready', cb.bind(null, fixture));
 }
 
 describe('Post-Registration Handler', function () {
