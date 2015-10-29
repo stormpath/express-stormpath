@@ -91,7 +91,7 @@ describe('apiAuthenticationRequired', function () {
         var access_token = authResult.getAccessToken();
 
         if (err) {
-          return done (err);
+          return done(err);
         }
 
         request(app)
