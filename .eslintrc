@@ -62,7 +62,9 @@
     "comma-style": [2, "last"],
     "no-lonely-if": 2,
     "array-bracket-spacing": [2, "never"],
-    "no-spaced-func": [2]
+    "no-spaced-func": [2],
+    "space-in-parens": [2, "never"],
+    "space-infix-ops": 2
   },
   "globals": {
     "after": true,

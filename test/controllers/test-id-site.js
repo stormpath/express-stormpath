@@ -77,7 +77,7 @@ function getIdSiteCallbackUrl(host, config, app, accountData, done) {
           }
 
           var jwt = res.headers.location.split('jwt=')[1];
-          var origin = 'https://'+res.headers.location.split('/')[2];
+          var origin = 'https://' + res.headers.location.split('/')[2];
           var appHref = app.get('stormpathApplication').href;
 
           request(appHref).get('?expand=idSiteModel')
