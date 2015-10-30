@@ -80,20 +80,9 @@ describe('/spa-config', function() {
       assert.equal(typeof socialProviders === 'object', true);
     });
 
-    describe('when no social directories exist', function() {
-      it('should have "facebook.enabled" set to false', function() {
-        assert.equal(socialProviders.hasOwnProperty('facebook'), true);
-        assert.equal(socialProviders.facebook.enabled, false);
-      });
-
-      it('should have "google.enabled" set to false', function() {
-        assert.equal(socialProviders.hasOwnProperty('google'), true);
-        assert.equal(socialProviders.google.enabled, false);
-      });
-
-      it('should have "linkedin.enabled" set to false', function() {
-        assert.equal(socialProviders.hasOwnProperty('linkedin'), true);
-        assert.equal(socialProviders.linkedin.enabled, false);
+    describe('when no Facebook directories exist', function() {
+      it('should have no "facebook" property', function() {
+        assert.equal(socialProviders.hasOwnProperty('facebook'), false);
       });
     });
 
@@ -139,19 +128,12 @@ describe('/spa-config', function() {
         });
       });
 
-      it('should have "facebook.enabled" set to true', function() {
+      it('should have a "facebook" property', function() {
         assert.equal(socialProviders.hasOwnProperty('facebook'), true);
+      });
+
+      it('should have "facebook.enabled" set to true', function() {
         assert.equal(socialProviders.facebook.enabled, true);
-      });
-
-      it('should have "google.enabled" set to false', function() {
-        assert.equal(socialProviders.hasOwnProperty('google'), true);
-        assert.equal(socialProviders.google.enabled, false);
-      });
-
-      it('should have "linkedin.enabled" set to false', function() {
-        assert.equal(socialProviders.hasOwnProperty('linkedin'), true);
-        assert.equal(socialProviders.linkedin.enabled, false);
       });
 
       it('should expose the Facebook Client Id', function() {
