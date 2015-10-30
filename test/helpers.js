@@ -2,8 +2,6 @@
 
 var uuid = require('uuid');
 
-var stormpath = require('stormpath');
-
 var stormpathExpress = require('../');
 
 var express = require('express');
@@ -19,7 +17,7 @@ var testRunId = uuid.v4().split('-')[0];
  *
  * @return {Object} Returns an initialized Stormpath Client object.
  */
-module.exports.createClient = function(opts) {
+module.exports.createClient = function (opts) {
   return require('./../lib/client')(opts || {});
 };
 
@@ -30,11 +28,11 @@ module.exports.createClient = function(opts) {
  *
  * @return {Object} Object literal for passing to createAccount functions.
  */
-module.exports.newUser = function() {
+module.exports.newUser = function () {
   return {
     givenName: uuid.v4(),
     surname: uuid.v4(),
-    email: 'robert+'+uuid.v4() + '@stormpath.com',
+    email: 'robert+' + uuid.v4() + '@stormpath.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
   };
 };
@@ -49,7 +47,7 @@ module.exports.newUser = function() {
  * @param {Error} err - An error (if there was one).
  * @param {Object} application - The initialized Stormpath Application object.
  */
-module.exports.createApplication = function(client, callback) {
+module.exports.createApplication = function (client, callback) {
   var appData = { name: pkg.name + ':' + testRunId + ':' + uuid.v4() };
   var opts = { createDirectory: true };
 
@@ -66,26 +64,26 @@ module.exports.createApplication = function(client, callback) {
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setEmailVerificationStatus = function(application,status,cb){
-  function done(err){
-    if(err){
+module.exports.setEmailVerificationStatus = function (application, status, cb) {
+  function done(err) {
+    if (err) {
       throw err;
-    }else{
+    } else {
       cb();
     }
   }
-  application.getDefaultAccountStore(function(err,accountStoreMapping){
-    if(err){
+  application.getDefaultAccountStore(function (err, accountStoreMapping) {
+    if (err) {
       done(err);
-    }else{
-      accountStoreMapping.getAccountStore(function(err,directory){
-        if(err){
+    } else {
+      accountStoreMapping.getAccountStore(function (err, directory) {
+        if (err) {
           done(err);
-        }else{
-          directory.getAccountCreationPolicy(function(err,policy){
-            if(err){
+        } else {
+          directory.getAccountCreationPolicy(function (err, policy) {
+            if (err) {
               done(err);
-            }else{
+            } else {
               policy.verificationEmailStatus = status;
               policy.save(done);
             }
@@ -106,26 +104,26 @@ module.exports.setEmailVerificationStatus = function(application,status,cb){
  * @param  {Object} application
  * @param {Function} callback Called when updating is complete
  */
-module.exports.setPasswordResetStatus = function(application, status, cb){
-  function done(err){
-    if(err){
+module.exports.setPasswordResetStatus = function (application, status, cb) {
+  function done(err) {
+    if (err) {
       throw err;
     } else {
       cb();
     }
   }
-  application.getDefaultAccountStore(function(err,accountStoreMapping){
-    if(err){
+  application.getDefaultAccountStore(function (err, accountStoreMapping) {
+    if (err) {
       done(err);
-    }else{
-      accountStoreMapping.getAccountStore(function(err,directory){
-        if(err){
+    } else {
+      accountStoreMapping.getAccountStore(function (err, directory) {
+        if (err) {
           done(err);
-        }else{
-          directory.getPasswordPolicy(function(err,policy){
-            if(err){
+        } else {
+          directory.getPasswordPolicy(function (err, policy) {
+            if (err) {
               done(err);
-            }else{
+            } else {
               policy.resetEmailStatus = status;
               policy.save(done);
             }
@@ -136,7 +134,7 @@ module.exports.setPasswordResetStatus = function(application, status, cb){
   });
 };
 
-module.exports.createStormpathExpressApp = function(config){
+module.exports.createStormpathExpressApp = function (config) {
   config.client = {
     apiKey: {
       id: process.env.STORMPATH_CLIENT_APIKEY_ID,
@@ -161,30 +159,28 @@ module.exports.createStormpathExpressApp = function(config){
  * @param {Function} callback - A callback to run when done.
  * @param {Error} err - An error (if there was one).
  */
-module.exports.destroyApplication = function(application, callback) {
-  application.getAccountStoreMappings(function(err, mappings) {
+module.exports.destroyApplication = function (application, callback) {
+  application.getAccountStoreMappings(function (err, mappings) {
     if (err) {
       return callback(err);
     }
 
-    mappings.each(function(mapping, cb) {
-      mapping.getAccountStore(function(err, store) {
+    mappings.each(function (mapping, cb) {
+      mapping.getAccountStore(function (err, store) {
         if (err) {
           return cb(err);
         }
 
         // Ignore all errors here, because we might be trying to delete a Group
         // which no longer exists.
-        store.delete(function(err) {
-          cb();
-        });
+        store.delete(cb);
       });
-    }, function(err) {
+    }, function (err) {
       if (err) {
         return callback(err);
       }
 
-      application.delete(function(err) {
+      application.delete(function (err) {
         callback(err);
       });
     });

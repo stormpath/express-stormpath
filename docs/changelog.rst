@@ -148,7 +148,7 @@ Version 2.0.3
 **Released on September 8, 2015.**
 
 - Fixing bug in the ``groupsRequired`` authorization middleware -- it was using
-  a depreciated option, which was causing the library to throw an error if a user
+  a deprecated option, which was causing the library to throw an error if a user
   was NOT a member of the required Groups.
 
 

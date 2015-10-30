@@ -107,8 +107,8 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   Wait for the SDK to get ready, then start the web server:
 
   ```javascript
-  app.on('stormpath.ready', function() {
-    app.listen(3000, function() {
+  app.on('stormpath.ready', function () {
+    app.listen(3000, function () {
       //...
     });
   });
@@ -119,7 +119,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   Use `stormpath.loginRequired` as a middleware to protect your routes:
 
   ```javascript
-  app.get('/secret', stormpath.loginRequired, function(req, res) {
+  app.get('/secret', stormpath.loginRequired, function (req, res) {
     //...
   });
   ```

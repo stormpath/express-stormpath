@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-describe('getToken', function() {
+describe('getToken', function () {
   var username = uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var accountData = {
@@ -19,20 +19,20 @@ describe('getToken', function() {
   var stormpathAccountApiKey;
   var stormpathApplication;
 
-  before(function(done) {
-    helpers.createApplication(helpers.createClient(), function(err, app) {
+  before(function (done) {
+    helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
         return done(err);
       }
 
       stormpathApplication = app;
-      app.createAccount(accountData, function(err, account) {
+      app.createAccount(accountData, function (err, account) {
         if (err) {
           return done(err);
         }
 
         stormpathAccount = account;
-        stormpathAccount.createApiKey(function(err, key) {
+        stormpathAccount.createApiKey(function (err, key) {
           if (err) {
             return done(err);
           }
@@ -44,11 +44,11 @@ describe('getToken', function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should return a 404 if <config.web.oauth2.uri> is enabled and a non-POST request is made', function(done) {
+  it('should return a 404 if <config.web.oauth2.uri> is enabled and a non-POST request is made', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -61,7 +61,7 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .get('/oauth/token')
         .expect(404)
@@ -69,7 +69,7 @@ describe('getToken', function() {
     });
   });
 
-  it('should bind to POST <config.web.oauth2.uri> if enabled', function(done) {
+  it('should bind to POST <config.web.oauth2.uri> if enabled', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -82,15 +82,15 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token')
-        .expect(401,{error:'Must provide access_token.'})
+        .expect(401, {error:'Must provide access_token.'})
         .end(done);
     });
   });
 
-  it('should not bind to POST <config.web.oauth2.uri> if disabled', function(done) {
+  it('should not bind to POST <config.web.oauth2.uri> if disabled', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -103,7 +103,7 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token')
         .expect(404)
@@ -111,7 +111,7 @@ describe('getToken', function() {
     });
   });
 
-  it('should return a 401 if invalid API credentials are specified', function(done) {
+  it('should return a 401 if invalid API credentials are specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -124,17 +124,17 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token?grant_type=client_credentials')
         .auth('woot', 'woot')
-        .expect(401,{error:'Invalid Client Credentials'})
+        .expect(401, {error:'Invalid Client Credentials'})
         .end(done);
     });
   });
 
   //////////////////////////////////////////
-  it.skip('should return a 400 if valid API credentials are provided but no grant_type is specified', function(done) {
+  it.skip('should return a 400 if valid API credentials are provided but no grant_type is specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -147,7 +147,7 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
@@ -156,7 +156,7 @@ describe('getToken', function() {
     });
   });
 
-  it('should return a 400 if valid API credentials are provided but an invalid grant_type is specified', function(done) {
+  it('should return a 400 if valid API credentials are provided but an invalid grant_type is specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -169,16 +169,16 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token?grant_type=test')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(400,{error:'Unsupported grant_type'})
+        .expect(400, {error:'Unsupported grant_type'})
         .end(done);
     });
   });
 
-  it('should return a 200 and an access token response if valid API credentials are provided and grant_type is valid', function(done) {
+  it('should return a 200 and an access token response if valid API credentials are provided and grant_type is valid', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -191,13 +191,13 @@ describe('getToken', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token?grant_type=client_credentials')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(200,function(err,res){
+        .expect(200, function (err, res) {
           assert(res.body && res.body.access_token);
-          assert(res.body && res.body.expires_in && res.body.expires_in===3600);
+          assert(res.body && res.body.expires_in && res.body.expires_in === 3600);
           done();
         });
     });
