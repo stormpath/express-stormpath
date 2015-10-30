@@ -104,5 +104,12 @@ Chris has contributed a patch to the project.
 - Github: https://github.com/cdaniel
 
 
+JrodManU
+********
+
+JrodManU has contributed documentation fixes project.
+
+- Github: https://github.com/JrodManU
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
