@@ -38,7 +38,7 @@
     "stormpath-config": "0.0.12",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
-    "winston": "^1.1.1"
+    "winston": "^2.0.0"
   },
   "devDependencies": {
     "cheerio": "^0.19.0",
