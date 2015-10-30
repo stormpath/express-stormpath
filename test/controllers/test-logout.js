@@ -51,8 +51,8 @@ describe('logout', function () {
       .end(done);
   });
 
-  describe('when Accept header is set to text/html', function() {
-    it('should respond with 302', function(done) {
+  describe('when Accept header is set to text/html', function () {
+    it('should respond with 302', function (done) {
       var config = app.get('stormpathConfig');
       request(app)
         .get(config.web.logout.uri)
@@ -62,8 +62,8 @@ describe('logout', function () {
     });
   });
 
-  describe('when Accept header is set to application/json', function() {
-    it('should respond with 200', function(done) {
+  describe('when Accept header is set to application/json', function () {
+    it('should respond with 200', function (done) {
       var config = app.get('stormpathConfig');
       request(app)
         .get(config.web.logout.uri)

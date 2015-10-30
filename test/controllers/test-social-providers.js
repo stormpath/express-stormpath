@@ -1,22 +1,20 @@
 'use strict';
 
 var assert = require('assert');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 var async = require('async');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
-describe('/spa-config', function() {
+describe('/spa-config', function () {
   var app;
   var stormpathClient;
   var stormpathApplication;
   var response;
 
   function createStormpathApplication(done) {
-    helpers.createApplication(stormpathClient, function(err, app) {
+    helpers.createApplication(stormpathClient, function (err, app) {
       stormpathApplication = app;
       done(err, app);
     });
@@ -40,7 +38,7 @@ describe('/spa-config', function() {
   function performRequest(done) {
     request(app)
       .get('/spa-config')
-      .end(function(err, result) {
+      .end(function (err, result) {
         if (err) {
           return done(err);
         }
@@ -50,7 +48,7 @@ describe('/spa-config', function() {
       });
   }
 
-  before(function(done) {
+  before(function (done) {
     stormpathClient = helpers.createClient();
 
     async.series([
@@ -61,33 +59,32 @@ describe('/spa-config', function() {
     ], done);
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should return an object', function() {
+  it('should return an object', function () {
     assert.equal(typeof response === 'object', true);
   });
 
-  describe('socialProviders property', function() {
+  describe('socialProviders property', function () {
     var socialProviders;
 
-    before(function() {
+    before(function () {
       socialProviders = response.socialProviders;
     });
 
-    it('should be an object', function() {
+    it('should be an object', function () {
       assert.equal(typeof socialProviders === 'object', true);
     });
 
-    describe('when no Facebook directories exist', function() {
-      it('should have no "facebook" property', function() {
+    describe('when no Facebook directories exist', function () {
+      it('should have no "facebook" property', function () {
         assert.equal(socialProviders.hasOwnProperty('facebook'), false);
       });
     });
 
-    describe('when a Facebook directory exists', function() {
-      var facebookDirectory;
+    describe('when a Facebook directory exists', function () {
       var facebookClientId;
       var facebookClientSecret;
       var socialProviders;
@@ -100,20 +97,19 @@ describe('/spa-config', function() {
             clientId: facebookClientId,
             clientSecret: facebookClientSecret
           }
-        }, function(err, directory) {
-          facebookDirectory = directory;
+        }, function (err, directory) {
 
           stormpathApplication.createAccountStoreMapping({
             accountStore: {
               href: directory.href
             }
-          }, function(err, mapping) {
+          }, function (err) {
             done(err, directory);
           });
         });
       }
 
-      before(function(done) {
+      before(function (done) {
         facebookClientId = uuid();
         facebookClientSecret = uuid();
 
@@ -122,25 +118,25 @@ describe('/spa-config', function() {
           createStormpathExpressApp,
           waitForReady,
           performRequest
-        ], function(err) {
+        ], function (err) {
           socialProviders = response.socialProviders;
           done(err);
         });
       });
 
-      it('should have a "facebook" property', function() {
+      it('should have a "facebook" property', function () {
         assert.equal(socialProviders.hasOwnProperty('facebook'), true);
       });
 
-      it('should have "facebook.enabled" set to true', function() {
+      it('should have "facebook.enabled" set to true', function () {
         assert.equal(socialProviders.facebook.enabled, true);
       });
 
-      it('should expose the Facebook Client Id', function() {
+      it('should expose the Facebook Client Id', function () {
         assert.equal(socialProviders.facebook.clientId, facebookClientId);
       });
 
-      it('should not expose the Facebook Client Secret', function() {
+      it('should not expose the Facebook Client Secret', function () {
         assert.equal(socialProviders.facebook.hasOwnProperty('clientSecret'), false);
       });
     });
