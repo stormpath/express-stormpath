@@ -13,8 +13,9 @@
   ],
   "scripts": {
     "docs": "cd docs && rm -rf _build/html && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report text -- --reporter spec --recursive --growl --no-timeouts",
-    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
+    "lint": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/** --ignore-pattern **/*.yml --quiet",
+    "test": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report html -- --reporter spec --recursive --growl --no-timeouts",
+    "test-travis": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
   "repository": "stormpath/express-stormpath",
   "author": "Stormpath, Inc.",
@@ -44,6 +45,7 @@
     "coveralls": "^2.11.2",
     "js-yaml": "^3.4.3",
     "istanbul": "^0.4.0",
+    "eslint": "^1.6.0",
     "mocha": "^2.1.0",
     "mocha-lcov-reporter": "0.0.2",
     "supertest": "^1.1.0"

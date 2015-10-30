@@ -32,7 +32,7 @@ Now that we've created our groups, and also added our user to the "free users"
 group -- let's see how we can enforce different types of authorization on
 our user using the ``groupsRequired`` middleware::
 
-    app.get('/admins', stormpath.groupsRequired(['admins']), function(req, res) {
+    app.get('/admins', stormpath.groupsRequired(['admins']), function (req, res) {
       res.send('If you can see this page, you must be in the `admins` group!');
     });
 
@@ -42,14 +42,14 @@ and won't be able to access the view.
 What if we wanted to build a view only accessible to users who are both free
 users and admins?  In this case we could just list both required groups::
 
-    app.get('/free_users_and_admins', stormpath.groupsRequired(['free users', 'admins']), function(req, res) {
+    app.get('/free_users_and_admins', stormpath.groupsRequired(['free users', 'admins']), function (req, res) {
       res.send('If you can see this page, you must be in the `free users` and `admins` group!');
     });
 
 Now that you've seen how you can require a user to be a member of multiple
 groups, let's take a look at how you can enforce selective group membership::
 
-    app.get('/any_user', stormpath.groupsRequired(['free users', 'paid users', 'admins'], false), function(req, res) {
+    app.get('/any_user', stormpath.groupsRequired(['free users', 'paid users', 'admins'], false), function (req, res) {
       res.send('If you can see this page, you must be in at least one of the specified groups!');
     });
 

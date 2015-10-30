@@ -2,17 +2,17 @@
 
 var assert = require('assert');
 
-describe('exports stormpath', function() {
-  it('should export the stormpath library when express-stormpath is required', function() {
+describe('exports stormpath', function () {
+  it('should export the stormpath library when express-stormpath is required', function () {
     assert.doesNotThrow(
-      function() {
+      function () {
         require('../index');
       },
       Error
     );
   });
 
-  it('should expose the public library functions', function() {
+  it('should expose the public library functions', function () {
     var stormpath = require('../index');
 
     assert(stormpath.init);

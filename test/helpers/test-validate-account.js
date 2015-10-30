@@ -4,7 +4,7 @@ var assert = require('assert');
 
 var helpers = require('../../lib/helpers');
 
-describe('validateAccount', function() {
+describe('validateAccount', function () {
   var config = {
     web: {
       register: {
@@ -34,7 +34,7 @@ describe('validateAccount', function() {
     }
   };
 
-  it('should return null if no errors are present', function(done) {
+  it('should return null if no errors are present', function (done) {
     var accountData = {
       givenName: 'Randall',
       surname: 'Degges',
@@ -43,13 +43,13 @@ describe('validateAccount', function() {
       passwordConfirm: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX'
     };
 
-    helpers.validateAccount(accountData, config, function(errors) {
+    helpers.validateAccount(accountData, config, function (errors) {
       assert.equal(errors, null);
       done();
     });
   });
 
-  it('should return errors if errors are present', function(done) {
+  it('should return errors if errors are present', function (done) {
     var accountData = {
       givenName: 'Randall',
       surname: 'Degges',
@@ -58,19 +58,19 @@ describe('validateAccount', function() {
       passwordConfirm: 'woothi'
     };
 
-    helpers.validateAccount(accountData, config, function(errors) {
+    helpers.validateAccount(accountData, config, function (errors) {
       assert.equal(errors.length, 1);
       done();
     });
   });
 
-  it('should return the right number of errors if errors are present', function(done) {
+  it('should return the right number of errors if errors are present', function (done) {
     var accountData = {
       givenName: 'Randall',
       surname: 'Degges'
     };
 
-    helpers.validateAccount(accountData, config, function(errors) {
+    helpers.validateAccount(accountData, config, function (errors) {
       assert.equal(errors.length, 3);
       done();
     });

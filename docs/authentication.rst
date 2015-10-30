@@ -16,7 +16,7 @@ If you want to ensure that the user is logged into your application, you should
 use the ``loginRequired`` middleware.  It will force the user to login if
 required, or continue into your middleware::
 
-    app.get('/secret', stormpath.loginRequired, function(req, res) {
+    app.get('/secret', stormpath.loginRequired, function (req, res) {
       /*
         If we get here, the user is logged in.  Otherwise, they
         were redirected to the login page
@@ -33,8 +33,8 @@ To change these settings, you should invoke a node client directly::
     var stormpath = require('stormpath'); // Using the Node SDK directly
     var client = new stormpath.Client();
 
-    client.getApplication('your app href',function(err,application){
-        application.getOAuthPolicy(function(err,policy){
+    client.getApplication('your app href',function (err,application){
+        application.getOAuthPolicy(function (err,policy){
             policy.accessTokenTtl = "PT1D"; // one day
             policy.save();
         });
@@ -55,8 +55,8 @@ API Authentication: Basic Auth
 For any account in your application, you can provision API Keys for those accounts.
 Here is an example::
 
-    app.post('/apiKeys', stormpath.loginRequired, function(req, res) {
-      req.user.createApiKey(function(err,apiKey){
+    app.post('/apiKeys', stormpath.loginRequired, function (req, res) {
+      req.user.createApiKey(function (err,apiKey){
         if (err) {
           res.status(400).end('Oops!  There was an error: ' + err.userMessage);
         }else{
@@ -68,7 +68,7 @@ Here is an example::
 Your API clients can then use this key to authenticate against your API.  This
 is how you would protect the secret endpoint with basic authentication::
 
-    app.get('/secret', stormpath.apiAuthenticationRequired, function(req, res) {
+    app.get('/secret', stormpath.apiAuthenticationRequired, function (req, res) {
       res.json({
         message: "Hello, " + req.user.fullname
       });

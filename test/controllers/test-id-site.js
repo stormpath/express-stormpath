@@ -1,13 +1,9 @@
 'use strict';
 
-var assert = require('assert');
-
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
 function isIdSiteRedirect(res) {
   var location = res && res.headers && res.headers.location;
@@ -22,12 +18,12 @@ function isIdSiteRedirect(res) {
 }
 
 function prepeareIdSiteModel(client, currentHost, callbckUri, cb) {
-  client.getCurrentTenant(function(err, tenant) {
+  client.getCurrentTenant(function (err, tenant) {
     if (err) {
       throw err;
     }
 
-    client.getResource(tenant.href + '/idSites', function(err, collection) {
+    client.getResource(tenant.href + '/idSites', function (err, collection) {
       if (err) {
         throw err;
       }
@@ -47,22 +43,22 @@ function prepeareIdSiteModel(client, currentHost, callbckUri, cb) {
 }
 
 function revertIdSiteModel(client, currentHost, callbckUri, cb) {
-  client.getCurrentTenant(function(err, tenant) {
+  client.getCurrentTenant(function (err, tenant) {
     if (err) {
       throw err;
     }
 
-    client.getResource(tenant.href + '/idSites', function(err, collection) {
+    client.getResource(tenant.href + '/idSites', function (err, collection) {
       if (err) {
         throw err;
       }
 
       var idSiteModel = collection.items[0];
-      idSiteModel.authorizedOriginUris = idSiteModel.authorizedOriginUris.filter(function(uri) {
+      idSiteModel.authorizedOriginUris = idSiteModel.authorizedOriginUris.filter(function (uri) {
         return !uri.match('0.0.0.0');
       });
 
-      idSiteModel.authorizedRedirectUris = idSiteModel.authorizedRedirectUris.filter(function(uri) {
+      idSiteModel.authorizedRedirectUris = idSiteModel.authorizedRedirectUris.filter(function (uri) {
         return !uri.match('0.0.0.0');
       });
 
@@ -73,22 +69,22 @@ function revertIdSiteModel(client, currentHost, callbckUri, cb) {
 
 function getIdSiteCallbackUrl(host, config, app, accountData, done) {
   request(host).get(config.web.login.uri)
-    .end(function(err, res) {
+    .end(function (err, res) {
       request(res.headers.location).get('')
-        .end(function(err, res) {
+        .end(function (err, res) {
           if (err) {
             return done(err);
           }
 
           var jwt = res.headers.location.split('jwt=')[1];
-          var origin = 'https://'+res.headers.location.split('/')[2];
+          var origin = 'https://' + res.headers.location.split('/')[2];
           var appHref = app.get('stormpathApplication').href;
 
           request(appHref).get('?expand=idSiteModel')
             .set('Authorization', 'Bearer ' + jwt)
             .set('Origin', origin)
             .set('Referer', origin)
-            .end(function(err, res) {
+            .end(function (err, res) {
               if (err) {
                 return done(err);
               }
@@ -103,7 +99,7 @@ function getIdSiteCallbackUrl(host, config, app, accountData, done) {
                 .set('Authorization', 'Bearer ' + nextJwt)
                 .set('Origin', origin)
                 .set('Referer', origin)
-                .end(function(err, res) {
+                .end(function (err, res) {
                   if (err) {
                     return done(err);
                   }
@@ -116,7 +112,7 @@ function getIdSiteCallbackUrl(host, config, app, accountData, done) {
     });
 }
 
-describe('id site', function() {
+describe('id site', function () {
   var stormpathApplication, app, config, server, host, callbackUri;
 
   var accountData = {
@@ -126,16 +122,16 @@ describe('id site', function() {
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
   };
 
-  before(function(done) {
-    var client = helpers.createClient().on('ready', function() {
-      helpers.createApplication(client, function(err, _app) {
+  before(function (done) {
+    var client = helpers.createClient().on('ready', function () {
+      helpers.createApplication(client, function (err, _app) {
         if (err) {
           return done(err);
         }
 
         stormpathApplication = _app;
 
-        stormpathApplication.createAccount(accountData, function(err) {
+        stormpathApplication.createAccount(accountData, function (err) {
           if (err) {
             return done(err);
           }
@@ -157,9 +153,9 @@ describe('id site', function() {
             }
           });
 
-          app.on('stormpath.ready', function() {
+          app.on('stormpath.ready', function () {
             config = app.get('stormpathConfig');
-            server = app.listen(function() {
+            server = app.listen(function () {
               var address = server.address().address === '::' ? 'http://localhost' : server.address().address;
               address = address === '0.0.0.0' ? 'http://localhost' : address;
               host = address + ':' + server.address().port;
@@ -172,17 +168,17 @@ describe('id site', function() {
     });
   });
 
-  after(function(done) {
-    revertIdSiteModel(app.get('stormpathClient'), host, callbackUri, function() {
+  after(function (done) {
+    revertIdSiteModel(app.get('stormpathClient'), host, callbackUri, function () {
       helpers.destroyApplication(stormpathApplication, done);
     });
   });
 
-  it('should redirect to idsite for login, if idsite is enabled', function(done) {
+  it('should redirect to idsite for login, if idsite is enabled', function (done) {
     request(host).get(config.web.login.uri)
       .expect(302)
       .expect(isIdSiteRedirect)
-      .end(function(err, res) {
+      .end(function (err, res) {
         request(res.headers.location)
           .get('')
           .expect('Location', new RegExp(/\/?jwt=/))
@@ -190,11 +186,11 @@ describe('id site', function() {
       });
   });
 
-  it('should redirect to idsite for register, if idsite is enabled', function(done) {
+  it('should redirect to idsite for register, if idsite is enabled', function (done) {
     request(host).get(config.web.register.uri)
       .expect(302)
       .expect(isIdSiteRedirect)
-      .end(function(err, res) {
+      .end(function (err, res) {
         request(res.headers.location)
           .get('')
           .expect('Location', new RegExp(/#\/register/))
@@ -202,11 +198,11 @@ describe('id site', function() {
       });
   });
 
-  it('should redirect to idsite for forgot password, if idsite is enabled', function(done) {
+  it('should redirect to idsite for forgot password, if idsite is enabled', function (done) {
     request(host).get(config.web.forgotPassword.uri)
       .expect(302)
       .expect(isIdSiteRedirect)
-      .end(function(err, res) {
+      .end(function (err, res) {
         request(res.headers.location)
           .get('')
           .expect('Location', new RegExp(/#\/forgot/))
@@ -215,8 +211,8 @@ describe('id site', function() {
   });
 
   it.skip('should bind the id site callback hanlder, if idisite is enabled');
-  it('should create a session on id site callback', function(done) {
-    getIdSiteCallbackUrl(host, config, app, accountData, function(url) {
+  it('should create a session on id site callback', function (done) {
+    getIdSiteCallbackUrl(host, config, app, accountData, function (url) {
       request(url).get('')
         .expect('Set-Cookie', /idSiteSession=https:\/\/api.stormpath.com\/v1\/accounts\/.*/)
         .end(done);

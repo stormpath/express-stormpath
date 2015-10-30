@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function prepateMeTestFixture(stormpathApplication,cb){
+function prepateMeTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
@@ -25,10 +25,10 @@ function prepateMeTestFixture(stormpathApplication,cb){
     expressApp: app
   };
 
-  app.on('stormpath.ready', cb.bind(null,fixture));
+  app.on('stormpath.ready', cb.bind(null, fixture));
 }
 
-describe('current user (/me) route',function() {
+describe('current user (/me) route', function () {
 
   var newUser = helpers.newUser();
   var stormpathApplication = null;
@@ -37,8 +37,8 @@ describe('current user (/me) route',function() {
     favoriteColor: uuid.v4()
   };
 
-  before(function(done) {
-    helpers.createApplication(helpers.createClient(), function(err, app) {
+  before(function (done) {
+    helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
         return done(err);
       }
@@ -48,19 +48,19 @@ describe('current user (/me) route',function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should respond with the expanded account object',function(done){
-    prepateMeTestFixture(stormpathApplication,function(fixture){
+  it('should respond with the expanded account object', function (done) {
+    prepateMeTestFixture(stormpathApplication, function (fixture) {
       var agent = request.agent(fixture.expressApp);
       agent
         .post('/login')
         .set('Accept', 'application/json')
         .type('json')
         .send({username: newUser.email, password: newUser.password})
-        .end(function(err) {
+        .end(function (err) {
           if (err) {
             return done(err);
           }
@@ -73,7 +73,7 @@ describe('current user (/me) route',function() {
           agent
             .get('/me')
             .expect(200)
-            .end(function(err,res){
+            .end(function (err, res) {
               if (err) {
                 return done(err);
               }
