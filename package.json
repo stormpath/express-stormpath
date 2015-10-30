@@ -13,8 +13,9 @@
   ],
   "scripts": {
     "docs": "cd docs && rm -rf _build/html && make html && jsdoc -d ./apidocs/ -P ./package.json -r .",
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report text -- --reporter spec --recursive --growl --no-timeouts",
-    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
+    "lint": "./node_modules/eslint/bin/eslint.js -c .eslintrc lib/** test/** --ignore-pattern **/*.yml --quiet",
+    "test": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report html -- --reporter spec --recursive --growl --no-timeouts",
+    "test-travis": "npm run lint && istanbul cover ./node_modules/mocha/bin/_mocha --check-leaks --report lcovonly -- --reporter spec --recursive --no-timeouts"
   },
   "repository": "stormpath/express-stormpath",
   "author": "Stormpath, Inc.",
@@ -25,27 +26,27 @@
     "body-parser": "^1.10.0",
     "cookie-parser": "^1.3.5",
     "cookies": "^0.5.0",
-    "csurf": "^1.8.0",
     "deep-extend": "^0.4.0",
     "express": "^4.10.6",
-    "forms": "^1.1.1",
+    "forms": "^1.1.4",
     "jade": "^1.11.0",
     "njwt": "^0.2.0",
-    "parse-iso-duration": "^0.1.1",
+    "parse-iso-duration": "^1.0.0",
     "request": "^2.63.0",
     "stormpath": "^0.13.4",
     "stormpath-config": "0.0.12",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
-    "winston": "^1.1.1"
+    "winston": "^2.0.0"
   },
   "devDependencies": {
     "cheerio": "^0.19.0",
     "coveralls": "^2.11.2",
-    "js-yaml": "^3.4.3",
+    "eslint": "^1.6.0",
     "istanbul": "^0.4.0",
+    "js-yaml": "^3.4.3",
     "mocha": "^2.1.0",
-    "mocha-lcov-reporter": "0.0.2",
+    "mocha-lcov-reporter": "^1.0.0",
     "supertest": "^1.1.0"
   }
 }

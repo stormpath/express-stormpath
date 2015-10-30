@@ -61,7 +61,7 @@ To use a ``postLoginHandler``, you need to define your handler function
 in the Stormpath config::
 
     app.use(stormpath.init(app, {
-      postLoginHandler: function(account, req, res, next) {
+      postLoginHandler: function (account, req, res, next) {
         console.log('User:', account.email, 'just logged in!');
         next();
       },
@@ -83,7 +83,7 @@ In the example below, we'll use the ``postLoginHandler`` to redirect the
 user to a special page (*instead of the normal login flow*)::
 
     app.use(stormpath.init(app, {
-      postLoginHandler: function(account, req, res, next) {
+      postLoginHandler: function (account, req, res, next) {
         res.redirect(302, '/secretpage').end();
       },
     }));

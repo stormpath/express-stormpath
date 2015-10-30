@@ -2,27 +2,24 @@
 
 var assert = require('assert');
 var cheerio = require('cheerio');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
-var stormpath = require('../../index');
 
-function assertInvalidSpTokenMessage(res){
+function assertInvalidSpTokenMessage(res) {
   var $ = cheerio.load(res.text);
   // Assert that the warning was rendered
   assert.equal($('.invalid-sp-token-warning').length, 1);
 }
 
-
-describe('forgotPassword', function() {
+describe('forgotPassword', function () {
   var stormpathApplication;
   var stormpathClient;
 
-  before(function(done) {
+  before(function (done) {
     stormpathClient = helpers.createClient();
-    helpers.createApplication(stormpathClient, function(err, app) {
+    helpers.createApplication(stormpathClient, function (err, app) {
       if (err) {
         return done(err);
       }
@@ -32,29 +29,29 @@ describe('forgotPassword', function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  afterEach(function(done) {
-    helpers.setPasswordResetStatus(stormpathApplication, 'ENABLED', function(err) {
+  afterEach(function (done) {
+    helpers.setPasswordResetStatus(stormpathApplication, 'ENABLED', function (err) {
       done(err);
     });
   });
 
-  it('should disable forgot password functionality if the directory has it disabled', function(done) {
-    helpers.setPasswordResetStatus(stormpathApplication, 'DISABLED', function(err) {
+  it('should disable forgot password functionality if the directory has it disabled', function (done) {
+    helpers.setPasswordResetStatus(stormpathApplication, 'DISABLED', function (err) {
       if (err) {
         return done(err);
       }
 
       var app = helpers.createStormpathExpressApp({
         application: {
-          href: stormpathApplication.href,
+          href: stormpathApplication.href
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var config = app.get('stormpathConfig');
         request(app)
           .get(config.web.forgotPassword.uri)
@@ -64,10 +61,10 @@ describe('forgotPassword', function() {
     });
   });
 
-  it('should bind to /forgot if enabled', function(done) {
+  it('should bind to /forgot if enabled', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -76,12 +73,12 @@ describe('forgotPassword', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .get('/forgot')
         .expect(200)
-        .end(function(err, res) {
+        .end(function (err, res) {
           if (err) {
             return done(err);
           }
@@ -95,10 +92,10 @@ describe('forgotPassword', function() {
     });
   });
 
-  it('should return an error if the posted email is not an email', function(done) {
+  it('should return an error if the posted email is not an email', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -107,13 +104,13 @@ describe('forgotPassword', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/forgot')
         .type('form')
         .send({ email: 'not a real email' })
         .expect(200)
-        .end(function(err, res) {
+        .end(function (err, res) {
           if (err) {
             return done(err);
           }
@@ -124,10 +121,10 @@ describe('forgotPassword', function() {
     });
   });
 
-  it('should show an info message if the user is redirected here afer an invalid sptoken', function(done) {
+  it('should show an info message if the user is redirected here afer an invalid sptoken', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -136,21 +133,21 @@ describe('forgotPassword', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .get('/forgot?status=invalid_sptoken')
         .expect(200)
-        .end(function(err, res) {
+        .end(function (err, res) {
           assertInvalidSpTokenMessage(res);
           done();
         });
     });
   });
 
-  it('should redirect to the next uri if an email is given', function(done) {
+  it('should redirect to the next uri if an email is given', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
-        href: stormpathApplication.href,
+        href: stormpathApplication.href
       },
       web: {
         forgotPassword: {
@@ -159,7 +156,7 @@ describe('forgotPassword', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post('/forgot')
@@ -170,9 +167,8 @@ describe('forgotPassword', function() {
     });
   });
 
-  describe('as json',function(){
-
-    it('should respond with 200 if a valid email is given', function(done){
+  describe('as json', function () {
+    it('should respond with 200 if a valid email is given', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -184,7 +180,7 @@ describe('forgotPassword', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         request(app)
           .post('/forgot')
           .set('Accept', 'application/json')

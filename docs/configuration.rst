@@ -51,7 +51,7 @@ initialize the Stormpath middleware:
     }));
 
     // Once Stormpath has initialized itself, start your web server!
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       app.listen(3000);
     });
 
@@ -102,12 +102,12 @@ https://docs.stormpath.com/nodejs/api/client
 If you would like to work directly with the client in your Express application,
 you can fetch it from the app object like this::
 
-    app.get('/secret', function(req, res) {
+    app.get('/secret', function (req, res) {
       var client = req.app.get('stormpathClient');
 
       // For example purposes only -- you probably don't want to actually expose
       // this information to your users =)
-      client.getCurrentTenant(function(err, tenant) {
+      client.getCurrentTenant(function (err, tenant) {
         if (err) {
           return res.status(400).json(err);
         }

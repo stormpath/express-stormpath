@@ -36,7 +36,7 @@ function login(req, res) {
 
   // Next, we'll make the account.
   var account = new Account(accountData);
-  account.save(function() {
+  account.save(function () {
     return res.json({ status: 'OK!' });
   });
 }

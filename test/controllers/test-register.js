@@ -9,7 +9,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-describe('register', function() {
+describe('register', function () {
   var stormpathApplication;
   var stormpathClient;
 
@@ -20,9 +20,9 @@ describe('register', function() {
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
   };
 
-  before(function(done) {
+  before(function (done) {
     stormpathClient = helpers.createClient();
-    helpers.createApplication(stormpathClient, function(err, app) {
+    helpers.createApplication(stormpathClient, function (err, app) {
       if (err) {
         return done(err);
       }
@@ -32,11 +32,11 @@ describe('register', function() {
     });
   });
 
-  after(function(done) {
+  after(function (done) {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to GET /register if enabled', function(done) {
+  it('should bind to GET /register if enabled', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -48,17 +48,17 @@ describe('register', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .get('/register')
         .expect(200)
-        .end(function(err) {
+        .end(function (err) {
           done(err);
         });
     });
   });
 
-  it('should bind to POST /register if enabled', function(done) {
+  it('should bind to POST /register if enabled', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -70,17 +70,17 @@ describe('register', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       request(app)
         .post('/register')
-        .end(function(err, res) {
+        .end(function (err, res) {
           assert.notEqual(res.statusCode, 404);
           done(err);
         });
     });
   });
 
-  it('should bind to another URL if specified', function(done) {
+  it('should bind to another URL if specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -93,15 +93,15 @@ describe('register', function() {
       }
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready', function () {
       async.parallel([
-        function(cb) {
+        function (cb) {
           request(app)
             .get('/newregister')
             .expect(200)
             .end(cb);
         },
-        function(cb) {
+        function (cb) {
           request(app)
             .get('/register')
             .expect(404)
@@ -111,11 +111,10 @@ describe('register', function() {
     });
   });
 
-  describe('via JSON API', function() {
-
-    it('should return a JSON error if the account data is not valid', function(done) {
+  describe('via JSON API', function () {
+    it('should return a JSON error if the account data is not valid', function (done) {
       async.series([
-        function(cb) {
+        function (cb) {
           var app = helpers.createStormpathExpressApp({
             application: {
               href: stormpathApplication.href
@@ -127,24 +126,24 @@ describe('register', function() {
             }
           });
 
-          app.on('stormpath.ready', function() {
+          app.on('stormpath.ready', function () {
             request(app)
               .post('/register')
               .set('Accept', 'application/json')
               .type('json')
               .expect(400)
-              .end(function(err, res) {
+              .end(function (err, res) {
                 if (err) {
                   return done(err);
                 }
 
-                assert.equal(res.body.error,'email required.');
+                assert.equal(res.body.error, 'email required.');
 
                 cb();
               });
           });
         },
-        function(cb) {
+        function (cb) {
           var app = helpers.createStormpathExpressApp({
             application: {
               href: stormpathApplication.href
@@ -160,12 +159,12 @@ describe('register', function() {
                     type: 'text'
                   }
                 },
-                fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+                fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
               }
             }
           });
 
-          app.on('stormpath.ready', function() {
+          app.on('stormpath.ready', function () {
             request(app)
               .post('/register')
               .set('Accept', 'application/json')
@@ -177,7 +176,7 @@ describe('register', function() {
                 password: uuid.v4() + uuid.v4().toUpperCase() + '!'
               })
               .expect(400)
-              .end(function(err, res) {
+              .end(function (err, res) {
                 if (err) {
                   return done(err);
                 }
@@ -191,12 +190,12 @@ describe('register', function() {
               });
           });
         }
-      ], function() {
+      ], function () {
         done();
       });
     });
 
-    it('should create an account if the data is valid', function(done) {
+    it('should create an account if the data is valid', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -208,7 +207,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var givenName = uuid.v4();
         var surname = uuid.v4();
         var email = uuid.v4() + '@test.com';
@@ -225,7 +224,7 @@ describe('register', function() {
             password: password
           })
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -242,7 +241,7 @@ describe('register', function() {
       });
     });
 
-    it('should set givenName and surname to \'Anonymous\' if not provided', function(done) {
+    it('should set givenName and surname to \'Anonymous\' if not provided', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -254,7 +253,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -267,7 +266,7 @@ describe('register', function() {
             password: password
           })
           .expect(200)
-          .end(function(err,res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -280,7 +279,7 @@ describe('register', function() {
       });
     });
 
-    it('should store additional account data in customData if the data is valid', function(done) {
+    it('should store additional account data in customData if the data is valid', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -299,14 +298,13 @@ describe('register', function() {
                 name: 'music',
                 placeholder: 'Music',
                 required: false,
-                type: 'text',
+                type: 'text'
               }
             }
           }
         }
       });
-
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var color = 'black';
         var music = 'rock';
 
@@ -323,18 +321,18 @@ describe('register', function() {
             music: music
           })
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
             var json = JSON.parse(res.text);
-            app.get('stormpathClient').getAccount(json.href, function(err, account) {
+            app.get('stormpathClient').getAccount(json.href, function (err, account) {
               if (err) {
                 return done(err);
               }
 
-              account.getCustomData(function(err, data) {
+              account.getCustomData(function (err, data) {
                 if (err) {
                   return done(err);
                 }
@@ -351,8 +349,8 @@ describe('register', function() {
     });
   });
 
-  describe('via HTML API', function() {
-    it('should trigger HTML responses if an accept: text/html header is provided', function(done) {
+  describe('via HTML API', function () {
+    it('should trigger HTML responses if an accept: text/html header is provided', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -364,12 +362,12 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         request(app)
           .get('/register')
           .set('Accept', 'text/html')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -385,7 +383,7 @@ describe('register', function() {
       });
     });
 
-    it('should return a SPA page if config.web.spaRoot is provided', function(done) {
+    it('should return a SPA page if config.web.spaRoot is provided', function (done) {
       var filename = '/tmp/' + uuid.v4();
       var app = helpers.createStormpathExpressApp({
         application: {
@@ -399,18 +397,18 @@ describe('register', function() {
         }
       });
 
-      fs.writeFile(filename, '<html><head><script></script></head><body><p>hi</p></body></html>', function(err) {
+      fs.writeFile(filename, '<html><head><script></script></head><body><p>hi</p></body></html>', function (err) {
         if (err) {
           return done(err);
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         request(app)
           .get('/register')
           .set('Accept', 'text/html')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -421,14 +419,14 @@ describe('register', function() {
             assert($('head').html());
             assert.equal($('body p').html(), 'hi');
 
-            fs.unlink(filename, function(err) {
+            fs.unlink(filename, function (err) {
               return done(err);
             });
           });
       });
     });
 
-    it('should render an HTML form with all fields on a GET request', function(done) {
+    it('should render an HTML form with all fields on a GET request', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -444,18 +442,18 @@ describe('register', function() {
                 type: 'text'
               }
             },
-            fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+            fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
           }
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var config = app.get('stormpathConfig');
         request(app)
           .get('/register')
           .set('Accept', 'text/html')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -492,7 +490,7 @@ describe('register', function() {
       });
     });
 
-    it('should render HTML errors if all required data is not supplied', function(done) {
+    it('should render HTML errors if all required data is not supplied', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -508,15 +506,14 @@ describe('register', function() {
                 type: 'text'
               }
             },
-            fieldOrder: [ 'givenName', 'surname', 'color', 'email', 'password' ]
+            fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
           }
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var givenName = uuid.v4();
         var surname = uuid.v4();
-        var color = 'black';
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -531,7 +528,7 @@ describe('register', function() {
             password: password
           })
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -545,7 +542,7 @@ describe('register', function() {
       });
     });
 
-    it('should set givenName and surname to \'Anonymous\' if not provided', function(done) {
+    it('should set givenName and surname to \'Anonymous\' if not provided', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -557,7 +554,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -570,12 +567,12 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -595,7 +592,7 @@ describe('register', function() {
       });
     });
 
-    it('should create a user even if surname is not supplied', function(done) {
+    it('should create a user even if surname is not supplied', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -607,7 +604,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var givenName = uuid.v4();
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
@@ -622,12 +619,12 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -645,7 +642,7 @@ describe('register', function() {
       });
     });
 
-    it('should re-render form data if a registration is unsuccessful', function(done) {
+    it('should re-render form data if a registration is unsuccessful', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -657,7 +654,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
 
         request(app)
@@ -666,7 +663,7 @@ describe('register', function() {
           .type('form')
           .send({ email: email })
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -678,7 +675,7 @@ describe('register', function() {
       });
     });
 
-    it('should store additional account data in customData if the data is valid', function(done) {
+    it('should store additional account data in customData if the data is valid', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -697,15 +694,15 @@ describe('register', function() {
                 name: 'music',
                 placeholder: 'Music',
                 required: false,
-                type: 'text',
+                type: 'text'
               }
             },
-            fieldOrder: [ 'givenName', 'surname', 'email', 'color', 'music', 'password' ]
+            fieldOrder: ['givenName', 'surname', 'email', 'color', 'music', 'password']
           }
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var givenName = uuid.v4();
         var surname = uuid.v4();
         var email = uuid.v4() + '@test.com';
@@ -726,12 +723,12 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err) {
             if (err) {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: email }, function(err, accounts) {
+            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -741,7 +738,7 @@ describe('register', function() {
               }
 
               var account = accounts.items[0];
-              account.getCustomData(function(err, data) {
+              account.getCustomData(function (err, data) {
                 if (err) {
                   return done(err);
                 }
@@ -757,13 +754,13 @@ describe('register', function() {
       });
     });
 
-    it('should return the user to the login page with ?status=unverified if the account is unverified', function(done) {
+    it('should return the user to the login page with ?status=unverified if the account is unverified', function (done) {
 
       async.series([
-        function(callback) {
-          helpers.setEmailVerificationStatus(stormpathApplication,'ENABLED',callback);
+        function (callback) {
+          helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', callback);
         },
-        function(callback) {
+        function (callback) {
           var app = helpers.createStormpathExpressApp({
             application: {
               href: stormpathApplication.href
@@ -775,7 +772,7 @@ describe('register', function() {
             }
           });
 
-          app.on('stormpath.ready', function() {
+          app.on('stormpath.ready', function () {
             var email = uuid.v4() + '@test.com';
             var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
             var config = app.get('stormpathConfig');
@@ -789,7 +786,7 @@ describe('register', function() {
                 password: password
               })
               .expect(302)
-              .end(function(err, res) {
+              .end(function (err, res) {
                 if (err) {
                   return callback(err);
                 }
@@ -799,12 +796,12 @@ describe('register', function() {
               });
           });
         }
-      ], function(err) {
-        helpers.setEmailVerificationStatus(stormpathApplication,'DISABLED',done);
+      ], function () {
+        helpers.setEmailVerificationStatus(stormpathApplication, 'DISABLED', done);
       });
     });
 
-    it('should redirect the user to the nextUri if authoAuthorize is enabled', function(done) {
+    it('should redirect the user to the nextUri if authoAuthorize is enabled', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -818,7 +815,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -831,7 +828,7 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -842,7 +839,7 @@ describe('register', function() {
       });
     });
 
-    it('should redirect the user to the ?next uri if authoAuthorize is enabled', function(done) {
+    it('should redirect the user to the ?next uri if authoAuthorize is enabled', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -856,7 +853,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -869,7 +866,7 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
@@ -880,7 +877,7 @@ describe('register', function() {
       });
     });
 
-    it('should redirect the user to the login page with ?status=created if autoLogin is not enabled', function(done) {
+    it('should redirect the user to the login page with ?status=created if autoLogin is not enabled', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -892,7 +889,7 @@ describe('register', function() {
         }
       });
 
-      app.on('stormpath.ready', function() {
+      app.on('stormpath.ready', function () {
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -905,7 +902,7 @@ describe('register', function() {
             password: password
           })
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
