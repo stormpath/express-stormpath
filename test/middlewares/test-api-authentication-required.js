@@ -103,7 +103,7 @@ describe('apiAuthenticationRequired', function () {
     });
   });
 
-  it('should return error response if invalid oauth credentials are supplied', function(done) {
+  it('should return error response if invalid oauth credentials are supplied',  function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
@@ -111,20 +111,20 @@ describe('apiAuthenticationRequired', function () {
       api: true
     });
 
-    app.post('/protected',apiAuthenticationRequired,function(req,res){
+    app.post('/protected', apiAuthenticationRequired, function (req, res) {
       res.end();
     });
 
-    app.on('stormpath.ready', function() {
+    app.on('stormpath.ready',  function () {
       var authRequest = {
         username: accountData.email,
         password: accountData.password
       };
 
-      stormpathApplication.authenticateAccount(authRequest,function(err,authResult){
+      stormpathApplication.authenticateAccount(authRequest, function (err) {
         var refreshToken = 'invalid';
 
-        if(err){
+        if (err) {
           return done(err);
         }
 
