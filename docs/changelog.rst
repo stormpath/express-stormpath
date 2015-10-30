@@ -6,19 +6,18 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.1.1
+--------------
+
+** Not Yet Released **
+
 Version 2.1.0
 --------------
 
-**Not Yet Released**
+** Released on October 30, 2015.**
 
-- Internal refactor of config parser
-
-
-Version 2.0.15
---------------
-
-**Not yet released.**
-
+- Internal refactor of config parser.
+- Social login support for front-end applications.
 - Fixing postLogin / postRegistration handlers not being fired when using Google
   / LinkedIn logins.  Thanks to `@cdaniel <https://github.com/cdaniel>`_ for the
   pull request!
