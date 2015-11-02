@@ -86,7 +86,7 @@ are:
 Full documentation of the options will be coming soon.  In the meantime, please
 refer to this JSON config which shows you the default options:
 
-https://github.com/stormpath/stormpath-sdk-spec/blob/master/specifications/config.json
+https://github.com/stormpath/stormpath-framework-spec/blob/master/web-config.yaml
 
 
 Stormpath Client Options
