@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-describe('getToken', function () {
+describe('getToken (OAuth2 support)', function () {
   var username = uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var accountData = {
@@ -48,15 +48,14 @@ describe('getToken', function () {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should return a 404 if <config.web.oauth2.uri> is enabled and a non-POST request is made', function (done) {
+  it('should return 405 if <config.web.oauth2.uri> is enabled and a non-POST request is made', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
       web: {
         oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
+          enabled: true
         }
       }
     });
@@ -64,7 +63,7 @@ describe('getToken', function () {
     app.on('stormpath.ready', function () {
       request(app)
         .get('/oauth/token')
-        .expect(404)
+        .expect(405)
         .end(done);
     });
   });
@@ -76,8 +75,7 @@ describe('getToken', function () {
       },
       web: {
         oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
+          enabled: true
         }
       }
     });
@@ -85,7 +83,7 @@ describe('getToken', function () {
     app.on('stormpath.ready', function () {
       request(app)
         .post('/oauth/token')
-        .expect(401, {error:'Must provide access_token.'})
+        .expect(400, {error:'invalid_request'})
         .end(done);
     });
   });
@@ -97,8 +95,7 @@ describe('getToken', function () {
       },
       web: {
         oauth2: {
-          enabled: false,
-          uri: '/oauth/token'
+          enabled: false
         }
       }
     });
@@ -118,31 +115,49 @@ describe('getToken', function () {
       },
       web: {
         oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
+          enabled: true
         }
       }
     });
 
     app.on('stormpath.ready', function () {
       request(app)
-        .post('/oauth/token?grant_type=client_credentials')
+        .post('/oauth/token')
         .auth('woot', 'woot')
+        .send('grant_type=client_credentials')
         .expect(401, {error:'Invalid Client Credentials'})
         .end(done);
     });
   });
 
-  //////////////////////////////////////////
-  it.skip('should return a 400 if valid API credentials are provided but no grant_type is specified', function (done) {
+  it('should return 400 invalid_request if no grant type is specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
       web: {
         oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
+          enabled: true
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function () {
+      request(app)
+        .post('/oauth/token')
+        .expect(400, {error:'invalid_request'})
+        .end(done);
+    });
+  });
+
+  it('should return 400 unsupported_grant_type if the grant type is unsupported', function (done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        oauth2: {
+          enabled: true
         }
       }
     });
@@ -151,51 +166,31 @@ describe('getToken', function () {
       request(app)
         .post('/oauth/token')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(400)
+        .send('grant_type=foo')
+        .expect(400, {error:'unsupported_grant_type'})
         .end(done);
     });
   });
 
-  it('should return a 400 if valid API credentials are provided but an invalid grant_type is specified', function (done) {
+  it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
       },
       web: {
         oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
+          enabled: true
         }
       }
     });
 
     app.on('stormpath.ready', function () {
       request(app)
-        .post('/oauth/token?grant_type=test')
+        .post('/oauth/token')
         .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(400, {error:'Unsupported grant_type'})
-        .end(done);
-    });
-  });
-
-  it('should return a 200 and an access token response if valid API credentials are provided and grant_type is valid', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        oauth2: {
-          enabled: true,
-          uri: '/oauth/token'
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function () {
-      request(app)
-        .post('/oauth/token?grant_type=client_credentials')
-        .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-        .expect(200, function (err, res) {
+        .send('grant_type=client_credentials')
+        .expect(200)
+        .end(function (err, res) {
           assert(res.body && res.body.access_token);
           assert(res.body && res.body.expires_in && res.body.expires_in === 3600);
           done();
