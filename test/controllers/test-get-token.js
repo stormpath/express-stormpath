@@ -130,6 +130,29 @@ describe('getToken (OAuth2 support)', function () {
     });
   });
 
+  it('should return a 400 if grant_type=password and the credentials are invalid', function (done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        oauth2: {
+          enabled: true
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function () {
+      request(app)
+        .post('/oauth/token')
+        .send('grant_type=password')
+        .send('username=nobody@stormpath.com')
+        .send('password=foo')
+        .expect(400, {error:'Invalid username or password.'})
+        .end(done);
+    });
+  });
+
   it('should return 400 invalid_request if no grant type is specified', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
@@ -193,6 +216,34 @@ describe('getToken (OAuth2 support)', function () {
         .end(function (err, res) {
           assert(res.body && res.body.access_token);
           assert(res.body && res.body.expires_in && res.body.expires_in === 3600);
+          done();
+        });
+    });
+  });
+
+  it('should return an access token & refresh token if grant_type=password and the username & password are valid', function (done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        oauth2: {
+          enabled: true
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function () {
+      request(app)
+        .post('/oauth/token')
+        .send('grant_type=password')
+        .send('username=' + accountData.email)
+        .send('password=' + accountData.password)
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          assert(res.body && res.body.expires_in && res.body.expires_in === 3600);
+          assert(res.body && res.body.refresh_token);
           done();
         });
     });
