@@ -6,7 +6,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-describe('getToken (OAuth2 support)', function () {
+describe('getToken (OAuth2 token exchange endpoint)', function () {
   var username = uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var accountData = {
