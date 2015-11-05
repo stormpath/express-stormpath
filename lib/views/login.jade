@@ -5,6 +5,7 @@ block vars
   - var description = 'Log into your account!'
   - var bodytag = 'login'
   - var socialProviders = stormpathConfig.socialProviders
+  - var registerFields = stormpathConfig.web.register.fields
 
 block body
 
@@ -80,7 +81,7 @@ block body
                 else
                   - var cls = 'col-sm-4'
 
-                if stormpathConfig.web.register.fields.username.enabled
+                if registerFields.username && registerFields.username.enabled
                   label(class='#{cls}') Username or Email
                 else
                   label(class='#{cls}') Email
@@ -92,7 +93,7 @@ block body
 
                 div(class='#{cls}')
                   - var value = form.data ? form.data.login : '';
-                  if stormpathConfig.web.register.fields.username.enabled
+                  if registerFields.username && registerFields.username.enabled
                     input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
                   else
                     input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)

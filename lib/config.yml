@@ -25,20 +25,10 @@ web:
     nextUri: "/"
     autoAuthorize: false
     fields:
-      username:
-        name: "username"
-        placeholder: "Username"
-        required: false
-        type: "text"
       givenName:
         name: "givenName"
         placeholder: "First Name"
         required: true
-        type: "text"
-      middleName:
-        name: "middleName"
-        placeholder: "Middle Name"
-        required: false
         type: "text"
       surname:
         name: "surname"
@@ -54,11 +44,6 @@ web:
         name: "password"
         placeholder: "Password"
         required: true
-        type: "password"
-      passwordConfirm:
-        name: "passwordConfirm"
-        placeholder: "Confirm Password"
-        required: false
         type: "password"
     fieldOrder:
       - "username"
