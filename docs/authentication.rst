@@ -8,7 +8,7 @@ your users.  Which strategy should you use?  The answer depends on your use
 case, and we'll discuss each one in detail.  But at a high level, your choices
 look like this:
 
-  * If you are building a traditional web-app or single page application, you
+  * If you are building a traditional web app or single page application, you
     should use **Cookie Authentication**.
 
   * If you are building a mobile application, you should use the **OAuth2
@@ -56,7 +56,7 @@ Application.  Then change the expiration time of the Refresh Token.
 Issuing API Keys
 ----------------
 
-If you are building an API service you will need distribute API keys to your
+If you are building an API service you will need to distribute API keys to your
 developers.  They will then use these keys to authenticate with your API, either
 via HTTP Basic Auth or OAuth2 Access tokens.  We'll cover those strategies in
 the next sections, but we need to provision API keys for your developers first.
@@ -111,8 +111,8 @@ if using curl::
 
     $ curl -v --user apiKeyId:apiKeySecret http://localhost:3000/secret
 
-You will need to tell your server that you want to secure your endpoints, and
-allow basic authentication.  That is done with the ``apiAuthenticationRequired``
+You will need to tell your server that you want to secure your endpoints and
+allow basic authentication.  This is done with the ``apiAuthenticationRequired``
 middleware::
 
     app.get('/secret', stormpath.apiAuthenticationRequired, function (req, res) {
@@ -132,11 +132,11 @@ This access token is time limited and must be periodically renewed.  This adds a
 layer of security, but at the cost of being less simple than HTTP Basic
 Authentication.
 
-If you're not sure which flow to use, it's best to start with HTTP Basic
-Authentication. You can always switch to  OAuth2 at a later time.
+If you're not sure which strategy to use, it's best to start with HTTP Basic
+Authentication. You can always switch to OAuth2 at a later time.
 
 Once a developer has an API Key pair (see above, *Issuing API Keys*), they will
-need to use the Oauth2 Token Endpoint to obtain an access token.  In simple
+need to use the OAuth2 Token Endpoint to obtain an access token.  In simple
 HTTP terms, that request looks like this::
 
 
@@ -147,12 +147,12 @@ HTTP terms, that request looks like this::
 
     grant_type=client_credentials
 
-How you construct this request will depend on your library or tool, but the keys
+How you construct this request will depend on your library or tool, but the key
 parts you need to know are:
 
-  * The request must be a POST request
+  * The request must be a POST request.
   * The content type must be form encoded, and the body must contain
-    ``grant_type=client_credentials``
+    ``grant_type=client_credentials``.
   * The Authorization header must be Basic and contain the Base64 Url-Encoded
     values of the Api Key Pair.
 
@@ -179,7 +179,7 @@ The response is a JSON object which contains:
 
 With that token you can now make requests of your API.  This request is simpler,
 the only thing you need to do is supply the token in the ``Authorization`` header
-as a bearer token.  If you are using Curl, that request looks like this::
+as a bearer token.  If you are using curl, that request looks like this::
 
     $ curl -v -H "Authorization: Bearer eyJ0eXAiOiJKV1QiL..." http://localhost:3000/secret
 
@@ -264,7 +264,7 @@ refresh token::
 The response will contain a new access token.  Once the refresh token expires,
 the user will have to re-authenticate with a username and password.
 
-You can control the lifetime of the access token a refresh token by modifying
+You can control the lifetime of the access token and refresh token by modifying
 the OAuth Policy of your Stormpath Application.  This can be found by logging
 into the Stormpath Admin Console and finding your Application.
 
