@@ -77,7 +77,7 @@ is how you would protect the secret endpoint with basic authentication::
 In order for your API clients to authenticate with this endpoint, they need
 to supply an HTTP Authorization header, like this::
 
-    Authentication: Bearer <Base64UrlSafe(apiKeyId:apiKeySecret)>
+    Authorization: Basic <Base64UrlSafe(apiKeyId:apiKeySecret)>
 
 You can use Curl to achieve the same request::
 
@@ -139,7 +139,7 @@ The response is a JSON object which contains:
 With that token, we can make a request of our secret endpoint and supply the
 token as the bearer header in the request::
 
-    $ curl -v -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEUExSSTVUTEVNMjFTQzNER0xHUjBJOFpYIiwiaXNzIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hcHBsaWNhdGlvbnMvNWpvQVVKdFZONHNkT3dUVVJEc0VDNSIsImlhdCI6MTQwNjY1OTkxMCwiZXhwIjoxNDA2NjYzNTEwLCJzY29wZSI6IiJ9.ypDMDMMCRCtDhWPMMc9l_Q-O-rj5LATalHYa3droYkY" http://localhost:3000/secret
+    $ curl -v -H "Authorization: Basic eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEUExSSTVUTEVNMjFTQzNER0xHUjBJOFpYIiwiaXNzIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hcHBsaWNhdGlvbnMvNWpvQVVKdFZONHNkT3dUVVJEc0VDNSIsImlhdCI6MTQwNjY1OTkxMCwiZXhwIjoxNDA2NjYzNTEwLCJzY29wZSI6IiJ9.ypDMDMMCRCtDhWPMMc9l_Q-O-rj5LATalHYa3droYkY" http://localhost:3000/secret
     {"message":"Hello, Robert"}
 
 
