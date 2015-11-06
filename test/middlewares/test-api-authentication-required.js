@@ -5,6 +5,7 @@ var request = require('supertest');
 var uuid = require('uuid');
 
 var apiAuthenticationRequired = require('../../lib/middleware/api-authentication-required');
+var DefaultExpressApplicationFixture = require('../fixtures/default-express-application');
 var helpers = require('../helpers');
 
 function getPasswordBearerToken(app, account, done) {
@@ -81,12 +82,7 @@ describe('apiAuthenticationRequired', function () {
           }
 
           accountApiKey = apiKey;
-          app = helpers.createStormpathExpressApp({
-            application: {
-              href: stormpathApplication.href
-            },
-            api: true
-          });
+          app = new DefaultExpressApplicationFixture(stormpathApplication).expressApp;
 
           app.get('/protected', apiAuthenticationRequired, function (req, res) {
             res.end(successResponse);
