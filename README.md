@@ -76,9 +76,10 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   }));
   ```
 
-  If your app is a single page application (Angular, React), you will need to
-  tell our library where the root file is.  For example, if your Angular app is
-  in the `client/` folder in your project:
+  **If your app is a single page application (Angular, React)**
+
+  You will need to tell our library where the root file is.  For example, if
+  your Angular app is in the `client/` folder in your project:
 
   ```javascript
   app.use(stormpath.init(app, {
@@ -86,17 +87,6 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
     web: {
       spaRoot: path.join(__dirname, 'client', 'index.html')
     }
-  }));
-  ```
-
-  **If your app is an API service:**
-
-  If your application is an API service that requires the use of OAuth Bearer
-  Tokens, then enable the API option:
-
-  ```javascript
-  app.use(stormpath.init(app, {
-    api: true
   }));
   ```
 
@@ -116,10 +106,20 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
 9. **Protect Your Routes**
 
-  Use `stormpath.loginRequired` as a middleware to protect your routes:
+  For websites and Single-Page Apps, use `stormpath.loginRequired` as a
+  middleware to protect your routes:
 
   ```javascript
   app.get('/secret', stormpath.loginRequired, function (req, res) {
+    //...
+  });
+  ```
+
+  For API services that use HTTP Basic Auth or OAuth2, use
+  `stormpath.apiAuthenticationRequired`:
+
+  ```javascript
+  app.get('/secret', stormpath.apiAuthenticationRequired, function (req, res) {
     //...
   });
   ```
