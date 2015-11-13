@@ -171,6 +171,15 @@ This will enable the default *website* features this library provides:
 - A registration page (`/register`).
 - A logout route (`/logout`).
 
+Session management has changed.  We now issue OAuth access tokens and refresh
+tokens when a user logs in with a username and password.  These are stored in
+the browser in HTTP-Only, Secure cookies.  This means that we no longer need
+a local cookie session mechanism, as the session is managed by Stormpath via
+these tokens.  Thus the ``secreyKey`` option has been deprecated, and the timeout
+settings for cookies are now tied to the TTL settings of the Access Tokens and
+Refresh Tokens.  These can be modified on the OAuth Policy of your Stormpath
+Application, which is easily accessible through or Stormpath Admin Console.
+
 Next, we've disabled the `/oauth` endpoint we previously enabled by default.  If
 you want to enable this, with its default settings, you can now do the
 following:
