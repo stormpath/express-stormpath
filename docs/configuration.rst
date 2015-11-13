@@ -61,8 +61,8 @@ Express-Stormpath functionality.
 
 .. note::
     The Stormpath middleware **must** always be the last initialized middleware,
-    but must come **before** any custom route code.  If not, you may experience
-    odd side effects.
+    but must come **before** any custom route code that you want to protect
+    with Stormpath.
 
 Lastly, as of version **0.5.9** of this library -- if you're using Heroku you
 don't need to specify your credentials or application at all -- these values
@@ -72,21 +72,23 @@ will be automatically populated for you.
 Option Profiles
 ---------------
 
-Web server or API server? Both?  You can opt into one or both, and we'll
-automatically  attach the required middleware to your application.  The options
-are:
+For most applications, you will want to enable the "website" option.  This will
+configure the library to serve it's default views for login, registration, and
+password reset.  This also configures the JSON API for those same features:
 
  .. code-block:: javascript
 
-    {
-      "website": true,  // serves HTML login pages
-      "api": true       // enabled OAuth client credentials and token authentication
-    }
+    app.use(stormpath.init(app, {
+      website: true
+    }));
 
-Full documentation of the options will be coming soon.  In the meantime, please
-refer to this JSON config which shows you the default options:
+If you do not need these routes (for example, you have an API servce that does not
+serve traditional login and registration pages) you do not need the website profile.
 
-https://github.com/stormpath/stormpath-sdk-spec/blob/master/specifications/config.json
+Full documentation of the option profiles will be coming soon.  In the meantime, please
+refer to this YAML configuration which shows you the default options:
+
+https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 
 
 Stormpath Client Options
@@ -154,31 +156,52 @@ Wasn't that easy?!
 Single Page Applications
 ------------------------
 
-This framework is designed to work with front-end frameworks like
-Angular and React.  This framework provides a JSON API for all of the
-features, you will use this JSON API from your front end application.
-Each feature section in this guide has specific information for the
-JSON API, please see those sections for feature documenation.
+This framework is designed to work with front-end frameworks like Angular and
+React.  For each feature (login, registration) there is a JSON API for the
+feature.  The JSON API is documented for each feature, please see the feature
+list in the sidebar of this documentation.
 
 In some cases you may need to specify the ``spaRoot`` option.  This
 is the absolute file path to the entry point for your SPA.  That option
 would be defined like this::
 
     app.use(stormpath.init(app, {
+      website: true,
       web: {
         spaRoot: path.join(__dirname, 'public', 'index.html')
       }
     }));
 
-This allows our famework to serve your SPA, for routes that
-this framework also wants to handle. You need this option if
-the following are true:
+This allows our framework to serve your SPA, for routes that this framework also
+wants to handle. You need this option if the following are true:
 
  * Your SPA is using HTML5 history mode
  * You want the default feature routes, such as ``/login`` to
-   serve your Angular Application
+   serve your SPA
  * You don't want to use our default login and registration views
 
+.. note::
+
+  It is not yet possible to disable the default HTML views, but still retain the
+  JSON API. We will be fixing this in a future release. This creates a problem
+  for React Flux applications that want to use the `/login` route in their
+  browser application, but not use our default HTML views.
+
+  To work around the problem, you can change the `uri` of the route to a different
+  URL than ``/login``.  For example:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      website: true,
+      web: {
+        login: {
+          uri: '/api/login'
+        }
+      }
+    }));
+
+  Your browser code will need to make it's login POST to ``/api/login``
 
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard
