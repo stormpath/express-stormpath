@@ -51,6 +51,11 @@ describe('logout', function () {
       .end(done);
   });
 
+  it.skip('should delete the token resources', function () {
+    // write a test to assert that the access token and refresh token resources
+    // are deleted
+  });
+
   describe('when Accept header is set to text/html', function () {
     it('should respond with 302', function (done) {
       var config = app.get('stormpathConfig');
