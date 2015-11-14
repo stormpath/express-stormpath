@@ -720,7 +720,10 @@ describe('register', function () {
             email: email,
             color: color,
             music: music,
-            password: password
+            password: password,
+            customData: {
+              hello: 'world'
+            }
           })
           .expect(302)
           .end(function (err) {
@@ -746,6 +749,7 @@ describe('register', function () {
                 assert.equal(account.email, email);
                 assert.equal(data.color, color);
                 assert.equal(data.music, music);
+                assert.equal(data.hello, 'world');
 
                 done();
               });
