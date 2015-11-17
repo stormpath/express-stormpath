@@ -151,7 +151,7 @@ describe('register', function () {
   });
 
   describe('via JSON API', function () {
-    it('should return a JSON error if the account data is not valid', function (done) {
+    it('should return a JSON error if request is missing a field', function (done) {
       async.series([
         function (cb) {
 
@@ -265,7 +265,7 @@ describe('register', function () {
 
     });
 
-    it('should store additional account data in customData if the data is valid', function (done) {
+    it('should store additional fields in customData', function (done) {
 
       var color = 'black';
       var music = 'rock';
@@ -314,27 +314,6 @@ describe('register', function () {
   });
 
   describe('via HTML API', function () {
-    it('should trigger HTML responses if an accept: text/html header is provided', function (done) {
-
-      request(defaultRegistrationFixture.expressApp)
-        .get('/register')
-        .set('Accept', 'text/html')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var $ = cheerio.load(res.text);
-
-          assert($('html').html());
-          assert($('head').html());
-          assert($('body').html());
-
-          done();
-        });
-
-    });
 
     it('should return a SPA page if config.web.spaRoot is provided', function (done) {
       var filename = '/tmp/' + uuid.v4();
