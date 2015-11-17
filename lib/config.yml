@@ -23,7 +23,7 @@ web:
     enabled: false
     uri: "/register"
     nextUri: "/"
-    autoAuthorize: false
+    autoLogin: false
     fields:
       givenName:
         name: "givenName"
@@ -58,7 +58,6 @@ web:
     view: "verify"
   login:
     enabled: false
-    autoLogin: true
     uri: "/login"
     nextUri: "/"
     view: "login"

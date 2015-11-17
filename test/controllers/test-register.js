@@ -668,7 +668,7 @@ describe('register', function () {
       });
     });
 
-    it('should redirect the user to the nextUri if authoAuthorize is enabled', function (done) {
+    it('should redirect the user to the nextUri if autoLogin is enabled', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -706,7 +706,7 @@ describe('register', function () {
       });
     });
 
-    it('should redirect the user to the ?next uri if authoAuthorize is enabled', function (done) {
+    it('should redirect the user to the ?next uri if autoLogin is enabled', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
