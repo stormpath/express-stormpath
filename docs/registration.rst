@@ -26,7 +26,7 @@ we will cover them in detail below:
     {
       web: {
         register: {
-          enable: true,   // Explicit enable, if not using { website: true }
+          enabled: true,   // Explicit enable, if not using { website: true }
           uri: '/signup',  // Use a different URL
           nextUri: '/',    // Where to send the user to, if auto login is enabled
           fields: {
@@ -38,40 +38,95 @@ we will cover them in detail below:
     }
 
 
-Customizing The Fields
+Modifying Default Fields
 ----------------------
 
 The registration form will render these fields by default, and they will be
 required by the user:
 
-* giveName
-* lastName
+* givenName
+* surname
 * email
 * password
 
-While email and password will always be required (you'll get an API error if
-you omit them), you may not need to require first and last name.  These
-can be configured, and we'll cover that in the next section.
+While email and password will always be required, you may not need to require
+first and last name.  These can be configured as optional fields, or omitted
+entirely.  You can also specify your own custom fields.  We'll cover each use
+case in detail.
 
-You can modify the fields that we render by default.  For example, if you want
-to provide the last name field but not make it required, change the required
-property in your configuration::
+Configure First Name and Last Name as Optional
+..............................................
+
+If you would like to show the fields for first name and last name, but not
+require them, you can set required to false::
 
     register: {
       fields: {
+        givenName: {
+          required: false
+        },
         surname: {
           required: false
         }
       }
     }
 
-If you want to remove all the extra fields, and only render the email and password
-fields, you can do so by modifying the field order array::
+Because the Stormpath API requires a first name and last name, we will auto-fill
+these fields with `UNKNOWN` if the user does not provide them.
+
+
+Disabling First Name and Last Name
+..................................
+
+If you want to remove these fields entirely, you can set enabled to false::
 
     register: {
-      fieldOrder: [ "email", "password", "passwordConfirm" ],
+      fields: {
+        givenName: {
+          enabled: false
+        },
+        surname: {
+          enabled: false
+        }
+      }
     }
 
+Because the Stormpath API requires a first name and last name, we will auto-fill
+these fields with `UNKNOWN` when a user registers.
+
+Creating Custom Fields
+----------------------
+
+You can add your own custom fields to the form.  The values will be
+automatically added to the user's custom data object when they register
+successfully.  You can define a custom field by defining a new field object,
+like this::
+
+    register: {
+      fields: {
+        favoriteColor: {
+          enabled: true,
+          name: 'favoriteColor',
+          placeholder: 'Favorite Color',
+          required: true,
+          type: 'text'
+        }
+      }
+    }
+
+With the exception of the ``enabled`` property, the rest of the properties will
+be directly applied to the HTML form elements that are created when we render
+the form.
+
+Changing Field Order
+--------------------
+
+If you want to change the order of the fields, you can do so by specifying the
+``fieldOrder`` array::
+
+    register: {
+      fieldOrder: [ "givenName", "surname", "email", "password" ],
+    }
 
 Password Strength Rules
 -----------------------
