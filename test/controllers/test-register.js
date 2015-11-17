@@ -1,7 +1,6 @@
 'use strict';
 
 var assert = require('assert');
-var async = require('async');
 var cheerio = require('cheerio');
 var fs = require('fs');
 var request = require('supertest');
@@ -92,6 +91,26 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
   return this;
 }
 
+function assertDefaultForm(done) {
+  return function (err, res) {
+    if (err) {
+      return done(err);
+    }
+
+    var $ = cheerio.load(res.text);
+
+    var formFields = $('form input');
+
+    assert.equal(formFields.length, 4);
+    assert.equal($(formFields[0]).attr('name'), 'givenName');
+    assert.equal($(formFields[1]).attr('name'), 'surname');
+    assert.equal($(formFields[2]).attr('name'), 'email');
+    assert.equal($(formFields[3]).attr('name'), 'password');
+
+    done();
+  };
+}
+
 describe('register', function () {
   var stormpathApplication;
   var stormpathClient;
@@ -132,218 +151,272 @@ describe('register', function () {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to GET /register by default', function (done) {
+  describe('by default', function () {
 
-    request(defaultRegistrationFixture.expressApp)
-      .get('/register')
-      .expect(200)
-      .end(function (err) {
-        done(err);
-      });
+    it('should bind to GET /register by default', function (done) {
 
-  });
+      request(defaultRegistrationFixture.expressApp)
+        .get('/register')
+        .expect(200)
+        .end(function (err) {
+          done(err);
+        });
 
-  it('should bind to POST /register if enabled', function (done) {
-
-    request(defaultRegistrationFixture.expressApp)
-      .post('/register')
-      .end(function (err, res) {
-        assert.notEqual(res.statusCode, 404);
-        done(err);
-      });
-
-  });
-
-  it('should bind to another URL if specified', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        register: {
-          enabled: true,
-          uri: '/newregister'
-        }
-      }
     });
 
-    app.on('stormpath.ready', function () {
-      async.parallel([
-        function (cb) {
-          request(app)
-            .get('/newregister')
-            .expect(200)
-            .end(cb);
-        },
-        function (cb) {
-          request(app)
-            .get('/register')
-            .expect(404)
-            .end(cb);
-        }
-      ], done);
-    });
-  });
-
-  describe('via JSON API', function () {
-    it('should return a JSON error if the request is missing the givenName', function (done) {
+    it('should bind to POST /register if enabled', function (done) {
 
       request(defaultRegistrationFixture.expressApp)
         .post('/register')
-        .set('Accept', 'application/json')
-        .type('json')
-        .send({
-          surname: uuid.v4(),
-          email: uuid.v4() + '@test.com',
-          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-        })
-        .expect(400)
         .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          assert.equal(res.body.error, 'givenName required.');
-
-          done();
-        });
-
-    });
-
-    it('should create an account if the data is valid', function (done) {
-
-      var givenName = uuid.v4();
-      var surname = uuid.v4();
-      var email = uuid.v4() + '@test.com';
-      var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
-      request(defaultRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'application/json')
-        .type('json')
-        .send({
-          givenName: givenName,
-          surname: surname,
-          email: email,
-          password: password
-        })
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-
-          assert(json.href);
-          assert.equal(json.givenName, givenName);
-          assert.equal(json.surname, surname);
-          assert.equal(json.email, email);
-
-          done();
-        });
-
-    });
-
-    it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
-
-      var email = uuid.v4() + '@test.com';
-      var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
-      request(namesOptionalRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'application/json')
-        .type('json')
-        .send({
-          email: email,
-          password: password
-        })
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          assert.equal(res.body.givenName, 'UNKNOWN');
-          assert.equal(res.body.surname, 'UNKNOWN');
-          assert.equal(res.body.email, email);
-          done();
-        });
-
-    });
-
-    it('should store additional fields in customData', function (done) {
-
-      var color = 'black';
-      var music = 'rock';
-
-      request(defaultRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'application/json')
-        .type('json')
-        .send({
-          givenName: uuid.v4(),
-          surname: uuid.v4(),
-          email: uuid.v4() + '@test.com',
-          password: uuid.v4() + uuid.v4().toUpperCase() + '!',
-          color: color,
-          customData: {
-            music: music
-          }
-        })
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var json = JSON.parse(res.text);
-          defaultRegistrationFixture.expressApp.get('stormpathClient').getAccount(json.href, function (err, account) {
-            if (err) {
-              return done(err);
-            }
-
-            account.getCustomData(function (err, data) {
-              if (err) {
-                return done(err);
-              }
-
-              assert.equal(account.href, json.href);
-              assert.equal(data.color, color);
-              assert.equal(data.music, music);
-
-              done();
-            });
-          });
+          assert.notEqual(res.statusCode, 404);
+          done(err);
         });
 
     });
   });
 
-  describe('via HTML API', function () {
-
-    it('should return a SPA page if config.web.spaRoot is provided', function (done) {
-      var filename = '/tmp/' + uuid.v4();
-      var app = helpers.createStormpathExpressApp({
+  describe('with a custom uri', function () {
+    var app;
+    before(function (done) {
+      app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
         },
         web: {
           register: {
-            enabled: true
-          },
-          spaRoot: filename
+            enabled: true,
+            uri: '/customRegistrationUri'
+          }
         }
       });
+      app.on('stormpath.ready', done);
+    });
 
-      fs.writeFile(filename, '<html><head><script></script></head><body><p>hi</p></body></html>', function (err) {
+    it('should bind to that uri', function (done) {
+      request(app)
+        .get('/customRegistrationUri')
+        .expect(200)
+        .end(assertDefaultForm(done));
+    });
+
+    it('should not bind to the other uri', function (done) {
+      request(app)
+        .get('/register')
+        .expect(404)
+        .end(done);
+    });
+  });
+
+  describe('if email verification is enabled', function () {
+
+    var app;
+
+    before(function (done) {
+      helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', function (err) {
         if (err) {
           return done(err);
         }
+        app = new DefaultRegistrationFixture(stormpathApplication).expressApp;
+        app.on('stormpath.ready', done);
+      });
+    });
+
+    after(function (done) {
+      helpers.setEmailVerificationStatus(stormpathApplication, 'DISABLED', done);
+    });
+
+    it('should return the user to the login page with ?status=unverified', function (done) {
+
+      var config = app.get('stormpathConfig');
+
+      request(app)
+        .post('/register')
+        .set('Accept', 'text/html')
+        .type('form')
+        .send({
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
+          email: uuid.v4() + '@test.com',
+          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+        })
+        .expect(302)
+        .end(function (err, res) {
+          if (err) {
+            return done(err);
+          }
+
+          assert.equal(res.headers.location, config.web.login.uri + '?status=unverified');
+          done();
+        });
+
+    });
+  });
+
+  describe('with Accept: application/json requests', function () {
+    describe('by default', function () {
+
+      it('should return a JSON error if the request is missing the givenName', function (done) {
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            surname: uuid.v4(),
+            email: uuid.v4() + '@test.com',
+            password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+          })
+          .expect(400)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.error, 'givenName required.');
+
+            done();
+          });
+
       });
 
-      app.on('stormpath.ready', function () {
-        request(app)
+
+      it('should create an account if the data is valid', function (done) {
+
+        var givenName = uuid.v4();
+        var surname = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            givenName: givenName,
+            surname: surname,
+            email: email,
+            password: password
+          })
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var json = JSON.parse(res.text);
+
+            assert(json.href);
+            assert.equal(json.givenName, givenName);
+            assert.equal(json.surname, surname);
+            assert.equal(json.email, email);
+
+            done();
+          });
+
+      });
+
+      it('should store additional fields in customData', function (done) {
+
+        var color = 'black';
+        var music = 'rock';
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            givenName: uuid.v4(),
+            surname: uuid.v4(),
+            email: uuid.v4() + '@test.com',
+            password: uuid.v4() + uuid.v4().toUpperCase() + '!',
+            color: color,
+            customData: {
+              music: music
+            }
+          })
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var json = JSON.parse(res.text);
+            defaultRegistrationFixture.expressApp.get('stormpathClient').getAccount(json.href, function (err, account) {
+              if (err) {
+                return done(err);
+              }
+
+              account.getCustomData(function (err, data) {
+                if (err) {
+                  return done(err);
+                }
+
+                assert.equal(account.href, json.href);
+                assert.equal(data.color, color);
+                assert.equal(data.music, music);
+
+                done();
+              });
+            });
+          });
+
+      });
+    });
+
+    describe('if givenName and surname are optional', function () {
+
+      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
+
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(namesOptionalRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send({
+            email: email,
+            password: password
+          })
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.givenName, 'UNKNOWN');
+            assert.equal(res.body.surname, 'UNKNOWN');
+            assert.equal(res.body.email, email);
+            done();
+          });
+
+      });
+
+    });
+
+
+  });
+
+  describe('with Accept: text/html requests', function () {
+
+    describe('by default', function () {
+
+      it('should render a form with ONLY first name, last name, email, and password fields by default', function (done) {
+
+        request(defaultRegistrationFixture.expressApp)
+          .get('/register')
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(assertDefaultForm(done));
+
+      });
+
+      it('should allow the developer to specify custom fields', function (done) {
+
+        var config = customFieldRegistrationFixture.expressApp.get('stormpathConfig');
+
+        request(customFieldRegistrationFixture.expressApp)
           .get('/register')
           .set('Accept', 'text/html')
           .expect(200)
@@ -354,323 +427,187 @@ describe('register', function () {
 
             var $ = cheerio.load(res.text);
 
-            assert($('html').html());
-            assert($('head').html());
-            assert.equal($('body p').html(), 'hi');
+            var formFields = $('form input');
 
-            fs.unlink(filename, function (err) {
-              return done(err);
-            });
+            assert(formFields.length, 5);
+
+            var givenNameField = $(formFields[0]);
+            var surnameField = $(formFields[1]);
+            var colorField = $(formFields[2]);
+            var emailField = $(formFields[3]);
+            var passwordField = $(formFields[4]);
+
+            assert.equal(givenNameField.attr('placeholder'), config.web.register.fields.givenName.placeholder);
+            assert.equal(givenNameField.attr('required') === 'required', config.web.register.fields.givenName.required);
+            assert.equal(givenNameField.attr('type'), config.web.register.fields.givenName.type);
+
+            assert.equal(surnameField.attr('placeholder'), config.web.register.fields.surname.placeholder);
+            assert.equal(surnameField.attr('required') === 'required', config.web.register.fields.surname.required);
+            assert.equal(surnameField.attr('type'), config.web.register.fields.surname.type);
+
+            assert.equal(colorField.attr('placeholder'), config.web.register.fields.color.placeholder);
+            assert.equal(colorField.attr('required') === 'required', config.web.register.fields.color.required);
+            assert.equal(colorField.attr('type'), config.web.register.fields.color.type);
+
+            assert.equal(emailField.attr('placeholder'), config.web.register.fields.email.placeholder);
+            assert.equal(emailField.attr('required') === 'required', config.web.register.fields.email.required);
+            assert.equal(emailField.attr('type'), config.web.register.fields.email.type);
+
+            assert.equal(passwordField.attr('placeholder'), config.web.register.fields.password.placeholder);
+            assert.equal(passwordField.attr('required') === 'required', config.web.register.fields.password.required);
+            assert.equal(passwordField.attr('type'), config.web.register.fields.password.type);
+
+            done();
+
           });
       });
-    });
 
-    it('should render a form with ONLY first name, last name, email, and password fields by default', function (done) {
+      it('should render an error if the givenName field is not supplied', function (done) {
 
-      request(defaultRegistrationFixture.expressApp)
-        .get('/register')
-        .set('Accept', 'text/html')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
+        var surname = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
-          var $ = cheerio.load(res.text);
-
-          var formFields = $('form input');
-
-          assert.equal(formFields.length, 4);
-          assert.equal($(formFields[0]).attr('name'), 'givenName');
-          assert.equal($(formFields[1]).attr('name'), 'surname');
-          assert.equal($(formFields[2]).attr('name'), 'email');
-          assert.equal($(formFields[3]).attr('name'), 'password');
-
-          done();
-        });
-
-    });
-
-    it('should allow the developer to specify custom fields', function (done) {
-
-      var config = customFieldRegistrationFixture.expressApp.get('stormpathConfig');
-
-      request(customFieldRegistrationFixture.expressApp)
-        .get('/register')
-        .set('Accept', 'text/html')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var $ = cheerio.load(res.text);
-
-          var formFields = $('form input');
-
-          assert(formFields.length, 5);
-
-          var givenNameField = $(formFields[0]);
-          var surnameField = $(formFields[1]);
-          var colorField = $(formFields[2]);
-          var emailField = $(formFields[3]);
-          var passwordField = $(formFields[4]);
-
-          assert.equal(givenNameField.attr('placeholder'), config.web.register.fields.givenName.placeholder);
-          assert.equal(givenNameField.attr('required') === 'required', config.web.register.fields.givenName.required);
-          assert.equal(givenNameField.attr('type'), config.web.register.fields.givenName.type);
-
-          assert.equal(surnameField.attr('placeholder'), config.web.register.fields.surname.placeholder);
-          assert.equal(surnameField.attr('required') === 'required', config.web.register.fields.surname.required);
-          assert.equal(surnameField.attr('type'), config.web.register.fields.surname.type);
-
-          assert.equal(colorField.attr('placeholder'), config.web.register.fields.color.placeholder);
-          assert.equal(colorField.attr('required') === 'required', config.web.register.fields.color.required);
-          assert.equal(colorField.attr('type'), config.web.register.fields.color.type);
-
-          assert.equal(emailField.attr('placeholder'), config.web.register.fields.email.placeholder);
-          assert.equal(emailField.attr('required') === 'required', config.web.register.fields.email.required);
-          assert.equal(emailField.attr('type'), config.web.register.fields.email.type);
-
-          assert.equal(passwordField.attr('placeholder'), config.web.register.fields.password.placeholder);
-          assert.equal(passwordField.attr('required') === 'required', config.web.register.fields.password.required);
-          assert.equal(passwordField.attr('type'), config.web.register.fields.password.type);
-
-          done();
-
-        });
-    });
-
-    it('should render an error if the givenName field is not supplied', function (done) {
-
-      var surname = uuid.v4();
-      var email = uuid.v4() + '@test.com';
-      var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
-      request(defaultRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'text/html')
-        .type('form')
-        .send({
-          surname: surname,
-          email: email,
-          password: password
-        })
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var $ = cheerio.load(res.text);
-          assert($('.alert.alert-danger p').length);
-          assert.notEqual($('.alert.alert-danger p').text().indexOf('givenName'), -1);
-
-          done();
-        });
-
-    });
-
-    it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
-
-      var email = uuid.v4() + '@test.com';
-      var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
-      request(namesOptionalRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'text/html')
-        .type('form')
-        .send({
-          email: email,
-          password: password
-        })
-        .expect(302)
-        .end(function (err) {
-          if (err) {
-            return done(err);
-          }
-
-          stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            surname: surname,
+            email: email,
+            password: password
+          })
+          .expect(200)
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
-            if (accounts.items.length === 0) {
-              return done(new Error('No account was created!'));
-            }
-
-            var account = accounts.items[0];
-            assert.equal(account.email, email);
-            assert.equal(account.givenName, 'UNKNOWN');
-            assert.equal(account.surname, 'UNKNOWN');
+            var $ = cheerio.load(res.text);
+            assert($('.alert.alert-danger p').length);
+            assert.notEqual($('.alert.alert-danger p').text().indexOf('givenName'), -1);
 
             done();
           });
-        });
 
-    });
+      });
 
-    it('should re-render the submitted form data if the submission fails', function (done) {
 
-      var formData = {
-        givenName: uuid.v4(),
-        surname: uuid.v4(),
-        color: uuid.v4(),
-        email: uuid.v4() + '@test.com'
-        // Password is omitted, to cause the form submission to fail
-      };
 
-      request(customFieldRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'text/html')
-        .type('form')
-        .send(formData)
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
+      it('should re-render the submitted form data if the submission fails', function (done) {
 
-          var $ = cheerio.load(res.text);
+        var formData = {
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
+          color: uuid.v4(),
+          email: uuid.v4() + '@test.com'
+          // Password is omitted, to cause the form submission to fail
+        };
 
-          var formFields = $('form input');
-
-          assert(formFields.length, 5);
-
-          var givenNameField = $(formFields[0]);
-          var surnameField = $(formFields[1]);
-          var colorField = $(formFields[2]);
-          var emailField = $(formFields[3]);
-          var passwordField = $(formFields[4]);
-
-          // The core account fields should be re-populated with the
-          // user-submited data:
-
-          assert.equal(givenNameField.attr('value'), formData.givenName);
-          assert.equal(surnameField.attr('value'), formData.surname);
-          assert.equal(emailField.attr('value'), formData.email);
-
-          // The custom data fields should be re-populated as well:
-
-          assert.equal(colorField.attr('value'), formData.color);
-
-          // The password should not be re-populated (for security):
-          assert.equal(passwordField.attr('value'), undefined);
-
-          done();
-        });
-
-    });
-
-    it('should store additional fields on the customData object', function (done) {
-
-      var givenName = uuid.v4();
-      var surname = uuid.v4();
-      var email = uuid.v4() + '@test.com';
-      var color = 'black';
-      var music = 'rock';
-      var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
-      request(customFieldRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'text/html')
-        .type('form')
-        .send({
-          givenName: givenName,
-          surname: surname,
-          email: email,
-          color: color,
-          music: music,
-          password: password
-        })
-        .expect(302)
-        .end(function (err) {
-          if (err) {
-            return done(err);
-          }
-
-          stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
+        request(customFieldRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
-            if (accounts.items.length === 0) {
-              return done(new Error('No account was created!'));
+            var $ = cheerio.load(res.text);
+
+            var formFields = $('form input');
+
+            assert(formFields.length, 5);
+
+            var givenNameField = $(formFields[0]);
+            var surnameField = $(formFields[1]);
+            var colorField = $(formFields[2]);
+            var emailField = $(formFields[3]);
+            var passwordField = $(formFields[4]);
+
+            // The core account fields should be re-populated with the
+            // user-submited data:
+
+            assert.equal(givenNameField.attr('value'), formData.givenName);
+            assert.equal(surnameField.attr('value'), formData.surname);
+            assert.equal(emailField.attr('value'), formData.email);
+
+            // The custom data fields should be re-populated as well:
+
+            assert.equal(colorField.attr('value'), formData.color);
+
+            // The password should not be re-populated (for security):
+            assert.equal(passwordField.attr('value'), undefined);
+
+            done();
+          });
+
+      });
+
+      it('should store additional fields on the customData object', function (done) {
+
+        var givenName = uuid.v4();
+        var surname = uuid.v4();
+        var email = uuid.v4() + '@test.com';
+        var color = 'black';
+        var music = 'rock';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(customFieldRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            givenName: givenName,
+            surname: surname,
+            email: email,
+            color: color,
+            music: music,
+            password: password
+          })
+          .expect(302)
+          .end(function (err) {
+            if (err) {
+              return done(err);
             }
 
-            var account = accounts.items[0];
-            account.getCustomData(function (err, data) {
+            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
 
-              assert.equal(account.email, email);
-              assert.equal(data.color, color);
-              assert.equal(data.music, music);
-
-              done();
-            });
-          });
-
-        });
-    });
-
-    it('should return the user to the login page with ?status=unverified if the account is unverified', function (done) {
-
-      async.series([
-        function (callback) {
-          helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', callback);
-        },
-        function (callback) {
-
-
-          var email = uuid.v4() + '@test.com';
-          var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-          var config = defaultRegistrationFixture.expressApp.get('stormpathConfig');
-
-          request(defaultRegistrationFixture.expressApp)
-            .post('/register')
-            .set('Accept', 'text/html')
-            .type('form')
-            .send({
-              email: email,
-              password: password
-            })
-            .expect(302)
-            .end(function (err, res) {
-              if (err) {
-                return callback(err);
+              if (accounts.items.length === 0) {
+                return done(new Error('No account was created!'));
               }
 
-              assert.equal(res.headers.location, config.web.login.uri + '?status=unverified');
-              callback();
+              var account = accounts.items[0];
+              account.getCustomData(function (err, data) {
+                if (err) {
+                  return done(err);
+                }
+
+                assert.equal(account.email, email);
+                assert.equal(data.color, color);
+                assert.equal(data.music, music);
+
+                done();
+              });
             });
 
-        }
-      ], function () {
-        helpers.setEmailVerificationStatus(stormpathApplication, 'DISABLED', done);
-      });
-    });
-
-    it('should redirect the user to the nextUri if autoLogin is enabled', function (done) {
-      var app = helpers.createStormpathExpressApp({
-        application: {
-          href: stormpathApplication.href
-        },
-        web: {
-          register: {
-            autoLogin: true,
-            enabled: true,
-            nextUri: '/woot'
-          }
-        }
+          });
       });
 
-      app.on('stormpath.ready', function () {
+
+
+
+      it('should redirect the user to the login page with ?status=created', function (done) {
+
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
-        request(app)
+        request(defaultRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
@@ -686,27 +623,38 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.headers.location, '/woot');
+            assert.equal(res.headers.location, '/login?status=created');
             done();
           });
+
       });
+
     });
 
-    it('should redirect the user to the ?next uri if autoLogin is enabled', function (done) {
-      var app = helpers.createStormpathExpressApp({
-        application: {
-          href: stormpathApplication.href
-        },
-        web: {
-          register: {
-            autoLogin: true,
-            enabled: true,
-            nextUri: '/woot'
+
+
+    describe('if autoLogin is enabled', function () {
+
+      var app;
+
+      before(function (done) {
+        app = helpers.createStormpathExpressApp({
+          application: {
+            href: stormpathApplication.href
+          },
+          web: {
+            register: {
+              autoLogin: true,
+              enabled: true,
+              nextUri: '/woot'
+            }
           }
-        }
+        });
+        app.on('stormpath.ready', done);
       });
 
-      app.on('stormpath.ready', function () {
+      it('should redirect the user to the dynamic nextUri', function (done) {
+
         var email = uuid.v4() + '@test.com';
         var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
@@ -729,34 +677,122 @@ describe('register', function () {
             assert.equal(res.headers.location, '/yo');
             done();
           });
+
+      });
+
+      it('should redirect the user to the configured nextUri', function (done) {
+
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(app)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            givenName: uuid.v4(),
+            surname: uuid.v4(),
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.headers.location, '/woot');
+            done();
+          });
+
       });
     });
 
-    it('should redirect the user to the login page with ?status=created if autoLogin is not enabled', function (done) {
+    describe('if givenName and surname are optional', function () {
 
-      var email = uuid.v4() + '@test.com';
-      var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
-      request(defaultRegistrationFixture.expressApp)
-        .post('/register')
-        .set('Accept', 'text/html')
-        .type('form')
-        .send({
-          givenName: uuid.v4(),
-          surname: uuid.v4(),
-          email: email,
-          password: password
-        })
-        .expect(302)
-        .end(function (err, res) {
+        var email = uuid.v4() + '@test.com';
+        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+
+        request(namesOptionalRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send({
+            email: email,
+            password: password
+          })
+          .expect(302)
+          .end(function (err) {
+            if (err) {
+              return done(err);
+            }
+
+            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
+              if (err) {
+                return done(err);
+              }
+
+              if (accounts.items.length === 0) {
+                return done(new Error('No account was created!'));
+              }
+
+              var account = accounts.items[0];
+              assert.equal(account.email, email);
+              assert.equal(account.givenName, 'UNKNOWN');
+              assert.equal(account.surname, 'UNKNOWN');
+
+              done();
+            });
+          });
+
+      });
+    });
+
+    describe('if configured with spaRoot', function () {
+      it('should return a SPA page instead of the default form', function (done) {
+        var filename = '/tmp/' + uuid.v4();
+        var app = helpers.createStormpathExpressApp({
+          application: {
+            href: stormpathApplication.href
+          },
+          web: {
+            register: {
+              enabled: true
+            },
+            spaRoot: filename
+          }
+        });
+
+        fs.writeFile(filename, '<html><head><script></script></head><body><p>hi</p></body></html>', function (err) {
           if (err) {
             return done(err);
           }
-
-          assert.equal(res.headers.location, '/login?status=created');
-          done();
         });
 
+        app.on('stormpath.ready', function () {
+          request(app)
+            .get('/register')
+            .set('Accept', 'text/html')
+            .expect(200)
+            .end(function (err, res) {
+              if (err) {
+                return done(err);
+              }
+
+              var $ = cheerio.load(res.text);
+
+              assert($('html').html());
+              assert($('head').html());
+              assert.equal($('body p').html(), 'hi');
+
+              fs.unlink(filename, function (err) {
+                return done(err);
+              });
+            });
+        });
+      });
     });
   });
 });
