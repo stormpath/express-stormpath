@@ -340,16 +340,19 @@ describe.only('register', function () {
 
       });
 
-      it('should store additional fields in customData', function (done) {
 
-        var formData = defaultRegistrationFixture.defaultFormPost();
+    });
 
-        formData.color = 'black';
+    describe('if a custom field is configured', function () {
+      it('should store the custom field data in customData', function (done) {
+
+        var formData = customFieldRegistrationFixture.defaultFormPost();
+
         formData.customData = {
           music: 'rock'
         };
 
-        request(defaultRegistrationFixture.expressApp)
+        request(customFieldRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
@@ -361,7 +364,7 @@ describe.only('register', function () {
             }
 
             var json = JSON.parse(res.text);
-            defaultRegistrationFixture.expressApp.get('stormpathClient').getAccount(json.href, function (err, account) {
+            customFieldRegistrationFixture.expressApp.get('stormpathClient').getAccount(json.href, function (err, account) {
               if (err) {
                 return done(err);
               }
@@ -427,7 +430,97 @@ describe.only('register', function () {
 
       });
 
-      it('should allow the developer to specify custom fields', function (done) {
+      it('should render an error if the givenName field is not supplied', function (done) {
+
+        var formData = defaultRegistrationFixture.defaultFormPost();
+        delete formData.givenName;
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+            assert($('.alert.alert-danger p').length);
+            assert.notEqual($('.alert.alert-danger p').text().indexOf('givenName'), -1);
+
+            done();
+          });
+
+      });
+
+      it('should re-render the submitted form data if the submission fails', function (done) {
+
+        var formData = defaultRegistrationFixture.defaultFormPost();
+        // cause password strength validation to fail
+        formData.password = '1';
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+
+            var formFields = $('form input');
+
+            assert(formFields.length, 5);
+
+            var givenNameField = $(formFields[0]);
+            var surnameField = $(formFields[1]);
+            var emailField = $(formFields[2]);
+            var passwordField = $(formFields[3]);
+
+            // The core account fields should be re-populated with the
+            // user-submited data:
+
+            assert.equal(givenNameField.attr('value'), formData.givenName);
+            assert.equal(surnameField.attr('value'), formData.surname);
+            assert.equal(emailField.attr('value'), formData.email);
+
+            // The password should not be re-populated (for security):
+            assert.equal(passwordField.attr('value'), undefined);
+
+            done();
+          });
+
+      });
+
+      it('should redirect the user to the login page with ?status=created', function (done) {
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send(defaultRegistrationFixture.defaultFormPost())
+          .expect(302)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.headers.location, '/login?status=created');
+            done();
+          });
+
+      });
+
+    });
+
+    describe('if a custom field is configured', function () {
+      it('should show the field in the correct order', function (done) {
 
         var config = customFieldRegistrationFixture.expressApp.get('stormpathConfig');
 
@@ -477,82 +570,7 @@ describe.only('register', function () {
           });
       });
 
-      it('should render an error if the givenName field is not supplied', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
-        delete formData.givenName;
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-            assert($('.alert.alert-danger p').length);
-            assert.notEqual($('.alert.alert-danger p').text().indexOf('givenName'), -1);
-
-            done();
-          });
-
-      });
-
-
-
-      it('should re-render the submitted form data if the submission fails', function (done) {
-
-        var formData = customFieldRegistrationFixture.defaultFormPost();
-        // cause password strength validation to fail
-        formData.password = '1';
-
-        request(customFieldRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-
-            var formFields = $('form input');
-
-            assert(formFields.length, 5);
-
-            var givenNameField = $(formFields[0]);
-            var surnameField = $(formFields[1]);
-            var colorField = $(formFields[2]);
-            var emailField = $(formFields[3]);
-            var passwordField = $(formFields[4]);
-
-            // The core account fields should be re-populated with the
-            // user-submited data:
-
-            assert.equal(givenNameField.attr('value'), formData.givenName);
-            assert.equal(surnameField.attr('value'), formData.surname);
-            assert.equal(emailField.attr('value'), formData.email);
-
-            // The custom data fields should be re-populated as well:
-
-            assert.equal(colorField.attr('value'), formData.color);
-
-            // The password should not be re-populated (for security):
-            assert.equal(passwordField.attr('value'), undefined);
-
-            done();
-          });
-
-      });
-
-      it('should store additional fields on the customData object', function (done) {
+      it('should store the custom field data on the customData object', function (done) {
 
         var formData = customFieldRegistrationFixture.defaultFormPost();
         formData.color = 'black';
@@ -595,28 +613,38 @@ describe.only('register', function () {
           });
       });
 
-      it('should redirect the user to the login page with ?status=created', function (done) {
+      it('should re-render the submitted custom field data if the submission fails', function (done) {
 
-        request(defaultRegistrationFixture.expressApp)
+        var formData = customFieldRegistrationFixture.defaultFormPost();
+        // cause password strength validation to fail
+        formData.password = '1';
+
+        request(customFieldRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send(defaultRegistrationFixture.defaultFormPost())
-          .expect(302)
+          .send(formData)
+          .expect(200)
           .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
-            assert.equal(res.headers.location, '/login?status=created');
+            var $ = cheerio.load(res.text);
+
+            var formFields = $('form input');
+
+            assert(formFields.length, 5);
+
+            var colorField = $(formFields[2]);
+
+            assert.equal(colorField.attr('value'), formData.color);
+
             done();
           });
 
       });
-
     });
-
-
 
     describe('if autoLogin is enabled', function () {
 
