@@ -45,7 +45,7 @@ DefaultRegistrationFixture.prototype.defaultFormPost = function () {
 
 /**
  * Creates an Express application and configures the register feature with the
- * surname and given name as option fields.
+ * surname and given name as optional (not required) fields.
  *
  * Requires you to supply the stormpath application that should be
  * used.  Assumes that tenant api key and secret are defined in the environment.
@@ -80,6 +80,49 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
  * @return {object} postable form data object
  */
 NamesOptionalRegistrationFixture.prototype.defaultFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
+
+/**
+ * Creates an Express application and configures the register feature with the
+ * surname and given name as disabled fields.
+ *
+ * Requires you to supply the stormpath application that should be
+ * used.  Assumes that tenant api key and secret are defined in the environment.
+ *
+ * @param {object} stormpathApplication
+ */
+function NamesDisabledRegistrationFixture(stormpathApplication) {
+  this.expressApp = helpers.createStormpathExpressApp({
+    application: {
+      href: stormpathApplication.href
+    },
+    web: {
+      register: {
+        enabled: true,
+        fields: {
+          surname: {
+            enabled: false
+          },
+          givenName: {
+            enabled: false
+          }
+        }
+      }
+    }
+  });
+  return this;
+}
+/**
+ * Returns an object that has the required form fields of email and password.
+ * This fixture does not require given name or surname
+ *
+ * @return {object} postable form data object
+ */
+NamesDisabledRegistrationFixture.prototype.defaultFormPost = function () {
   return {
     email: uuid.v4() + '@test.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
@@ -197,11 +240,12 @@ function assertCustomDataRegistration(fixture, formData, done) {
   };
 }
 
-describe('register', function () {
+describe.only('register', function () {
   var stormpathApplication;
   var stormpathClient;
   var customFieldRegistrationFixture;
   var defaultRegistrationFixture;
+  var namesDisabledRegistrationFixture;
   var namesOptionalRegistrationFixture;
 
   var existingUserData = {
@@ -226,7 +270,10 @@ describe('register', function () {
         customFieldRegistrationFixture.expressApp.on('stormpath.ready', function () {
           namesOptionalRegistrationFixture = new NamesOptionalRegistrationFixture(stormpathApplication);
           namesOptionalRegistrationFixture.expressApp.on('stormpath.ready', function () {
-            app.createAccount(existingUserData, done);
+            namesDisabledRegistrationFixture = new NamesDisabledRegistrationFixture(stormpathApplication);
+            namesDisabledRegistrationFixture.expressApp.on('stormpath.ready', function () {
+              app.createAccount(existingUserData, done);
+            });
           });
         });
       });
@@ -426,7 +473,7 @@ describe('register', function () {
       });
     });
 
-    describe('if givenName and surname are optional', function () {
+    describe('if givenName and surname are optional (not required)', function () {
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
@@ -453,7 +500,30 @@ describe('register', function () {
 
     });
 
+    describe('if givenName and surname are disabled', function () {
 
+      it('should set givenName and surname to \'UNKNOWN\'', function (done) {
+
+        var formData = namesDisabledRegistrationFixture.defaultFormPost();
+
+        request(namesDisabledRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.givenName, 'UNKNOWN');
+            assert.equal(res.body.surname, 'UNKNOWN');
+            assert.equal(res.body.email, formData.email);
+            done();
+          });
+      });
+    });
   });
 
   describe('with Accept: text/html requests', function () {
@@ -743,7 +813,7 @@ describe('register', function () {
       });
     });
 
-    describe('if givenName and surname are optional', function () {
+    describe('if givenName and surname are optional (not required)', function () {
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
@@ -779,6 +849,66 @@ describe('register', function () {
           });
 
       });
+    });
+
+    describe('if givenName and surname are disabled', function () {
+      it('should not show those fields', function (done) {
+        request(namesDisabledRegistrationFixture.expressApp)
+          .get('/register')
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+
+            var formFields = $('form input');
+
+            assert.equal(formFields.length, 2);
+            assert.equal($(formFields[0]).attr('name'), 'email');
+            assert.equal($(formFields[1]).attr('name'), 'password');
+
+            done();
+          });
+      });
+
+      it('should set givenName and surname to \'UNKNOWN\'', function (done) {
+
+        var formData = namesDisabledRegistrationFixture.defaultFormPost();
+
+        request(namesDisabledRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send(formData)
+          .expect(302)
+          .end(function (err) {
+            if (err) {
+              return done(err);
+            }
+
+            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
+              if (err) {
+                return done(err);
+              }
+
+              if (accounts.items.length === 0) {
+                return done(new Error('No account was created!'));
+              }
+
+              var account = accounts.items[0];
+              assert.equal(account.email, formData.email);
+              assert.equal(account.givenName, 'UNKNOWN');
+              assert.equal(account.surname, 'UNKNOWN');
+
+              done();
+            });
+          });
+
+      });
+
     });
 
     describe('if configured with spaRoot', function () {
