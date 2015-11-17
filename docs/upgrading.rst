@@ -7,12 +7,34 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
-Version 2.0.14 -> Version 2.1.0
+Version 2.1.0 -> Version 2.2.0
 --------------------------------
 
-**No changes needed!**
+**Changes may be needed**
 
-Version 2.0.14 -> Version 2.0.15
+The Oauth2 endpoint is now enabled by default.  You no longer need to use this
+configuration option is you want to enable the OAuth2 endpoint:
+
+.. code-block:: javascript
+
+    stormpath.init(app, {
+      api: true
+    });
+
+If you wish to *disable* the Oauth2 endpoint you can do so like this:
+
+.. code-block:: javascript
+
+    stormpath.init(app, {
+      web: {
+        oauth2: {
+          enabled: false
+        }
+      }
+    });
+
+
+Version 2.0.14 -> Version 2.1.0
 --------------------------------
 
 **No changes needed!**

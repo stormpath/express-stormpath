@@ -111,5 +111,14 @@ JrodManU has contributed documentation fixes project.
 
 - Github: https://github.com/JrodManU
 
+
+Pierre-David Bélanger
+*********************
+
+Pierre has contributed a patch to the project.
+
+- Github: https://github.com/pierredavidbelanger
+- Website: http://www.pjer.ca/
+
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com

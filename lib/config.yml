@@ -1,12 +1,14 @@
 ---
 web:
   oauth2:
-    enabled: false
+    enabled: true
     uri: "/oauth/token"
     client_credentials:
       enabled: true
       accessToken:
         ttl: 3600
+    password:
+      enabled: true
   accessTokenCookie:
     name: "access_token"
     httpOnly: true
@@ -19,6 +21,8 @@ web:
     secure: null
     path: "/"
     domain: null
+  # The registration feature will be automatically enabled by the existence of
+  # a default account store for your application.
   register:
     enabled: false
     uri: "/register"
@@ -69,6 +73,8 @@ web:
       - "email"
       - "password"
     view: "register"
+  # The email verification feature will be automatically enabled if the
+  # default account store for your application has this workflow enabled.
   verifyEmail:
     uri: "/verify"
     nextUri: "/"
@@ -82,6 +88,9 @@ web:
     enabled: false
     uri: "/logout"
     nextUri: "/"
+  # The forgot password and change password features will be automatically
+  # enabled if the default account store for your application has this workflow
+  # enabled.
   forgotPassword:
     enabled: false
     uri: "/forgot"

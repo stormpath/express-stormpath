@@ -6,15 +6,27 @@ Change Log
 
 All library changes, in descending order.
 
-Version 2.1.1
+Version 2.2.1
 --------------
 
-** Not Yet Released **
+**Not Yet Released**
+
+
+Version 2.2.0
+--------------
+
+**Released on November 6, 2015.**
+
+- Implemented the password grant flow on the ``/oauth/token`` endpoint, this will
+  be useful for mobile applications and single-page applications that don't use
+  cookie authentication
+
+- The OAuth2 token endpoint is now enabled by default
 
 Version 2.1.0
 --------------
 
-** Released on October 30, 2015.**
+**Released on October 30, 2015.**
 
 - Internal refactor of config parser.
 - Social login support for front-end applications.
