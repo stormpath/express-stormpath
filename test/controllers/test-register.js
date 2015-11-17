@@ -286,21 +286,7 @@ describe('register', function () {
         },
         web: {
           register: {
-            enabled: true,
-            fields: {
-              color: {
-                name: 'color',
-                placeholder: 'Color',
-                required: true,
-                type: 'text'
-              },
-              music: {
-                name: 'music',
-                placeholder: 'Music',
-                required: false,
-                type: 'text'
-              }
-            }
+            enabled: true
           }
         }
       });
@@ -318,7 +304,9 @@ describe('register', function () {
             email: uuid.v4() + '@test.com',
             password: uuid.v4() + uuid.v4().toUpperCase() + '!',
             color: color,
-            music: music
+            customData: {
+              music: music
+            }
           })
           .expect(200)
           .end(function (err, res) {
@@ -426,7 +414,43 @@ describe('register', function () {
       });
     });
 
-    it('should render an HTML form with all fields on a GET request', function (done) {
+    it('should render ONLY first name, last name, email, and password fields by default', function (done) {
+      var app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+      app.on('stormpath.ready', function () {
+        request(app)
+          .get('/register')
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+
+            var formFields = $('form input');
+
+            assert.equal(formFields.length, 4);
+            assert.equal($(formFields[0]).attr('name'), 'givenName');
+            assert.equal($(formFields[1]).attr('name'), 'surname');
+            assert.equal($(formFields[2]).attr('name'), 'email');
+            assert.equal($(formFields[3]).attr('name'), 'password');
+
+            done();
+          });
+      });
+    });
+
+    it('should allow the developer to specify custom fields', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -460,37 +484,42 @@ describe('register', function () {
 
             var $ = cheerio.load(res.text);
 
-            assert($('form input[name=givenName]').length);
-            assert.equal($('form input[name=givenName]').attr('placeholder'), config.web.register.fields.givenName.placeholder);
-            assert.equal($('form input[name=givenName]').attr('required') === 'required', config.web.register.fields.givenName.required);
-            assert.equal($('form input[name=givenName]').attr('type'), config.web.register.fields.givenName.type);
+            var formFields = $('form input');
 
-            assert($('form input[name=surname]').length);
-            assert.equal($('form input[name=surname]').attr('placeholder'), config.web.register.fields.surname.placeholder);
-            assert.equal($('form input[name=surname]').attr('required') === 'required', config.web.register.fields.surname.required);
-            assert.equal($('form input[name=surname]').attr('type'), config.web.register.fields.surname.type);
+            assert(formFields.length, 5);
 
-            assert($('form input[name=color]').length);
-            assert.equal($('form input[name=color]').attr('placeholder'), config.web.register.fields.color.placeholder);
-            assert.equal($('form input[name=color]').attr('required') === 'required', config.web.register.fields.color.required);
-            assert.equal($('form input[name=color]').attr('type'), config.web.register.fields.color.type);
+            var givenNameField = $(formFields[0]);
+            var surnameField = $(formFields[1]);
+            var colorField = $(formFields[2]);
+            var emailField = $(formFields[3]);
+            var passwordField = $(formFields[4]);
 
-            assert($('form input[name=email]').length);
-            assert.equal($('form input[name=email]').attr('placeholder'), config.web.register.fields.email.placeholder);
-            assert.equal($('form input[name=email]').attr('required') === 'required', config.web.register.fields.email.required);
-            assert.equal($('form input[name=email]').attr('type'), config.web.register.fields.email.type);
+            assert.equal(givenNameField.attr('placeholder'), config.web.register.fields.givenName.placeholder);
+            assert.equal(givenNameField.attr('required') === 'required', config.web.register.fields.givenName.required);
+            assert.equal(givenNameField.attr('type'), config.web.register.fields.givenName.type);
 
-            assert($('form input[name=password]').length);
-            assert.equal($('form input[name=password]').attr('placeholder'), config.web.register.fields.password.placeholder);
-            assert.equal($('form input[name=password]').attr('required') === 'required', config.web.register.fields.password.required);
-            assert.equal($('form input[name=password]').attr('type'), config.web.register.fields.password.type);
+            assert.equal(surnameField.attr('placeholder'), config.web.register.fields.surname.placeholder);
+            assert.equal(surnameField.attr('required') === 'required', config.web.register.fields.surname.required);
+            assert.equal(surnameField.attr('type'), config.web.register.fields.surname.type);
+
+            assert.equal(colorField.attr('placeholder'), config.web.register.fields.color.placeholder);
+            assert.equal(colorField.attr('required') === 'required', config.web.register.fields.color.required);
+            assert.equal(colorField.attr('type'), config.web.register.fields.color.type);
+
+            assert.equal(emailField.attr('placeholder'), config.web.register.fields.email.placeholder);
+            assert.equal(emailField.attr('required') === 'required', config.web.register.fields.email.required);
+            assert.equal(emailField.attr('type'), config.web.register.fields.email.type);
+
+            assert.equal(passwordField.attr('placeholder'), config.web.register.fields.password.placeholder);
+            assert.equal(passwordField.attr('required') === 'required', config.web.register.fields.password.required);
+            assert.equal(passwordField.attr('type'), config.web.register.fields.password.type);
 
             done();
           });
       });
     });
 
-    it('should render HTML errors if all required data is not supplied', function (done) {
+    it('should render an error if a required field is not supplied', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -592,56 +621,6 @@ describe('register', function () {
       });
     });
 
-    it('should create a user even if surname is not supplied', function (done) {
-      var app = helpers.createStormpathExpressApp({
-        application: {
-          href: stormpathApplication.href
-        },
-        web: {
-          register: {
-            enabled: true
-          }
-        }
-      });
-
-      app.on('stormpath.ready', function () {
-        var givenName = uuid.v4();
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
-        request(app)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send({
-            givenName: givenName,
-            email: email,
-            password: password
-          })
-          .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
-              if (err) {
-                return done(err);
-              }
-
-              if (accounts.items.length === 0) {
-                return done(new Error('No account was created!'));
-              }
-
-              var account = accounts.items[0];
-              assert.equal(account.email, email);
-
-              done();
-            });
-          });
-      });
-    });
-
     it('should re-render form data if a registration is unsuccessful', function (done) {
       var app = helpers.createStormpathExpressApp({
         application: {
@@ -649,19 +628,32 @@ describe('register', function () {
         },
         web: {
           register: {
-            enabled: true
+            enabled: true,
+            fields: {
+              color: {
+                name: 'color'
+              }
+            },
+            fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
           }
         }
       });
 
       app.on('stormpath.ready', function () {
-        var email = uuid.v4() + '@test.com';
+
+        var formData = {
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
+          color: uuid.v4(),
+          email: uuid.v4() + '@test.com'
+          // Password is omitted, to cause the form submission to fail
+        };
 
         request(app)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send({ email: email })
+          .send(formData)
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -669,7 +661,31 @@ describe('register', function () {
             }
 
             var $ = cheerio.load(res.text);
-            assert.equal($('input[name=email]').val(), email);
+
+            var formFields = $('form input');
+
+            assert(formFields.length, 5);
+
+            var givenNameField = $(formFields[0]);
+            var surnameField = $(formFields[1]);
+            var colorField = $(formFields[2]);
+            var emailField = $(formFields[3]);
+            var passwordField = $(formFields[4]);
+
+            // The core account fields should be re-populated with the
+            // user-submited data:
+
+            assert.equal(givenNameField.attr('value'), formData.givenName);
+            assert.equal(surnameField.attr('value'), formData.surname);
+            assert.equal(emailField.attr('value'), formData.email);
+
+            // The custom data fields should be re-populated as well:
+
+            assert.equal(colorField.attr('value'), formData.color);
+
+            // The password should not be re-populated (for security):
+            assert.equal(passwordField.attr('value'), undefined);
+
             done();
           });
       });

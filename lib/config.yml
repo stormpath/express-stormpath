@@ -46,13 +46,11 @@ web:
         required: true
         type: "password"
     fieldOrder:
-      - "username"
       - "givenName"
       - "middleName"
       - "surname"
       - "email"
       - "password"
-      - "passwordConfirm"
     view: "register"
   verifyEmail:
     uri: "/verify"
