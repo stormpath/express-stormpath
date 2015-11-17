@@ -8,6 +8,14 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
+/*
+
+  it should not show a default field if that field is enabled: false by developer configuration
+
+  refactor: validateAccount -> validateFormData
+  refactor: post reg handler tests to use new fixture
+ */
+
 /**
  * Creates an Express application and configures the register feature to be
  * enabled.  Requires you to supply the stormpath application that should be
@@ -240,7 +248,7 @@ function assertCustomDataRegistration(fixture, formData, done) {
   };
 }
 
-describe.only('register', function () {
+describe('register', function () {
   var stormpathApplication;
   var stormpathClient;
   var customFieldRegistrationFixture;
