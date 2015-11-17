@@ -129,7 +129,7 @@ CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
   return formData;
 };
 
-function assertDefaultForm(done) {
+function assertDefaultFormResponse(done) {
   return function (err, res) {
     if (err) {
       return done(err);
@@ -146,6 +146,37 @@ function assertDefaultForm(done) {
     assert.equal($(formFields[3]).attr('name'), 'password');
 
     done();
+  };
+}
+
+function assertCustomDataRegistration(fixture, formData, done) {
+  return function (err) {
+    if (err) {
+      return done(err);
+    }
+
+    fixture.expressApp.get('stormpathApplication').getAccounts({ email: formData.email }, function (err, accounts) {
+      if (err) {
+        return done(err);
+      }
+
+      if (accounts.items.length === 0) {
+        return done(new Error('No account was created!'));
+      }
+
+      var account = accounts.items[0];
+      account.getCustomData(function (err, data) {
+        if (err) {
+          return done(err);
+        }
+
+        assert.equal(account.email, formData.email);
+        assert.equal(data.color, formData.color);
+        assert.equal(data.music, formData.customData.music);
+
+        done();
+      });
+    });
   };
 }
 
@@ -235,7 +266,7 @@ describe.only('register', function () {
       request(app)
         .get('/customRegistrationUri')
         .expect(200)
-        .end(assertDefaultForm(done));
+        .end(assertDefaultFormResponse(done));
     });
 
     it('should not bind to the other uri', function (done) {
@@ -345,8 +376,8 @@ describe.only('register', function () {
 
     describe('if a custom field is configured', function () {
       it('should store the custom field data in customData', function (done) {
-
-        var formData = customFieldRegistrationFixture.defaultFormPost();
+        var fixture = customFieldRegistrationFixture;
+        var formData = fixture.defaultFormPost();
 
         formData.customData = {
           music: 'rock'
@@ -358,30 +389,7 @@ describe.only('register', function () {
           .type('json')
           .send(formData)
           .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var json = JSON.parse(res.text);
-            customFieldRegistrationFixture.expressApp.get('stormpathClient').getAccount(json.href, function (err, account) {
-              if (err) {
-                return done(err);
-              }
-
-              account.getCustomData(function (err, data) {
-                if (err) {
-                  return done(err);
-                }
-
-                assert.equal(account.href, json.href);
-                assert.equal(data.color, formData.color);
-                assert.equal(data.music, formData.customData.music);
-
-                done();
-              });
-            });
-          });
+          .end(assertCustomDataRegistration(fixture, formData, done));
 
       });
     });
@@ -426,7 +434,7 @@ describe.only('register', function () {
           .get('/register')
           .set('Accept', 'text/html')
           .expect(200)
-          .end(assertDefaultForm(done));
+          .end(assertDefaultFormResponse(done));
 
       });
 
@@ -571,10 +579,12 @@ describe.only('register', function () {
       });
 
       it('should store the custom field data on the customData object', function (done) {
-
-        var formData = customFieldRegistrationFixture.defaultFormPost();
+        var fixture = customFieldRegistrationFixture;
+        var formData = fixture.defaultFormPost();
         formData.color = 'black';
-        formData.music = 'rock';
+        formData.customData = {
+          music: 'rock'
+        };
 
         request(customFieldRegistrationFixture.expressApp)
           .post('/register')
@@ -582,35 +592,7 @@ describe.only('register', function () {
           .type('form')
           .send(formData)
           .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
-              if (err) {
-                return done(err);
-              }
-
-              if (accounts.items.length === 0) {
-                return done(new Error('No account was created!'));
-              }
-
-              var account = accounts.items[0];
-              account.getCustomData(function (err, data) {
-                if (err) {
-                  return done(err);
-                }
-
-                assert.equal(account.email, formData.email);
-                assert.equal(data.color, formData.color);
-                assert.equal(data.music, formData.music);
-
-                done();
-              });
-            });
-
-          });
+          .end(assertCustomDataRegistration(fixture, formData, done));
       });
 
       it('should re-render the submitted custom field data if the submission fails', function (done) {
