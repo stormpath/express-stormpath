@@ -26,21 +26,37 @@ web:
     autoLogin: false
     fields:
       givenName:
+        enabled: true
         name: "givenName"
         placeholder: "First Name"
         required: true
         type: "text"
+      middleName:
+        enabled: false
+        name: "middleName"
+        placeholder: "Middle Name"
+        required: true
+        type: "text"
       surname:
+        enabled: true
         name: "surname"
         placeholder: "Last Name"
         required: true
         type: "text"
+      username:
+        enabled: false
+        name: "username"
+        placeholder: "Username"
+        required: true
+        type: "text"
       email:
+        enabled: true
         name: "email"
         placeholder: "Email"
         required: true
         type: "email"
       password:
+        enabled: true
         name: "password"
         placeholder: "Password"
         required: true
@@ -49,6 +65,7 @@ web:
       - "givenName"
       - "middleName"
       - "surname"
+      - "username"
       - "email"
       - "password"
     view: "register"

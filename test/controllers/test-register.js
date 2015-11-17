@@ -104,12 +104,14 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
         enabled: true,
         fields: {
           color: {
+            enabled: true,
             name: 'color',
             placeholder: 'Favorite Color',
             required: true,
             type: 'text'
           },
           music: {
+            enabled: true,
             name: 'music',
             placeholder: 'Music Preference',
             required: false,
