@@ -105,12 +105,18 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
         fields: {
           color: {
             name: 'color',
-            placeholder: 'Color',
+            placeholder: 'Favorite Color',
             required: true,
+            type: 'text'
+          },
+          music: {
+            name: 'music',
+            placeholder: 'Music Preference',
+            required: false,
             type: 'text'
           }
         },
-        fieldOrder: ['givenName', 'surname', 'color', 'email', 'password']
+        fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
       }
     }
   });
@@ -121,11 +127,20 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
  * givenName, surname, email, and password.  Also populates the custom color
  * field.
  *
+ * This function purposely places one field at the root of the object and one
+ * field in the custom data object, to assert that we can supply a field in
+ * either location.  This is desireable because it's easier for HTML forms
+ * to use the root object, whereas JSON clients will likely supply the
+ * customDat object directly.
+ *
  * @return {object} postable form data object
  */
 CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
   var formData = DefaultRegistrationFixture.prototype.defaultFormPost();
   formData.color = uuid.v4();
+  formData.customData = {
+    music: uuid.v4()
+  };
   return formData;
 };
 
@@ -180,7 +195,7 @@ function assertCustomDataRegistration(fixture, formData, done) {
   };
 }
 
-describe.only('register', function () {
+describe('register', function () {
   var stormpathApplication;
   var stormpathClient;
   var customFieldRegistrationFixture;
@@ -371,6 +386,26 @@ describe.only('register', function () {
 
       });
 
+      it('should reject fields that are not configured', function (done) {
+        var formData = defaultRegistrationFixture.defaultFormPost();
+        formData.otherField = uuid.v4();
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(400)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.error, 'otherField is not a configured registration field.');
+
+            done();
+          });
+      });
 
     });
 
@@ -378,11 +413,6 @@ describe.only('register', function () {
       it('should store the custom field data in customData', function (done) {
         var fixture = customFieldRegistrationFixture;
         var formData = fixture.defaultFormPost();
-
-        formData.customData = {
-          music: 'rock'
-        };
-
         request(customFieldRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
@@ -525,6 +555,29 @@ describe.only('register', function () {
 
       });
 
+      it('should reject fields that are not configured', function (done) {
+        var formData = defaultRegistrationFixture.defaultFormPost();
+        formData.otherField = uuid.v4();
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'text/html')
+          .type('form')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var $ = cheerio.load(res.text);
+            assert($('.alert.alert-danger p').length);
+            assert.notEqual($('.alert.alert-danger p').text().indexOf('otherField'), -1);
+
+            done();
+          });
+      });
+
     });
 
     describe('if a custom field is configured', function () {
@@ -550,8 +603,9 @@ describe.only('register', function () {
             var givenNameField = $(formFields[0]);
             var surnameField = $(formFields[1]);
             var colorField = $(formFields[2]);
-            var emailField = $(formFields[3]);
-            var passwordField = $(formFields[4]);
+            var musicField = $(formFields[3]);
+            var emailField = $(formFields[4]);
+            var passwordField = $(formFields[5]);
 
             assert.equal(givenNameField.attr('placeholder'), config.web.register.fields.givenName.placeholder);
             assert.equal(givenNameField.attr('required') === 'required', config.web.register.fields.givenName.required);
@@ -564,6 +618,10 @@ describe.only('register', function () {
             assert.equal(colorField.attr('placeholder'), config.web.register.fields.color.placeholder);
             assert.equal(colorField.attr('required') === 'required', config.web.register.fields.color.required);
             assert.equal(colorField.attr('type'), config.web.register.fields.color.type);
+
+            assert.equal(musicField.attr('placeholder'), config.web.register.fields.music.placeholder);
+            assert.equal(musicField.attr('required') === 'required', config.web.register.fields.music.required);
+            assert.equal(musicField.attr('type'), config.web.register.fields.music.type);
 
             assert.equal(emailField.attr('placeholder'), config.web.register.fields.email.placeholder);
             assert.equal(emailField.attr('required') === 'required', config.web.register.fields.email.required);
@@ -581,10 +639,6 @@ describe.only('register', function () {
       it('should store the custom field data on the customData object', function (done) {
         var fixture = customFieldRegistrationFixture;
         var formData = fixture.defaultFormPost();
-        formData.color = 'black';
-        formData.customData = {
-          music: 'rock'
-        };
 
         request(customFieldRegistrationFixture.expressApp)
           .post('/register')
