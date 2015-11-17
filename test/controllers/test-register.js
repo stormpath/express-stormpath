@@ -31,6 +31,37 @@ function DefaultRegistrationFixture(stormpathApplication) {
 }
 
 /**
+ * Creates an Express application and configures the register feature with the
+ * surname and given name as option fields.
+ *
+ * Requires you to supply the stormpath application that should be
+ * used.  Assumes that tenant api key and secret are defined in the environment.
+ *
+ * @param {object} stormpathApplication
+ */
+function NamesOptionalRegistrationFixture(stormpathApplication) {
+  this.expressApp = helpers.createStormpathExpressApp({
+    application: {
+      href: stormpathApplication.href
+    },
+    web: {
+      register: {
+        enabled: true,
+        fields: {
+          surname: {
+            required: false
+          },
+          givenName: {
+            required: false
+          }
+        }
+      }
+    }
+  });
+  return this;
+}
+
+/**
  * Creates an Express applicaion, with a custom form field that has a specific
  * place in the field order.  Requires you to supply the stormpath application
  * that should be used.  Assumes that tenant api key and secret are defined in
@@ -64,8 +95,9 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
 describe('register', function () {
   var stormpathApplication;
   var stormpathClient;
-  var defaultRegistrationFixture;
   var customFieldRegistrationFixture;
+  var defaultRegistrationFixture;
+  var namesOptionalRegistrationFixture;
 
   var existingUserData = {
     givenName: uuid.v4(),
@@ -87,7 +119,10 @@ describe('register', function () {
       defaultRegistrationFixture.expressApp.on('stormpath.ready', function () {
         customFieldRegistrationFixture = new CustomFieldRegistrationFixture(stormpathApplication);
         customFieldRegistrationFixture.expressApp.on('stormpath.ready', function () {
-          app.createAccount(existingUserData, done);
+          namesOptionalRegistrationFixture = new NamesOptionalRegistrationFixture(stormpathApplication);
+          namesOptionalRegistrationFixture.expressApp.on('stormpath.ready', function () {
+            app.createAccount(existingUserData, done);
+          });
         });
       });
     });
@@ -151,56 +186,28 @@ describe('register', function () {
   });
 
   describe('via JSON API', function () {
-    it('should return a JSON error if request is missing a field', function (done) {
-      async.series([
-        function (cb) {
+    it('should return a JSON error if the request is missing the givenName', function (done) {
 
-          request(defaultRegistrationFixture.expressApp)
-            .post('/register')
-            .set('Accept', 'application/json')
-            .type('json')
-            .expect(400)
-            .end(function (err, res) {
-              if (err) {
-                return done(err);
-              }
+      request(defaultRegistrationFixture.expressApp)
+        .post('/register')
+        .set('Accept', 'application/json')
+        .type('json')
+        .send({
+          surname: uuid.v4(),
+          email: uuid.v4() + '@test.com',
+          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+        })
+        .expect(400)
+        .end(function (err, res) {
+          if (err) {
+            return done(err);
+          }
 
-              assert.equal(res.body.error, 'email required.');
+          assert.equal(res.body.error, 'givenName required.');
 
-              cb();
-            });
+          done();
+        });
 
-        },
-        function (cb) {
-
-          request(customFieldRegistrationFixture.expressApp)
-            .post('/register')
-            .set('Accept', 'application/json')
-            .type('json')
-            .send({
-              givenName: uuid.v4(),
-              surname: uuid.v4(),
-              email: uuid.v4() + '@test.com',
-              password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-            })
-            .expect(400)
-            .end(function (err, res) {
-              if (err) {
-                return done(err);
-              }
-
-              var json = JSON.parse(res.text);
-              if (!json.error) {
-                return done(new Error('No JSON error returned.'));
-              }
-
-              cb();
-            });
-
-        }
-      ], function () {
-        done();
-      });
     });
 
     it('should create an account if the data is valid', function (done) {
@@ -238,12 +245,12 @@ describe('register', function () {
 
     });
 
-    it('should set givenName and surname to \'Anonymous\' if not provided', function (done) {
+    it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
       var email = uuid.v4() + '@test.com';
       var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
-      request(defaultRegistrationFixture.expressApp)
+      request(namesOptionalRegistrationFixture.expressApp)
         .post('/register')
         .set('Accept', 'application/json')
         .type('json')
@@ -257,8 +264,8 @@ describe('register', function () {
             return done(err);
           }
 
-          assert.equal(res.body.givenName, 'Anonymous');
-          assert.equal(res.body.surname, 'Anonymous');
+          assert.equal(res.body.givenName, 'UNKNOWN');
+          assert.equal(res.body.surname, 'UNKNOWN');
           assert.equal(res.body.email, email);
           done();
         });
@@ -434,19 +441,17 @@ describe('register', function () {
         });
     });
 
-    it('should render an error if a required field is not supplied', function (done) {
+    it('should render an error if the givenName field is not supplied', function (done) {
 
-      var givenName = uuid.v4();
       var surname = uuid.v4();
       var email = uuid.v4() + '@test.com';
       var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
-      request(customFieldRegistrationFixture.expressApp)
+      request(defaultRegistrationFixture.expressApp)
         .post('/register')
         .set('Accept', 'text/html')
         .type('form')
         .send({
-          givenName: givenName,
           surname: surname,
           email: email,
           password: password
@@ -459,19 +464,19 @@ describe('register', function () {
 
           var $ = cheerio.load(res.text);
           assert($('.alert.alert-danger p').length);
-          assert.notEqual($('.alert.alert-danger p').text().indexOf('color'), -1);
+          assert.notEqual($('.alert.alert-danger p').text().indexOf('givenName'), -1);
 
           done();
         });
 
     });
 
-    it('should set givenName and surname to \'Anonymous\' if not provided', function (done) {
+    it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
       var email = uuid.v4() + '@test.com';
       var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
-      request(defaultRegistrationFixture.expressApp)
+      request(namesOptionalRegistrationFixture.expressApp)
         .post('/register')
         .set('Accept', 'text/html')
         .type('form')
@@ -496,8 +501,8 @@ describe('register', function () {
 
             var account = accounts.items[0];
             assert.equal(account.email, email);
-            assert.equal(account.givenName, 'Anonymous');
-            assert.equal(account.surname, 'Anonymous');
+            assert.equal(account.givenName, 'UNKNOWN');
+            assert.equal(account.surname, 'UNKNOWN');
 
             done();
           });
@@ -670,6 +675,8 @@ describe('register', function () {
           .set('Accept', 'text/html')
           .type('form')
           .send({
+            givenName: uuid.v4(),
+            surname: uuid.v4(),
             email: email,
             password: password
           })
@@ -708,6 +715,8 @@ describe('register', function () {
           .set('Accept', 'text/html')
           .type('form')
           .send({
+            givenName: uuid.v4(),
+            surname: uuid.v4(),
             email: email,
             password: password
           })
@@ -733,6 +742,8 @@ describe('register', function () {
         .set('Accept', 'text/html')
         .type('form')
         .send({
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
           email: email,
           password: password
         })
