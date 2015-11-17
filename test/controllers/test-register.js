@@ -28,6 +28,20 @@ function DefaultRegistrationFixture(stormpathApplication) {
   });
   return this;
 }
+/**
+ * Returns an object that has the default expected (and required) form fields of
+ * givenName, surname, email, and password
+ *
+ * @return {object} postable form data object
+ */
+DefaultRegistrationFixture.prototype.defaultFormPost = function () {
+  return {
+    givenName: uuid.v4(),
+    surname: uuid.v4(),
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
 
 /**
  * Creates an Express application and configures the register feature with the
@@ -59,6 +73,18 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
   });
   return this;
 }
+/**
+ * Returns an object that has the required form fields of email and password.
+ * This fixture does not require given name or surname
+ *
+ * @return {object} postable form data object
+ */
+NamesOptionalRegistrationFixture.prototype.defaultFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
 
 /**
  * Creates an Express applicaion, with a custom form field that has a specific
@@ -90,6 +116,18 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
   });
   return this;
 }
+/**
+ * Returns an object that has the default expected (and required) form fields of
+ * givenName, surname, email, and password.  Also populates the custom color
+ * field.
+ *
+ * @return {object} postable form data object
+ */
+CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
+  var formData = DefaultRegistrationFixture.prototype.defaultFormPost();
+  formData.color = uuid.v4();
+  return formData;
+};
 
 function assertDefaultForm(done) {
   return function (err, res) {
@@ -111,7 +149,7 @@ function assertDefaultForm(done) {
   };
 }
 
-describe('register', function () {
+describe.only('register', function () {
   var stormpathApplication;
   var stormpathClient;
   var customFieldRegistrationFixture;
@@ -210,15 +248,15 @@ describe('register', function () {
 
   describe('if email verification is enabled', function () {
 
-    var app;
+    var fixture;
 
     before(function (done) {
       helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', function (err) {
         if (err) {
           return done(err);
         }
-        app = new DefaultRegistrationFixture(stormpathApplication).expressApp;
-        app.on('stormpath.ready', done);
+        fixture = new DefaultRegistrationFixture(stormpathApplication);
+        fixture.expressApp.on('stormpath.ready', done);
       });
     });
 
@@ -228,18 +266,13 @@ describe('register', function () {
 
     it('should return the user to the login page with ?status=unverified', function (done) {
 
-      var config = app.get('stormpathConfig');
+      var config = fixture.expressApp.get('stormpathConfig');
 
-      request(app)
+      request(fixture.expressApp)
         .post('/register')
         .set('Accept', 'text/html')
         .type('form')
-        .send({
-          givenName: uuid.v4(),
-          surname: uuid.v4(),
-          email: uuid.v4() + '@test.com',
-          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-        })
+        .send(fixture.defaultFormPost())
         .expect(302)
         .end(function (err, res) {
           if (err) {
@@ -258,15 +291,14 @@ describe('register', function () {
 
       it('should return a JSON error if the request is missing the givenName', function (done) {
 
+        var formData = defaultRegistrationFixture.defaultFormPost();
+        delete formData.givenName;
+
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
-          .send({
-            surname: uuid.v4(),
-            email: uuid.v4() + '@test.com',
-            password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-          })
+          .send(formData)
           .expect(400)
           .end(function (err, res) {
             if (err) {
@@ -283,21 +315,13 @@ describe('register', function () {
 
       it('should create an account if the data is valid', function (done) {
 
-        var givenName = uuid.v4();
-        var surname = uuid.v4();
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+        var formData = defaultRegistrationFixture.defaultFormPost();
 
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
-          .send({
-            givenName: givenName,
-            surname: surname,
-            email: email,
-            password: password
-          })
+          .send(formData)
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -307,9 +331,9 @@ describe('register', function () {
             var json = JSON.parse(res.text);
 
             assert(json.href);
-            assert.equal(json.givenName, givenName);
-            assert.equal(json.surname, surname);
-            assert.equal(json.email, email);
+            assert.equal(json.givenName, formData.givenName);
+            assert.equal(json.surname, formData.surname);
+            assert.equal(json.email, formData.email);
 
             done();
           });
@@ -318,23 +342,18 @@ describe('register', function () {
 
       it('should store additional fields in customData', function (done) {
 
-        var color = 'black';
-        var music = 'rock';
+        var formData = defaultRegistrationFixture.defaultFormPost();
+
+        formData.color = 'black';
+        formData.customData = {
+          music: 'rock'
+        };
 
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
-          .send({
-            givenName: uuid.v4(),
-            surname: uuid.v4(),
-            email: uuid.v4() + '@test.com',
-            password: uuid.v4() + uuid.v4().toUpperCase() + '!',
-            color: color,
-            customData: {
-              music: music
-            }
-          })
+          .send(formData)
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -353,8 +372,8 @@ describe('register', function () {
                 }
 
                 assert.equal(account.href, json.href);
-                assert.equal(data.color, color);
-                assert.equal(data.music, music);
+                assert.equal(data.color, formData.color);
+                assert.equal(data.music, formData.customData.music);
 
                 done();
               });
@@ -368,17 +387,13 @@ describe('register', function () {
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+        var formData = namesOptionalRegistrationFixture.defaultFormPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
-          .send({
-            email: email,
-            password: password
-          })
+          .send(formData)
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -387,7 +402,7 @@ describe('register', function () {
 
             assert.equal(res.body.givenName, 'UNKNOWN');
             assert.equal(res.body.surname, 'UNKNOWN');
-            assert.equal(res.body.email, email);
+            assert.equal(res.body.email, formData.email);
             done();
           });
 
@@ -464,19 +479,14 @@ describe('register', function () {
 
       it('should render an error if the givenName field is not supplied', function (done) {
 
-        var surname = uuid.v4();
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+        var formData = defaultRegistrationFixture.defaultFormPost();
+        delete formData.givenName;
 
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send({
-            surname: surname,
-            email: email,
-            password: password
-          })
+          .send(formData)
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -496,13 +506,9 @@ describe('register', function () {
 
       it('should re-render the submitted form data if the submission fails', function (done) {
 
-        var formData = {
-          givenName: uuid.v4(),
-          surname: uuid.v4(),
-          color: uuid.v4(),
-          email: uuid.v4() + '@test.com'
-          // Password is omitted, to cause the form submission to fail
-        };
+        var formData = customFieldRegistrationFixture.defaultFormPost();
+        // cause password strength validation to fail
+        formData.password = '1';
 
         request(customFieldRegistrationFixture.expressApp)
           .post('/register')
@@ -548,32 +554,22 @@ describe('register', function () {
 
       it('should store additional fields on the customData object', function (done) {
 
-        var givenName = uuid.v4();
-        var surname = uuid.v4();
-        var email = uuid.v4() + '@test.com';
-        var color = 'black';
-        var music = 'rock';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+        var formData = customFieldRegistrationFixture.defaultFormPost();
+        formData.color = 'black';
+        formData.music = 'rock';
 
         request(customFieldRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send({
-            givenName: givenName,
-            surname: surname,
-            email: email,
-            color: color,
-            music: music,
-            password: password
-          })
+          .send(formData)
           .expect(302)
           .end(function (err) {
             if (err) {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
+            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -588,9 +584,9 @@ describe('register', function () {
                   return done(err);
                 }
 
-                assert.equal(account.email, email);
-                assert.equal(data.color, color);
-                assert.equal(data.music, music);
+                assert.equal(account.email, formData.email);
+                assert.equal(data.color, formData.color);
+                assert.equal(data.music, formData.music);
 
                 done();
               });
@@ -599,24 +595,13 @@ describe('register', function () {
           });
       });
 
-
-
-
       it('should redirect the user to the login page with ?status=created', function (done) {
-
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
 
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send({
-            givenName: uuid.v4(),
-            surname: uuid.v4(),
-            email: email,
-            password: password
-          })
+          .send(defaultRegistrationFixture.defaultFormPost())
           .expect(302)
           .end(function (err, res) {
             if (err) {
@@ -655,19 +640,11 @@ describe('register', function () {
 
       it('should redirect the user to the dynamic nextUri', function (done) {
 
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
         request(app)
           .post('/register?next=%2Fyo')
           .set('Accept', 'text/html')
           .type('form')
-          .send({
-            givenName: uuid.v4(),
-            surname: uuid.v4(),
-            email: email,
-            password: password
-          })
+          .send(DefaultRegistrationFixture.prototype.defaultFormPost())
           .expect(302)
           .end(function (err, res) {
             if (err) {
@@ -682,19 +659,11 @@ describe('register', function () {
 
       it('should redirect the user to the configured nextUri', function (done) {
 
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
-
         request(app)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send({
-            givenName: uuid.v4(),
-            surname: uuid.v4(),
-            email: email,
-            password: password
-          })
+          .send(DefaultRegistrationFixture.prototype.defaultFormPost())
           .expect(302)
           .end(function (err, res) {
             if (err) {
@@ -712,24 +681,20 @@ describe('register', function () {
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
-        var email = uuid.v4() + '@test.com';
-        var password = uuid.v4() + uuid.v4().toUpperCase() + '!';
+        var formData = namesOptionalRegistrationFixture.defaultFormPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'text/html')
           .type('form')
-          .send({
-            email: email,
-            password: password
-          })
+          .send(formData)
           .expect(302)
           .end(function (err) {
             if (err) {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: email }, function (err, accounts) {
+            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -739,7 +704,7 @@ describe('register', function () {
               }
 
               var account = accounts.items[0];
-              assert.equal(account.email, email);
+              assert.equal(account.email, formData.email);
               assert.equal(account.givenName, 'UNKNOWN');
               assert.equal(account.surname, 'UNKNOWN');
 
