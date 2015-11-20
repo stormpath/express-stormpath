@@ -6,10 +6,15 @@ Change Log
 
 All library changes, in descending order.
 
-Version 2.3.0
+Version 2.3.1
 --------------
 
 **Not Yet Released**
+
+Version 2.3.0
+--------------
+
+**Released on November 20, 2015.**
 
 Many fixes for the registration field configuration:
 
@@ -29,6 +34,25 @@ Many fixes for the registration field configuration:
   provided and not required during registration.
 
 Please see the Registration section of this documentation for more information.
+
+Several bug fixes:
+
+- The `spaRoot` option was not observed by the change password route, so you
+  would get the standard HTML page and not your angular application.
+
+- On logout, access tokens and refresh tokens are now revoked via the Stormpath
+  REST API (this was not the case before - the token would not be revoked).
+
+- The social login sidebar was being shown on the login page, even if there were
+  no buttons to show.  This is now fixed.
+
+Configuration loading changes:
+
+- We now have *much* better error messages if there is a problem with the
+  Stormpath application that is provied in your configuration.
+
+- If no application is defined and your Stormpath tenant has only one default
+  application, we will automatically use that applicaton.  Woot!
 
 
 Version 2.2.0
