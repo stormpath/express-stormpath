@@ -49,7 +49,7 @@ required by the user:
 * email
 * password
 
-While email and password will always be required, you may not need to require
+While email and password will always be required, you do not need to require
 first and last name.  These can be configured as optional fields, or omitted
 entirely.  You can also specify your own custom fields.  We'll cover each use
 case in detail.

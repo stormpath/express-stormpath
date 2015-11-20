@@ -11,7 +11,7 @@ Version 2.3.0
 
 **Not Yet Released**
 
-May fixes for the registration field configuration:
+Many fixes for the registration field configuration:
 
 - Custom fields, as defined in the ``register`` block, will now appear in our
   default registration form (they were not appearing before).
@@ -20,7 +20,7 @@ May fixes for the registration field configuration:
   data will be rejected during account creation.
 
 - Only the First Name, Last Name, Email, and Password fields are shown by
-  default (the middle name and username fields are no longer shown be default).
+  default (the middle name and username fields are no longer shown by default).
 
 - Added an ``enabled`` property to all fields, allowing you to selectively
   disable any of the default fields.

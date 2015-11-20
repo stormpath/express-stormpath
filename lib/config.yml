@@ -66,10 +66,10 @@ web:
         required: true
         type: "password"
     fieldOrder:
+      - "username"
       - "givenName"
       - "middleName"
       - "surname"
-      - "username"
       - "email"
       - "password"
     view: "register"
