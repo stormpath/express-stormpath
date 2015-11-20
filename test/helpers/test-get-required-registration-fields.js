@@ -27,16 +27,18 @@ describe('getRequiredRegistrationFields', function () {
     });
   });
 
-  it('should return required fields only if fields are required', function (done) {
+  it('should return required fields only if fields are enabled and required', function (done) {
     var config = {
       web: {
         register: {
           fields: {
             givenName: {
+              enabled: true,
               name: 'givenName',
               required: true
             },
             surname: {
+              enabled: true,
               name: 'surname',
               required: true
             },

@@ -4,11 +4,9 @@ block vars
   - var title = 'Create an Account'
   - var description = 'Create a new account.'
   - var bodytag = 'register'
-  - var registrationFields = stormpathConfig.web.register.fields
-  - var fieldOrder = stormpathConfig.web.register.fieldOrder
-  - var orderedFields = []
 
 block body
+
   .container.custom-container
     .va-wrapper
       .view.registration-view.container
@@ -23,12 +21,7 @@ block body
                   p #{error.message}
 
             form.registration-form.form-horizontal.sp-form(method='post', role='form')
-              each fieldName in fieldOrder
-                each fieldObject, key in registrationFields
-                  if fieldObject.name === fieldName
-                    - orderedFields.push(fieldObject)
-
-              each field in orderedFields
+              each field in formModel.fields
                 div(form-group='true', class='form-group group-#{field.name}')
                   label.col-sm-4 #{field.placeholder}
                   .col-sm-8

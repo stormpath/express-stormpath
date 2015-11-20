@@ -27,42 +27,43 @@ web:
     enabled: false
     uri: "/register"
     nextUri: "/"
-    autoAuthorize: false
+    autoLogin: false
     fields:
-      username:
-        name: "username"
-        placeholder: "Username"
-        required: false
-        type: "text"
       givenName:
+        enabled: true
         name: "givenName"
         placeholder: "First Name"
         required: true
         type: "text"
       middleName:
+        enabled: false
         name: "middleName"
         placeholder: "Middle Name"
-        required: false
+        required: true
         type: "text"
       surname:
+        enabled: true
         name: "surname"
         placeholder: "Last Name"
         required: true
         type: "text"
+      username:
+        enabled: false
+        name: "username"
+        placeholder: "Username"
+        required: true
+        type: "text"
       email:
+        enabled: true
         name: "email"
         placeholder: "Email"
         required: true
         type: "email"
       password:
+        enabled: true
         name: "password"
         placeholder: "Password"
         required: true
-        type: "password"
-      passwordConfirm:
-        name: "passwordConfirm"
-        placeholder: "Confirm Password"
-        required: false
         type: "password"
     fieldOrder:
       - "username"
@@ -71,7 +72,6 @@ web:
       - "surname"
       - "email"
       - "password"
-      - "passwordConfirm"
     view: "register"
   # The email verification feature will be automatically enabled if the
   # default account store for your application has this workflow enabled.
@@ -81,7 +81,6 @@ web:
     view: "verify"
   login:
     enabled: false
-    autoLogin: true
     uri: "/login"
     nextUri: "/"
     view: "login"
