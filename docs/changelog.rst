@@ -41,7 +41,7 @@ Several bug fixes:
   would get the standard HTML page and not your angular application.
 
 - On logout, access tokens and refresh tokens are now revoked via the Stormpath
-  REST API (this was not the case before - the would not be revoked).
+  REST API (this was not the case before - the token would not be revoked).
 
 - The social login sidebar was being shown on the login page, even if there were
   no buttons to show.  This is now fixed.
