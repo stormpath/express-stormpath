@@ -16,6 +16,18 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
     expand: {
       customData: true
     },
+    web: {
+      register: {
+        fields: {
+          favoriteColor: {
+            name: 'favoriteColor',
+            placeholder: 'favoriteColor',
+            required: false,
+            type: 'text'
+          }
+        }
+      }
+    },
     postRegistrationHandler: function (account, req, res) {
       // Simply return the user object, so that we can
       // assert that the custom data was expanded

@@ -6,10 +6,29 @@ Change Log
 
 All library changes, in descending order.
 
-Version 2.2.1
+Version 2.3.0
 --------------
 
 **Not Yet Released**
+
+Many fixes for the registration field configuration:
+
+- Custom fields, as defined in the ``register`` block, will now appear in our
+  default registration form (they were not appearing before).
+
+- Custom fields now *must* be defined in the ``register`` block, otherwise the
+  data will be rejected during account creation.
+
+- Only the First Name, Last Name, Email, and Password fields are shown by
+  default (the middle name and username fields are no longer shown by default).
+
+- Added an ``enabled`` property to all fields, allowing you to selectively
+  disable any of the default fields.
+
+- The default value for first name and last name is now "UNKNOWN", if not
+  provided and not required during registration.
+
+Please see the Registration section of this documentation for more information.
 
 
 Version 2.2.0

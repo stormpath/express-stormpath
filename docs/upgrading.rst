@@ -7,6 +7,26 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 2.2.0 -> Version 2.3.0
+--------------------------------
+
+**Registration changes may be needed**
+
+If you are supplying extra fields on registration (fields that are added to the
+user's custom data object), and you are using an HTML-based form submission, you
+now need to declare these fields in the registration configuration.
+
+This change is necessary because we fixed this library to *not* allow arbitrary
+submission of data to the account's custom data object.
+
+Please see the registration section of this documentation for examples of how to
+declare your custom fields.
+
+The default value for first name and last name is now "UNKNOWN", if not provided
+and not required during registration.  Previously it was "Anonymous".  If you
+are depending on this value you will need to change your test to look for
+"UNKONWN".
+
 Version 2.1.0 -> Version 2.2.0
 --------------------------------
 

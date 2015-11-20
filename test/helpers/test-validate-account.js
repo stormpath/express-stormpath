@@ -10,22 +10,27 @@ describe('validateAccount', function () {
       register: {
         fields: {
           givenName: {
+            enabled: true,
             name: 'givenName',
             required: true
           },
           surname: {
+            enabled: true,
             name: 'surname',
             required: true
           },
           email: {
+            enabled: true,
             name: 'email',
             required: true
           },
           password: {
+            enabled: true,
             name: 'password',
             required: true
           },
           passwordConfirm: {
+            enabled: true,
             name: 'passwordConfirm',
             required: true
           }
