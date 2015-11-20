@@ -10,6 +10,8 @@ var pkg = require('../package.json');
 
 var testRunId = uuid.v4().split('-')[0];
 
+var stormpath = require('stormpath');
+
 /**
  * Build a new Stormpath Client for usage in tests.
  *
@@ -18,7 +20,7 @@ var testRunId = uuid.v4().split('-')[0];
  * @return {Object} Returns an initialized Stormpath Client object.
  */
 module.exports.createClient = function (opts) {
-  return require('./../lib/client')(opts || {});
+  return new stormpath.Client(opts);
 };
 
 /**
