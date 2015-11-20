@@ -8,6 +8,7 @@ var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
+var SpaRootFixture = require('../fixtures/spa-root-fixture');
 var stormpath = require('../../index');
 
 describe('login', function () {
@@ -224,6 +225,45 @@ describe('login', function () {
             .end(cb);
         }
       ], done);
+    });
+  });
+
+  describe('if configured with a SPA root', function () {
+
+    var spaRootFixture;
+
+    before(function (done) {
+      spaRootFixture = new SpaRootFixture({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          login: {
+            enabled: true
+          }
+        }
+      });
+      spaRootFixture.before(done);
+    });
+
+    after(function (done) {
+      spaRootFixture.after(done);
+    });
+
+
+    it('should return the SPA root', function (done) {
+
+      var app = spaRootFixture.expressApp;
+
+      app.on('stormpath.ready', function () {
+        var config = app.get('stormpathConfig');
+        request(app)
+          .get(config.web.login.uri)
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(spaRootFixture.assertResponse(done));
+      });
+
     });
   });
 });

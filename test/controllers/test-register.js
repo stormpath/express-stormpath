@@ -2,11 +2,11 @@
 
 var assert = require('assert');
 var cheerio = require('cheerio');
-var fs = require('fs');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
+var SpaRootFixture = require('../fixtures/spa-root-fixture');
 
 /*
 
@@ -534,6 +534,46 @@ describe('register', function () {
     });
   });
 
+
+  describe('if configured with a SPA root', function () {
+
+    var spaRootFixture;
+
+    before(function (done) {
+      spaRootFixture = new SpaRootFixture({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+      spaRootFixture.before(done);
+    });
+
+    after(function (done) {
+      spaRootFixture.after(done);
+    });
+
+
+    it('should return the SPA root', function (done) {
+
+      var app = spaRootFixture.expressApp;
+
+      app.on('stormpath.ready', function () {
+        var config = app.get('stormpathConfig');
+        request(app)
+          .get(config.web.register.uri)
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(spaRootFixture.assertResponse(done));
+      });
+
+    });
+  });
+
   describe('with Accept: text/html requests', function () {
 
     describe('by default', function () {
@@ -919,49 +959,5 @@ describe('register', function () {
 
     });
 
-    describe('if configured with spaRoot', function () {
-      it('should return a SPA page instead of the default form', function (done) {
-        var filename = '/tmp/' + uuid.v4();
-        var app = helpers.createStormpathExpressApp({
-          application: {
-            href: stormpathApplication.href
-          },
-          web: {
-            register: {
-              enabled: true
-            },
-            spaRoot: filename
-          }
-        });
-
-        fs.writeFile(filename, '<html><head><script></script></head><body><p>hi</p></body></html>', function (err) {
-          if (err) {
-            return done(err);
-          }
-        });
-
-        app.on('stormpath.ready', function () {
-          request(app)
-            .get('/register')
-            .set('Accept', 'text/html')
-            .expect(200)
-            .end(function (err, res) {
-              if (err) {
-                return done(err);
-              }
-
-              var $ = cheerio.load(res.text);
-
-              assert($('html').html());
-              assert($('head').html());
-              assert.equal($('body p').html(), 'hi');
-
-              fs.unlink(filename, function (err) {
-                return done(err);
-              });
-            });
-        });
-      });
-    });
   });
 });

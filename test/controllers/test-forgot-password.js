@@ -6,6 +6,7 @@ var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
+var SpaRootFixture = require('../fixtures/spa-root-fixture');
 
 function assertInvalidSpTokenMessage(res) {
   var $ = cheerio.load(res.text);
@@ -190,4 +191,45 @@ describe('forgotPassword', function () {
       });
     });
   });
+
+  describe('if configured with a SPA root', function () {
+
+    var spaRootFixture;
+
+    before(function (done) {
+      spaRootFixture = new SpaRootFixture({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          forgotPassword: {
+            enabled: true
+          }
+        }
+      });
+      spaRootFixture.before(done);
+    });
+
+    after(function (done) {
+      spaRootFixture.after(done);
+    });
+
+
+    it('should return the SPA root', function (done) {
+
+      var app = spaRootFixture.expressApp;
+
+      app.on('stormpath.ready', function () {
+        var config = app.get('stormpathConfig');
+        request(app)
+          .get(config.web.forgotPassword.uri)
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(spaRootFixture.assertResponse(done));
+      });
+
+    });
+  });
+
+
 });
