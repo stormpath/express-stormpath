@@ -143,7 +143,7 @@ Version 1.0.6 -> Version 2.0.0
 **Many changes needed!**
 
 This is a **major release** in the life of this library.  This release includes
-tons of new features, refactorings, etc.
+tons of new features, refactoring, etc.
 
 To upgrade from **1.0.6**, please pay careful attention to the below notes.
 
