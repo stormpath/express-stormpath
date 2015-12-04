@@ -9,6 +9,7 @@ web:
         ttl: 3600
     password:
       enabled: true
+      validationStrategy: stormpath
   accessTokenCookie:
     name: "access_token"
     httpOnly: true

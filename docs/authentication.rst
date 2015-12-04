@@ -37,19 +37,82 @@ To use cookie authentication, simply use the ``loginRequired`` middleware::
     });
 
 Behind the scenes we are issuing a OAuth2 Access Token and Refresh token for
-the user, and storing them in secure, HTTPS-Only cookies.  The maximum
-lifetime of the cookies is controlled by the expiration time of the Refresh
-Token.
+the user, and storing them in secure, HTTPS-Only cookies.  After the user has
+logged in, these cookies will be supplied on every request.  Our library will
+assert that the access token is valid.  If the access token is expired, we will
+attempt to refresh it with the refresh token.
 
-If you need to change the expiration time of the Refresh Token, please login
-to the Stormpath Admin Console and navigate to the OAuth policy of your
-Stormpath Application.  Then change the expiration time of the Refresh Token.
 
 .. note::
-    Express-Stormpath's session management will not interfere with any existing
-    session middleware you might have.  The sessions that Stormpath uses are
-    exclusively used for Stormpath's purposes, so it's safe to create your own
-    separate sessions if needed.
+    Express-Stormpath's OAuth2 cookie feature will not interfere with any
+    existing cookie-based session middleware you might have.  The cookies that
+    Stormpath creates are used exclusively for Stormpath's purposes, so it's
+    safe to create your own separate sessions if needed.
+
+
+Setting Token Expiration Time
+.............................
+
+If you need to change the expiration time of the access token or refresh Token,
+please login to the Stormpath Admin Console and navigate to the OAuth policy of
+your Stormpath Application.  There you will find the settings for each token.
+
+Token Validation Strategy
+.........................
+
+When a request comes into your server, this library will use the access token
+and refresh token cookies to make an authentication decision.  The default
+validation strategy works like this:
+
+- Validate the signature and expiration time of the access token.  If the access
+  token is expired, attempt to get a new one by using the refresh token.
+
+- If the access token is expired and cannot be refreshed, deny the request
+
+- If the access token is not expired and the signature is valid, the library
+  makes a request to the Stormpath API to assert that the access token has not
+  been revoked and that the associated account still exists and is not disabled.
+
+In the last step, the API request will add a network request to the
+authentication process.  If this is not desirable (for performance reasons),
+you can opt-in to `local` validation.  In this situation, our library only
+checks the signature of the token and does not make the extra request to the
+Stormpath API to assert the token and the account.
+
+You can opt-in to local validation with this configuration:
+
+.. code-block:: javascript
+
+  {
+    web: {
+      oauth2: {
+        password: {
+          validationStrategy: 'local'
+        }
+      }
+    }
+  }
+
+.. warning::
+
+  When using local validation, your server will not be aware of token revocation
+  or any changes to the associated Stormpath account.  **This is a security
+  risk.**
+
+  There are two suggested strategies for dealing with this risk:
+
+  * Use a short expiration time for your access tokens (such as one hour or
+    less).  This will limit the amount of time that the access token can be used
+    for validation.  Our library *always* makes a request to the Stormpath API when
+    we attempt to refresh an access token, so the refresh attempt will fail
+    at this time if the refresh token has been revoked.
+
+  * Maintain a blacklist of revoked tokens, in your local application cache.
+    Implement a middleware function that asserts that the access token is not
+    in this cache, and reject the request if true.  We may implement this as
+    a convenience feature in the future.
+
+
 
 
 Issuing API Keys

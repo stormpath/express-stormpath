@@ -634,6 +634,62 @@ describe('getUser', function () {
     });
   });
 
+  it('should use local validation, if specified by configuration', function (done) {
+
+    var app = helpers.createStormpathExpressApp({
+      application: stormpathApplication,
+      website: true,
+      web: {
+        oauth2: {
+          password: {
+            validationStrategy: 'local'
+          }
+        }
+      }
+    });
+
+    app.get('/', getUser, function (req, res) {
+      res.json(req.user);
+    });
+
+    app.on('stormpath.ready', function () {
+
+      var agent = request.agent(app);
+
+      async.series([
+        function (callback) {
+          stormpathAccount.status = 'ENABLED';
+          stormpathAccount.save(callback);
+        },
+        function (callback) {
+          agent
+            .post('/login')
+            .send({
+              login: accountData.email,
+              password: accountData.password
+            })
+            .expect(302)
+            .end(callback);
+        },
+        function (callback) {
+          var a = new Date();
+          agent
+            .get('/')
+            .expect(200)
+            .end(function (err, res) {
+              if (err) {
+                return callback(err);
+              }
+              var b = new Date();
+              assert((b - a) < 20, 'Validation took too long - does not appear to be local validation');
+              assert.equal(res.body.email, accountData.email);
+              callback();
+            });
+        }
+      ], done);
+    });
+  });
+
   it('should set req.user and res.locals.user if an invalid access_token cookie is present with a valid refresh_token cookie', function (done) {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
