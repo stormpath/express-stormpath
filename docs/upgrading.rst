@@ -7,6 +7,11 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 2.3.0 -> Version 2.3.1
+------------------------------
+
+TODO
+
 Version 2.2.0 -> Version 2.3.0
 --------------------------------
 
