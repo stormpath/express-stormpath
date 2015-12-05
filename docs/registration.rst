@@ -108,7 +108,7 @@ like this::
           enabled: true,
           label: 'Favorite Color',
           name: 'favoriteColor',
-          placeholder: 'e.g. Red, Blue',
+          placeholder: 'E.g. Red, Blue',
           required: true,
           type: 'text'
         }
@@ -117,22 +117,22 @@ like this::
 
 All field objects have the following properties, which must be defined:
 
-- **Enabled** - determines if the field is shown on the form.
+- **enabled** - Determines if the field is shown on the form.
 
-- **Label** - The text label that is shown to the left of the input field.
+- **label** - The text label that is shown to the left of the input field.
 
-- **Name** - The name of this field, in the form model that is posted to the
+- **name** - The name of this field, in the form model that is posted to the
   server.
 
-- **Placeholder** - The help text that is shown inside the input field, if the
+- **placeholder** - The help text that is shown inside the input field, if the
   input field is empty (HTML5 property).
 
-- **Required** - Marks the field as a required field.  This uses the HTML5
+- **required** - Marks the field as a required field.  This uses the HTML5
   required property, to prompt the user to enter the value.  The post data will
   also be validated to ensure that the field is supplied, and an error will be
   returned if the field is empty.
 
-- **Type** - the HTML type of the input, e.g. text, email, or password.
+- **type** - the HTML type of the input, e.g. text, email, or password.
 
 
 Changing Field Order
