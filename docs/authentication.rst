@@ -36,20 +36,83 @@ To use cookie authentication, simply use the ``loginRequired`` middleware::
       res.send('Hello, ' + req.user.fullname);
     });
 
-Behind the scenes we are issuing a OAuth2 Access Token and Refresh token for
-the user, and storing them in secure, HTTPS-Only cookies.  The maximum
-lifetime of the cookies is controlled by the expiration time of the Refresh
-Token.
+Behind the scenes we are issuing a OAuth2 Access Token and Refresh Token for
+the user, and storing them in secure, HTTPS-Only cookies.  After the user has
+logged in, these cookies will be supplied on every request.  Our library will
+assert that the Access Token is valid.  If the Access Token is expired, we will
+attempt to refresh it with the Refresh Token.
 
-If you need to change the expiration time of the Refresh Token, please login
-to the Stormpath Admin Console and navigate to the OAuth policy of your
-Stormpath Application.  Then change the expiration time of the Refresh Token.
 
 .. note::
-    Express-Stormpath's session management will not interfere with any existing
-    session middleware you might have.  The sessions that Stormpath uses are
-    exclusively used for Stormpath's purposes, so it's safe to create your own
-    separate sessions if needed.
+    Express-Stormpath's OAuth2 cookie feature will not interfere with any
+    existing cookie-based session middleware you might have.  The cookies that
+    Stormpath creates are used exclusively for Stormpath's purposes, so it's
+    safe to create your own separate sessions if needed.
+
+
+Setting Token Expiration Time
+.............................
+
+If you need to change the expiration time of the Access Token or Refresh Token,
+please login to the Stormpath Admin Console and navigate to the OAuth policy of
+your Stormpath Application.  There you will find the settings for each token.
+
+Token Validation Strategy
+.........................
+
+When a request comes into your server, this library will use the Access Token
+and Refresh Token cookies to make an authentication decision.  The default
+validation strategy works like this:
+
+- Validate the signature and expiration time of the Access Token.  If the Access
+  Token is expired, attempt to get a new one by using the Refresh Token.
+
+- If the Access Token is expired and cannot be refreshed, deny the request
+
+- If the Access Token is not expired and the signature is valid, the library
+  makes a request to the Stormpath API to assert that the Access Token has not
+  been revoked and that the associated account still exists and is not disabled.
+
+In the last step, the API request will add a network request to the
+authentication process.  If this is not desirable (for performance reasons),
+you can opt-in to `local` validation.  In this situation, our library only
+checks the signature of the token and does not make the extra request to the
+Stormpath API to assert the token and the account.
+
+You can opt-in to local validation with this configuration:
+
+.. code-block:: javascript
+
+  {
+    web: {
+      oauth2: {
+        password: {
+          validationStrategy: 'local'
+        }
+      }
+    }
+  }
+
+.. warning::
+
+  When using local validation, your server will not be aware of token revocation
+  or any changes to the associated Stormpath account.  **This is a security
+  risk.**
+
+  There are two suggested strategies for dealing with this risk:
+
+  * Use a short expiration time for your Access Tokens (such as one hour or
+    less).  This will limit the amount of time that the Access Token can be used
+    for validation.  Our library *always* makes a request to the Stormpath API when
+    we attempt to refresh an Access Token, so the refresh attempt will fail
+    at this time if the Refresh Token has been revoked.
+
+  * Maintain a blacklist of revoked tokens, in your local application cache.
+    Implement a middleware function that asserts that the Access Token is not
+    in this cache, and reject the request if true.  We may implement this as
+    a convenience feature in the future.
+
+
 
 
 Issuing API Keys
@@ -132,8 +195,8 @@ OAuth2 Client Credentials
 
 If you are building an API service and you have complex needs around
 authorization and security, this strategy should be used.  In this situation
-the developer does a one-time exchange of their API Keys for an access token.
-This access token is time limited and must be periodically refreshed.  This adds a
+the developer does a one-time exchange of their API Keys for an Access Token.
+This Access Token is time limited and must be periodically refreshed.  This adds a
 layer of security, at the cost of being less simple than HTTP Basic
 Authentication.
 
@@ -141,7 +204,7 @@ If you're not sure which strategy to use, it's best to start with HTTP Basic
 Authentication. You can always switch to OAuth2 at a later time.
 
 Once a developer has an API Key pair (see above, *Issuing API Keys*), they will
-need to use the OAuth2 Token Endpoint to obtain an access token.  In simple
+need to use the OAuth2 Token Endpoint to obtain an Access Token.  In simple
 HTTP terms, that request looks like this::
 
 
@@ -185,7 +248,7 @@ Or if using the ``request`` library:
     console.log(res.body);
   });
 
-If the credentials are valid, you will get an access token response that looks
+If the credentials are valid, you will get an Access Token response that looks
 like this::
 
     {
@@ -196,15 +259,15 @@ like this::
 
 The response is a JSON object which contains:
 
-- ``access_token`` - Your OAuth access token.  This can be used to authenticate
+- ``access_token`` - Your OAuth Access Token.  This can be used to authenticate
   on future requests.
 - ``token_type`` - This will always be ``"bearer"``.
 - ``expires_in`` - This is the amount of seconds (*as an integer*) for which
   this token is valid.
 
 With this token you can now make requests to your API.  This request is simpler,
-as only thing you need to supply is ``Authorization`` header with the access
-token as a bearer token.  If you are using curl, that request looks like this:
+as only thing you need to supply is ``Authorization`` header with the Access
+Token as a bearer token.  If you are using curl, that request looks like this:
 
 .. code-block:: sh
 
@@ -232,7 +295,7 @@ you need to use the ``apiAuthenticationRequired`` middleware::
       });
     });
 
-By default the access tokens are valid for one hour.  If you want to change
+By default the Access Tokens are valid for one hour.  If you want to change
 the expiration of these tokens you will need to configure it in the server
 configuration, like this::
 
@@ -259,12 +322,12 @@ mobile application.  The mobile application sends that username and password to
 your Express application, which then verifies the password with Stormpath.
 
 If the account is valid and the password is correct, Stormpath will generate
-an access token for the user.  Your server gets this access token from Stormpath
+an Access Token for the user.  Your server gets this Access Token from Stormpath
 and then sends it back to your mobile application.
 
-The mobile application then stores the access token in a secure location, and
+The mobile application then stores the Access Token in a secure location, and
 uses it for future requests to your API.  Every time the mobile application uses
-this access token your server will verify that it's still valid, using Stormpath.
+this Access Token your server will verify that it's still valid, using Stormpath.
 
 When a user wants to login to your mobile application, the mobile application
 should make this request to your Express application::
@@ -277,8 +340,8 @@ should make this request to your Express application::
     &username=user@gmail.com
     &password=theirPassword
 
-If the authentication is successful, the Stormpath API will return an access
-token to your mobile application.  The response will look like this::
+If the authentication is successful, the Stormpath API will return an Access
+Token to your mobile application.  The response will look like this::
 
     {
       "refresh_token": "eyJraWQiOiI2...",
@@ -286,12 +349,11 @@ token to your mobile application.  The response will look like this::
       "token_type": "Bearer",
       "access_token": "eyJraWQiOiI2Nl...",
       "expires_in": 3600
-    }
 
-Your mobile application should store the access token and refresh token.  By
-default the access token is valid for 1 hour and the refresh token for 60 days.
-When the access token expires you can get a new access token by using the
-refresh token, making this request to your Express application::
+Your mobile application should store the Access Token and Refresh Token.  By
+default the Access Token is valid for 1 hour and the Refresh Token for 60 days.
+When the Access Token expires you can get a new Access Token by using the
+Refresh Token, making this request to your Express application::
 
     POST /oauth/token HTTP/1.1
     Host: myapi.com
@@ -300,10 +362,10 @@ refresh token, making this request to your Express application::
     grant_type=refresh_token
     &refresh_token=eyJraWQiOiI2...
 
-The response will contain a new access token.  Once the refresh token expires,
+The response will contain a new Access Token.  Once the Refresh Token expires,
 the user will have to re-authenticate with a username and password.
 
-You can control the lifetime of the access token and refresh token by modifying
+You can control the lifetime of the Access Token and Refresh Token by modifying
 the OAuth Policy of your Stormpath Application.  This can be found by logging
 into the Stormpath Admin Console and finding your Application.
 
