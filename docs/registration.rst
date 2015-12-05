@@ -106,17 +106,34 @@ like this::
       fields: {
         favoriteColor: {
           enabled: true,
+          label: 'Favorite Color',
           name: 'favoriteColor',
-          placeholder: 'Favorite Color',
+          placeholder: 'E.g. Red, Blue',
           required: true,
           type: 'text'
         }
       }
     }
 
-With the exception of the ``enabled`` property, the rest of the properties will
-be directly applied to the HTML form elements that are created when we render
-the form.
+All field objects have the following properties, which must be defined:
+
+- **enabled** - Determines if the field is shown on the form.
+
+- **label** - The text label that is shown to the left of the input field.
+
+- **name** - The name of this field, in the form model that is posted to the
+  server.
+
+- **placeholder** - The help text that is shown inside the input field, if the
+  input field is empty (HTML5 property).
+
+- **required** - Marks the field as a required field.  This uses the HTML5
+  required property, to prompt the user to enter the value.  The post data will
+  also be validated to ensure that the field is supplied, and an error will be
+  returned if the field is empty.
+
+- **type** - the HTML type of the input, e.g. text, email, or password.
+
 
 Changing Field Order
 --------------------
