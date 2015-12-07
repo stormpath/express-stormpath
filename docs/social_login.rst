@@ -170,9 +170,10 @@ You'll want to do several things here:
 
 1. Select "Web application" for your "Application Type".
 2. Remove everything from the "Authorized Javascript Origins" box.
-3. Add the URL of your site (both publicly and locally) into the "Authorized
-   Redirect URI" box, with the ``/google`` suffix.  This tells Google where to
-   redirect users after they've logged in with Google.
+3. Add the callback URI of your site (both publicly and locally) into the
+   "Authorized Redirect URI" box.  This tells Google where to
+   redirect users after they've logged in with Google.  The default callback
+   URI for this library is ``/callbacks/google``.
 
 In the end, your settings should look like this:
 
@@ -282,7 +283,7 @@ profile properties (first, middle, and last name) and email (*these permissions 
 
 .. image:: /_static/linkedin-add-permissions.gif
 
-The next thing we need to do is add in all of the allowed Redirect URLs for our application.  Well do this by 
+The next thing we need to do is add in all of the allowed Redirect URLs for our application.  Well do this by
 entering all of our absolute redirect URLs under the "OAuth 2.0" section.  For instance, if I was running
 my site locally on port 3000, as well as under the "www.example.com" domain, I'd add two redirect URIs:
 
@@ -346,6 +347,30 @@ then immediately redirected back to your website at the URL specified by
 ``redirectUrl`` in your app's settings.
 
 Simple, right?!
+
+JSON API
+--------
+
+If you have a front-end client that is using the pop-up flow for social login,
+you will need to use the JSON API on our Login endpoint.  Once you have
+collected the access token or code from the user, you can make this POST request
+to ``/login``:
+
+.. code-block:: javascript
+
+  {
+    providerData: {
+      providerId: 'google', // or 'facebook'
+      accessToken: 'xxx', // obtained from the provider
+      code: 'xxx' // obtained from the provider
+    }
+  }
+
+.. note::
+
+  How you authenticate the user with the pop-up flow will determine if you get
+  an access token or code in response.  You should only use the code or access
+  token when making the POST request to our login endpoint.  Do not use both.
 
 
 .. _Stormpath Admin Console: https://api.stormpath.com
