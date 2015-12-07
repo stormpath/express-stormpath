@@ -122,3 +122,11 @@ Pierre has contributed a patch to the project.
 
 .. _Stormpath: https://stormpath.com/
 .. _an email: info@stormpath.com
+
+
+Joe Wilson
+**********
+
+Joe has contributed a patch to the project.
+
+- Github: https://github.com/DeusExLibris

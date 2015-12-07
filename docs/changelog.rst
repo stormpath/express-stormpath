@@ -9,7 +9,18 @@ All library changes, in descending order.
 Version 2.3.1
 --------------
 
-**Not Yet Released**
+**Released December 7, 2015**
+
+- Local JWT validation can now be configured by setting
+  ``web.oauth2.password.validationStrategy`` to ``local``.  Please see
+  :ref:`token_validation_strategy` for more information.
+
+- Registration fields now have a ``label`` property, allowing you to modify the
+  text label that is shown for the field.  Please see :ref:`custom_form_fields`
+  for more information.
+
+- Fixed: the :ref:`post_registration_handler` and :ref:`post_login_handler` are
+  now called when a user is authenticated with Google or Facebook.
 
 Version 2.3.0
 --------------
@@ -929,3 +940,5 @@ Version 0.1.0
 - Basic functionality.
 - Basic docs.
 - Lots to do!
+
+

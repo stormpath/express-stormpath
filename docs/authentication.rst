@@ -57,6 +57,8 @@ If you need to change the expiration time of the Access Token or Refresh Token,
 please login to the Stormpath Admin Console and navigate to the OAuth policy of
 your Stormpath Application.  There you will find the settings for each token.
 
+.. _token_validation_strategy:
+
 Token Validation Strategy
 .........................
 
