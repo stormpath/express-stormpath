@@ -46,6 +46,7 @@ If the login attempt is successful, you will recieve a 200 OK response and the
 session cookies will be set on the response.  If there is an error we will
 send a 400 status with an error message in the body.
 
+.. _post_login_handler:
 
 Post Login Handler
 ------------------

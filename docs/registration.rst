@@ -39,7 +39,7 @@ we will cover them in detail below:
 
 
 Modifying Default Fields
-----------------------
+------------------------
 
 The registration form will render these fields by default, and they will be
 required by the user:
@@ -93,6 +93,8 @@ If you want to remove these fields entirely, you can set enabled to false::
 
 Because the Stormpath API requires a first name and last name, we will auto-fill
 these fields with `UNKNOWN` when a user registers.
+
+.. _custom_form_fields:
 
 Creating Custom Fields
 ----------------------
@@ -201,6 +203,7 @@ automatically when they register.  This can be achieved with this config::
 
 By default the nextUri is to the `/` page, but you can modify this.
 
+.. _post_registration_handler:
 
 Post Registration Handler
 -------------------------

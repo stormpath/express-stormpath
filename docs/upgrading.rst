@@ -10,7 +10,7 @@ Express-Stormpath releases.
 Version 2.3.0 -> Version 2.3.1
 ------------------------------
 
-TODO
+**No changes needed!**
 
 Version 2.2.0 -> Version 2.3.0
 --------------------------------
