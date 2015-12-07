@@ -9,7 +9,7 @@ All library changes, in descending order.
 Version 2.3.1
 --------------
 
-**Released December 7, 2015** - TODO
+**Released December 7, 2015**
 
 - Local JWT validation can now be configured by setting
   ``web.oauth2.password.validationStrategy`` to ``local``.  Please see
