@@ -6,6 +6,16 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.3.2
+--------------
+
+**Released December 7, 2015**
+
+- Fixed: if there is an error during the Facebook login callback, the error is
+  now rendered (before it was crashing the Express application, due to a bad
+  template reference).
+
+
 Version 2.3.1
 --------------
 
