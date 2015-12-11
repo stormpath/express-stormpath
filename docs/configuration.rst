@@ -106,12 +106,21 @@ level for debugging purposes:
       debug: 'info, error'
     }));
 
-If you want to supply your own logger, you can do that as well.
+If you want to supply your own Winston logger, you can do that as well:
+
+.. code-block:: javascript
+
+    var myLogger = new winston.Logger({ /* your winston options */});
+
+    app.use(stormpath.init(app, {
+      logger: myLogger
+    }));
 
 .. note::
 
-  The logger must implement the same interface as the Winston logger, providing
-  methods such as ``info()`` and ``error()``.
+  You can provide other types of loggers, so long as the logger implements the
+  same interface as the Winston logger, providing methods such as ``info()``
+  and ``error()``.
 
 Stormpath Client Options
 ------------------------
