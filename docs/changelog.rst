@@ -6,6 +6,16 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.3.3
+--------------
+
+**Released December 11, 2015**
+
+- Fixed: the secure flag on OAuth2 cookies would always be set to false, due to
+  a configuration parsing error.  This is now fixed, and configuration will be
+  respected.  If no configuration is defined, we default to secure if the
+  request protocol is https.
+
 Version 2.3.2
 --------------
 

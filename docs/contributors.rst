@@ -130,3 +130,10 @@ Joe Wilson
 Joe has contributed a patch to the project.
 
 - Github: https://github.com/DeusExLibris
+
+stevebread
+**********
+
+stevebread has contributed a patch to the project.
+
+- Github: https://github.com/stevebread
