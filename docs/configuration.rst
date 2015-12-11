@@ -91,13 +91,48 @@ refer to this YAML configuration which shows you the default options:
 https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 
 
+Logging
+-------
+
+By default, this library will create a `Winston`_ logger and use this for
+logging error messages to standard output.
+
+While actively developing your application, you may want to include the ``info``
+level for debugging purposes:
+
+.. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      debug: 'info, error'
+    }));
+
+If you want to supply your own logger, you can do that as well.
+
+.. note::
+
+  The logger must implement the same interface as the Winston logger, providing
+  methods such as ``info()`` and ``error()``.
+
 Stormpath Client Options
 ------------------------
 
 When you initialize this library, it creates an instance of a Stormpath Client.
-This comes from the `Stormpath Node SDK`_.  The client options allow you to
-control options such as which caching engine to use (in-memory, by default).  For
-a full reference of options, please see this link:
+The Stormpath client is responsible for communicating with the Stormpath REST
+API and is provided by the `Stormpath Node SDK`_.  You can pass options to the
+Stormpath Client by adding them to the root of the configuration object that
+you provide in your Express application.
+
+For example, if you wish to enable the Redis caching feature of the
+Stormpath Client::
+
+  app.use(stormpath.init(app, {
+    cacheOptions: {
+      store: 'redis'
+    },
+    website: true
+  }));
+
+For a full reference of options, please see the Node SDK client documentation:
 
 https://docs.stormpath.com/nodejs/api/client
 
@@ -206,3 +241,4 @@ wants to handle. You need this option if the following are true:
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard
 .. _Stormpath Node SDK: http://github.com/stormpath/stormpath-sdk-node
+.. _Winston: https://github.com/winstonjs/winston
