@@ -408,7 +408,7 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.error, 'givenName required.');
+            assert.equal(res.body.error, 'First Name required.');
 
             done();
           });
@@ -606,7 +606,7 @@ describe('register', function () {
 
             var $ = cheerio.load(res.text);
             assert($('.alert.alert-danger p').length);
-            assert.notEqual($('.alert.alert-danger p').text().indexOf('givenName'), -1);
+            assert.notEqual($('.alert.alert-danger p').text().indexOf('First Name'), -1);
 
             done();
           });
