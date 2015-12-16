@@ -237,13 +237,22 @@ The above also applies to all other expansion options.
 
 Session management has also changed.  We now issue OAuth access tokens and
 refresh tokens when a user logs in with a username and password.  These are
-stored in the browser in HTTP-Only, Secure cookies.  This means that we no
-longer need a local cookie session mechanism, as the session is managed by
-Stormpath via these tokens.  Thus the ``secretKey`` option has been deprecated,
-and the timeout settings for cookies are now tied to the TTL settings of the
-Access Tokens and Refresh Tokens.  These can be modified on the OAuth Policy
-of your Stormpath Application, which is easily accessible through your
-Stormpath Admin Console.
+stored in the browser in HTTP-Only, Secure cookies.
+
+This means that we no use a session middleware, as these token are managed by
+the  Stormpath API.  Thus, the following has changed:
+
+- The property ``req.stormpathSession`` has been removed, if you were using this
+  property to store stateful session information you will need to add a session
+  middleware to your library, such as `express-session`_.
+- The ``secretKey`` option has been deprecated, and no longer needs to be
+  supplied.
+- The ``sessionDuration`` option has been removed.  The timeout settings for
+  cookies are now tied to the TTL settings of the Access Tokens and Refresh
+  Tokens.  These can be modified on the OAuth Policy of your Stormpath
+  Application, please see :ref:`setting_token_expiration_time` for details.
+- The ``sessionDomain`` option is deprecated, see
+  :ref:`configuring_cookie_flags` for the new option format.
 
 Next, we've disabled the `/oauth` endpoint we previously enabled by default.  If
 you want to enable this, with its default settings, you can now do the
@@ -674,3 +683,5 @@ Version 0.0.0 -> Version 0.1.0
 ------------------------------
 
 **No changes needed!**
+
+.. _express-session: https://github.com/expressjs/session
