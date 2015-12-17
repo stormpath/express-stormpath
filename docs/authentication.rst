@@ -63,8 +63,8 @@ your Stormpath Application.  There you will find the settings for each token.
 Configuring Cookie Flags
 ........................
 
-This library creates two cookies, one for the access token and one for the
-refresh token.  There are several options available for controlling the flags
+This library creates two cookies, one for the Access Token and one for the
+Refresh Token.  There are several options available for controlling the flags
 that are set on these cookies.
 
 Here is an example configuration block, with the default settings:
