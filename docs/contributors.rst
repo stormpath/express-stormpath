@@ -137,3 +137,10 @@ stevebread
 stevebread has contributed a patch to the project.
 
 - Github: https://github.com/stevebread
+
+Benjamin Caldwell
+*****************
+
+Benjamin Caldwell has contributed an enhancement to the project.
+
+- Github: https://github.com/benjamincaldwell

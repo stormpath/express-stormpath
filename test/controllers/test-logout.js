@@ -77,4 +77,13 @@ describe('logout', function () {
         .end(done);
     });
   });
+
+  it('should follow the next param if present', function (done) {
+    var config = app.get('stormpathConfig');
+    request(app)
+      .get(config.web.logout.uri + '?next=/goodbye')
+      .expect(302)
+      .expect('Location', '/goodbye')
+      .end(done);
+  });
 });
