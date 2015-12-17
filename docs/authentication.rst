@@ -49,6 +49,7 @@ attempt to refresh it with the Refresh Token.
     Stormpath creates are used exclusively for Stormpath's purposes, so it's
     safe to create your own separate sessions if needed.
 
+.. _setting_token_expiration_time:
 
 Setting Token Expiration Time
 .............................
@@ -56,6 +57,50 @@ Setting Token Expiration Time
 If you need to change the expiration time of the Access Token or Refresh Token,
 please login to the Stormpath Admin Console and navigate to the OAuth policy of
 your Stormpath Application.  There you will find the settings for each token.
+
+.. _configuring_cookie_flags:
+
+Configuring Cookie Flags
+........................
+
+This library creates two cookies, one for the Access Token and one for the
+Refresh Token.  There are several options available for controlling the flags
+that are set on these cookies.
+
+Here is an example configuration block, with the default settings:
+
+.. code-block:: javascript
+
+  {
+    web: {
+      accessTokenCookie: {
+        domain: null,
+        httpOnly: true,
+        path: "/",
+        secure: null
+      },
+      refreshTokenCookie: {
+        // same as the accessTokenCookie
+      }
+    }
+  }
+
+This table describes each setting in detail:
+
++-------------+---------+------------------------------------------------------+
+| Cookie Flag | Default | Description                                          |
++=============+=========+======================================================+
+| domain      | null    | Set if needed, e.g. "subdomain.mydomain.com".        |
++-------------+---------+------------------------------------------------------+
+| httpOnly    | true    | True by default, do not disable without good reason  |
+|             |         | (exposes tokens to XSS | attacks).                   |
++-------------+---------+------------------------------------------------------+
+| path        | "/"     | Set if needed, e.g. "/newapp".                       |
++-------------+---------+------------------------------------------------------+
+| secure      | null    | Will be ``true`` in HTTPS environments (as detected  |
+|             |         | by ``req.protocol``), unless explicitly set to       |
+|             |         | ``false`` (not recommended!).                        |
++-------------+---------+------------------------------------------------------+
 
 .. _token_validation_strategy:
 
