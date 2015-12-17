@@ -90,16 +90,16 @@ This table describes each setting in detail:
 +-------------+---------+------------------------------------------------------+
 | Cookie Flag | Default | Description                                          |
 +=============+=========+======================================================+
-| domain      | null    | Set if needed, e.g. "subdomain.mydomain.com"         |
+| domain      | null    | Set if needed, e.g. "subdomain.mydomain.com".        |
 +-------------+---------+------------------------------------------------------+
 | httpOnly    | true    | True by default, do not disable without good reason  |
 |             |         | (exposes tokens to XSS | attacks).                   |
 +-------------+---------+------------------------------------------------------+
-| path        | "/"     | Set if needed, e.g. "/newapp"                        |
+| path        | "/"     | Set if needed, e.g. "/newapp".                       |
 +-------------+---------+------------------------------------------------------+
 | secure      | null    | Will be ``true`` in HTTPS environments (as detected  |
 |             |         | by ``req.protocol``), unless explicitly set to       |
-|             |         | ``false`` (not recommended!)                         |
+|             |         | ``false`` (not recommended!).                        |
 +-------------+---------+------------------------------------------------------+
 
 .. _token_validation_strategy:

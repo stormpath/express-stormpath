@@ -237,10 +237,10 @@ The above also applies to all other expansion options.
 
 Session management has also changed.  We now issue OAuth access tokens and
 refresh tokens when a user logs in with a username and password.  These are
-stored in the browser in HTTP-Only, Secure cookies.
+stored in the browser in HTTP-only, secure cookies.
 
-This means that we no use a session middleware, as these token are managed by
-the  Stormpath API.  Thus, the following has changed:
+This means that we no longer use a session middleware, as these token are
+managed by the  Stormpath API.  Thus, the following has changed:
 
 - The property ``req.stormpathSession`` has been removed, if you were using this
   property to store stateful session information you will need to add a session
