@@ -34,7 +34,7 @@
     "njwt": "^0.2.3",
     "parse-iso-duration": "^1.0.0",
     "request": "^2.63.0",
-    "stormpath": "^0.15.0",
+    "stormpath": "^0.15.2",
     "stormpath-config": "0.0.16",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
