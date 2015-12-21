@@ -6,6 +6,26 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.3.4
+--------------
+
+**Released December 21, 2015**
+
+- Fixed: if you specify an application that does not have account stores mapped
+  to it, we show a nice error message (rather than an undefined exception).
+  We also added a real error message for the situation where the registration
+  feature is enabled, but the defined application does not have a default
+  account store.
+
+- Fixed: when rendering error messages for field validation, during
+  registration, we use the field label (rather than the name) in the error
+  string (this is more user friendly).
+
+- The logout route now supports  `?next=<url>` parameter, for redirecting after
+  logout.
+
+- Adding more information to the upgrade log, for the 1.x -> 2.x upgrade path.
+
 Version 2.3.3
 --------------
 
