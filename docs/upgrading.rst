@@ -274,6 +274,12 @@ that lived at `/oauth`.  When you enable the *new* OAuth endpoint, it will live
 at `/oauth/token` instead.  This was done to comply with the OAuth2 spec more
 closely, and ensure compatibility between libraries / frameworks.
 
+We've also changed the password reset flow route from `/forgot/change` to  `/change`.
+And for social login the callback route that were previously  `/[provider id]` is
+now `/callbacks/[provider id]. I.e. `/google` has turned into `/callbacks/google`.
+
+And for email verification the path has changed from `/verified` to `/verify`.
+
 Other than the above, your upgrade process should go smoothly.  There are, of
 course, lots of new features / configuration options, so please read through the
 new library documentation to get a feeling for it!
