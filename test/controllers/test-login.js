@@ -174,6 +174,29 @@ describe('login', function () {
     });
   });
 
+  it('should not allow an open redirect', function (done) {
+    var app = helpers.createStormpathExpressApp({
+      application: {
+        href: stormpathApplication.href
+      },
+      web: {
+        login: {
+          enabled: true
+        }
+      }
+    });
+
+    app.on('stormpath.ready', function () {
+      var nextUri = 'http://stormpath.com/foo';
+      request(app)
+        .post('/login?next=' + encodeURIComponent(nextUri))
+        .send({ login: username, password: password })
+        .expect(302)
+        .expect('Location', '/foo')
+        .end(done);
+    });
+  });
+
   it('should redirect me to the next url if given', function (done) {
     var app = helpers.createStormpathExpressApp({
       application: {
