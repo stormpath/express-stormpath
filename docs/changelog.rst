@@ -6,6 +6,25 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.3.5
+--------------
+
+**Released January 12, 2016**
+
+- Added: Info about changed routes in upgrade docs from v1 to v2.
+
+- Fixed: Ability to disable web features while still having the website
+  option turned on.
+
+- Fixed: Body-parser conflicts when configured outside the library. Now
+  instead of using body-parser, we use the body and qs modules.
+
+- Fixed: Express-stormpath incompatible with node streams (request.pipe and
+  http-proxy).
+
+- Fixed: Previously it was possible to set your own `next` url. Now any `next`
+  url redirects are restricted to the domain that you are on.
+
 Version 2.3.4
 --------------
 
