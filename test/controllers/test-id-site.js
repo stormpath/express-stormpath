@@ -214,7 +214,7 @@ describe('id site', function () {
   it('should create a session on id site callback', function (done) {
     getIdSiteCallbackUrl(host, config, app, accountData, function (url) {
       request(url).get('')
-        .expect('Set-Cookie', /idSiteSession=https:\/\/api.stormpath.com\/v1\/accounts\/.*/)
+        .expect('Set-Cookie', /access\_token=.*refresh\_token=.*/)
         .end(done);
     });
   });
