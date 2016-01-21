@@ -6,6 +6,18 @@ Change Log
 
 All library changes, in descending order.
 
+
+Version 2.3.6
+-------------
+
+**Released January 21, 2016.**
+
+- Fixing bug with IDsite registration: `#244
+  <https://github.com/stormpath/express-stormpath/pull/244>`_.
+- Fixing JSON error responses in registration controller: `#149
+  <https://github.com/stormpath/express-stormpath/pull/149>`_.
+
+
 Version 2.3.5
 --------------
 
