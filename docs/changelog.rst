@@ -12,10 +12,11 @@ Version 2.3.6
 
 **Released January 21, 2016.**
 
-- Fixing bug with IDsite registration: `#244
-  <https://github.com/stormpath/express-stormpath/pull/244>`_.
-- Fixing JSON error responses in registration controller: `#149
-  <https://github.com/stormpath/express-stormpath/pull/149>`_.
+- Fixing bug with IDsite registration: previously if you tried to register a new
+  account using IDsite, you'd get an error page when you were re-directed back
+  to your application :(
+- Fixing JSON error responses in registration controller: we're now passing the
+  error back through the middleware chain properly.
 
 
 Version 2.3.5
