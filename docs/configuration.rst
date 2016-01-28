@@ -14,20 +14,37 @@ as **1 minute**!
 
 Environment Variables
 ---------------------
-Most Node.js applications expect your confidential information to be
-exposed by the environment (not hard-coded in the application).  You
-should export your Stormpath information by running this in the shell:
 
- .. code-block:: bash
+It is a best practice to store confidential information in environment
+variables (*don't hard-code it into your application*). You should store your
+confidential Stormpath information in environment variables.  You can do this
+by running the following commands in the shell:
+
+.. code-block:: bash
 
     export STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
     export STORMPATH_CLIENT_APIKEY_SECRET=YOUR-SECRET-HERE
     export STORMPATH_APPLICATION_HREF=YOUR-APP-HREF
 
 .. note::
-    If you're on Windows, that will look like::
+    If you're on Windows, the command you need to use to set environment
+    variables is:
+
+    .. code-block:: bash
 
         set STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
+        set STORMPATH_CLIENT_APIKEY_SECRET=YOUR-SECRET-HERE
+        set STORMPATH_APPLICATION_HREF=YOUR-APP-HREF
+
+.. tip::
+
+    You might also want to check out
+    `autoenv <https://github.com/kennethreitz/autoenv>`_, a project that makes
+    working with environment variables simpler for Linux / Mac / BSD users.
+
+The examples above show you the 3 mandatory settings you need to configure to
+make express-stormpath work.  These settings can be configured via environment
+variables, or in a number of other ways.
 
 
 Initialize Express-Stormpath
