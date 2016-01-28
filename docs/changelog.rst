@@ -7,6 +7,30 @@ Change Log
 All library changes, in descending order.
 
 
+Version 2.3.7
+-------------
+
+**Released January 29, 2016.**
+
+- Fixed: This library would set ``req.body`` to an empty object, for all
+  requests to the application that was passed to ``stormpath.init()``.  This
+  caused problems for users of ``body-parser`` and ``rocky`` modules.  This bug
+  was introduced in 2.3.5 but is now fixed.
+
+- Fixed: JSON error messages from the registration controller are now setting
+  the status code from the upstream error.  Previously it was always 400.
+
+- Documentation update: better descriptions of required environment variables.
+
+- Metrics: we now collect the Express version from the version of Express that
+  is found in ``node_modules`` folder of the application path (not the path that
+  is local to this module).
+
+- The following dependencies have been updated:
+
+  - ``stormpath-config@0.0.16`` -> ``stormpath-config@0.0.18``
+  - ``express@4.13.3`` -> ``express@4.13.4``
+
 Version 2.3.6
 -------------
 
