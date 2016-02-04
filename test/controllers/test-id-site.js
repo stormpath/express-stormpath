@@ -214,7 +214,7 @@ describe('id site', function () {
   it('should create a session on id site callback', function (done) {
     getIdSiteCallbackUrl(host, config, app, accountData, function (url) {
       request(url).get('')
-        .expect('Set-Cookie', /access\_token=.*refresh\_token=.*/)
+        .expect('Set-Cookie', /access_token=.*refresh_token=.*/)
         .end(done);
     });
   });
