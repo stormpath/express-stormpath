@@ -15,9 +15,13 @@ script(type='text/javascript').
           serializedQueryString += '&';
         }
 
-        if (key !== 'access_token') {
-          serializedQueryString += key + '=' + encodeURIComponent(value);
+        // Don't include any access_token parameters in
+        // the query string as it will be added by LinkedIn.
+        if (key === 'access_token') {
+          continue;
         }
+
+        serializedQueryString += key + '=' + encodeURIComponent(value);
       }
 
       result += '?' + serializedQueryString;
