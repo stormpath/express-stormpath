@@ -10,7 +10,7 @@ Express-Stormpath releases.
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
 
-**Attention: Minor release the affects ID Site and Social Users**
+**Attention: Minor release that affects ID Site and Social Users**
 
 If a user has previously authenticated with a social provider or ID Site, and
 that user is currently logged in to your application, they will be logged out

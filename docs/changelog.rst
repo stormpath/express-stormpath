@@ -9,13 +9,13 @@ All library changes, in descending order.
 Version 2.4.0
 -------------
 
-**Attention: Minor release the affects ID Site and Social Users**
+**Attention: Minor release that affects ID Site and Social Users**
 
 **Released February 8, 2016.**
 
 We have improved security and consistency for our ID Site and Social
 integrations.  These integrations now receive the same access token and refresh
-cookies that you see when logging in with password-based authentication.
+token cookies that you see when logging in with password-based authentication.
 
 Please see the :ref:`upgrading` for potential issues for users who are currently
 logged in.
