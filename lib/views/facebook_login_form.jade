@@ -16,6 +16,10 @@ script(type='text/javascript').
         var queryStr = window.location.search.replace('?', '');
         // TODO make dynamic
         if (queryStr) {
+          // Don't include any access_token parameters in
+          // the query string as it will be added by us.
+          queryStr = queryStr.replace(/(&?)access_token=([^&]*)/, '');
+
           window.location.replace('/callbacks/facebook?' + queryStr + '&access_token=' + response.authResponse.accessToken);
         } else {
           window.location.replace('/callbacks/facebook?access_token=' + response.authResponse.accessToken);
