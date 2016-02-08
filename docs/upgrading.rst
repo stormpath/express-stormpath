@@ -7,11 +7,29 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 2.3.7 -> Version 2.4.0
+------------------------------
+
+**Attention: Minor release that affects ID Site and Social Users**
+
+If a user has previously authenticated with a social provider or ID Site, and
+that user is currently logged in to your application, they will be logged out
+and will need to log-in again.
+
+
+Version 2.3.6 -> Version 2.3.7
+------------------------------
+
+If you were relying on this library to attach the `body-parser` middleware to
+all routes in your application, you need to change your application and
+configure the `body-parser` middleware outside of your application.  As of this
+release, this library will only parse request bodies for requests that it is
+going to handle.
+
 Version 2.3.5 -> Version 2.3.6
 ------------------------------
 
 **No changes needed!**
-
 
 Version 2.3.4 -> Version 2.3.5
 ------------------------------

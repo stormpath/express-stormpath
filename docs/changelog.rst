@@ -6,6 +6,38 @@ Change Log
 
 All library changes, in descending order.
 
+Version 2.4.0
+-------------
+
+**Attention: Minor release that affects ID Site and Social Users**
+
+**Released February 8, 2016.**
+
+We have improved security and consistency for our ID Site and Social
+integrations.  These integrations now receive the same access token and refresh
+token cookies that you see when logging in with password-based authentication.
+
+Please see the :ref:`upgrading` for potential issues for users who are currently
+logged in.
+
+This minor release does introduce a **known bug**: auto-login for registration
+will *not* work if the user is returning from ID Site.  This is due to a
+limitation in the Stormpath REST API, and we should have this resolved in the
+next 2-4 weeks.  Once resolved in the REST API, this feature will start working
+again without any changes needed.
+
+Also fixed: If the user attempts to login with a social provider, but does not
+provide email permission, we now show this error on the login form (Stormpath
+requires the email address of the user as our unique constraint on accounts in
+directories).  Previously we dumped a JSON error message, which was not a good
+user experience.
+
+In addition, the following dependencies have been updated:
+
+  - ``lodash@4.0.1`` -> ``lodash@4.1.0``
+  - ``stormpath@0.16.0`` -> ``stormpath@0.17.1``
+
+
 
 Version 2.3.7
 -------------
