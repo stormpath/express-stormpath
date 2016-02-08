@@ -26,10 +26,17 @@ limitation in the Stormpath REST API, and we should have this resolved in the
 next 2-4 weeks.  Once resolved in the REST API, this feature will start working
 again without any changes needed.
 
+Also fixed: If the user attempts to login with a social provider, but does not
+provide email permission, we now show this error on the login form (Stormpath
+requires the email address of the user as our unique constraint on accounts in
+directories).  Previously we dumped a JSON error message, which was not a good
+user experience.
+
 In addition, the following dependencies have been updated:
 
   - ``lodash@4.0.1`` -> ``lodash@4.1.0``
   - ``stormpath@0.16.0`` -> ``stormpath@0.17.1``
+
 
 
 Version 2.3.7
