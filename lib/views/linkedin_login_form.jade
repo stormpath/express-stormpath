@@ -15,7 +15,9 @@ script(type='text/javascript').
           serializedQueryString += '&';
         }
 
-        serializedQueryString += key + '=' + encodeURIComponent(value);
+        if (key !== 'access_token') {
+          serializedQueryString += key + '=' + encodeURIComponent(value);
+        }
       }
 
       result += '?' + serializedQueryString;
