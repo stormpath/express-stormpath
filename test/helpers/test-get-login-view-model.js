@@ -60,7 +60,7 @@ describe('helpers/get-login-view-model.js', function () {
     var returnValue;
 
     beforeEach(function () {
-      getFormFields = getLoginViewModel.prototype.getFormFields;
+      getFormFields = getLoginViewModel.getFormFields;
       returnValue = getFormFields(config);
     });
 
@@ -103,7 +103,7 @@ describe('helpers/get-login-view-model.js', function () {
     var returnValue;
 
     beforeEach(function () {
-      getAccountStoreModel = getLoginViewModel.prototype.getAccountStoreModel;
+      getAccountStoreModel = getLoginViewModel.getAccountStoreModel;
       accountStore = getMockAccountStore();
       returnValue = getAccountStoreModel(accountStore);
     });
