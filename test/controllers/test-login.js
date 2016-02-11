@@ -89,6 +89,7 @@ describe('login', function () {
           }
 
           var json = JSON.parse(res.text);
+
           if (!json.error) {
             done(new Error('No JSON error returned.'));
           } else if (json.error !== 'Invalid username or password.') {
