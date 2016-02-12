@@ -22,6 +22,8 @@ web:
     secure: null
     path: "/"
     domain: null
+  socialProviders:
+    callbackRoot: "/callbacks"
   # The registration feature will be automatically enabled by the existence of
   # a default account store for your application.
   register:
