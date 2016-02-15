@@ -6,9 +6,9 @@ var MockResponse = require('../mocks/mock-response');
 
 var sinon = require('sinon');
 var assert = require('assert');
-var handleResponse = require('../../lib/helpers/handle-response');
+var handleRequest = require('../../lib/helpers/handle-request');
 
-describe('helpers.handleResponse(req, res, next, handlers, callback)', function () {
+describe('helpers.handleRequest(req, res, next, handlers, callback)', function () {
   var sandbox;
 
   beforeEach(function () {
@@ -46,7 +46,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
         }
       };
 
-      handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+      handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
     });
 
     it('is called when handler calls this.pass()', function () {
@@ -76,7 +76,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
           'foo/invalid': spies.nonMatchingHandler
         };
 
-        handleResponse(mocks.request, mocks.response, spies.next, testHandlers);
+        handleRequest(mocks.request, mocks.response, spies.next, testHandlers);
       });
 
       it('should be called when content type is matching', function () {
@@ -98,7 +98,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers);
         });
 
         describe('the scope', function () {
@@ -175,7 +175,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
         });
 
         it('should call callback()', function () {
@@ -219,7 +219,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
         });
 
         it('should call res.status(400)', function () {
@@ -259,7 +259,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
         });
 
         it('should call next()', function () {
@@ -318,7 +318,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
         });
 
         it('should call res.json(result)', function () {
@@ -362,7 +362,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
         });
 
         it('should call res.status(400)', function () {
@@ -403,7 +403,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             }
           };
 
-          handleResponse(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
+          handleRequest(mocks.request, mocks.response, spies.next, testHandlers, spies.callback);
         });
 
         it('should call next()', function () {
@@ -445,7 +445,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
       mocks.response = new MockResponse();
       mocks.request = new MockRequest('GET', mocks.app, 'text/html');
 
-      handleResponse(mocks.request, mocks.response, spies.next, {}, spies.callback);
+      handleRequest(mocks.request, mocks.response, spies.next, {}, spies.callback);
     });
 
     it('should be called', function () {
