@@ -114,7 +114,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             assert('res' in handlerScope);
           });
 
-          it('should have a accept() method', function () {
+          it('should have an accept() method', function () {
             assert(typeof handlerScope.accept === 'function');
           });
 
@@ -126,19 +126,19 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
             assert(typeof handlerScope.pass === 'function');
           });
 
-          it('should have a isGetRequest() method', function () {
+          it('should have an isGetRequest() method', function () {
             assert(typeof handlerScope.isGetRequest === 'function');
           });
 
-          it('should have a isPutRequest() method', function () {
+          it('should have an isPutRequest() method', function () {
             assert(typeof handlerScope.isPutRequest === 'function');
           });
 
-          it('should have a isPostRequest() method', function () {
+          it('should have an isPostRequest() method', function () {
             assert(typeof handlerScope.isPostRequest === 'function');
           });
 
-          it('should have a isDeleteRequest() method', function () {
+          it('should have an isDeleteRequest() method', function () {
             assert(typeof handlerScope.isDeleteRequest === 'function');
           });
         });
@@ -284,7 +284,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
       });
     });
 
-    describe('a application/json handler', function () {
+    describe('an application/json handler', function () {
       var mocks, spies;
 
       beforeEach(function () {
@@ -448,7 +448,7 @@ describe('helpers.handleResponse(req, res, next, handlers, callback)', function 
       handleResponse(mocks.request, mocks.response, spies.next, {}, spies.callback);
     });
 
-    it('is called', function () {
+    it('should be called', function () {
       assert(spies.callback.withArgs().calledOnce);
     });
   });
