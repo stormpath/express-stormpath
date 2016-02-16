@@ -127,6 +127,8 @@ block body
                 include google_login_form.jade
               if socialProviders.linkedin && socialProviders.linkedin.enabled
                 include linkedin_login_form.jade
+              if socialProviders.github && socialProviders.github.enabled
+                include github_login_form.jade
 
         if stormpathConfig.web.verifyEmail.enabled
           a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?
