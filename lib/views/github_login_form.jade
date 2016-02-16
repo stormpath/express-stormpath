@@ -1,0 +1,16 @@
+button.btn.btn-social.btn-github(onclick='githubLogin()') GitHub
+script(type='text/javascript').
+  function githubLogin() {
+    var clientId = '#{stormpathConfig.socialProviders.github.clientId}';
+    var scopes = 'user:email, #{stormpathConfig.socialProviders.github.scopes}';
+    var redirectUri = '#{url}#{stormpathConfig.socialProviders.github.callbackUri}';
+    var oauthStateToken = '#{oauthStateToken}';
+
+    var url = 'https://github.com/login/oauth/authorize' +
+      '?client_id=' + encodeURIComponent(clientId) +
+      '&scope=' + encodeURIComponent(scopes) +
+      '&redirect_uri=' + encodeURIComponent(redirectUri) +
+      '&state=' + encodeURIComponent(oauthStateToken);
+
+    window.location = url;
+  }
