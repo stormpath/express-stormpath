@@ -1,5 +1,8 @@
 ---
 web:
+  produces:
+    - text/html
+    - application/json
   oauth2:
     enabled: true
     uri: "/oauth/token"
