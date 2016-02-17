@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var getLoginViewModel = require('../../lib/helpers/get-login-view-model');
+var getFormViewModel = require('../../lib/helpers/get-form-view-model');
 
 function getMockConfig() {
   return {
@@ -48,20 +48,20 @@ function getMockAccountStore() {
   };
 }
 
-describe('helpers/get-login-view-model.js', function () {
+describe('helpers/get-form-view-model.js', function () {
   var config;
 
   beforeEach(function () {
     config = getMockConfig();
   });
 
-  describe('getFormFields(config)', function () {
+  describe('getFormFields(form)', function () {
     var getFormFields;
     var returnValue;
 
     beforeEach(function () {
-      getFormFields = getLoginViewModel.getFormFields;
-      returnValue = getFormFields(config);
+      getFormFields = getFormViewModel.getFormFields;
+      returnValue = getFormFields(config.web.login);
     });
 
     it('should return a non-empty array', function () {
@@ -103,7 +103,7 @@ describe('helpers/get-login-view-model.js', function () {
     var returnValue;
 
     beforeEach(function () {
-      getAccountStoreModel = getLoginViewModel.getAccountStoreModel;
+      getAccountStoreModel = getFormViewModel.getAccountStoreModel;
       accountStore = getMockAccountStore();
       returnValue = getAccountStoreModel(accountStore);
     });
