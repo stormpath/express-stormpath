@@ -1,5 +1,8 @@
 ---
 web:
+  spa:
+    enabled: false
+    view: null
   produces:
     - text/html
     - application/json
