@@ -24,7 +24,10 @@ function SpaRootFixture(stormpathConfig) {
     stormpathConfig.web = {};
   }
 
-  stormpathConfig.web.spaRoot = this.filename;
+  stormpathConfig.web.spa = {
+    enabled: true,
+    view: this.filename
+  };
 
   this.expressApp = helpers.createStormpathExpressApp(stormpathConfig);
 }
