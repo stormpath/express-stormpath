@@ -2,7 +2,7 @@
 web:
   spa:
     enabled: false
-    view: index
+    view: null
   produces:
     - text/html
     - application/json
