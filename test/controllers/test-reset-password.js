@@ -349,10 +349,7 @@ describe('resetPassword', function () {
       var app = spaRootFixture.expressApp;
 
       app.on('stormpath.ready', function () {
-        var config = app.get('stormpathConfig');
-        request(app)
-          .get(config.web.changePassword.uri)
-          .set('Accept', 'text/html')
+        requestResetPage(app, passwordResetToken)
           .expect(200)
           .end(spaRootFixture.assertResponse(done));
       });
