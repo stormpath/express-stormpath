@@ -1,11 +1,9 @@
 'use strict';
 
 var helpers = require('./helpers');
-
 var ProducesFixture = require('./fixtures/produces-fixture');
 
 describe('produces option', function () {
-
   var stormpathApplication;
 
   before(function (done) {
