@@ -1,5 +1,11 @@
 ---
 web:
+  spa:
+    enabled: false
+    view: null
+  produces:
+    - text/html
+    - application/json
   oauth2:
     enabled: true
     uri: "/oauth/token"
@@ -91,6 +97,24 @@ web:
     uri: "/login"
     nextUri: "/"
     view: "login"
+    fields:
+      login:
+        enabled: true
+        label: "Username or Email"
+        name: "login"
+        placeholder: "Username or Email"
+        required: true
+        type: "text"
+      password:
+        enabled: true
+        label: "Password"
+        name: "password"
+        placeholder: "Password"
+        required: true
+        type: "password"
+    fieldOrder:
+      - "login"
+      - "password"
   logout:
     enabled: false
     uri: "/logout"

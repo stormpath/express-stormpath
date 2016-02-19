@@ -89,9 +89,10 @@ describe('login', function () {
           }
 
           var json = JSON.parse(res.text);
-          if (!json.error) {
+
+          if (typeof json !== 'object') {
             done(new Error('No JSON error returned.'));
-          } else if (json.error !== 'Invalid username or password.') {
+          } if (json.status !== 200 && json.message !== 'Invalid username or password.') {
             done(new Error('Did not receive the expected error'));
           } else {
             done();
