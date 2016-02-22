@@ -408,7 +408,7 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.error, 'First Name required.');
+            assert.equal(res.body.message, 'First Name required.');
 
             done();
           });
@@ -458,7 +458,7 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.error, 'otherField is not a configured registration field.');
+            assert.equal(res.body.message, 'otherField is not a configured registration field.');
 
             done();
           });
