@@ -52,6 +52,50 @@ DefaultRegistrationFixture.prototype.defaultFormPost = function () {
 };
 
 /**
+ * This object is the default view model that we expect from the registration
+ * endpoint when:
+ *  * The registration fields have not been customized
+ *  * No provider account stores have been mapped to the application
+ *
+ * @type {Object}
+ */
+DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
+  'accountStores': [],
+  'form': {
+    'fields': [
+      {
+        'label': 'First Name',
+        'name': 'givenName',
+        'placeholder': 'First Name',
+        'required': true,
+        'type': 'text'
+      },
+      {
+        'label': 'Last Name',
+        'name': 'surname',
+        'placeholder': 'Last Name',
+        'required': true,
+        'type': 'text'
+      },
+      {
+        'label': 'Email',
+        'name': 'email',
+        'placeholder': 'Email',
+        'required': true,
+        'type': 'email'
+      },
+      {
+        'label': 'Password',
+        'name': 'password',
+        'placeholder': 'Password',
+        'required': true,
+        'type': 'password'
+      }
+    ]
+  }
+};
+
+/**
  * Creates an Express application and configures the register feature with the
  * surname and given name as optional (not required) fields.
  *
@@ -390,7 +434,15 @@ describe('register', function () {
   });
 
   describe('with Accept: application/json requests', function () {
+
     describe('by default', function () {
+
+      it('should return a JSON view model', function (done) {
+        request(defaultRegistrationFixture.expressApp)
+          .get('/register')
+          .set('Accept', 'application/json')
+          .expect(200, defaultRegistrationFixture.defaultJsonViewModel, done);
+      });
 
       it('should return a JSON error if the request is missing the givenName', function (done) {
 
