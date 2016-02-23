@@ -123,7 +123,7 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
       .send('password=foo')
       .expect(400)
       .end(function (err, res) {
-        assert.equal(res.body && res.body.userMessage, 'Invalid username or password.');
+        assert.equal(res.body && res.body.message, 'Invalid username or password.');
         assert.equal(res.body && res.body.error, 'invalid_grant');
         done();
       });
