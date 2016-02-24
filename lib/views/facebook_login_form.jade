@@ -2,7 +2,7 @@ button.btn.btn-social.btn-facebook(onclick='facebookLogin()') Facebook
 script(type='text/javascript').
   function facebookLogin() {
     var FB = window.FB;
-    var facebookScopes = '#{stormpathConfig.socialProviders.facebook.scopes}';
+    var facebookScopes = '#{stormpathConfig.web.social.facebook.scopes}';
     var scopes = [];
 
     if (facebookScopes.length) {
@@ -30,7 +30,7 @@ script(type='text/javascript').
 
   window.fbAsyncInit = function () {
     FB.init({
-      appId      : '#{stormpathConfig.socialProviders.facebook.clientId}',
+      appId      : '#{stormpathConfig.web.social.facebook.clientId}',
       cookie     : true,
       xfbml      : true,
       version    : 'v2.3'
