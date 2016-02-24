@@ -143,9 +143,11 @@ Opt-in to ``stormpath`` validation with this configuration:
 
   When using local validation, your server will not be aware of token revocation
   or any changes to the associated Stormpath account.  **This is a security
-  risk.**
+  tradeoff that optimizes for performance.**  If you prefer extra security, use
+  the ``stormpath`` validation option.
 
-  There are two suggested strategies for dealing with this risk:
+  If you prefer local validation, for the performance reasons, you can still add
+  some more security by doing one of the following:
 
   * Use a short expiration time for your Access Tokens (such as one hour or
     less).  This will limit the amount of time that the Access Token can be used
