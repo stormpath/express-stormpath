@@ -85,7 +85,10 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   app.use(stormpath.init(app, {
     website: true,
     web: {
-      spaRoot: path.join(__dirname, 'client', 'index.html')
+      spa: {
+        enabled: true,
+        view: path.join(__dirname, 'client', 'index.html')
+      }
     }
   }));
   ```

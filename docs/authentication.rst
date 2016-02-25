@@ -109,24 +109,23 @@ Token Validation Strategy
 
 When a request comes into your server, this library will use the Access Token
 and Refresh Token cookies to make an authentication decision.  The default
-validation strategy works like this:
+validation strategy (``local``) works like this:
 
 - Validate the signature and expiration time of the Access Token.  If the Access
   Token is expired, attempt to get a new one by using the Refresh Token.
 
 - If the Access Token is expired and cannot be refreshed, deny the request
 
-- If the Access Token is not expired and the signature is valid, the library
-  makes a request to the Stormpath API to assert that the Access Token has not
-  been revoked and that the associated account still exists and is not disabled.
+- If the Access Token is not expired and the signature is valid, accept the request
 
-In the last step, the API request will add a network request to the
-authentication process.  If this is not desirable (for performance reasons),
-you can opt-in to `local` validation.  In this situation, our library only
-checks the signature of the token and does not make the extra request to the
-Stormpath API to assert the token and the account.
+In this situation, our library only checks the signature of the token and does
+not make an extra request to the Stormpath API to assert the token and the account.
 
-You can opt-in to local validation with this configuration:
+You can opt-in to ``stormpath`` validation if you want the library to make a request
+to the Stormpath API to assert that the Access Token has not been revoked and that
+the associated account still exists and is not disabled.
+
+Opt-in to ``stormpath`` validation with this configuration:
 
 .. code-block:: javascript
 
@@ -134,7 +133,7 @@ You can opt-in to local validation with this configuration:
     web: {
       oauth2: {
         password: {
-          validationStrategy: 'local'
+          validationStrategy: 'stormpath'
         }
       }
     }
@@ -144,9 +143,11 @@ You can opt-in to local validation with this configuration:
 
   When using local validation, your server will not be aware of token revocation
   or any changes to the associated Stormpath account.  **This is a security
-  risk.**
+  tradeoff that optimizes for performance.**  If you prefer extra security, use
+  the ``stormpath`` validation option.
 
-  There are two suggested strategies for dealing with this risk:
+  If you prefer local validation, for the performance reasons, you can still add
+  some more security by doing one of the following:
 
   * Use a short expiration time for your Access Tokens (such as one hour or
     less).  This will limit the amount of time that the Access Token can be used

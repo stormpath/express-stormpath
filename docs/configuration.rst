@@ -222,14 +222,16 @@ React.  For each feature (login, registration) there is a JSON API for the
 feature.  The JSON API is documented for each feature, please see the feature
 list in the sidebar of this documentation.
 
-In some cases you may need to specify the ``spaRoot`` option.  This
+In some cases you may need to specify the ``spa.view`` option.  This
 is the absolute file path to the entry point for your SPA.  That option
 would be defined like this::
 
     app.use(stormpath.init(app, {
-      website: true,
       web: {
-        spaRoot: path.join(__dirname, 'public', 'index.html')
+        spa: {
+          enabled: true,
+          view: path.join(__dirname, 'public', 'index.html')
+        }
       }
     }));
 
