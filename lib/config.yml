@@ -160,6 +160,7 @@ web:
       scope: "email profile"
     linkedin:
       uri: "/callbacks/linkedin"
+      scope: "r_basicprofile, r_emailaddress"
   me:
     enabled: false
     uri: "/me"

@@ -37,19 +37,12 @@ script(type='text/javascript').
     var clientId = '#{linkedInProvider.clientId}';
     var redirectUri = '#{url}#{linkedInProvider.uri}';
 
-    var scopes = ['r_basicprofile', 'r_emailaddress'];
-    var providerScopes = '#{linkedInProvider.scopes}'.split(',');
-
-    providerScopes.forEach(function (scope) {
-      if (scope.length && scopes.indexOf(scope) !== -1) {
-        scopes.push(scope);
-      }
-    });
+    var linkedinScope = '#{linkedInProvider.scope}';
 
     window.location = buildUrl(authorizationUrl, {
       response_type: 'code',
       client_id: clientId,
-      scope: scopes.join(' '),
+      scope: linkedinScope,
       redirect_uri: redirectUri,
       state: oauthStateToken
     });
