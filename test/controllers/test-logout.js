@@ -34,10 +34,18 @@ describe('logout', function () {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should bind to /logout by default', function (done) {
+  it('should not respond to GET request', function (done) {
     var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should bind to /logout by default', function (done) {
+    var config = app.get('stormpathConfig');
+    request(app)
+      .post(config.web.logout.uri)
       .expect(302)
       .end(done);
   });
@@ -45,7 +53,7 @@ describe('logout', function () {
   it('should delete the access token and refresh token cookies', function (done) {
     var config = app.get('stormpathConfig');
     request(app)
-      .get(config.web.logout.uri)
+      .post(config.web.logout.uri)
       .expect('Set-Cookie', /access_token=;/)
       .expect('Set-Cookie', /refresh_token=;/)
       .end(done);
@@ -60,7 +68,7 @@ describe('logout', function () {
     it('should respond with 302', function (done) {
       var config = app.get('stormpathConfig');
       request(app)
-        .get(config.web.logout.uri)
+        .post(config.web.logout.uri)
         .set('Accept', 'text/html')
         .expect(302)
         .end(done);
@@ -71,7 +79,7 @@ describe('logout', function () {
     it('should respond with 200', function (done) {
       var config = app.get('stormpathConfig');
       request(app)
-        .get(config.web.logout.uri)
+        .post(config.web.logout.uri)
         .set('Accept', 'application/json')
         .expect(200)
         .end(done);
@@ -81,7 +89,7 @@ describe('logout', function () {
   it('should follow the next param if present', function (done) {
     var config = app.get('stormpathConfig');
     request(app)
-      .get(config.web.logout.uri + '?next=/goodbye')
+      .post(config.web.logout.uri + '?next=/goodbye')
       .expect(302)
       .expect('Location', '/goodbye')
       .end(done);
