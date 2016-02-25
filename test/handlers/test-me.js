@@ -10,12 +10,11 @@ function prepateMeTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    expand: {
-      customData: true
-    },
     web: {
       me: {
-        enabled: true
+        expand: {
+          customData: true
+        }
       }
     }
   });
@@ -51,7 +50,7 @@ describe('current user (/me) route', function () {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should respond with the expanded account object', function (done) {
+  it('should respond with the expanded account object and force no cache', function (done) {
     prepateMeTestFixture(stormpathApplication, function (fixture) {
       var agent = request.agent(fixture.expressApp);
       agent
@@ -63,12 +62,10 @@ describe('current user (/me) route', function () {
           if (err) {
             return done(err);
           }
-
           /**
            * The agent now has the cookies that will allow us to request the
            * /me route
            */
-
           agent
             .get('/me')
             .expect(200)
@@ -76,7 +73,12 @@ describe('current user (/me) route', function () {
               if (err) {
                 return done(err);
               }
+              assert.equal(res.header['cache-control'], 'no-store, no-cache');
+              assert.equal(res.header['pragma'], 'no-cache');
+              // Custom data should have been expanded:
               assert(res.body.customData.favoriteColor === newUser.customData.favoriteColor);
+              // Other properties should not have been expanded:
+              assert.equal(res.body.directory.name, undefined);
               done();
             });
         });
