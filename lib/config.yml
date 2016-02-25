@@ -164,3 +164,10 @@ web:
   me:
     enabled: false
     uri: "/me"
+    expand:
+      apiKeys: false
+      customData: false
+      directory: false
+      groups: false
+      groupMemberships: false
+      tenant: false
