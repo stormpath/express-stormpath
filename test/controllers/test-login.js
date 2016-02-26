@@ -128,6 +128,7 @@ describe('login', function () {
           assert.equal(res.body.account.email, accountData.email);
           // But linked resources should not be returned
           assert.equal(res.body.account.customDta, undefined);
+          done();
         });
     });
   });
