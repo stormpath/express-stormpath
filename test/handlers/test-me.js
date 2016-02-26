@@ -80,8 +80,7 @@ describe('current user (/me) route', function () {
               // Custom data should have been expanded:
               assert(res.body.customData.favoriteColor === newUser.customData.favoriteColor);
 
-              // All other properties should be stripped
-
+              // All other properties should be stripped.
               assert.equal(res.body.accessTokens, undefined);
               assert.equal(res.body.apiKeys, undefined);
               assert.equal(res.body.applications, undefined);
