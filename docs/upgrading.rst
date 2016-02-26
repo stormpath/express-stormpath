@@ -29,19 +29,19 @@ before release:
 - ``web.register.fieldOrder`` -> ``web.register.form.fieldOrder``
 
 - ``web.expand[property]`` options won't affect the ``/me`` route anymore.  To
-  enable expansions on the `/me` route, use ``web.me.expand[property]``
+  enable expansions on the ``/me`` route, use ``web.me.expand[property]``.
 
 - The JSON response for the register route is now wrapping the account data in
   ``{ account: { /* account data */ } }``.  Previously it was not wrapped inside
   this account property.  Linked resources have also been stripped from the
   response, for security purposes.
 
-- We've stopped resolving the user by default, for un-authenticated routes.  If
+- We've stopped resolving the user by default for unauthenticated routes.  If
   you have a route that does not require authentication, but you want to know
   the context of the current user (if they're logged in), then add the
   ``stormpath.getUser`` middleware to the route.
 
-- You no longer need to wait for ``stormpath.ready`` to start your serer.  If
+- You no longer need to wait for ``stormpath.ready`` to start your server.  If
   the server is waiting on Stormpath to initialize, it will hold the request
   until Stormpath is ready.
 
