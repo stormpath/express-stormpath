@@ -133,10 +133,25 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
  *
  * @return {object} postable form data object
  */
-NamesOptionalRegistrationFixture.prototype.defaultFormPost = function () {
+NamesOptionalRegistrationFixture.prototype.namesOmittedFormPost = function () {
   return {
     email: uuid.v4() + '@test.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
+
+/**
+ * Returns an object that has the required form fields of email and password,
+ * and it supplies the first and last names as well.
+ *
+ * @return {object} postable form data object
+ */
+NamesOptionalRegistrationFixture.prototype.namesProvidedFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!',
+    givenName: 'foo',
+    surname: 'bar'
   };
 };
 
@@ -573,9 +588,32 @@ describe('register', function () {
 
     describe('if givenName and surname are optional (not required)', function () {
 
+      it('should set givenName and surname to the user-provided values', function (done) {
+
+        var formData = namesOptionalRegistrationFixture.namesProvidedFormPost();
+
+        request(namesOptionalRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.account.givenName, formData.givenName);
+            assert.equal(res.body.account.surname, formData.surname);
+            assert.equal(res.body.account.email, formData.email);
+            done();
+          });
+
+      });
+
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
-        var formData = namesOptionalRegistrationFixture.defaultFormPost();
+        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
@@ -955,7 +993,7 @@ describe('register', function () {
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
-        var formData = namesOptionalRegistrationFixture.defaultFormPost();
+        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
