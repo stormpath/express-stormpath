@@ -12,18 +12,19 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
     expand: {
       customData: true
     },
     web: {
       register: {
-        fields: {
-          favoriteColor: {
-            name: 'favoriteColor',
-            placeholder: 'favoriteColor',
-            required: false,
-            type: 'text'
+        form: {
+          fields: {
+            favoriteColor: {
+              name: 'favoriteColor',
+              placeholder: 'favoriteColor',
+              required: false,
+              type: 'text'
+            }
           }
         }
       }
@@ -54,7 +55,6 @@ function preparePostRegistrationPassThroughTestFixture(stormpathApplication, cb)
 
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
     postRegistrationHandler: function (account, req, res, next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();

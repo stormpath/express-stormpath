@@ -24,8 +24,7 @@ describe('/spa-config', function () {
     app = helpers.createStormpathExpressApp({
       application: {
         href: stormpathApplication.href
-      },
-      website: true
+      }
     });
 
     done(null, app);

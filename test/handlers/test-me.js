@@ -10,7 +10,6 @@ function prepateMeTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
     expand: {
       customData: true
     },

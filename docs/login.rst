@@ -4,14 +4,16 @@
 Login
 =====
 
-This library can serve a login page for your application, this will happen
-if you opt into the ``{ website: true }`` configuration.  By default the login page
-will be available at this URL:
+By default this library will serve an HTML login page at ``/login``.  You can
+change this URI with the ``web.login.uri`` option.  You can disable this feature
+entirely by setting ``web.login.enabled`` to ``false``.
+
+To view the default page in your example application, navigate to this URL:
 
 http://localhost:3000/login
 
-If the login attempt is successful, we will send the user to the Next URI
-and create the proper session cookies.
+If the login attempt is successful, we will send the user to the Next URI and
+create the proper session cookies.
 
 
 Next URI
