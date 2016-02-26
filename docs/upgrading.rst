@@ -28,6 +28,9 @@ before release:
 
 - ``web.regisgter.fieldOrder`` -> ``web.register.form.fieldOrder``
 
+- ``web.expand[property]`` options won't affect the ``/me`` route anymore.  To
+  enable expansions on the `/me` route, use ``web.me.expand[property]``
+
 
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
