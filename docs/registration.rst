@@ -5,12 +5,13 @@ Registration
 ============
 
 The registration feature of this library allows you to use Stormpath to create
-new accounts in a Stormpath directory.  You can create traditional password-based accounts, or gather account data from other providers such as Facebook and
+new accounts in a Stormpath directory.  You can create traditional password-
+based accounts, or gather account data from other providers such as Facebook and
 Google.
 
-If you've opted into the ``{ website: true }`` option in your configuration, you
-will have registration enabled by default.  The registration page will then be
-available at this URL:
+By default this library will serve an HTML registration page at ``/register``.
+You can change this URI with the ``web.register.uri`` option.  You can disable
+this feature entirely by setting ``web.register.enabled`` to ``false``.
 
 http://localhost:3000/register
 
@@ -26,13 +27,15 @@ we will cover them in detail below:
     {
       web: {
         register: {
-          enabled: true,   // Explicit enable, if not using { website: true }
+          enabled: true,
           uri: '/signup',  // Use a different URL
           nextUri: '/',    // Where to send the user to, if auto login is enabled
-          fields: {
-            /* see next section for documentation */
-          },
-          fieldOrder: [ /* see next section */ ]
+          form: {
+            fields: {
+              /* see next section for documentation */
+            },
+            fieldOrder: [ /* see next section */ ]
+          }
         }
       }
     }
@@ -60,13 +63,17 @@ Configure First Name and Last Name as Optional
 If you would like to show the fields for first name and last name, but not
 require them, you can set required to false::
 
-    register: {
-      fields: {
-        givenName: {
-          required: false
-        },
-        surname: {
-          required: false
+    web: {
+      register: {
+        form: {
+          fields: {
+            givenName: {
+              required: false
+            },
+            surname: {
+              required: false
+            }
+          }
         }
       }
     }
@@ -80,13 +87,17 @@ Disabling First Name and Last Name
 
 If you want to remove these fields entirely, you can set enabled to false::
 
-    register: {
-      fields: {
-        givenName: {
-          enabled: false
-        },
-        surname: {
-          enabled: false
+    web: {
+      register: {
+        form: {
+          fields: {
+            givenName: {
+              enabled: false
+            },
+            surname: {
+              enabled: false
+            }
+          }
         }
       }
     }
@@ -104,15 +115,19 @@ automatically added to the user's custom data object when they register
 successfully.  You can define a custom field by defining a new field object,
 like this::
 
-    register: {
-      fields: {
-        favoriteColor: {
-          enabled: true,
-          label: 'Favorite Color',
-          name: 'favoriteColor',
-          placeholder: 'E.g. Red, Blue',
-          required: true,
-          type: 'text'
+    web: {
+      register: {
+        form: {
+          fields: {
+            favoriteColor: {
+              enabled: true,
+              label: 'Favorite Color',
+              name: 'favoriteColor',
+              placeholder: 'E.g. Red, Blue',
+              required: true,
+              type: 'text'
+            }
+          }
         }
       }
     }
@@ -143,8 +158,12 @@ Changing Field Order
 If you want to change the order of the fields, you can do so by specifying the
 ``fieldOrder`` array::
 
-    register: {
-      fieldOrder: [ "givenName", "surname", "email", "password" ],
+    web: {
+      register: {
+        form: {
+          fieldOrder: [ "givenName", "surname", "email", "password" ]
+        }
+      }
     }
 
 Password Strength Rules
@@ -194,7 +213,7 @@ Auto Login
 If you are *not* using email verificaion (not recommended) you may log users in
 automatically when they register.  This can be achieved with this config::
 
-    {
+    web: {
       register: {
         autoLogin: true,
         nextUri: '/'

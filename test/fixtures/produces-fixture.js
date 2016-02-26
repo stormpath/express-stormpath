@@ -22,7 +22,6 @@ var helpers = require('../helpers');
 function ProducesFixture(stormpathApplication, producesArray, readyFn) {
   this.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
     web: {
       produces: producesArray
     }

@@ -7,6 +7,28 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 2.4.0 -> Version 3.0.0
+------------------------------
+
+**Major Release 3.0**
+
+Shortlist of changes, this document needs to be updated with verbose information
+before release:
+
+- ``website`` and ``api`` options are removed.  The following features are now
+  enabled by default:
+
+  - Registration
+  - Login
+  - Logout
+  - OAuth2 endpoint
+  - ``/me`` endpoint
+
+- ``web.regisgter.fields`` -> ``web.register.form.fields``
+
+- ``web.regisgter.fieldOrder`` -> ``web.register.form.fieldOrder``
+
+
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
 

@@ -112,12 +112,14 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true,
-        fields: {
-          surname: {
-            required: false
-          },
-          givenName: {
-            required: false
+        form: {
+          fields: {
+            surname: {
+              required: false
+            },
+            givenName: {
+              required: false
+            }
           }
         }
       }
@@ -155,12 +157,14 @@ function NamesDisabledRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true,
-        fields: {
-          surname: {
-            enabled: false
-          },
-          givenName: {
-            enabled: false
+        form: {
+          fields: {
+            surname: {
+              enabled: false
+            },
+            givenName: {
+              enabled: false
+            }
           }
         }
       }
@@ -197,23 +201,25 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true,
-        fields: {
-          color: {
-            enabled: true,
-            name: 'color',
-            placeholder: 'Favorite Color',
-            required: true,
-            type: 'text'
+        form: {
+          fields: {
+            color: {
+              enabled: true,
+              name: 'color',
+              placeholder: 'Favorite Color',
+              required: true,
+              type: 'text'
+            },
+            music: {
+              enabled: true,
+              name: 'music',
+              placeholder: 'Music Preference',
+              required: false,
+              type: 'text'
+            }
           },
-          music: {
-            enabled: true,
-            name: 'music',
-            placeholder: 'Music Preference',
-            required: false,
-            type: 'text'
-          }
-        },
-        fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
+          fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
+        }
       }
     }
   });
@@ -779,29 +785,29 @@ describe('register', function () {
             var emailField = $(formFields[4]);
             var passwordField = $(formFields[5]);
 
-            assert.equal(givenNameField.attr('placeholder'), config.web.register.fields.givenName.placeholder);
-            assert.equal(givenNameField.attr('required') === 'required', config.web.register.fields.givenName.required);
-            assert.equal(givenNameField.attr('type'), config.web.register.fields.givenName.type);
+            assert.equal(givenNameField.attr('placeholder'), config.web.register.form.fields.givenName.placeholder);
+            assert.equal(givenNameField.attr('required') === 'required', config.web.register.form.fields.givenName.required);
+            assert.equal(givenNameField.attr('type'), config.web.register.form.fields.givenName.type);
 
-            assert.equal(surnameField.attr('placeholder'), config.web.register.fields.surname.placeholder);
-            assert.equal(surnameField.attr('required') === 'required', config.web.register.fields.surname.required);
-            assert.equal(surnameField.attr('type'), config.web.register.fields.surname.type);
+            assert.equal(surnameField.attr('placeholder'), config.web.register.form.fields.surname.placeholder);
+            assert.equal(surnameField.attr('required') === 'required', config.web.register.form.fields.surname.required);
+            assert.equal(surnameField.attr('type'), config.web.register.form.fields.surname.type);
 
-            assert.equal(colorField.attr('placeholder'), config.web.register.fields.color.placeholder);
-            assert.equal(colorField.attr('required') === 'required', config.web.register.fields.color.required);
-            assert.equal(colorField.attr('type'), config.web.register.fields.color.type);
+            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.color.placeholder);
+            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.color.required);
+            assert.equal(colorField.attr('type'), config.web.register.form.fields.color.type);
 
-            assert.equal(musicField.attr('placeholder'), config.web.register.fields.music.placeholder);
-            assert.equal(musicField.attr('required') === 'required', config.web.register.fields.music.required);
-            assert.equal(musicField.attr('type'), config.web.register.fields.music.type);
+            assert.equal(musicField.attr('placeholder'), config.web.register.form.fields.music.placeholder);
+            assert.equal(musicField.attr('required') === 'required', config.web.register.form.fields.music.required);
+            assert.equal(musicField.attr('type'), config.web.register.form.fields.music.type);
 
-            assert.equal(emailField.attr('placeholder'), config.web.register.fields.email.placeholder);
-            assert.equal(emailField.attr('required') === 'required', config.web.register.fields.email.required);
-            assert.equal(emailField.attr('type'), config.web.register.fields.email.type);
+            assert.equal(emailField.attr('placeholder'), config.web.register.form.fields.email.placeholder);
+            assert.equal(emailField.attr('required') === 'required', config.web.register.form.fields.email.required);
+            assert.equal(emailField.attr('type'), config.web.register.form.fields.email.type);
 
-            assert.equal(passwordField.attr('placeholder'), config.web.register.fields.password.placeholder);
-            assert.equal(passwordField.attr('required') === 'required', config.web.register.fields.password.required);
-            assert.equal(passwordField.attr('type'), config.web.register.fields.password.type);
+            assert.equal(passwordField.attr('placeholder'), config.web.register.form.fields.password.placeholder);
+            assert.equal(passwordField.attr('required') === 'required', config.web.register.form.fields.password.required);
+            assert.equal(passwordField.attr('type'), config.web.register.form.fields.password.type);
 
             done();
 

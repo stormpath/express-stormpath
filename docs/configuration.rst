@@ -64,7 +64,6 @@ initialize the Stormpath middleware:
     var app = express();
     app.use(stormpath.init(app, {
       // Optional configuration options.
-      website: true
     }));
 
     // Once Stormpath has initialized itself, start your web server!
@@ -86,26 +85,34 @@ don't need to specify your credentials or application at all -- these values
 will be automatically populated for you.
 
 
-Option Profiles
----------------
+Disabling Features
+------------------
 
-For most applications, you will want to enable the "website" option.  This will
-configure the library to serve it's default views for login, registration, and
-password reset.  This also configures the JSON API for those same features:
+We enable many features by default, but you might not want to use all of them.
+For example, if you wanted to disable all the default features, you would use
+this configuration:
 
  .. code-block:: javascript
 
     app.use(stormpath.init(app, {
-      website: true
+      web: {
+        login: {
+          enabled: false
+        },
+        logout: {
+          enabled: false
+        },
+        me: {
+          enabled: false
+        },
+        oauth2: {
+          enabled: false
+        }
+        register: {
+          enabled: false
+        }
+      }
     }));
-
-If you do not need these routes (for example, you have an API servce that does not
-serve traditional login and registration pages) you do not need the website profile.
-
-Full documentation of the option profiles will be coming soon.  In the meantime, please
-refer to this YAML configuration which shows you the default options:
-
-https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 
 
 Logging
@@ -154,8 +161,7 @@ Stormpath Client::
   app.use(stormpath.init(app, {
     cacheOptions: {
       store: 'redis'
-    },
-    website: true
+    }
   }));
 
 For a full reference of options, please see the Node SDK client documentation:
@@ -256,7 +262,6 @@ wants to handle. You need this option if the following are true:
   .. code-block:: javascript
 
     app.use(stormpath.init(app, {
-      website: true,
       web: {
         login: {
           uri: '/api/login'
