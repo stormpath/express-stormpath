@@ -437,6 +437,38 @@ describe('register', function () {
         });
 
     });
+
+    describe('with Accept: application/json requests', function () {
+      it('should create an account if the data is valid, and not expose the email verification token', function (done) {
+
+        var formData = defaultRegistrationFixture.defaultFormPost();
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var json = JSON.parse(res.text);
+
+            assert(json.account.href);
+            assert.equal(json.account.givenName, formData.givenName);
+            assert.equal(json.account.surname, formData.surname);
+            assert.equal(json.account.email, formData.email);
+            assert.equal(json.account.emailVerificationToken, undefined);
+
+            done();
+          });
+
+      });
+    });
+
+    // it should do json the right way
   });
 
   describe('with Accept: application/json requests', function () {
@@ -491,10 +523,10 @@ describe('register', function () {
 
             var json = JSON.parse(res.text);
 
-            assert(json.href);
-            assert.equal(json.givenName, formData.givenName);
-            assert.equal(json.surname, formData.surname);
-            assert.equal(json.email, formData.email);
+            assert(json.account.href);
+            assert.equal(json.account.givenName, formData.givenName);
+            assert.equal(json.account.surname, formData.surname);
+            assert.equal(json.account.email, formData.email);
 
             done();
           });
@@ -556,9 +588,9 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.givenName, 'UNKNOWN');
-            assert.equal(res.body.surname, 'UNKNOWN');
-            assert.equal(res.body.email, formData.email);
+            assert.equal(res.body.account.givenName, 'UNKNOWN');
+            assert.equal(res.body.account.surname, 'UNKNOWN');
+            assert.equal(res.body.account.email, formData.email);
             done();
           });
 
@@ -583,9 +615,9 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.givenName, 'UNKNOWN');
-            assert.equal(res.body.surname, 'UNKNOWN');
-            assert.equal(res.body.email, formData.email);
+            assert.equal(res.body.account.givenName, 'UNKNOWN');
+            assert.equal(res.body.account.surname, 'UNKNOWN');
+            assert.equal(res.body.account.email, formData.email);
             done();
           });
       });
