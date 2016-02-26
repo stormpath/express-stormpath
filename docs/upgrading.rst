@@ -24,13 +24,17 @@ before release:
   - OAuth2 endpoint
   - ``/me`` endpoint
 
-- ``web.regisgter.fields`` -> ``web.register.form.fields``
+- ``web.register.fields`` -> ``web.register.form.fields``
 
-- ``web.regisgter.fieldOrder`` -> ``web.register.form.fieldOrder``
+- ``web.register.fieldOrder`` -> ``web.register.form.fieldOrder``
 
 - ``web.expand[property]`` options won't affect the ``/me`` route anymore.  To
   enable expansions on the `/me` route, use ``web.me.expand[property]``
 
+- The JSON response for the register route is now wrapping the account data in
+  ``{ account: { /* account data */ } }``.  Previously it was not wrapped inside
+  this account property.  Linked resources have also been stripped from the
+  response, for security purposes.
 
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
