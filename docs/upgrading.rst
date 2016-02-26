@@ -36,6 +36,15 @@ before release:
   this account property.  Linked resources have also been stripped from the
   response, for security purposes.
 
+- We've stopped resolving the user by default, for un-authenticated routes.  If
+  you have a route that does not require authentication, but you want to know
+  the context of the current user (if they're logged in), then add the
+  ``stormpath.getUser`` middleware to the route.
+
+- You no longer need to wait for ``stormpath.ready`` to start your serer.  If
+  the server is waiting on Stormpath to initialize, it will hold the request
+  until Stormpath is ready.
+
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
 
