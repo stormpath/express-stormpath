@@ -78,19 +78,19 @@ describe('current user (/me) route', function () {
               // assert.equal(res.header['cache-control'], 'no-store, no-cache');
               // assert.equal(res.header['pragma'], 'no-cache');
               // Custom data should have been expanded:
-              assert(res.body.customData.favoriteColor === newUser.customData.favoriteColor);
+              assert(res.body.account.customData.favoriteColor === newUser.customData.favoriteColor);
 
               // All other properties should be stripped.
-              assert.equal(res.body.accessTokens, undefined);
-              assert.equal(res.body.apiKeys, undefined);
-              assert.equal(res.body.applications, undefined);
-              assert.equal(res.body.directory, undefined);
-              assert.equal(res.body.emailVerificationToken, undefined);
-              assert.equal(res.body.groupMemberships, undefined);
-              assert.equal(res.body.groups, undefined);
-              assert.equal(res.body.providerData, undefined);
-              assert.equal(res.body.refreshTokens, undefined);
-              assert.equal(res.body.tenant, undefined);
+              assert.equal(res.body.account.accessTokens, undefined);
+              assert.equal(res.body.account.apiKeys, undefined);
+              assert.equal(res.body.account.applications, undefined);
+              assert.equal(res.body.account.directory, undefined);
+              assert.equal(res.body.account.emailVerificationToken, undefined);
+              assert.equal(res.body.account.groupMemberships, undefined);
+              assert.equal(res.body.account.groups, undefined);
+              assert.equal(res.body.account.providerData, undefined);
+              assert.equal(res.body.account.refreshTokens, undefined);
+              assert.equal(res.body.account.tenant, undefined);
               done();
             });
         });
