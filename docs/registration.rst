@@ -285,7 +285,63 @@ populate on the user::
 
 If the user is created successfully you will get a 200 response and the body
 will the the account object that was created.  If there was an error you
-will get an object that looks like ``{ error: 'error message here'}``.
+will get an object that looks like ``{ message: 'error message here'}``.
+
+If you make a GET request to the registration endpoint, with ``Accept:
+application/json``, we will send you a JSON view model that describes the
+registration form and the social account stores that are mapped to your
+Stormpath Application.  Here is an example view model that shows you an
+application that has a default registration form, and a mapped Google
+directory:
+
+.. code-block:: javascript
+
+  {
+    "accountStores": [
+      {
+        "name": "express-stormpath google",
+        "href": "https://api.stormpath.com/v1/directories/gc0Ty90yXXk8ifd2QPwt",
+        "provider": {
+          "providerId": "google",
+          "clientId": "441084632428-9au0gijbo5icagep9u79qtf7ic7cc5au.apps.googleusercontent.com",
+          "scope": "email profile",
+          "href": "https://api.stormpath.com/v1/directories/gc0Ty90yXXk8ifd2QPwt/provider"
+        }
+      }
+    ],
+    "form": {
+      "fields": [
+        {
+          "label": "First Name",
+          "placeholder": "First Name",
+          "required": true,
+          "type": "text",
+          "name": "givenName"
+        },
+        {
+          "label": "Last Name",
+          "placeholder": "Last Name",
+          "required": true,
+          "type": "text",
+          "name": "surname"
+        },
+        {
+          "label": "Email",
+          "placeholder": "Email",
+          "required": true,
+          "type": "email",
+          "name": "email"
+        },
+        {
+          "label": "Password",
+          "placeholder": "Password",
+          "required": true,
+          "type": "password",
+          "name": "password"
+        }
+      ]
+    }
+  }
 
 .. note::
 
