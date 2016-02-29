@@ -10,10 +10,12 @@ Express-Stormpath releases.
 Version 2.4.0 -> Version 3.0.0
 ------------------------------
 
-**Major Release 3.0**
+**Major Release 3.0.0**
 
 Shortlist of changes, this document needs to be updated with verbose information
 before release:
+
+- token validation is now local by default.
 
 - ``website`` and ``api`` options are removed.  The following features are now
   enabled by default:
@@ -24,12 +26,21 @@ before release:
   - OAuth2 endpoint
   - ``/me`` endpoint
 
+- The following features will be enabled by default, if they are enabled by the
+  configuration of the default accuont store of your stormpath application:
+
+  - Email Verification pages and JSON API
+  - Password Reset pages and JSON API
+
 - ``web.register.fields`` -> ``web.register.form.fields``
 
 - ``web.register.fieldOrder`` -> ``web.register.form.fieldOrder``
 
 - ``web.expand[property]`` options won't affect the ``/me`` route anymore.  To
   enable expansions on the ``/me`` route, use ``web.me.expand[property]``.
+
+- Root-level expansions only affect the req.user, not JSON responses from the
+  registraion endpoint.
 
 - The JSON response for the register route is now wrapping the account data in
   ``{ account: { /* account data */ } }``.  Previously it was not wrapped inside
@@ -44,6 +55,36 @@ before release:
 - You no longer need to wait for ``stormpath.ready`` to start your server.  If
   the server is waiting on Stormpath to initialize, it will hold the request
   until Stormpath is ready.
+
+- ``web.spaRoot`` -> ``web.spa.view`` and ``web.spa.enabled``
+
+- ``/spa-config`` is no longer used, need to request the new view models from
+  the register and login endpoints.
+
+- The logout route is now a POST route.
+
+- Error messages from the JSON api have changed, perviously the message looked
+  like ``{ error: 'error message' }`` but now they look like this:
+
+  .. code-block:: javascript
+
+      {
+        status: 400,
+        message: 'error message here'
+      }
+
+- Cookie paths were set to ``/`` by default, but now we set no path unless it is
+  specified in configuration.
+
+- For google login, we now ask for ``"email profile"`` scope instead of just
+  email, as this has more success with gathering the user's fist name and last
+  name from Google.
+
+- It was possible to define the requested scope for social providers, with the
+  ``web.socialProviders[providerId].scopes`` configuration.  This has now changed
+  to ``web.social[providerId].scope``
+
+- Callback URIS for social are new defined with ``web.social[providerId].uri``
 
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
