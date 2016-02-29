@@ -4,14 +4,16 @@
 Login
 =====
 
-This library can serve a login page for your application, this will happen
-if you opt into the ``{ website: true }`` configuration.  By default the login page
-will be available at this URL:
+By default this library will serve an HTML login page at ``/login``.  You can
+change this URI with the ``web.login.uri`` option.  You can disable this feature
+entirely by setting ``web.login.enabled`` to ``false``.
+
+To view the default page in your example application, navigate to this URL:
 
 http://localhost:3000/login
 
-If the login attempt is successful, we will send the user to the Next URI
-and create the proper session cookies.
+If the login attempt is successful, we will send the user to the Next URI and
+create the proper session cookies.
 
 
 Next URI
@@ -31,8 +33,36 @@ to ``/``.  If you wish to change this, use the ``nextUri`` config option::
     }
 
 
-JSON API
---------
+Form Customization
+------------------
+
+The label and placeholder values can be changed by modifying the login form
+field configuration:
+
+.. code-block:: javascript
+
+  {
+    web: {
+      login: {
+        form: {
+          fields: {
+            login: {
+              label: 'Your Username or Password',
+              placeholder: 'email@trustyapp.com'
+            },
+            password: {
+              label: 'Your super-secure PAssw0rd!'
+            }
+          }
+        }
+      }
+    }
+  }
+
+.. _json_login_api:
+
+JSON Login API
+--------------
 
 If you want to make a login attempt from a front-end application (Angular, React),
 simply post a JSON body to the ``/login`` endpoint, with the following format::
@@ -42,9 +72,50 @@ simply post a JSON body to the ``/login`` endpoint, with the following format::
       "password": "myPassword"
     }
 
-If the login attempt is successful, you will recieve a 200 OK response and the
+If the login attempt is successful, you will receive a 200 OK response and the
 session cookies will be set on the response.  If there is an error we will
 send a 400 status with an error message in the body.
+
+If you make a GET request to the login endpoint, with ``Accept:
+application/json``, we will send you a JSON view model that describes the login
+form and the social account stores that are mapped to your Stormpath
+Application.  Here is an example view model that shows you an application that
+has a default login form, and a mapped Google directory:
+
+.. code-block:: javascript
+
+  {
+    "accountStores": [
+      {
+        "name": "express-stormpath google",
+        "href": "https://api.stormpath.com/v1/directories/gc0Ty90yXXk8ifd2QPwt",
+        "provider": {
+          "providerId": "google",
+          "href": "https://api.stormpath.com/v1/directories/gc0Ty90yXXk8ifd2QPwt/provider",
+          "clientId": "422132428-9auxxujR9uku8I5au.apps.googleusercontent.com",
+          "scope": "email profile"
+        }
+      }
+    ],
+    "form": {
+      "fields": [
+        {
+          "label": "Username or Email",
+          "placeholder": "Username or Email",
+          "required": true,
+          "type": "text",
+          "name": "login"
+        },
+        {
+          "label": "Password",
+          "placeholder": "Password",
+          "required": true,
+          "type": "password",
+          "name": "password"
+        }
+      ]
+    }
+  }
 
 .. _post_login_handler:
 

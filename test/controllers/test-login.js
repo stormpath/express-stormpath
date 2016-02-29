@@ -64,20 +64,24 @@ describe('login', function () {
         });
     });
   });
-
-  it('should return a json error if the accept header supports json and the content type we post is json', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        login: {
-          enabled: true
+  describe('JSON API', function () {
+    var app;
+    before(function (done) {
+      app = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          login: {
+            enabled: true
+          }
         }
-      }
+      });
+      app.on('stormpath.ready', done);
     });
 
-    app.on('stormpath.ready', function () {
+    it('should return a json error if the accept header supports json and the content type we post is json', function (done) {
+
       request(app)
         .post('/login')
         .type('json')
@@ -89,37 +93,66 @@ describe('login', function () {
           }
 
           var json = JSON.parse(res.text);
-          if (!json.error) {
+
+          if (typeof json !== 'object') {
             done(new Error('No JSON error returned.'));
-          } else if (json.error !== 'Invalid username or password.') {
+          } if (json.status !== 200 && json.message !== 'Invalid username or password.') {
             done(new Error('Did not receive the expected error'));
           } else {
             done();
           }
         });
-    });
-  });
 
-  it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        login: {
-          enabled: true
-        }
-      }
     });
 
-    app.on('stormpath.ready', function () {
+    it('should return the login view model for JSON requets', function (done) {
+      request(app)
+        .get('/login')
+        .set('Accept', 'application/json')
+        .expect(200, {
+          'accountStores': [
+          ],
+          'form': {
+            'fields': [
+              {
+                'label': 'Username or Email',
+                'placeholder': 'Username or Email',
+                'required': true,
+                'type': 'text',
+                'name': 'login'
+              },
+              {
+                'label': 'Password',
+                'placeholder': 'Password',
+                'required': true,
+                'type': 'password',
+                'name': 'password'
+              }
+            ]
+          }
+        }, done);
+    });
+
+
+    it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function (done) {
+
       request(app)
         .post('/login')
         .type('json')
         .send({ username: username, password: password })
         .set('Accept', 'application/json')
         .expect(200)
-        .end(done);
+        .end(function (err, res) {
+          if (err) {
+            return done(err);
+          }
+          // The account data should be returned on the account object
+          assert.equal(res.body.account.email, accountData.email);
+          // But linked resources should not be returned
+          assert.equal(res.body.account.customDta, undefined);
+          done();
+        });
+
     });
   });
 

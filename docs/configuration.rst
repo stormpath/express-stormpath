@@ -64,7 +64,6 @@ initialize the Stormpath middleware:
     var app = express();
     app.use(stormpath.init(app, {
       // Optional configuration options.
-      website: true
     }));
 
     // Once Stormpath has initialized itself, start your web server!
@@ -86,27 +85,40 @@ don't need to specify your credentials or application at all -- these values
 will be automatically populated for you.
 
 
-Option Profiles
----------------
+Disabling Features
+------------------
 
-For most applications, you will want to enable the "website" option.  This will
-configure the library to serve it's default views for login, registration, and
-password reset.  This also configures the JSON API for those same features:
+We enable many features by default, but you might not want to use all of them.
+For example, if you wanted to disable all the default features, you would use
+this configuration:
 
  .. code-block:: javascript
 
     app.use(stormpath.init(app, {
-      website: true
+      web: {
+        login: {
+          enabled: false
+        },
+        logout: {
+          enabled: false
+        },
+        me: {
+          enabled: false
+        },
+        oauth2: {
+          enabled: false
+        }
+        register: {
+          enabled: false
+        }
+      }
     }));
 
-If you do not need these routes (for example, you have an API servce that does not
-serve traditional login and registration pages) you do not need the website profile.
+Options Reference
+-----------------
 
-Full documentation of the option profiles will be coming soon.  In the meantime, please
-refer to this YAML configuration which shows you the default options:
-
-https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
-
+For a full list of all the options that can be changed, please see the
+`Web Configuration Defaults`_.
 
 Logging
 -------
@@ -154,8 +166,7 @@ Stormpath Client::
   app.use(stormpath.init(app, {
     cacheOptions: {
       store: 'redis'
-    },
-    website: true
+    }
   }));
 
 For a full reference of options, please see the Node SDK client documentation:
@@ -222,14 +233,16 @@ React.  For each feature (login, registration) there is a JSON API for the
 feature.  The JSON API is documented for each feature, please see the feature
 list in the sidebar of this documentation.
 
-In some cases you may need to specify the ``spaRoot`` option.  This
+In some cases you may need to specify the ``spa.view`` option.  This
 is the absolute file path to the entry point for your SPA.  That option
 would be defined like this::
 
     app.use(stormpath.init(app, {
-      website: true,
       web: {
-        spaRoot: path.join(__dirname, 'public', 'index.html')
+        spa: {
+          enabled: true,
+          view: path.join(__dirname, 'public', 'index.html')
+        }
       }
     }));
 
@@ -243,28 +256,20 @@ wants to handle. You need this option if the following are true:
 
 .. note::
 
-  It is not yet possible to disable the default HTML views, but still retain the
-  JSON API. We will be fixing this in a future release. This creates a problem
-  for React Flux applications that want to use the `/login` route in their
-  browser application, but not use our default HTML views.
-
-  To work around the problem, you can change the `uri` of the route to a different
-  URL than ``/login``.  For example:
+  You can disable our HTML views entirely, this is useful if you simply want to
+  use our JSON API with your customized front-end application.  Use this
+  configuration to remove HTML from the content type list:
 
   .. code-block:: javascript
 
     app.use(stormpath.init(app, {
-      website: true,
       web: {
-        login: {
-          uri: '/api/login'
-        }
+        produces: ['application/json']
       }
     }));
 
-  Your browser code will need to make it's login POST to ``/api/login``
-
+.. _Winston: https://github.com/winstonjs/winston
+.. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard
 .. _Stormpath Node SDK: http://github.com/stormpath/stormpath-sdk-node
-.. _Winston: https://github.com/winstonjs/winston

@@ -458,7 +458,6 @@ describe('getUser', function () {
 
     var app = helpers.createStormpathExpressApp({
       application: stormpathApplication,
-      website: true,
       web: {
         oauth2: {
           password: {

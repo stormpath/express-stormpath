@@ -10,13 +10,11 @@ function prepateMeTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
-    expand: {
-      customData: true
-    },
     web: {
       me: {
-        enabled: true
+        expand: {
+          customData: true
+        }
       }
     }
   });
@@ -52,7 +50,7 @@ describe('current user (/me) route', function () {
     helpers.destroyApplication(stormpathApplication, done);
   });
 
-  it('should respond with the expanded account object', function (done) {
+  it('should respond with the expanded account object and force no cache', function (done) {
     prepateMeTestFixture(stormpathApplication, function (fixture) {
       var agent = request.agent(fixture.expressApp);
       agent
@@ -64,20 +62,35 @@ describe('current user (/me) route', function () {
           if (err) {
             return done(err);
           }
-
           /**
            * The agent now has the cookies that will allow us to request the
            * /me route
            */
-
           agent
             .get('/me')
+            .expect('cache-control', 'no-store, no-cache')
+            .expect('pragma', 'no-cache')
             .expect(200)
             .end(function (err, res) {
               if (err) {
                 return done(err);
               }
-              assert(res.body.customData.favoriteColor === newUser.customData.favoriteColor);
+              // assert.equal(res.header['cache-control'], 'no-store, no-cache');
+              // assert.equal(res.header['pragma'], 'no-cache');
+              // Custom data should have been expanded:
+              assert(res.body.account.customData.favoriteColor === newUser.customData.favoriteColor);
+
+              // All other properties should be stripped.
+              assert.equal(res.body.account.accessTokens, undefined);
+              assert.equal(res.body.account.apiKeys, undefined);
+              assert.equal(res.body.account.applications, undefined);
+              assert.equal(res.body.account.directory, undefined);
+              assert.equal(res.body.account.emailVerificationToken, undefined);
+              assert.equal(res.body.account.groupMemberships, undefined);
+              assert.equal(res.body.account.groups, undefined);
+              assert.equal(res.body.account.providerData, undefined);
+              assert.equal(res.body.account.refreshTokens, undefined);
+              assert.equal(res.body.account.tenant, undefined);
               done();
             });
         });
