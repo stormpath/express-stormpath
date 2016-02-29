@@ -114,6 +114,11 @@ this configuration:
       }
     }));
 
+Options Reference
+-----------------
+
+For a full list of all the options that can be changed, please see the
+`Web Configuration Defaults`_.
 
 Logging
 -------
@@ -251,27 +256,20 @@ wants to handle. You need this option if the following are true:
 
 .. note::
 
-  It is not yet possible to disable the default HTML views, but still retain the
-  JSON API. We will be fixing this in a future release. This creates a problem
-  for React Flux applications that want to use the `/login` route in their
-  browser application, but not use our default HTML views.
-
-  To work around the problem, you can change the `uri` of the route to a different
-  URL than ``/login``.  For example:
+  You can disable our HTML views entirely, this is useful if you simply want to
+  use our JSON API with your customized front-end application.  Use this
+  configuration to remove HTML from the content type list:
 
   .. code-block:: javascript
 
     app.use(stormpath.init(app, {
       web: {
-        login: {
-          uri: '/api/login'
-        }
+        produces: ['application/json']
       }
     }));
 
-  Your browser code will need to make it's login POST to ``/api/login``
-
+.. _Winston: https://github.com/winstonjs/winston
+.. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
 .. _Stormpath dashboard: https://api.stormpath.com/ui/dashboard
 .. _Stormpath Node SDK: http://github.com/stormpath/stormpath-sdk-node
-.. _Winston: https://github.com/winstonjs/winston
