@@ -126,7 +126,7 @@ did not need it, like your public asset routes.
 In 3.0.0 we no longer do this.  If you need to know if a user is logged in or
 not, please add the ``stormpath.getUser`` middleware to your route.
 
-For more information please see XXX
+For more information please see :ref:`getUser`.
 
 New Features
 .............
