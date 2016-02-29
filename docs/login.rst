@@ -59,9 +59,10 @@ field configuration:
     }
   }
 
+.. _json_login_api:
 
-JSON API
---------
+JSON Login API
+--------------
 
 If you want to make a login attempt from a front-end application (Angular, React),
 simply post a JSON body to the ``/login`` endpoint, with the following format::

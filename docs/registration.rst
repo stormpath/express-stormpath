@@ -268,9 +268,10 @@ user to a special page (*instead of the normal registration flow*)::
       },
     }));
 
+.. _json_registration_api:
 
-JSON API
---------
+JSON Registration API
+---------------------
 
 If you are using this library from a SPA framework like Angular or React, you
 will want to make a JSON post to register users.  Simply post an object to

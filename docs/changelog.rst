@@ -162,7 +162,8 @@ correctly.
 
 You can now issue GET requests against ``/login`` and ``/register``, with the
 header ``Accept: application/json`` and receive this information as a JSON
-view model.  For more information please see XXX and YYY
+view model.  For more information please see the :ref:`json_login_api` and
+the :ref:`json_registration_api`.
 
 **Github Login Is Now Supported**
 
