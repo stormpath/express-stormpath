@@ -12,58 +12,95 @@ Version 2.4.0 -> Version 3.0.0
 
 **Major Release 3.0.0**
 
-Shortlist of changes, this document needs to be updated with verbose information
-before release:
+This is a complete list of changes you need to make to your 2.x application when
+upgrading to 3.0.0.  For a high level overview of the major points in this
+release, please see the :ref:`changelog`.
 
-- token validation is now local by default.
+- We've stopped resolving the authenticated user, by default.  You need to
+  explicitly configure this with the ``stormpath.getUser`` middleware:
 
-- ``website`` and ``api`` options are removed.  The following features are now
-  enabled by default:
+  .. code-block:: javascript
 
-  - Registration
-  - Login
-  - Logout
-  - OAuth2 endpoint
-  - ``/me`` endpoint
+    app.get('/home', stormpath.getUser, function (req, res) {
+      if(req.user){
+        res.send('Hello, ' + req.user.email);
+      }else{
+        res.send('Not logged in');
+      }
+    });
 
-- The following features will be enabled by default, if they are enabled by the
-  configuration of the default accuont store of your stormpath application:
+- The ``website`` and ``api`` configuration options have been removed, you can
+  remove these from your configuration.  To enable or disable specific features,
+  please review the `Web Configuration Defaults`_.
 
-  - Email Verification pages and JSON API
-  - Password Reset pages and JSON API
+- The logout route is now a POST route, it will not respond to GET requests.
+  You will need to use a form post or an AJAX request to logout the uesr.  This
+  is a user experience fix, because the browser's omnibar was logging the user
+  out when it tried to pre-fetch the logout route.
 
-- ``web.register.fields`` -> ``web.register.form.fields``
-
-- ``web.register.fieldOrder`` -> ``web.register.form.fieldOrder``
-
-- ``web.expand[property]`` options won't affect the ``/me`` route anymore.  To
-  enable expansions on the ``/me`` route, use ``web.me.expand[property]``.
-
-- Root-level expansions only affect the req.user, not JSON responses from the
-  registraion endpoint.
-
-- The JSON response for the register route is now wrapping the account data in
-  ``{ account: { /* account data */ } }``.  Previously it was not wrapped inside
-  this account property.  Linked resources have also been stripped from the
-  response, for security purposes.
-
-- We've stopped resolving the user by default for unauthenticated routes.  If
-  you have a route that does not require authentication, but you want to know
-  the context of the current user (if they're logged in), then add the
-  ``stormpath.getUser`` middleware to the route.
+- The :ref:`token_validation_strategy` is now using the ``local`` option by
+  default.  If you want to continue using the ``stormpath`` strategy, set
+  ``web.oauth2.password.validationStrategy`` to ``stormpath``.
 
 - You no longer need to wait for ``stormpath.ready`` to start your server.  If
   the server is waiting on Stormpath to initialize, it will hold the request
   until Stormpath is ready.
 
-- ``web.spaRoot`` -> ``web.spa.view`` and ``web.spa.enabled``
+- The registration field configuration has changed.  You need to move your
+  field definition and field order to be inside the new ``form`` property, like
+  so:
 
-- ``/spa-config`` is no longer used, need to request the new view models from
-  the register and login endpoints.
+  .. code-block:: javascript
 
-- The logout route is now a POST route.
+    {
+      web: {
+        register: {
+          form: {
+            fields: {
+              // field definitions are now here, under form.fields
+            },
+            fieldOrder: [
+              // this has been moved as well
+            ]
+          }
+        }
+      }
+    }
 
-- Error messages from the JSON api have changed, perviously the message looked
+
+- The impact of the expansion options have changed.  They can still be used to
+  pre-populate ``req.user`` with the desired expanded properties, but they no
+  longer expand those properties on our JSON responses from login and
+  registration.  This is a security change.
+
+- If you want the ``/me route`` to expand properties on the user object, you will
+  need to explicitly enable those options for that feature, like so:
+
+  .. code-block:: javascript
+
+    {
+      web: {
+        me: {
+          expand: {
+            customData: true
+          }
+        }
+      }
+    }
+
+- The JSON account data that is returned by login attempts, registration, and the
+  ``/me`` route is now wrapped inside of an ``account`` property:
+
+  .. code-block:: javascript
+
+    {
+      account: {
+        href: 'xxx',
+        // other properties
+      }
+    }
+
+- Error messages from the JSON api have changed, previously the messages looked
   like ``{ error: 'error message' }`` but now they look like this:
 
   .. code-block:: javascript
@@ -73,18 +110,49 @@ before release:
         message: 'error message here'
       }
 
-- Cookie paths were set to ``/`` by default, but now we set no path unless it is
-  specified in configuration.
+- The ``web.spaRoot`` root option has been changed, if you are telling us where
+  your SPA root is located, you need to use this new configuration:
 
-- For google login, we now ask for ``"email profile"`` scope instead of just
+  .. code-block:: javascript
+
+    {
+      web: {
+        spa: {
+          enabled: true,
+          view: 'path/to/spa-index.html'
+        }
+      }
+    }
+
+- The ``/spa-config`` route is removed, you need to fetch this view model
+  information from the logout and registration endpoints.  Please see XXX and
+  YYY.
+
+- For Google login, we now ask for ``"email profile"`` scope instead of just
   email, as this has more success with gathering the user's fist name and last
   name from Google.
 
-- It was possible to define the requested scope for social providers, with the
-  ``web.socialProviders[providerId].scopes`` configuration.  This has now changed
-  to ``web.social[providerId].scope``
+- The ``web.socialProviders`` configuration has been removed, the social login
+  configuration now looks like this:
 
-- Callback URIS for social are new defined with ``web.social[providerId].uri``
+  .. code-block:: javascript
+
+    {
+      web: {
+        social: {
+          google: {
+            scope: "email profile",
+            uri: "/callbacks/google"
+          },
+          // facebook, linkedin, github
+        }
+      }
+    }
+
+- The default path for our access token and refresh token cookies was set to
+  ``/``, but now it is undefined unless set by configuration.  Please see the
+  `Web Configuration Defaults`_ for all the cookie options.
+
 
 Version 2.3.7 -> Version 2.4.0
 ------------------------------
@@ -804,3 +872,4 @@ Version 0.0.0 -> Version 0.1.0
 **No changes needed!**
 
 .. _express-session: https://github.com/expressjs/session
+.. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml

@@ -1,5 +1,5 @@
 web:
-
+  ## basePasth is currently not used by Express-Stormpath
   basePath: null
 
   oauth2:
