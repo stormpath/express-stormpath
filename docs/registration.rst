@@ -5,12 +5,13 @@ Registration
 ============
 
 The registration feature of this library allows you to use Stormpath to create
-new accounts in a Stormpath directory.  You can create traditional password-based accounts, or gather account data from other providers such as Facebook and
+new accounts in a Stormpath directory.  You can create traditional password-
+based accounts, or gather account data from other providers such as Facebook and
 Google.
 
-If you've opted into the ``{ website: true }`` option in your configuration, you
-will have registration enabled by default.  The registration page will then be
-available at this URL:
+By default this library will serve an HTML registration page at ``/register``.
+You can change this URI with the ``web.register.uri`` option.  You can disable
+this feature entirely by setting ``web.register.enabled`` to ``false``.
 
 http://localhost:3000/register
 
@@ -26,13 +27,15 @@ we will cover them in detail below:
     {
       web: {
         register: {
-          enabled: true,   // Explicit enable, if not using { website: true }
+          enabled: true,
           uri: '/signup',  // Use a different URL
           nextUri: '/',    // Where to send the user to, if auto login is enabled
-          fields: {
-            /* see next section for documentation */
-          },
-          fieldOrder: [ /* see next section */ ]
+          form: {
+            fields: {
+              /* see next section for documentation */
+            },
+            fieldOrder: [ /* see next section */ ]
+          }
         }
       }
     }
@@ -60,13 +63,17 @@ Configure First Name and Last Name as Optional
 If you would like to show the fields for first name and last name, but not
 require them, you can set required to false::
 
-    register: {
-      fields: {
-        givenName: {
-          required: false
-        },
-        surname: {
-          required: false
+    web: {
+      register: {
+        form: {
+          fields: {
+            givenName: {
+              required: false
+            },
+            surname: {
+              required: false
+            }
+          }
         }
       }
     }
@@ -80,13 +87,17 @@ Disabling First Name and Last Name
 
 If you want to remove these fields entirely, you can set enabled to false::
 
-    register: {
-      fields: {
-        givenName: {
-          enabled: false
-        },
-        surname: {
-          enabled: false
+    web: {
+      register: {
+        form: {
+          fields: {
+            givenName: {
+              enabled: false
+            },
+            surname: {
+              enabled: false
+            }
+          }
         }
       }
     }
@@ -104,15 +115,19 @@ automatically added to the user's custom data object when they register
 successfully.  You can define a custom field by defining a new field object,
 like this::
 
-    register: {
-      fields: {
-        favoriteColor: {
-          enabled: true,
-          label: 'Favorite Color',
-          name: 'favoriteColor',
-          placeholder: 'E.g. Red, Blue',
-          required: true,
-          type: 'text'
+    web: {
+      register: {
+        form: {
+          fields: {
+            favoriteColor: {
+              enabled: true,
+              label: 'Favorite Color',
+              name: 'favoriteColor',
+              placeholder: 'E.g. Red, Blue',
+              required: true,
+              type: 'text'
+            }
+          }
         }
       }
     }
@@ -143,8 +158,12 @@ Changing Field Order
 If you want to change the order of the fields, you can do so by specifying the
 ``fieldOrder`` array::
 
-    register: {
-      fieldOrder: [ "givenName", "surname", "email", "password" ],
+    web: {
+      register: {
+        form: {
+          fieldOrder: [ 'givenName', 'surname', 'email', 'password' ]
+        }
+      }
     }
 
 Password Strength Rules
@@ -194,7 +213,7 @@ Auto Login
 If you are *not* using email verificaion (not recommended) you may log users in
 automatically when they register.  This can be achieved with this config::
 
-    {
+    web: {
       register: {
         autoLogin: true,
         nextUri: '/'
@@ -249,9 +268,10 @@ user to a special page (*instead of the normal registration flow*)::
       },
     }));
 
+.. _json_registration_api:
 
-JSON API
---------
+JSON Registration API
+---------------------
 
 If you are using this library from a SPA framework like Angular or React, you
 will want to make a JSON post to register users.  Simply post an object to
@@ -266,7 +286,63 @@ populate on the user::
 
 If the user is created successfully you will get a 200 response and the body
 will the the account object that was created.  If there was an error you
-will get an object that looks like ``{ error: 'error message here'}``.
+will get an object that looks like ``{ message: 'error message here'}``.
+
+If you make a GET request to the registration endpoint, with ``Accept:
+application/json``, we will send you a JSON view model that describes the
+registration form and the social account stores that are mapped to your
+Stormpath Application.  Here is an example view model that shows you an
+application that has a default registration form, and a mapped Google
+directory:
+
+.. code-block:: javascript
+
+  {
+    "accountStores": [
+      {
+        "name": "express-stormpath google",
+        "href": "https://api.stormpath.com/v1/directories/gc0Ty90yXXk8ifd2QPwt",
+        "provider": {
+          "providerId": "google",
+          "clientId": "441084632428-9au0gijbo5icagep9u79qtf7ic7cc5au.apps.googleusercontent.com",
+          "scope": "email profile",
+          "href": "https://api.stormpath.com/v1/directories/gc0Ty90yXXk8ifd2QPwt/provider"
+        }
+      }
+    ],
+    "form": {
+      "fields": [
+        {
+          "label": "First Name",
+          "placeholder": "First Name",
+          "required": true,
+          "type": "text",
+          "name": "givenName"
+        },
+        {
+          "label": "Last Name",
+          "placeholder": "Last Name",
+          "required": true,
+          "type": "text",
+          "name": "surname"
+        },
+        {
+          "label": "Email",
+          "placeholder": "Email",
+          "required": true,
+          "type": "email",
+          "name": "email"
+        },
+        {
+          "label": "Password",
+          "placeholder": "Password",
+          "required": true,
+          "type": "password",
+          "name": "password"
+        }
+      ]
+    }
+  }
 
 .. note::
 

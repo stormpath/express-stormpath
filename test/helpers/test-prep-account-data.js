@@ -8,26 +8,28 @@ describe('prepAccountData', function () {
   var config = {
     web: {
       register: {
-        fields: {
-          givenName: {
-            name: 'givenName',
-            required: true
-          },
-          surname: {
-            name: 'surname',
-            required: true
-          },
-          email: {
-            name: 'email',
-            required: true
-          },
-          password: {
-            name: 'password',
-            required: true
-          },
-          passwordConfirm: {
-            name: 'passwordConfirmWoo',
-            required: true
+        form: {
+          fields: {
+            givenName: {
+              name: 'givenName',
+              required: true
+            },
+            surname: {
+              name: 'surname',
+              required: true
+            },
+            email: {
+              name: 'email',
+              required: true
+            },
+            password: {
+              name: 'password',
+              required: true
+            },
+            passwordConfirm: {
+              name: 'passwordConfirmWoo',
+              required: true
+            }
           }
         }
       }

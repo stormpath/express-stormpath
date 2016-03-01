@@ -8,20 +8,15 @@ script(type='text/javascript').
    */
 
   function googleLogin() {
-    var clientId = '#{stormpathConfig.socialProviders.google.clientId}';
-    var googleScopes = '#{stormpathConfig.socialProviders.google.scopes}';
-    var hd = '#{stormpathConfig.socialProviders.google.hd}';
-    var scopes = '';
-
-    if (googleScopes.length) {
-      scopes = '+' + googleScopes.split(',').join('+');
-    }
+    var clientId = '#{stormpathConfig.web.social.google.clientId}';
+    var googleScope = '#{stormpathConfig.web.social.google.scope}';
+    var hd = '#{stormpathConfig.web.social.google.hd}';
 
     var finalUrl = 'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=' +
       clientId +
-      '&scope=email' + scopes +
+      '&scope=' + googleScope +
       '&include_granted_scopes=true&redirect_uri=' +
-      '#{url}#{stormpathConfig.socialProviders.google.callbackUri}';
+      '#{url}#{stormpathConfig.web.social.google.uri}';
 
     if (hd) {
       finalUrl = finalUrl + '&hd=' + hd;

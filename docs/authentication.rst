@@ -109,24 +109,26 @@ Token Validation Strategy
 
 When a request comes into your server, this library will use the Access Token
 and Refresh Token cookies to make an authentication decision.  The default
-validation strategy works like this:
+validation strategy (``local``) works like this:
 
-- Validate the signature and expiration time of the Access Token.  If the Access
-  Token is expired, attempt to get a new one by using the Refresh Token.
+- If the Access Token signature is valid, and the token is not expired, accept
+  the request.
 
-- If the Access Token is expired and cannot be refreshed, deny the request
+- If the Access Token is expired, attempt to get a new one from the Stormpath
+  REST API by using the Refresh Token.
 
-- If the Access Token is not expired and the signature is valid, the library
-  makes a request to the Stormpath API to assert that the Access Token has not
-  been revoked and that the associated account still exists and is not disabled.
+- If a new Access Token cannot be obtained, deny the request.
 
-In the last step, the API request will add a network request to the
-authentication process.  If this is not desirable (for performance reasons),
-you can opt-in to `local` validation.  In this situation, our library only
-checks the signature of the token and does not make the extra request to the
-Stormpath API to assert the token and the account.
+With the ``local`` option, our library only checks the signature and expiration of
+the Access Token.  It does not check with the Stormpath REST API to assert that
+the Access Token hasn't been revoked.
 
-You can opt-in to local validation with this configuration:
+If you would like to check for Access Token revocation on every request, you
+should opt-in to the ``stormpath`` validation strategy.  This will make a
+network call to the Stormpath REST API.  If the Access Token has been revoked,
+or the account has been disabled or deleted, the request will be rejected.
+
+Opt-in to ``stormpath`` validation with this configuration:
 
 .. code-block:: javascript
 
@@ -134,7 +136,7 @@ You can opt-in to local validation with this configuration:
     web: {
       oauth2: {
         password: {
-          validationStrategy: 'local'
+          validationStrategy: 'stormpath'
         }
       }
     }
@@ -144,22 +146,21 @@ You can opt-in to local validation with this configuration:
 
   When using local validation, your server will not be aware of token revocation
   or any changes to the associated Stormpath account.  **This is a security
-  risk.**
+  trade-off that optimizes for performance.**  If you prefer extra security, use
+  the ``stormpath`` validation option.
 
-  There are two suggested strategies for dealing with this risk:
+  If you prefer local validation, for the performance reasons, you can add more
+  security by doing one of the following:
 
-  * Use a short expiration time for your Access Tokens (such as one hour or
+  * Use a short expiration time for your Access Tokens (such as five minutes or
     less).  This will limit the amount of time that the Access Token can be used
-    for validation.  Our library *always* makes a request to the Stormpath API when
-    we attempt to refresh an Access Token, so the refresh attempt will fail
-    at this time if the Refresh Token has been revoked.
+    for validation, while still reducing the number of times that we need to
+    make a REST API call, with the refresh token, to get a new access token.
 
-  * Maintain a blacklist of revoked tokens, in your local application cache.
-    Implement a middleware function that asserts that the Access Token is not
-    in this cache, and reject the request if true.  We may implement this as
+  * Maintain a blacklist of revoked Access Tokens, in your local application
+    cache. Implement a middleware function that asserts that the Access Token is
+    not in this cache, and reject the request if true.  We may implement this as
     a convenience feature in the future.
-
-
 
 
 Issuing API Keys

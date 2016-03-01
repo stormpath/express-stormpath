@@ -8,31 +8,33 @@ describe('validateAccount', function () {
   var config = {
     web: {
       register: {
-        fields: {
-          givenName: {
-            enabled: true,
-            name: 'givenName',
-            required: true
-          },
-          surname: {
-            enabled: true,
-            name: 'surname',
-            required: true
-          },
-          email: {
-            enabled: true,
-            name: 'email',
-            required: true
-          },
-          password: {
-            enabled: true,
-            name: 'password',
-            required: true
-          },
-          passwordConfirm: {
-            enabled: true,
-            name: 'passwordConfirm',
-            required: true
+        form: {
+          fields: {
+            givenName: {
+              enabled: true,
+              name: 'givenName',
+              required: true
+            },
+            surname: {
+              enabled: true,
+              name: 'surname',
+              required: true
+            },
+            email: {
+              enabled: true,
+              name: 'email',
+              required: true
+            },
+            password: {
+              enabled: true,
+              name: 'password',
+              required: true
+            },
+            passwordConfirm: {
+              enabled: true,
+              name: 'passwordConfirm',
+              required: true
+            }
           }
         }
       }

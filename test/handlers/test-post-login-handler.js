@@ -10,7 +10,6 @@ function preparePostLoginExpansionTestFixture(stormpathApplication, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
     expand: {
       customData: true
     },
@@ -40,7 +39,6 @@ function preparePostLoginPassThroughTestFixture(stormpathApplication, cb) {
 
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
-    website: true,
     postLoginHandler: function (account, req, res, next) {
       fixture.sideEffect = sideEffectData;
       next();

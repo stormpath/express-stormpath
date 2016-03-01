@@ -52,6 +52,50 @@ DefaultRegistrationFixture.prototype.defaultFormPost = function () {
 };
 
 /**
+ * This object is the default view model that we expect from the registration
+ * endpoint when:
+ *  * The registration fields have not been customized
+ *  * No provider account stores have been mapped to the application
+ *
+ * @type {Object}
+ */
+DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
+  'accountStores': [],
+  'form': {
+    'fields': [
+      {
+        'label': 'First Name',
+        'name': 'givenName',
+        'placeholder': 'First Name',
+        'required': true,
+        'type': 'text'
+      },
+      {
+        'label': 'Last Name',
+        'name': 'surname',
+        'placeholder': 'Last Name',
+        'required': true,
+        'type': 'text'
+      },
+      {
+        'label': 'Email',
+        'name': 'email',
+        'placeholder': 'Email',
+        'required': true,
+        'type': 'email'
+      },
+      {
+        'label': 'Password',
+        'name': 'password',
+        'placeholder': 'Password',
+        'required': true,
+        'type': 'password'
+      }
+    ]
+  }
+};
+
+/**
  * Creates an Express application and configures the register feature with the
  * surname and given name as optional (not required) fields.
  *
@@ -68,12 +112,14 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true,
-        fields: {
-          surname: {
-            required: false
-          },
-          givenName: {
-            required: false
+        form: {
+          fields: {
+            surname: {
+              required: false
+            },
+            givenName: {
+              required: false
+            }
           }
         }
       }
@@ -87,10 +133,25 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
  *
  * @return {object} postable form data object
  */
-NamesOptionalRegistrationFixture.prototype.defaultFormPost = function () {
+NamesOptionalRegistrationFixture.prototype.namesOmittedFormPost = function () {
   return {
     email: uuid.v4() + '@test.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
+
+/**
+ * Returns an object that has the required form fields of email and password,
+ * and it supplies the first and last names as well.
+ *
+ * @return {object} postable form data object
+ */
+NamesOptionalRegistrationFixture.prototype.namesProvidedFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!',
+    givenName: 'foo',
+    surname: 'bar'
   };
 };
 
@@ -111,12 +172,14 @@ function NamesDisabledRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true,
-        fields: {
-          surname: {
-            enabled: false
-          },
-          givenName: {
-            enabled: false
+        form: {
+          fields: {
+            surname: {
+              enabled: false
+            },
+            givenName: {
+              enabled: false
+            }
           }
         }
       }
@@ -153,23 +216,25 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true,
-        fields: {
-          color: {
-            enabled: true,
-            name: 'color',
-            placeholder: 'Favorite Color',
-            required: true,
-            type: 'text'
+        form: {
+          fields: {
+            color: {
+              enabled: true,
+              name: 'color',
+              placeholder: 'Favorite Color',
+              required: true,
+              type: 'text'
+            },
+            music: {
+              enabled: true,
+              name: 'music',
+              placeholder: 'Music Preference',
+              required: false,
+              type: 'text'
+            }
           },
-          music: {
-            enabled: true,
-            name: 'music',
-            placeholder: 'Music Preference',
-            required: false,
-            type: 'text'
-          }
-        },
-        fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
+          fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
+        }
       }
     }
   });
@@ -387,10 +452,50 @@ describe('register', function () {
         });
 
     });
+
+    describe('with Accept: application/json requests', function () {
+      it('should create an account if the data is valid, and not expose the email verification token', function (done) {
+
+        var formData = defaultRegistrationFixture.defaultFormPost();
+
+        request(defaultRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var json = JSON.parse(res.text);
+
+            assert(json.account.href);
+            assert.equal(json.account.givenName, formData.givenName);
+            assert.equal(json.account.surname, formData.surname);
+            assert.equal(json.account.email, formData.email);
+            assert.equal(json.account.emailVerificationToken, undefined);
+
+            done();
+          });
+
+      });
+    });
+
+    // it should do json the right way
   });
 
   describe('with Accept: application/json requests', function () {
+
     describe('by default', function () {
+
+      it('should return a JSON view model', function (done) {
+        request(defaultRegistrationFixture.expressApp)
+          .get('/register')
+          .set('Accept', 'application/json')
+          .expect(200, defaultRegistrationFixture.defaultJsonViewModel, done);
+      });
 
       it('should return a JSON error if the request is missing the givenName', function (done) {
 
@@ -408,7 +513,7 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.error, 'First Name required.');
+            assert.equal(res.body.message, 'First Name required.');
 
             done();
           });
@@ -433,10 +538,10 @@ describe('register', function () {
 
             var json = JSON.parse(res.text);
 
-            assert(json.href);
-            assert.equal(json.givenName, formData.givenName);
-            assert.equal(json.surname, formData.surname);
-            assert.equal(json.email, formData.email);
+            assert(json.account.href);
+            assert.equal(json.account.givenName, formData.givenName);
+            assert.equal(json.account.surname, formData.surname);
+            assert.equal(json.account.email, formData.email);
 
             done();
           });
@@ -458,7 +563,7 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.error, 'otherField is not a configured registration field.');
+            assert.equal(res.body.message, 'otherField is not a configured registration field.');
 
             done();
           });
@@ -483,9 +588,9 @@ describe('register', function () {
 
     describe('if givenName and surname are optional (not required)', function () {
 
-      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
+      it('should set givenName and surname to the user-provided values', function (done) {
 
-        var formData = namesOptionalRegistrationFixture.defaultFormPost();
+        var formData = namesOptionalRegistrationFixture.namesProvidedFormPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
@@ -498,9 +603,32 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.givenName, 'UNKNOWN');
-            assert.equal(res.body.surname, 'UNKNOWN');
-            assert.equal(res.body.email, formData.email);
+            assert.equal(res.body.account.givenName, formData.givenName);
+            assert.equal(res.body.account.surname, formData.surname);
+            assert.equal(res.body.account.email, formData.email);
+            done();
+          });
+
+      });
+
+      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
+
+        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
+
+        request(namesOptionalRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(res.body.account.givenName, 'UNKNOWN');
+            assert.equal(res.body.account.surname, 'UNKNOWN');
+            assert.equal(res.body.account.email, formData.email);
             done();
           });
 
@@ -525,9 +653,9 @@ describe('register', function () {
               return done(err);
             }
 
-            assert.equal(res.body.givenName, 'UNKNOWN');
-            assert.equal(res.body.surname, 'UNKNOWN');
-            assert.equal(res.body.email, formData.email);
+            assert.equal(res.body.account.givenName, 'UNKNOWN');
+            assert.equal(res.body.account.surname, 'UNKNOWN');
+            assert.equal(res.body.account.email, formData.email);
             done();
           });
       });
@@ -727,29 +855,29 @@ describe('register', function () {
             var emailField = $(formFields[4]);
             var passwordField = $(formFields[5]);
 
-            assert.equal(givenNameField.attr('placeholder'), config.web.register.fields.givenName.placeholder);
-            assert.equal(givenNameField.attr('required') === 'required', config.web.register.fields.givenName.required);
-            assert.equal(givenNameField.attr('type'), config.web.register.fields.givenName.type);
+            assert.equal(givenNameField.attr('placeholder'), config.web.register.form.fields.givenName.placeholder);
+            assert.equal(givenNameField.attr('required') === 'required', config.web.register.form.fields.givenName.required);
+            assert.equal(givenNameField.attr('type'), config.web.register.form.fields.givenName.type);
 
-            assert.equal(surnameField.attr('placeholder'), config.web.register.fields.surname.placeholder);
-            assert.equal(surnameField.attr('required') === 'required', config.web.register.fields.surname.required);
-            assert.equal(surnameField.attr('type'), config.web.register.fields.surname.type);
+            assert.equal(surnameField.attr('placeholder'), config.web.register.form.fields.surname.placeholder);
+            assert.equal(surnameField.attr('required') === 'required', config.web.register.form.fields.surname.required);
+            assert.equal(surnameField.attr('type'), config.web.register.form.fields.surname.type);
 
-            assert.equal(colorField.attr('placeholder'), config.web.register.fields.color.placeholder);
-            assert.equal(colorField.attr('required') === 'required', config.web.register.fields.color.required);
-            assert.equal(colorField.attr('type'), config.web.register.fields.color.type);
+            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.color.placeholder);
+            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.color.required);
+            assert.equal(colorField.attr('type'), config.web.register.form.fields.color.type);
 
-            assert.equal(musicField.attr('placeholder'), config.web.register.fields.music.placeholder);
-            assert.equal(musicField.attr('required') === 'required', config.web.register.fields.music.required);
-            assert.equal(musicField.attr('type'), config.web.register.fields.music.type);
+            assert.equal(musicField.attr('placeholder'), config.web.register.form.fields.music.placeholder);
+            assert.equal(musicField.attr('required') === 'required', config.web.register.form.fields.music.required);
+            assert.equal(musicField.attr('type'), config.web.register.form.fields.music.type);
 
-            assert.equal(emailField.attr('placeholder'), config.web.register.fields.email.placeholder);
-            assert.equal(emailField.attr('required') === 'required', config.web.register.fields.email.required);
-            assert.equal(emailField.attr('type'), config.web.register.fields.email.type);
+            assert.equal(emailField.attr('placeholder'), config.web.register.form.fields.email.placeholder);
+            assert.equal(emailField.attr('required') === 'required', config.web.register.form.fields.email.required);
+            assert.equal(emailField.attr('type'), config.web.register.form.fields.email.type);
 
-            assert.equal(passwordField.attr('placeholder'), config.web.register.fields.password.placeholder);
-            assert.equal(passwordField.attr('required') === 'required', config.web.register.fields.password.required);
-            assert.equal(passwordField.attr('type'), config.web.register.fields.password.type);
+            assert.equal(passwordField.attr('placeholder'), config.web.register.form.fields.password.placeholder);
+            assert.equal(passwordField.attr('required') === 'required', config.web.register.form.fields.password.required);
+            assert.equal(passwordField.attr('type'), config.web.register.form.fields.password.type);
 
             done();
 
@@ -865,7 +993,7 @@ describe('register', function () {
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
 
-        var formData = namesOptionalRegistrationFixture.defaultFormPost();
+        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')

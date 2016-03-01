@@ -16,7 +16,9 @@ describe('getRequiredRegistrationFields', function () {
     var config = {
       web: {
         register: {
-          fields: {}
+          form: {
+            fields: {}
+          }
         }
       }
     };
@@ -31,20 +33,22 @@ describe('getRequiredRegistrationFields', function () {
     var config = {
       web: {
         register: {
-          fields: {
-            givenName: {
-              enabled: true,
-              name: 'givenName',
-              required: true
-            },
-            surname: {
-              enabled: true,
-              name: 'surname',
-              required: true
-            },
-            email: {
-              name: 'email',
-              required: false
+          form: {
+            fields: {
+              givenName: {
+                enabled: true,
+                name: 'givenName',
+                required: true
+              },
+              surname: {
+                enabled: true,
+                name: 'surname',
+                required: true
+              },
+              email: {
+                name: 'email',
+                required: false
+              }
             }
           }
         }

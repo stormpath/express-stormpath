@@ -6,6 +6,180 @@ Change Log
 
 All library changes, in descending order.
 
+Major Release 3.0.0
+-------------------
+
+**Major Release 3.0.0**
+
+This major release of our Express.js integration is introducing changes for
+better network performance and easier configuration.  We're also updating several
+configuration options and view models to conform with our framework
+specification, thus making it easier to integrate our front-end clients with our
+back-end libraries.
+
+Please see the :ref:`upgrading` for a comprehensive list of breaking changes that you will
+need to address when upgrading to this major version.  This changelog entry will
+discuss the major changes at a higher level.
+
+.. note::
+
+  At the time of writing, we are still updating our Angular and React libraries
+  to be compatible with this 3.0.0 version.  If you are using our Angular or React
+  libraries, please continue using the 2.4.0 version of this library for the
+  time being.  We expect to have those libraries ready within one week of this
+  release.
+
+Configuration Changes
+.....................
+
+There are many configuration changes in this release, and you should see the
+:ref:`upgrading` for a full list.  The biggest change is the removal of the
+``website`` and ``api`` options.  In the 2.x series, you would
+need the ``website`` option if you wanted to use the common feature set of
+login, registration, and password reset:
+
+.. code-block:: javascript
+
+  stormpath.init({
+    website: true
+  });
+
+If you wanted to use our ``/oauth/token`` endpoint, you would need to enable
+that with this different ``api`` option:
+
+.. code-block:: javascript
+
+  stormpath.init({
+    api: true
+  });
+
+
+This is no longer necessary!  You can now initialize the library without
+options, and the following features will be turned on by default:
+
+- Current User Route (``/me``)
+- Email Verification*
+- Login
+- OAuth2 Token Endpoint
+- Password Reset*
+- Registration
+
+
+*\*(if enabled on the directory)*
+
+.. note::
+
+  It is still possible to disable the features that you don't want to use.  For
+  example, if you wanted to disable the OAuth Token Endpoint:
+
+     .. code-block:: javascript
+
+      app.use(stormpath.init(app, {
+        web: {
+          oauth2: {
+            enabled: false
+          }
+        }
+      }));
+
+  For a full reference of features that can be disabled, please see the
+  `Web Configuration Defaults`_.
+
+There are other configuration changes, which are simple property name changes,
+but are breaking changes nonetheless.  Please see :ref:`upgrading` for a full
+list of changes in the 3.0.0 release.
+
+Performance Changes
+...................
+
+In the 2.x series, one of the common request was "how do I make authentication
+faster?"  As such, we've changed the following default options for this
+library.
+
+**Local Token Validation Is Now the Default**.
+
+When a user logs in to your website with a web browser, we create OAuth2 Access
+and Refresh Tokens for the session and store them in cookies.  These tokens
+would then be used to authenticate API requests against your server. In the 2.x
+version, we used ``stormpath`` validation by default.  In this scheme, on each request
+we would check against the Stormpath REST API to ensure that the access tokens had not
+been revoked.
+
+This would add the network time of a REST API call, which was undesirable.  As such,
+we are changing to ``local`` validation by default.  With local validation, we do
+not hit the REST API for every authentication attempt.  Instead we do a server-side
+check in your server, where we only check the signature and expiration of the
+access token.  If you do not wish to make this trade-off, you will need to set
+the option ``stormpath.web.oauth2.password.validationStrategy`` to ``stormpath``.
+
+For more information please see :ref:`token_validation_strategy`.
+
+**We Don't Attempt Authentication for All Routes, by Default**.
+
+In the 2.x series, we would attempt to authenticate *all requests* to your
+application, even if you didn't use an explicit middleware like
+``stormpath.loginRequired``.  The result was that ``req.user`` was always available,
+if the user was logged in.  This was convenient, but if you did not need this
+feature you would end up with a lot of authentication overhead for routes that
+did not need it, like your public asset routes.
+
+In 3.0.0 we no longer do this.  If you need to know if a user is logged in or
+not, please add the ``stormpath.getUser`` middleware to your route.
+
+For more information please see :ref:`getUser`.
+
+New Features
+.............
+
+**"Produces" Option, for Configuring HTML or JSON**
+
+The 2.x version was difficult to configure if you had a special Single-Page-App
+(SPA) case, and you did not want our library to render default HTML pages for
+you. Sometimes you just need some JSON API :)
+
+In this version, we now have this configuration option:
+
+.. code-block:: javascript
+
+  {
+    web: {
+      produces: ['application/json', 'text/html']
+    }
+  }
+
+This configuration tells our library which types of content it should serve, for
+the routes that it handles by default.  If you do not want our default pages to
+interfere with your SPA architecture, simply remove ``text/html`` from the list.
+
+**JSON View Models for Login and Registration**
+
+Another change, for SPA support, is the addition of proper JSON view models for
+our login and registration features.  In 2.x, it was not possible for your
+front-end to know how it should render these views.  Stormpath allows you to
+dynamically add login sources, and your application needs to know what account
+stores are available so that the login and registration views can be shown
+correctly.
+
+You can now issue GET requests against ``/login`` and ``/register``, with the
+header ``Accept: application/json`` and receive this information as a JSON
+view model.  For more information please see the :ref:`json_login_api` and
+the :ref:`json_registration_api`.
+
+**GitHub Login Is Now Supported**
+
+Yay! :)
+
+Bug Fixes
+.........
+
+- Added no-cache headers to the ``/me`` route.  Some browsers were caching this
+  response, which would cause front-end frameworks to think that the user was
+  still logged in.
+
+- During registration, the first and last name of an account would be set to
+  UNKNOWN, when those fields were marked optional, even if the user had supplied
+  those values.
+
 Version 2.4.0
 -------------
 
@@ -1070,3 +1244,4 @@ Version 0.1.0
 - Lots to do!
 
 
+.. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
