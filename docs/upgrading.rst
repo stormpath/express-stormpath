@@ -16,15 +16,15 @@ This is a complete list of changes you need to make to your 2.x application when
 upgrading to 3.0.0.  For a high level overview of the major points in this
 release, please see the :ref:`changelog`.
 
-- We've stopped resolving the authenticated user, by default.  You need to
+- We've stopped resolving the authenticated user by default.  You need to
   explicitly configure this with the ``stormpath.getUser`` middleware:
 
   .. code-block:: javascript
 
     app.get('/home', stormpath.getUser, function (req, res) {
-      if(req.user){
+      if (req.user) {
         res.send('Hello, ' + req.user.email);
-      }else{
+      } else {
         res.send('Not logged in');
       }
     });
@@ -34,7 +34,7 @@ release, please see the :ref:`changelog`.
   please review the `Web Configuration Defaults`_.
 
 - The logout route is now a POST route, it will not respond to GET requests.
-  You will need to use a form post or an AJAX request to logout the uesr.  This
+  You will need to use a form post or an AJAX request to logout the user.  This
   is a user experience fix, because the browser's omnibar was logging the user
   out when it tried to pre-fetch the logout route.
 
@@ -73,7 +73,7 @@ release, please see the :ref:`changelog`.
   longer expand those properties on our JSON responses from login and
   registration.  This is a security change.
 
-- If you want the ``/me route`` to expand properties on the user object, you will
+- If you want the ``/me`` route to expand properties on the user object, you will
   need to explicitly enable those options for that feature, like so:
 
   .. code-block:: javascript
@@ -100,7 +100,7 @@ release, please see the :ref:`changelog`.
       }
     }
 
-- Error messages from the JSON api have changed, previously the messages looked
+- Error messages from the JSON API have changed, previously the messages looked
   like ``{ error: 'error message' }`` but now they look like this:
 
   .. code-block:: javascript
@@ -125,11 +125,11 @@ release, please see the :ref:`changelog`.
     }
 
 - The ``/spa-config`` route is removed, you need to fetch this view model
-  information from the logout and registration endpoints.  Please see XXX and
-  YYY.
+  information from the logout and registration endpoints.  Please see :ref:`json_login_api` and
+  :ref:`json_registration_api`.
 
 - For Google login, we now ask for ``"email profile"`` scope instead of just
-  email, as this has more success with gathering the user's fist name and last
+  email, as this has more success with gathering the user's first name and last
   name from Google.
 
 - The ``web.socialProviders`` configuration has been removed, the social login

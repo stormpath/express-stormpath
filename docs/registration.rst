@@ -161,7 +161,7 @@ If you want to change the order of the fields, you can do so by specifying the
     web: {
       register: {
         form: {
-          fieldOrder: [ "givenName", "surname", "email", "password" ]
+          fieldOrder: [ 'givenName', 'surname', 'email', 'password' ]
         }
       }
     }

@@ -112,14 +112,14 @@ and Refresh Token cookies to make an authentication decision.  The default
 validation strategy (``local``) works like this:
 
 - If the Access Token signature is valid, and the token is not expired, accept
-  the request
+  the request.
 
 - If the Access Token is expired, attempt to get a new one from the Stormpath
   REST API by using the Refresh Token.
 
 - If a new Access Token cannot be obtained, deny the request.
 
-Withe ``local`` option, our library only checks the signature and expiration of
+With the ``local`` option, our library only checks the signature and expiration of
 the Access Token.  It does not check with the Stormpath REST API to assert that
 the Access Token hasn't been revoked.
 

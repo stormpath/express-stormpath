@@ -16,7 +16,6 @@ middleware, and with our other authentication middleware.
 Resolving The Current User
 ..........................
 
-
 In this situation, we have a home page which needs to render itself differently
 if the user is logged in.  In this scenario, we don't *require* authentication,
 but we need to know if the user is logged in.  In this case we use the
@@ -27,9 +26,9 @@ but we need to know if the user is logged in.  In this case we use the
     // Homepage route handler
 
     app.get('/', stormpath.getUser, function (req, res) {
-      if(req.user){
+      if (req.user) {
         res.send('Hello, ' + req.user.email);
-      }else{
+      } else {
         res.send('Not logged in');
       }
     });
@@ -41,7 +40,7 @@ If you require authentication for a route, you should use one of the
 authentication middleware functions that are documented in the
 :ref:`authentication` section.
 
-When you use these middleware, we won't call your middleware function unless the
+When you use these middlewares, we won't call your middleware function unless the
 user is logged in.  If the user is not logged in, we bypass your middleware and
 redirect the user to the login page for HTML requests, or send a 401 error for
 JSON requests.

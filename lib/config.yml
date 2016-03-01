@@ -1,5 +1,5 @@
 web:
-  ## basePasth is currently not used by Express-Stormpath
+  ## basePath is currently not used by Express-Stormpath
   basePath: null
 
   oauth2:
@@ -36,7 +36,6 @@ web:
   # By default the Stormpath integration should respond to JSON and HTML
   # requests.  If either is removed from configuration, the integration should
   # not try to handle the response for the given content type.
-
   produces:
     - application/json
     - text/html
@@ -45,9 +44,9 @@ web:
     enabled: true
     uri: "/register"
     nextUri: "/"
+
     # autoLogin is possible only if the email verification feature is disabled
-    # on the default account store of the defined Stormpath
-    # application.
+    # on the default account store of the defined Stormpath application.
     autoLogin: false
     form:
       fields:
@@ -172,15 +171,13 @@ web:
     forgotUri: "/#/forgot"
     registerUri: "/#/register"
 
-
   # Social login configuration.  This defines the callback URIs for OAuth
   # flows, and the scope that is requested of each provider.  Some providers
   # want space-separated scopes, some want comma-separated.  As such, these
   # string values should be passed directly, as defined.
   #
-  # These settings have no affect if the application does not have an account
+  # These settings have no effect if the application does not have an account
   # store for the given provider.
-
   social:
     facebook:
       uri: "/callbacks/facebook"
@@ -218,8 +215,8 @@ web:
   # filesystem.
   #
   # If the developer does not want our integration to handle their SPA, they
-  # will need to configure the framework themeslves and remove 'text/html'
-  # from `stormpath.web.produces`, so that we don not serve our default
+  # will need to configure the framework themselves and remove 'text/html'
+  # from `stormpath.web.produces`, so that we don't serve our default
   # HTML views.
   spa:
     enabled: false

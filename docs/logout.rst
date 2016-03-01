@@ -8,7 +8,7 @@ If you are using browser-based sessions, you'll need a way for the user to
 logout and destroy their session cookies.
 
 By default this library will automatically provide a POST route at ``/logout``.
-Simply make a POST request of this URL and the session cookies will be
+Simply make a POST request to this URL and the session cookies will be
 destroyed.
 
 Configuration Options

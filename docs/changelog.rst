@@ -35,14 +35,14 @@ Configuration Changes
 There are many configuration changes in this release, and you should see the
 :ref:`upgrading` for a full list.  The biggest change is the removal of the
 ``website`` and ``api`` options.  In the 2.x series, you would
-need the ``website`` option if  you wanted to use the common feature set of
+need the ``website`` option if you wanted to use the common feature set of
 login, registration, and password reset:
 
 .. code-block:: javascript
 
   stormpath.init({
     website: true
-  })
+  });
 
 If you wanted to use our ``/oauth/token`` endpoint, you would need to enable
 that with this different ``api`` option:
@@ -51,7 +51,7 @@ that with this different ``api`` option:
 
   stormpath.init({
     api: true
-  })
+  });
 
 
 This is no longer necessary!  You can now initialize the library without
@@ -92,18 +92,18 @@ list of changes in the 3.0.0 release.
 Performance Changes
 ...................
 
-In the 2.x series, one of the common request was "how to I make authentication
+In the 2.x series, one of the common request was "how do I make authentication
 faster?"  As such, we've changed the following default options for this
 library.
 
 **Local Token Validation Is Now the Default**.
 
 When a user logs in to your website with a web browser, we create OAuth2 Access
-and Refresh tokens for the session and store them in cookies.  These tokens
+and Refresh Tokens for the session and store them in cookies.  These tokens
 would then be used to authenticate API requests against your server. In the 2.x
-version, we used ``stormpath`` validation by default.  In this scheme, we would
-check against the Stormpath REST API to ensure that the access tokens have not
-been revoked, on every request to your server.
+version, we used ``stormpath`` validation by default.  In this scheme, on each request
+we would check against the Stormpath REST API to ensure that the access tokens had not
+been revoked.
 
 This would add the network time of a REST API call, which was undesirable.  As such,
 we are changing to ``local`` validation by default.  With local validation, we do
@@ -165,11 +165,11 @@ header ``Accept: application/json`` and receive this information as a JSON
 view model.  For more information please see the :ref:`json_login_api` and
 the :ref:`json_registration_api`.
 
-**Github Login Is Now Supported**
+**GitHub Login Is Now Supported**
 
 Yay! :)
 
-Bug fixes
+Bug Fixes
 .........
 
 - Added no-cache headers to the ``/me`` route.  Some browsers were caching this

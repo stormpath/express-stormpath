@@ -74,8 +74,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   app.use(stormpath.init(app, { }));
   ```
 
-  This will enable the default features, such as login and registration pages
-
+  This will enable the default features, such as login and registration pages.
 
   **If your app is a single page application (Angular, React)**
 
