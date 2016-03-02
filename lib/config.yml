@@ -32,7 +32,7 @@ web:
     secure: null
 
     # Controls the path flag of the cookie.  Inherits from basePath, but can be
-    # over-ridden here.
+    # overridden here.
     path: null
 
     # Controls the domain flag on the cookie, will not be set unless specified.
