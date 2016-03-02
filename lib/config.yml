@@ -1,5 +1,7 @@
 web:
-  ## basePath is currently not used by Express-Stormpath
+
+  # The basePath is used as the default path for the cookies that are set by
+  # this library.  If not defined, we will default to /
   basePath: null
 
   oauth2:
@@ -14,21 +16,32 @@ web:
       validationStrategy: "local"
 
   accessTokenCookie:
+
+    # Controls the name of the cookie that we send to the browser.
     name: "access_token"
+
+    # httpOnly is true, to prevent XSS attacks from hijacking your cookies.  We
+    # highly recommend that you do not change this.
     httpOnly: true
 
-    # See cookie-authentication.md for explanation of
-    # how `null` values behave for these properties.
+    # The secure property controls the Secure flag on the cookie.  The
+    # framework will auto-detect if the incoming request is over HTTPS, by
+    # looking at req.protocol === 'https' and turn on Secure if so.  You can
+    # override auto-detection and force the Secure flag on by setting this
+    # property to true, or force off by setting this property to false.
     secure: null
+
+    # Controls the path flag of the cookie.  Inherits from basePath, but can be
+    # overridden here.
     path: null
+
+    # Controls the domain flag on the cookie, will not be set unless specified.
     domain: null
 
+  # Refresh Token Cookie has same options as the Access Token Cookie (above).
   refreshTokenCookie:
     name: "refresh_token"
     httpOnly: true
-
-    # See cookie-authentication.md for explanation of
-    # how `null` values behave for these properties.
     secure: null
     path: null
     domain: null
