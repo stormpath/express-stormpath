@@ -28,6 +28,9 @@ function DefaultRegistrationFixture(stormpathApplication) {
     application: {
       href: stormpathApplication.href
     },
+    cacheOptions: {
+      ttl: 0
+    },
     web: {
       register: {
         enabled: true
@@ -109,6 +112,9 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
     application: {
       href: stormpathApplication.href
     },
+    cacheOptions: {
+      ttl: 0
+    },
     web: {
       register: {
         enabled: true,
@@ -169,6 +175,9 @@ function NamesDisabledRegistrationFixture(stormpathApplication) {
     application: {
       href: stormpathApplication.href
     },
+    cacheOptions: {
+      ttl: 0
+    },
     web: {
       register: {
         enabled: true,
@@ -212,6 +221,9 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
   this.expressApp = helpers.createStormpathExpressApp({
     application: {
       href: stormpathApplication.href
+    },
+    cacheOptions: {
+      ttl: 0
     },
     web: {
       register: {
