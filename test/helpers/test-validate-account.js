@@ -12,27 +12,22 @@ describe('validateAccount', function () {
           fields: {
             givenName: {
               enabled: true,
-              name: 'givenName',
               required: true
             },
             surname: {
               enabled: true,
-              name: 'surname',
               required: true
             },
             email: {
               enabled: true,
-              name: 'email',
               required: true
             },
             password: {
               enabled: true,
-              name: 'password',
               required: true
             },
-            passwordConfirm: {
+            confirmPassword: {
               enabled: true,
-              name: 'passwordConfirm',
               required: true
             }
           }
@@ -47,7 +42,7 @@ describe('validateAccount', function () {
       surname: 'Degges',
       email: 'randall@stormpath.com',
       password: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX',
-      passwordConfirm: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX'
+      confirmPassword: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX'
     };
 
     helpers.validateAccount(accountData, config, function (errors) {
@@ -62,7 +57,7 @@ describe('validateAccount', function () {
       surname: 'Degges',
       email: 'randall@stormpath.com',
       password: 'woot',
-      passwordConfirm: 'woothi'
+      confirmPassword: 'woothi'
     };
 
     helpers.validateAccount(accountData, config, function (errors) {

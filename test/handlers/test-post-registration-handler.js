@@ -20,7 +20,6 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
         form: {
           fields: {
             favoriteColor: {
-              name: 'favoriteColor',
               placeholder: 'favoriteColor',
               required: false,
               type: 'text'

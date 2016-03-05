@@ -37,16 +37,13 @@ describe('getRequiredRegistrationFields', function () {
             fields: {
               givenName: {
                 enabled: true,
-                name: 'givenName',
                 required: true
               },
               surname: {
                 enabled: true,
-                name: 'surname',
                 required: true
               },
               email: {
-                name: 'email',
                 required: false
               }
             }

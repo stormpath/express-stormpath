@@ -18,7 +18,7 @@ describe('sanitizeFormData', function () {
         surname: 'Degges',
         extraData: 'woot',
         password: 'omghax',
-        passwordConfirmWoo: 'omghaxx'
+        confirmPassword: 'omghaxx'
       }),
       {
         givenName: 'Randall',
