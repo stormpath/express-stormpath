@@ -62,6 +62,7 @@ describe('validateAccount', function () {
 
     helpers.validateAccount(accountData, config, function (errors) {
       assert.equal(errors.length, 1);
+      assert.equal(errors[0].message, 'Passwords do not match.');
       done();
     });
   });
