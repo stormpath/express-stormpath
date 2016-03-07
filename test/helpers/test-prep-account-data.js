@@ -11,23 +11,18 @@ describe('prepAccountData', function () {
         form: {
           fields: {
             givenName: {
-              name: 'givenName',
               required: true
             },
             surname: {
-              name: 'surname',
               required: true
             },
             email: {
-              name: 'email',
               required: true
             },
             password: {
-              name: 'password',
               required: true
             },
-            passwordConfirm: {
-              name: 'passwordConfirmWoo',
+            confirmPassword: {
               required: true
             }
           }
@@ -60,11 +55,11 @@ describe('prepAccountData', function () {
       surname: 'Degges',
       email: 'r@rdegges.com',
       password: 'woot!!!!omgHAX',
-      passwordConfirmWoo: 'woot!!!!omgHAX',
+      confirmPassword: 'woot!!!!omgHAX',
       extraData: 'hithere'
     }, config, function (accountData) {
-      assert.equal(accountData.passwordConfirmWoo, undefined);
-      assert.equal(accountData.customData.passwordConfirmWoo, undefined);
+      assert.equal(accountData.confirmPassword, undefined);
+      assert.equal(accountData.customData.confirmPassword, undefined);
       assert.equal(accountData.extraData, undefined);
       done();
     });
@@ -76,7 +71,7 @@ describe('prepAccountData', function () {
       surname: 'Degges',
       email: 'r@rdegges.com',
       password: 'woot!!!!omgHAX',
-      passwordConfirmWoo: 'woot!!!!omgHAX',
+      confirmPassword: 'woot!!!!omgHAX',
       extraData: 'hithere'
     }, config, function (accountData) {
       assert.deepEqual(accountData, {

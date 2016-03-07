@@ -5,46 +5,9 @@ var assert = require('assert');
 var helpers = require('../../lib/helpers');
 
 describe('sanitizeFormData', function () {
-  var config = {
-    web: {
-      register: {
-        form: {
-          fields: {
-            givenName: {
-              name: 'givenName',
-              required: true
-            },
-            surname: {
-              name: 'surname',
-              required: true
-            },
-            email: {
-              name: 'email',
-              required: true
-            },
-            password: {
-              name: 'password',
-              required: true
-            },
-            passwordConfirm: {
-              name: 'passwordConfirmWoo',
-              required: true
-            }
-          }
-        }
-      }
-    }
-  };
-
   it('should throw an error if formData is not supplied', function () {
     assert.throws(function () {
       helpers.sanitizeFormData();
-    }, Error);
-  });
-
-  it('should throw an error if stormpathConfig is not supplied', function () {
-    assert.throws(function () {
-      helpers.sanitizeFormData({});
     }, Error);
   });
 
@@ -55,8 +18,8 @@ describe('sanitizeFormData', function () {
         surname: 'Degges',
         extraData: 'woot',
         password: 'omghax',
-        passwordConfirmWoo: 'omghaxx'
-      }, config),
+        confirmPassword: 'omghaxx'
+      }),
       {
         givenName: 'Randall',
         surname: 'Degges',
