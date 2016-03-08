@@ -222,6 +222,53 @@ automatically when they register.  This can be achieved with this config::
 
 By default the nextUri is to the `/` page, but you can modify this.
 
+.. _pre_registration_handler:
+
+Pre Registration Handler
+------------------------
+
+Want to validate the form before it's handled, then this is the event
+that you want to handle!
+
+By defining a ``preRegistrationHandler`` you're able to do intercept the
+form request and do validation.
+
+To use a ``preRegistrationHandler`` you need to define your handler function
+in the Stormpath middleware setup::
+
+    app.use(stormpath.init(app, {
+      preRegistrationHandler: function (formData, req, res, next) {
+        console.log('Got registration request', formData);
+        next();
+      }
+    }));
+
+As you can see in the example above, the ``preRegistrationHandler`` function
+takes in four parameters:
+
+- ``formData``: The data submitted in the form.
+- ``req``: The Express request object.  This can be used to modify the incoming
+  request directly.
+- ``res``: The Express response object.  This can be used to modify the HTTP
+  response directly.
+- ``next``: The callback to call when you either want to return an error, or
+  want to registration to continue processing. I.e. if you call this callback
+  with an error then the form will stop on that. But if you call it without
+  any arguments, then the form will just continue processing like normally.
+
+In the example below, we'll use the ``preRegistrationHandler`` to validate that
+the user doesn't enter an email domain that is restricted::
+
+    app.use(stormpath.init(app, {
+      preRegistrationHandler: function (formData, req, res, next) {
+        if (formData.email.indexOf('@some-domain.com') !== -1) {
+          return next(new Error('You\'re not allowed to register with \'@some-domain.com\'.'));
+        }
+
+        next();
+      }
+    }));
+
 .. _post_registration_handler:
 
 Post Registration Handler
@@ -244,7 +291,7 @@ in the Stormpath middleware setup::
       postRegistrationHandler: function (account, req, res, next) {
         console.log('User:', account.email, 'just registered!');
         next();
-      },
+      }
     }));
 
 As you can see in the example above, the ``postRegistrationHandler`` function
@@ -265,7 +312,7 @@ user to a special page (*instead of the normal registration flow*)::
     app.use(stormpath.init(app, {
       postRegistrationHandler: function (account, req, res, next) {
         res.redirect(302, '/secretpage').end();
-      },
+      }
     }));
 
 .. _json_registration_api:
