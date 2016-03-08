@@ -252,7 +252,7 @@ takes in four parameters:
 - ``res``: The Express response object.  This can be used to modify the HTTP
   response directly.
 - ``next``: The callback to call when you either want to return an error, or
-  want to registration to continue processing. I.e. if you call this callback
+  want the registration to continue processing. I.e. if you call this callback
   with an error then the form will stop on that. But if you call it without
   any arguments, then the form will just continue processing like normally.
 
