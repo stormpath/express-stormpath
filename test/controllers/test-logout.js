@@ -1,20 +1,31 @@
 'use strict';
 
+var sinon = require('sinon');
+var assert = require('assert');
 var request = require('supertest');
-
 var helpers = require('../helpers');
 
 describe('logout', function () {
   var app;
+  var config;
+  var sandbox;
   var stormpathApplication;
+  var postLogoutHandlerSpy;
 
   before(function (done) {
-    helpers.createApplication(helpers.createClient(), function (err, a) {
+    helpers.createApplication(helpers.createClient(), function (err, application) {
       if (err) {
         return done(err);
       }
 
-      stormpathApplication = a;
+      sandbox = sinon.sandbox.create();
+
+      postLogoutHandlerSpy = sandbox.spy(function (account, req, res, next) {
+        next();
+      });
+
+      stormpathApplication = application;
+
       app = helpers.createStormpathExpressApp({
         application: {
           href: stormpathApplication.href
@@ -23,19 +34,28 @@ describe('logout', function () {
           logout: {
             enabled: true
           }
-        }
+        },
+        postLogoutHandler: postLogoutHandlerSpy
       });
 
-      app.on('stormpath.ready', done);
+      app.on('stormpath.ready', function (err) {
+        if (err) {
+          return done(err);
+        }
+
+        config = app.get('stormpathConfig');
+
+        done();
+      });
     });
   });
 
   after(function (done) {
+    sandbox.restore();
     helpers.destroyApplication(stormpathApplication, done);
   });
 
   it('should not respond to GET request', function (done) {
-    var config = app.get('stormpathConfig');
     request(app)
       .get(config.web.logout.uri)
       .expect(404)
@@ -43,7 +63,6 @@ describe('logout', function () {
   });
 
   it('should bind to /logout by default', function (done) {
-    var config = app.get('stormpathConfig');
     request(app)
       .post(config.web.logout.uri)
       .expect(302)
@@ -51,7 +70,6 @@ describe('logout', function () {
   });
 
   it('should delete the access token and refresh token cookies', function (done) {
-    var config = app.get('stormpathConfig');
     request(app)
       .post(config.web.logout.uri)
       .expect('Set-Cookie', /access_token=;/)
@@ -66,7 +84,6 @@ describe('logout', function () {
 
   describe('when Accept header is set to text/html', function () {
     it('should respond with 302', function (done) {
-      var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.logout.uri)
         .set('Accept', 'text/html')
@@ -77,21 +94,22 @@ describe('logout', function () {
 
   describe('when Accept header is set to application/json', function () {
     it('should respond with 200', function (done) {
-      var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.logout.uri)
         .set('Accept', 'application/json')
-        .expect(200)
-        .end(done);
+        .expect(200).end(done);
     });
   });
 
   it('should follow the next param if present', function (done) {
-    var config = app.get('stormpathConfig');
     request(app)
       .post(config.web.logout.uri + '?next=/goodbye')
       .expect(302)
       .expect('Location', '/goodbye')
       .end(done);
+  });
+
+  it('should call the postLogoutHandler', function () {
+    assert(postLogoutHandlerSpy.callCount, 3);
   });
 });
