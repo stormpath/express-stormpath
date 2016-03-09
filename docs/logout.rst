@@ -30,7 +30,7 @@ following configuration::
 Post Logout Handler
 ------------------
 
-Want to run some custom code after a user logout out of your site?
+Want to run some custom code after a user has logged out of your site?
 By defining a ``postLogoutHandler`` you're able do just that!
 
 To use a ``postLogoutHandler``, you need to define your handler function
@@ -60,6 +60,6 @@ user to a special page (*instead of the normal logout flow*)::
 
     app.use(stormpath.init(app, {
       postLogoutHandler: function (account, req, res, next) {
-        res.redirect(302, '/secretpage').end();
+        res.redirect(302, '/farewell').end();
       }
     }));
