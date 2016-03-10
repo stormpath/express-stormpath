@@ -1,7 +1,6 @@
 'use strict';
 
 var sinon = require('sinon');
-var assert = require('assert');
 var request = require('supertest');
 var helpers = require('../helpers');
 
