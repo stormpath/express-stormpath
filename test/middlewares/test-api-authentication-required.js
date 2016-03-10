@@ -5,6 +5,7 @@ var request = require('supertest');
 var uuid = require('uuid');
 
 var apiAuthenticationRequired = require('../../lib/middleware/api-authentication-required');
+var revokeAccessToken = require('../../lib/helpers').revokeToken.revokeAccessToken;
 var DefaultExpressApplicationFixture = require('../fixtures/default-express-application');
 var helpers = require('../helpers');
 
@@ -46,6 +47,7 @@ function getApiKeyBearerToken(app, apiKey, done) {
 }
 
 describe('apiAuthenticationRequired', function () {
+  var client = helpers.createClient();
   var username = uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var successResponse = uuid.v4();
@@ -58,13 +60,19 @@ describe('apiAuthenticationRequired', function () {
   };
   var stormpathAccount;
   var stormpathApplication;
+  var stormpathValidationApp;
   var app;
   var accountApiKey;
   var passwordAccessToken;
   var apiKeyAccessToken;
 
+
+  function protectedApiRoute(req, res) {
+    res.end(successResponse);
+  }
+
   before(function (done) {
-    helpers.createApplication(helpers.createClient(), function (err, application) {
+    helpers.createApplication(client, function (err, application) {
       if (err) {
         return done(err);
       }
@@ -83,10 +91,21 @@ describe('apiAuthenticationRequired', function () {
 
           accountApiKey = apiKey;
           app = new DefaultExpressApplicationFixture(stormpathApplication).expressApp;
-
-          app.get('/protected', apiAuthenticationRequired, function (req, res) {
-            res.end(successResponse);
+          stormpathValidationApp = helpers.createStormpathExpressApp({
+            application: stormpathApplication,
+            web: {
+              oauth2: {
+                password: {
+                  validationStrategy: 'stormpath'
+                }
+              }
+            }
           });
+
+
+          stormpathValidationApp.get('/protected', apiAuthenticationRequired, protectedApiRoute);
+
+          app.get('/protected', apiAuthenticationRequired, protectedApiRoute);
 
           app.on('stormpath.ready', function () {
             async.parallel({
@@ -124,6 +143,21 @@ describe('apiAuthenticationRequired', function () {
       .get('/protected')
       .set('Authorization', 'Bearer ' + passwordAccessToken)
       .expect(200, successResponse, done);
+  });
+
+  describe('with stormpath validation option', function () {
+
+    before(function (done) {
+      var jwtSigningKey = client._dataStore.requestExecutor.options.client.apiKey.secret;
+      revokeAccessToken(client, passwordAccessToken, jwtSigningKey, done);
+    });
+
+    it('should reject the request if the access tokens is revoked', function (done) {
+      request(stormpathValidationApp)
+        .get('/protected')
+        .set('Authorization', 'Bearer ' + passwordAccessToken)
+        .expect(401, done);
+    });
   });
 
   it('should authenticate the request with access tokens that were obtained by client_credentials grant', function (done) {
