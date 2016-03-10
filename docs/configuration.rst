@@ -4,12 +4,13 @@
 Configuration
 =============
 
-In the last section, we gathered our API credentials for the Stormpath API.
-Now we'll configure our Express application to use them.
+This module provides many options that allow you to customize the authentication
+features of your Express application.  We will cover the major options in this
+section, and more specific options in later sections of this guide.
 
-Now that we've got all the prerequisites out of the way, let's take a look at
-some code!  Integrating Express-Stormpath into an application can take as little
-as **1 minute**!
+If you would like a master list of all available options, please refer to the
+`Web Configuration Defaults`_ file in the library. This YAML file has comments
+which describe each option, and represents the defaults for all options.
 
 
 Environment Variables
@@ -22,9 +23,9 @@ by running the following commands in the shell:
 
 .. code-block:: bash
 
-    export STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
-    export STORMPATH_CLIENT_APIKEY_SECRET=YOUR-SECRET-HERE
-    export STORMPATH_APPLICATION_HREF=YOUR-APP-HREF
+    export STORMPATH_CLIENT_APIKEY_ID=YOUR_ID_HERE
+    export STORMPATH_CLIENT_APIKEY_SECRET=YOUR_SECRET_HERE
+    export STORMPATH_APPLICATION_HREF=YOUR_APP_HREF
 
 .. note::
     If you're on Windows, the command you need to use to set environment
@@ -32,9 +33,18 @@ by running the following commands in the shell:
 
     .. code-block:: bash
 
-        set STORMPATH_CLIENT_APIKEY_ID=YOUR-ID-HERE
-        set STORMPATH_CLIENT_APIKEY_SECRET=YOUR-SECRET-HERE
-        set STORMPATH_APPLICATION_HREF=YOUR-APP-HREF
+        set STORMPATH_CLIENT_APIKEY_ID=YOUR_ID_HERE
+        set STORMPATH_CLIENT_APIKEY_SECRET=YOUR_SECRET_HERE
+        set STORMPATH_APPLICATION_HREF=YOUR_APP_HREF
+
+The examples above show you the 3 mandatory settings you need to configure to
+make express-stormpath work.  These settings can be configured via environment
+variables, or in a number of other ways.
+
+.. note::
+
+    If you're using Heroku you don't need to specify your credentials or
+    application at all -- these values will be automatically populated for you.
 
 .. tip::
 
@@ -42,48 +52,53 @@ by running the following commands in the shell:
     `autoenv <https://github.com/kennethreitz/autoenv>`_, a project that makes
     working with environment variables simpler for Linux / Mac / BSD users.
 
-The examples above show you the 3 mandatory settings you need to configure to
-make express-stormpath work.  These settings can be configured via environment
-variables, or in a number of other ways.
+Inline Options
+----------------
 
+If you wish to define your variables as inline options (not recommended!) you
+can do so like this:
 
-Initialize Express-Stormpath
-----------------------------
+.. code-block:: javascript
 
-To initialize Express-Stormpath, you need to use the ``stormpath.init``
-middleware and provide a configuration object.
+  app.use(stormpath.init(app, {
+    apiKey: {
+      id: 'xxxx',
+      secret: 'xxxx'
+    },
+    application: {
+      href: `https://api.stormpath.com/v1/applications/xxxx`
+    }
+  }));
 
-Below is a minimal Express application which shows how you can import and
-initialize the Stormpath middleware:
+.. _default_features:
 
- .. code-block:: javascript
+Default Features
+----------------
 
-    var express = require('express');
-    var stormpath = require('express-stormpath');
+When you add Stormpath to your application, via ``app.use(stormpath.init(app))``,
+our module will add the following routes to your application by default:
 
-    var app = express();
-    app.use(stormpath.init(app, {
-      // Optional configuration options.
-    }));
++--------------+-------------------------------------------------------------+---------------------------+
+| URI          | Purpose                                                     | Documentation             |
++==============+=============================================================+===========================+
+| /forgot      | Request a password reset link.                              | :ref:`password_reset`     |
++--------------+-------------------------------------------------------------+---------------------------+
+| /login       | Login to your application with username and password.       | :ref:`login`              |
++--------------+-------------------------------------------------------------+---------------------------+
+| /logout      | Accepts a POST request, and destroys the login session.     | :ref:`logout`             |
++--------------+-------------------------------------------------------------+---------------------------+
+| /oauth/token | Issue OAuth2 access and refresh tokens.                     | :ref:`authentication`     |
++--------------+-------------------------------------------------------------+---------------------------+
+| /register    | Create an account within your application.                  | :ref:`registration`       |
++--------------+-------------------------------------------------------------+---------------------------+
+| /reset       | Reset an account password, from a password reset link.      | :ref:`password_reset`     |
++--------------+-------------------------------------------------------------+---------------------------+
+| /verify      | Verify a new account, from a email verification link.       | :ref:`email_verification` |
++--------------+-------------------------------------------------------------+---------------------------+
 
-    // Once Stormpath has initialized itself, start your web server!
-    app.on('stormpath.ready', function () {
-      app.listen(3000);
-    });
-
-The Stormpath middleware is what initializes Stormpath, grabs configuration
-information, and manages sessions / user state.  It is the base of all
-Express-Stormpath functionality.
-
-.. note::
-    The Stormpath middleware **must** always be the last initialized middleware,
-    but must come **before** any custom route code that you want to protect
-    with Stormpath.
-
-Lastly, as of version **0.5.9** of this library -- if you're using Heroku you
-don't need to specify your credentials or application at all -- these values
-will be automatically populated for you.
-
+Each featue has it's own options, please refer to the documentation of each
+feature.  If you want to disable specific features, continue to the next
+section.
 
 Disabling Features
 ------------------
@@ -114,11 +129,92 @@ this configuration:
       }
     }));
 
-Options Reference
------------------
 
-For a full list of all the options that can be changed, please see the
-`Web Configuration Defaults`_.
+
+Stormpath Client Options
+------------------------
+
+When you initialize this library, it creates an instance of a Stormpath Client.
+The Stormpath client is responsible for communicating with the Stormpath REST
+API and is provided by the `Stormpath Node SDK`_.  You can pass options to the
+Stormpath Client by adding them to the root of the configuration object that
+you provide in your Express application.
+
+For example, if you wish to enable the Redis caching feature of the
+Stormpath Client::
+
+  app.use(stormpath.init(app, {
+    cacheOptions: {
+      store: 'redis'
+    }
+  }));
+
+For a full reference of options, please see the
+`Node SDK Client Documentation`_.
+
+If you would like to work directly with the client in your Express application,
+you can fetch it from the app object like this::
+
+    app.get('/secret', function (req, res) {
+      var client = req.app.get('stormpathClient');
+
+      // For example purposes only -- you probably don't want to actually expose
+      // this information to your users =)
+      client.getCurrentTenant(function (err, tenant) {
+        if (err) {
+          return res.status(400).json(err);
+        }
+
+        res.json(tenant);
+      });
+    });
+
+
+
+Single Page Applications
+------------------------
+
+This framework is designed to work with front-end frameworks like Angular and
+React.  For each feature (login, registration) there is a JSON API for the
+feature.  The JSON API is documented for each feature, please see the feature
+list in the sidebar of this documentation.
+
+In some cases you may need to specify the ``spa.view`` option.  This
+is the absolute file path to the entry point for your SPA.  That option
+would be defined like this::
+
+    app.use(stormpath.init(app, {
+      web: {
+        spa: {
+          enabled: true,
+          view: path.join(__dirname, 'public', 'index.html')
+        }
+      }
+    }));
+
+This allows our framework to serve your SPA, for routes that this framework also
+wants to handle. You need this option if the following are true:
+
+ * Your SPA is using HTML5 history mode
+ * You want the default feature routes, such as ``/login`` to
+   serve your SPA
+ * You don't want to use our default login and registration views, you want your
+   SPA to render those client-side.
+
+.. note::
+
+  You can disable our HTML views entirely, this is useful if you simply want to
+  use our JSON API with your customized front-end application.  Use this
+  configuration to remove HTML from the content type list:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        produces: ['application/json']
+      }
+    }));
+
 
 Logging
 -------
@@ -151,123 +247,7 @@ If you want to supply your own Winston logger, you can do that as well:
   same interface as the Winston logger, providing methods such as ``info()``
   and ``error()``.
 
-Stormpath Client Options
-------------------------
-
-When you initialize this library, it creates an instance of a Stormpath Client.
-The Stormpath client is responsible for communicating with the Stormpath REST
-API and is provided by the `Stormpath Node SDK`_.  You can pass options to the
-Stormpath Client by adding them to the root of the configuration object that
-you provide in your Express application.
-
-For example, if you wish to enable the Redis caching feature of the
-Stormpath Client::
-
-  app.use(stormpath.init(app, {
-    cacheOptions: {
-      store: 'redis'
-    }
-  }));
-
-For a full reference of options, please see the Node SDK client documentation:
-
-https://docs.stormpath.com/nodejs/api/client
-
-If you would like to work directly with the client in your Express application,
-you can fetch it from the app object like this::
-
-    app.get('/secret', function (req, res) {
-      var client = req.app.get('stormpathClient');
-
-      // For example purposes only -- you probably don't want to actually expose
-      // this information to your users =)
-      client.getCurrentTenant(function (err, tenant) {
-        if (err) {
-          return res.status(400).json(err);
-        }
-
-        res.json(tenant);
-      });
-    });
-
-
-Startup
--------
-
-If you followed the step above, you will now have fully functional
-registration, login, and logout functionality active on your site!  Your site
-should be live on this URL:
-
-http://localhost:3000
-
-Don't believe me?  Test it out!  Start up your Express web server now, and I'll
-walk you through the basics:
-
-- Navigate to ``/register``.  You will see a registration page.  Go ahead and
-  enter some information.  You should be able to create a user account.  Once
-  you've created a user account, you'll be automatically logged in, then
-  redirected back to the root URL (``/``, by default).
-- Navigate to ``/logout``.  You will now be logged out of your account, then
-  redirected back to the root URL (``/``, by default).
-- Navigate to ``/login``.  You will see a login page.  You can now re-enter
-  your user credentials and log into the site again.
-
-Wasn't that easy?!
-
-.. note::
-    You probably noticed that you couldn't register a user account without
-    specifying a sufficiently strong password.  This is because, by default,
-    Stormpath enforces certain password strength rules on your Stormpath
-    Directories.
-
-    If you'd like to change these password strength rules (*or disable them*),
-    you can do so easily by visiting the `Stormpath dashboard`_, navigating to
-    your user Directory, then changing the "Password Strength Policy".
-
-
-Single Page Applications
-------------------------
-
-This framework is designed to work with front-end frameworks like Angular and
-React.  For each feature (login, registration) there is a JSON API for the
-feature.  The JSON API is documented for each feature, please see the feature
-list in the sidebar of this documentation.
-
-In some cases you may need to specify the ``spa.view`` option.  This
-is the absolute file path to the entry point for your SPA.  That option
-would be defined like this::
-
-    app.use(stormpath.init(app, {
-      web: {
-        spa: {
-          enabled: true,
-          view: path.join(__dirname, 'public', 'index.html')
-        }
-      }
-    }));
-
-This allows our framework to serve your SPA, for routes that this framework also
-wants to handle. You need this option if the following are true:
-
- * Your SPA is using HTML5 history mode
- * You want the default feature routes, such as ``/login`` to
-   serve your SPA
- * You don't want to use our default login and registration views
-
-.. note::
-
-  You can disable our HTML views entirely, this is useful if you simply want to
-  use our JSON API with your customized front-end application.  Use this
-  configuration to remove HTML from the content type list:
-
-  .. code-block:: javascript
-
-    app.use(stormpath.init(app, {
-      web: {
-        produces: ['application/json']
-      }
-    }));
-
+.. _Node SDK Client Documentation: https://docs.stormpath.com/nodejs/api/client
 .. _Winston: https://github.com/winstonjs/winston
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 .. _Stormpath applications: https://api.stormpath.com/v#!applications
