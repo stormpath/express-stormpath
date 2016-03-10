@@ -108,8 +108,4 @@ describe('logout', function () {
       .expect('Location', '/goodbye')
       .end(done);
   });
-
-  it('should call the postLogoutHandler', function () {
-    assert(postLogoutHandlerSpy.callCount, 3);
-  });
 });
