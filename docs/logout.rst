@@ -31,7 +31,7 @@ Post Logout Handler
 ------------------
 
 Want to run some custom code after a user has logged out of your site?
-By defining a ``postLogoutHandler`` you're able do just that!
+By defining a ``postLogoutHandler`` you're able to do just that!
 
 To use a ``postLogoutHandler``, you need to define your handler function
 in the Stormpath config::
@@ -44,7 +44,7 @@ in the Stormpath config::
     }));
 
 As you can see in the example above, the ``postLogoutHandler`` function
-takes in four parameters:
+takes four parameters:
 
 - ``account``: The successfully logged out user account.
 - ``req``: The Express request object.  This can be used to modify the incoming
