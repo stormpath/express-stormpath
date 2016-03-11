@@ -5,7 +5,7 @@ Setup
 =====
 
 This section walks you through the basic setup for Express-Stormpath, by the end
-of this page you'll have login and registration features for your Express
+of this page you'll have setup login and registration features for your Express
 application!
 
 Create a Stormpath Account
@@ -18,39 +18,41 @@ create a new Stormpath account: https://api.stormpath.com/register
 Create an API Key Pair
 ----------------------
 
-Once you've created a new account, you need to create a new API key pair by
-logging into your dashboard and clicking the "Create an API Key" button.  This
-will generate a new API key for you, and prompt you to download your key pair.
+Once you've created a new account you need to create a new API key pair. A new
+API key pair is easily created by logging into your dashboard and clicking the
+"Create an API Key" button. This will generate a new API key for you, and
+prompt you to download your key pair.
 
 .. note::
     Please keep the API key pair file you just downloaded safe!  These two keys
     allow you to make Stormpath API requests, and should be properly protected,
     backed up, etc.
 
-Once you've downloaded your `apiKey.properties` file, save it to this location
-in your home directory:
+Once you've downloaded your `apiKey.properties` file, save it to the following
+location in your home directory:
 
 .. code-block:: sh
 
     ~/.stormpath/apiKey.properties
 
 To ensure no other users on your system can access the file, you'll also want to
-change the file's permissions.  You can do this by running:
+change the file's permissions. You can do this by opening up your terminal and
+running:
 
 .. code-block:: sh
 
     $ chmod go-rwx ~/.stormpath/apiKey.properties
 
 For the rest of this tutorial, we'll assume that you've placed this file in that
-location.  If you prefer to expose options with environment variables or
-configuration options, you can do that too!  Please see the :ref:`configuration`
-section for other options
+location. If you prefer to expose options with environment variables or
+configuration options, you can do that too! Please see the :ref:`configuration`
+section for other options.
 
 Find Your Stormpath Application
 -------------------------------
 
 All new Stormpath Tenants will have a Stormpath Application, called
-"My Application".  You'll generally want one application per project, and we can
+"My Application". You'll generally want one application per project, and we can
 use this default application to get started.
 
 An application has an HREF, and it looks like this:
@@ -67,9 +69,9 @@ To learn more about Stormpath Applications, please see the
 `Setting up Development and Production Environments`_
 
 .. note::
-    Your default Application will also have a directory mapped to it.  This is
-    where Stormpath stores accounts.  To learn more, please see the
-    `Directory Resource`_ and `Modeling Your User Base`_
+    Your default Application will also have a directory mapped to it. The
+    Directory is where Stormpath stores accounts. To learn more, please see
+    `Directory Resource`_ and `Modeling Your User Base`_.
 
 
 Now that you've created an Application, you're ready to plug Express-Stormpath
@@ -83,9 +85,9 @@ left to do before we can dive into the code is install the `Express-Stormpath`_
 package from `NPM`_.
 
 To install Express-Stormpath, you'll need ``npm``.  You can install the latest
-version of Express-Stormpath by running::
+version of Express-Stormpath by opening up your terminal and running::
 
-    $ npm install --save express-stormpath
+    $ npm install express-stormpath --save
 
 If you'd like to upgrade to the latest version of Express-Stormpath (*maybe you
 have an old version installed*), you can run::
@@ -115,16 +117,16 @@ Express application, it shows the minimal code required to integrate Stormpath:
       // Optional configuration options.
     }));
 
-    app.listen(3000);
-
-    // Stormpath will let you know when it's ready to start authenticating users.
-    app.on('stormpath.ready', function () {
-        console.log('Stormpath Ready!');
+    app.listen(3000, function (err) {
+      if (err) {
+        return console.error(err);
+      }
+      console.log('Server running on http://localhost:3000/');
     });
 
 With this minimal configuration, our library will do the following:
 
-- Fetch your Stormpath Application and all the data about it's configuration and
+- Fetch your Stormpath Application and all the data about its configuration and
   account stores.
 
 - Attach the :ref:`default_features` to your express application, such as the
@@ -132,21 +134,20 @@ With this minimal configuration, our library will do the following:
 
 - Hold any requests that require authentication, until Stormpath is ready.
 
-That's it, you're ready to go!  Try navigating to these URLs in your
-application:
+That's it, you're ready to go! Try navigating to these URLs in your application:
 
 - http://localhost:3000/login
 - http://localhost:3000/register
 
-You should be able to register for an account, and log in.  The newly created
+You should be able to register for an account and log in. The newly created
 account will be placed in the directory that is mapped to "My Application".
 
 .. note::
 
     By default, we don't require email verification for new accounts, but we
-    highly recommend you use this workflow.  You can enable email verification
-    from the directory of your Stormpath Application.  You can do this from our
-    `Admin Console`_.
+    highly recommend you use this workflow. You can enable email verification
+    by logging into the `Admin Console`_ and going to the the Workflows tab
+    for the directory of your Stormpath Application.
 
 There are many more features than login and registration, please continue to the
 next section to learn more!

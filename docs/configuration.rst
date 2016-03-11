@@ -4,13 +4,13 @@
 Configuration
 =============
 
-This module provides many options that allow you to customize the authentication
-features of your Express application.  We will cover the major options in this
+This module provides several options that allow you to customize the authentication
+features of your Express application. We will cover the major options in this
 section, and more specific options in later sections of this guide.
 
-If you would like a master list of all available options, please refer to the
+If you would like a list of all available options, please refer to the
 `Web Configuration Defaults`_ file in the library. This YAML file has comments
-which describe each option, and represents the defaults for all options.
+which describe each option and the value represents the option default.
 
 
 Environment Variables
@@ -43,14 +43,14 @@ variables, or in a number of other ways.
 
 .. note::
 
-    If you're using Heroku you don't need to specify your credentials or
-    application at all -- these values will be automatically populated for you.
+    If you're using Heroku you don't need to specify the credentials or
+    your application -- these values will be automatically provided for you.
 
 .. tip::
 
     You might also want to check out
     `autoenv <https://github.com/kennethreitz/autoenv>`_, a project that makes
-    working with environment variables simpler for Linux / Mac / BSD users.
+    working with environment variables simpler for Linux/Mac/BSD users.
 
 Inline Options
 ----------------
@@ -62,11 +62,11 @@ can do so like this:
 
   app.use(stormpath.init(app, {
     apiKey: {
-      id: 'xxxx',
-      secret: 'xxxx'
+      id: 'YOUR_ID_HERE',
+      secret: 'YOUR_SECRET_HERE'
     },
     application: {
-      href: `https://api.stormpath.com/v1/applications/xxxx`
+      href: `YOUR_APP_HREF`
     }
   }));
 
@@ -75,8 +75,8 @@ can do so like this:
 Default Features
 ----------------
 
-When you add Stormpath to your application, via ``app.use(stormpath.init(app))``,
-our module will add the following routes to your application by default:
+When you add Stormpath to your application using ``app.use(stormpath.init(app))``,
+our module will automatically add the following routes to your applicationx:
 
 +--------------+-------------------------------------------------------------+---------------------------+
 | URI          | Purpose                                                     | Documentation             |
@@ -96,8 +96,8 @@ our module will add the following routes to your application by default:
 | /verify      | Verify a new account, from a email verification link.       | :ref:`email_verification` |
 +--------------+-------------------------------------------------------------+---------------------------+
 
-Each featue has it's own options, please refer to the documentation of each
-feature.  If you want to disable specific features, continue to the next
+Each featue has its own options, please refer to the documentation of each
+feature. If you want to disable specific features, continue to the next
 section.
 
 Disabling Features
@@ -195,9 +195,8 @@ would be defined like this::
 This allows our framework to serve your SPA, for routes that this framework also
 wants to handle. You need this option if the following are true:
 
- * Your SPA is using HTML5 history mode
- * You want the default feature routes, such as ``/login`` to
-   serve your SPA
+ * Your SPA is using HTML5 history mode.
+ * You want the default feature routes, such as ``/login`` to serve your SPA.
  * You don't want to use our default login and registration views, you want your
    SPA to render those client-side.
 
