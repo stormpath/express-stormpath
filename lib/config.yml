@@ -138,6 +138,12 @@ web:
           placeholder: "Username or Email"
           required: true
           type: "text"
+        organizationNameKey:
+          enabled: false
+          label: "Organization"
+          placeholder: ""
+          requred: true
+          type: "text"
         password:
           enabled: true
           label: "Password"

@@ -8,7 +8,10 @@ block vars
   - var registerFields = stormpathConfig.web.register.form.fields
 
 block body
-
+  if hasSocialProviders
+    - var labelColumnSize = 'col-sm-12'
+  else
+    - var labelColumnSize = 'col-sm-4'
   .container.custom-container
     .va-wrapper
       .view.login-view.container
@@ -97,6 +100,21 @@ block body
                     input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
                   else
                     input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
+
+              -var organizationNameKeyField = stormpathConfig.web.login.form.fields.organizationNameKey
+              if organizationNameKeyField.enabled
+
+                .form-group.group-organization-name-key
+                  label(class='#{labelColumnSize}') Organization
+
+                  div(class='#{cls}')
+                    input.form-control(
+                      type=organizationNameKeyField.type,
+                      placeholder=organizationNameKeyField.placeholder
+                      required=organizationNameKeyField.required
+                      name='organizationNameKey'
+                      value= form.data ? form.data.organizationNameKey : ''
+                    )
 
               if hasSocialProviders
                 - var cls = 'col-sm-12'
