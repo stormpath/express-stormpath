@@ -5,8 +5,8 @@ Setup
 =====
 
 This section walks you through the basic setup for Express-Stormpath, by the end
-of this page you'll have setup login and registration features for your Express
-application!
+of this page you'll have setup the login and registration features for your
+Express application!
 
 Create a Stormpath Account
 --------------------------
@@ -117,11 +117,11 @@ Express application, it shows the minimal code required to integrate Stormpath:
       // Optional configuration options.
     }));
 
-    app.listen(3000, function (err) {
-      if (err) {
-        return console.error(err);
-      }
-      console.log('Server running on http://localhost:3000/');
+    app.listen(3000);
+
+    // Stormpath will let you know when it's ready to start authenticating users.
+    app.on('stormpath.ready', function () {
+      console.log('Stormpath Ready!');
     });
 
 With this minimal configuration, our library will do the following:

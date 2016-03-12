@@ -76,7 +76,7 @@ Default Features
 ----------------
 
 When you add Stormpath to your application using ``app.use(stormpath.init(app))``,
-our module will automatically add the following routes to your applicationx:
+our module will automatically add the following routes to your application:
 
 +--------------+-------------------------------------------------------------+---------------------------+
 | URI          | Purpose                                                     | Documentation             |
