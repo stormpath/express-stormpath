@@ -177,6 +177,7 @@ to your application, and modify it's password policy.
 
 For more information see `Account Password Strength Policy`_.
 
+.. _email_verification:
 
 Email Verification
 ------------------
