@@ -227,14 +227,11 @@ By default the nextUri is to the `/` page, but you can modify this.
 Pre Registration Handler
 ------------------------
 
-Want to validate the form before it's handled, then this is the event
-that you want to handle!
+Want to validate or modify the form data before it's handled by us? Then this is
+the handler that you want to use!
 
-By defining a ``preRegistrationHandler`` you're able to do intercept the
-form request and do validation.
-
-To use a ``preRegistrationHandler`` you need to define your handler function
-in the Stormpath middleware setup::
+To use a ``preRegistrationHandler`` you need to define your handler function in
+the Stormpath middleware setup::
 
     app.use(stormpath.init(app, {
       preRegistrationHandler: function (formData, req, res, next) {
@@ -251,10 +248,10 @@ takes in four parameters:
   request directly.
 - ``res``: The Express response object.  This can be used to modify the HTTP
   response directly.
-- ``next``: The callback to call when you either want to return an error, or
-  want the registration to continue processing. I.e. if you call this callback
-  with an error then the form will stop on that. But if you call it without
-  any arguments, then the form will just continue processing like normally.
+- ``next``: The callback to call after you have done your custom work.  If you
+  call this with an error then we immediately return this error to the user and
+  form processing stops.  But if you call it without an error, then our library
+  will continue to process the form and respond with the default behavior.
 
 In the example below, we'll use the ``preRegistrationHandler`` to validate that
 the user doesn't enter an email domain that is restricted::
