@@ -117,6 +117,50 @@ has a default login form, and a mapped Google directory:
     }
   }
 
+.. _pre_login_handler:
+
+Pre Login Handler
+-----------------
+
+Want to validate or modify the form data before it's handled by us? Then this is
+the handler that you want to use!
+
+To use a ``preLoginHandler`` you need to define your handler function in the
+Stormpath config::
+
+    app.use(stormpath.init(app, {
+      preLoginHandler: function (formData, req, res, next) {
+        console.log('Got login request', formData);
+        next();
+      }
+    }));
+
+As you can see in the example above, the ``preLoginHandler`` function
+takes in four parameters:
+
+- ``formData``: The data submitted in the form.
+- ``req``: The Express request object.  This can be used to modify the incoming
+  request directly.
+- ``res``: The Express response object.  This can be used to modify the HTTP
+  response directly.
+- ``next``: The callback to call after you have done your custom work.  If you
+  call this with an error then we immediately return this error to the user and
+  form processing stops.  But if you call it without an error, then our library
+  will continue to process the form and respond with the default behavior.
+
+In the example below, we'll use the ``preLoginHandler`` to validate that
+the user doesn't enter an email domain that is restricted::
+
+    app.use(stormpath.init(app, {
+      preLoginHandler: function (formData, req, res, next) {
+        if (formData.login.indexOf('@some-domain.com') !== -1) {
+          return next(new Error('You\'re not allowed to login with \'@some-domain.com\'.'));
+        }
+
+        next();
+      }
+    }));
+
 .. _post_login_handler:
 
 Post Login Handler
@@ -136,7 +180,7 @@ in the Stormpath config::
       postLoginHandler: function (account, req, res, next) {
         console.log('User:', account.email, 'just logged in!');
         next();
-      },
+      }
     }));
 
 As you can see in the example above, the ``postLoginHandler`` function
@@ -157,9 +201,8 @@ user to a special page (*instead of the normal login flow*)::
     app.use(stormpath.init(app, {
       postLoginHandler: function (account, req, res, next) {
         res.redirect(302, '/secretpage').end();
-      },
+      }
     }));
-
 
 Using ID Site
 -------------
@@ -180,7 +223,6 @@ For more information about how to use and customize the ID site, please see
 this documentation:
 
 http://docs.stormpath.com/guides/using-id-site/
-
 
 ID Site Configuration
 .....................
