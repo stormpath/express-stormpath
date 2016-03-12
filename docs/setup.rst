@@ -153,12 +153,28 @@ There are many more features than login and registration, please continue to the
 next section to learn more!
 
 
+Example Applications
+--------------------
+
+Looking for some example applications?  We provide the following examples
+applications to get you up and running quickly.  They show you how to setup
+Stormpath, and implement a profile page for the logged-in user:
+
+- `Express-Stormpath Example Project`_
+
+- `Stormpath Angular + Express Fullstack Sample Project`_
+
+- `Stormpath React + Express Fullstack Example Project`_
+
 .. _Admin Console: https://api.stormpath.com/login
 .. _Application Resource: https://docs.stormpath.com/rest/product-guide/latest/reference.html#application
 .. _Active Directory: http://en.wikipedia.org/wiki/Active_Directory
 .. _Directory Resource: https://docs.stormpath.com/rest/product-guide/latest/reference.html#directory
+.. _Express-Stormpath Example Project: https://github.com/stormpath/express-stormpath-sample-project
 .. _LDAP: http://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol
 .. _Express-Stormpath: https://www.npmjs.org/package/express-stormpath
 .. _Modeling Your User Base: https://docs.stormpath.com/rest/product-guide/latest/accnt_mgmt.html#modeling-your-user-base
 .. _NPM: https://www.npmjs.org/
 .. _Setting up Development and Production Environments: https://docs.stormpath.com/guides/dev-test-prod-environments/
+.. _Stormpath Angular + Express Fullstack Sample Project: https://github.com/stormpath/express-stormpath-angular-sample-project
+.. _Stormpath React + Express Fullstack Example Project: https://github.com/stormpath/stormpath-express-react-example
