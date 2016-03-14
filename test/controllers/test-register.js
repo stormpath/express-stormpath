@@ -414,6 +414,7 @@ describe('register', function () {
     it('should bind to that uri', function (done) {
       request(app)
         .get('/customRegistrationUri')
+        .set('Accept', 'text/html')
         .expect(200)
         .end(assertDefaultFormResponse(done));
     });

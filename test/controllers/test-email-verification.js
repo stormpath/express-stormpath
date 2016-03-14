@@ -11,7 +11,8 @@ var SpaRootFixture = require('../fixtures/spa-root-fixture');
 function requestVerifyPage(app, sptoken) {
   var config = app.get('stormpathConfig');
   return request(app)
-    .get(config.web.verifyEmail.uri + (sptoken ? ('?sptoken=' + sptoken) : ''));
+    .get(config.web.verifyEmail.uri + (sptoken ? ('?sptoken=' + sptoken) : ''))
+    .set('Accept', 'text/html');
 }
 
 function assertVerifyFormExists(res) {
@@ -71,6 +72,7 @@ describe('email verification', function () {
     var config = expressApp.get('stormpathConfig');
     request(expressApp)
       .post('/register')
+      .set('Accept', 'text/html')
       .type('form')
       .send(helpers.newUser())
       .expect(302)
@@ -84,6 +86,7 @@ describe('email verification', function () {
     var config = expressApp.get('stormpathConfig');
     request(expressApp)
       .post(config.web.verifyEmail.uri)
+      .set('Accept', 'text/html')
       .type('form')
       .send({ email: helpers.newUser().email })
       .expect(302)
@@ -99,6 +102,7 @@ describe('email verification', function () {
           var config = expressApp.get('stormpathConfig');
           request(expressApp)
             .post(config.web.verifyEmail.uri)
+            .set('Accept', 'text/html')
             .type('form')
             .send({ email: uuid() })
             .expect(200)
@@ -113,6 +117,7 @@ describe('email verification', function () {
           var config = expressApp.get('stormpathConfig');
           request(expressApp)
             .post(config.web.verifyEmail.uri)
+            .set('Accept', 'text/html')
             .send({ login: uuid() })
             .set('Accept', 'application/json')
             .expect(200, '', done);
@@ -126,6 +131,7 @@ describe('email verification', function () {
           var config = expressApp.get('stormpathConfig');
           request(expressApp)
             .post(config.web.verifyEmail.uri)
+            .set('Accept', 'text/html')
             .set('Accept', 'application/json')
             .expect(400, '{"status":400,"message":"login property cannot be null, empty, or blank."}', done);
         });
