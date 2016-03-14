@@ -136,7 +136,7 @@ module.exports.setPasswordResetStatus = function (application, status, cb) {
   });
 };
 
-module.exports.createStormpathExpressApp = function (config) {
+module.exports.createStormpathExpressApp = function (config, preHandler) {
   config.client = {
     apiKey: {
       id: process.env.STORMPATH_CLIENT_APIKEY_ID,
@@ -145,6 +145,10 @@ module.exports.createStormpathExpressApp = function (config) {
   };
 
   var app = express();
+
+  if (preHandler) {
+    app.use(preHandler);
+  }
 
   app.use(stormpathExpress.init(app, config));
 

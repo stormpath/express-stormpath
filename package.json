@@ -48,7 +48,7 @@
     "eslint": "^2.2.0",
     "istanbul": "^0.4.0",
     "js-yaml": "^3.5.4",
-    "mocha": "^2.1.0",
+    "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.0.0",
     "sinon": "^1.17.3",
     "supertest": "^1.1.0"
