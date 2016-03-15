@@ -44,6 +44,7 @@ function assertPasswordNotConfirmedError(res) {
 }
 
 describe('resetPassword', function () {
+  var defaultExpressApp;
   var newPassword = uuid() + uuid().toUpperCase();
   var passwordResetToken;
   var stormpathAccount;
@@ -64,13 +65,18 @@ describe('resetPassword', function () {
         }
 
         stormpathAccount = account;
+
+
         app.sendPasswordResetEmail({ email: account.email }, function (err, tokenResource) {
           if (err) {
             return done(err);
           }
 
           passwordResetToken = tokenResource.href.match(/\/([^\/]+)$/)[1];
-          done();
+          defaultExpressApp = helpers.createStormpathExpressApp({
+            application: stormpathApplication
+          });
+          defaultExpressApp.on('stormpath.ready', done);
         });
       });
     });
@@ -107,218 +113,158 @@ describe('resetPassword', function () {
   });
 
   it('should redirect to the /forgot view is no sptoken is given', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        changePassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      requestResetPage(app)
-        .expect(302)
-        .expect('Location', config.web.forgotPassword.uri)
-        .end(done);
-    });
+
+    var config = defaultExpressApp.get('stormpathConfig');
+    requestResetPage(defaultExpressApp)
+      .expect(302)
+      .expect('Location', config.web.forgotPassword.uri)
+      .end(done);
+
   });
 
   it('should redirect to the /forgot view is the sptoken is invalid, with an invlaid token status', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      requestResetPage(app, 'invalid token')
-        .expect(302)
-        .expect('Location', config.web.forgotPassword.uri + '?status=invalid_sptoken')
-        .end(done);
+    var config = defaultExpressApp.get('stormpathConfig');
+    requestResetPage(defaultExpressApp, 'invalid token')
+      .expect(302)
+      .expect('Location', config.web.forgotPassword.uri + '?status=invalid_sptoken')
+      .end(done);
+
+  });
+
+  describe('with an invlaid token', function () {
+    describe('as HTML', function () {
+      it('should redirect me to /forgot?status=invalid_sptoken', function (done) {
+        var config = defaultExpressApp.get('stormpathConfig');
+        requestResetPage(defaultExpressApp, 'invalid token')
+          .expect(302)
+          .expect('Location', config.web.forgotPassword.uri + '?status=invalid_sptoken')
+          .end(done);
+      });
+    });
+    describe('as JSON', function () {
+      it('should respond with an error object', function (done) {
+        var config = defaultExpressApp.get('stormpathConfig');
+        request(defaultExpressApp)
+          .get(config.web.changePassword.uri + '?sptoken=foo')
+          .set('Accept', 'application/json')
+          .expect(404, {
+            message: 'This password reset request does not exist. Please request a new password reset.',
+            status: 404
+          }, done);
+      });
     });
   });
 
   it('should render the password reset form if the token is valid', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      requestResetPage(app, passwordResetToken)
-        .expect(200)
-        .end(function (err, res) {
-          assertResetFormExists(res);
-          done();
-        });
-    });
+
+    requestResetPage(defaultExpressApp, passwordResetToken)
+      .expect(200)
+      .end(function (err, res) {
+        assertResetFormExists(res);
+        done();
+      });
+
   });
 
   it('should error if the passwords do not match', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post(config.web.changePassword.uri)
-        .type('form')
-        .send({
-          password: 'a',
-          passwordAgain: 'b',
-          sptoken: passwordResetToken
-        })
-        .expect(200)
-        .end(function (err, res) {
-          assertPasswordMismatchError(res);
-          done();
-        });
-    });
+
+    var config = defaultExpressApp.get('stormpathConfig');
+    request(defaultExpressApp)
+      .post(config.web.changePassword.uri)
+      .type('form')
+      .send({
+        password: 'a',
+        passwordAgain: 'b',
+        sptoken: passwordResetToken
+      })
+      .expect(200)
+      .end(function (err, res) {
+        assertPasswordMismatchError(res);
+        done();
+      });
+
   });
 
   it('should error if the password is too short (does not meet policy requirements)', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post(config.web.changePassword.uri)
-        .type('form')
-        .send({
-          password: 'a',
-          passwordAgain: 'a',
-          sptoken: passwordResetToken
-        })
-        .expect(200)
-        .end(function (err, res) {
-          assertPasswordPolicyError(res);
-          done();
-        });
-    });
+    var config = defaultExpressApp.get('stormpathConfig');
+    request(defaultExpressApp)
+      .post(config.web.changePassword.uri)
+      .type('form')
+      .send({
+        password: 'a',
+        passwordAgain: 'a',
+        sptoken: passwordResetToken
+      })
+      .expect(200)
+      .end(function (err, res) {
+        assertPasswordPolicyError(res);
+        done();
+      });
+
   });
 
   it('should error if the the password is not entered twice', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post(config.web.changePassword.uri)
-        .type('form')
-        .send({
-          password: 'a',
-          sptoken: passwordResetToken
-        })
-        .expect(200)
-        .end(function (err, res) {
-          assertPasswordNotConfirmedError(res);
-          done();
-        });
-    });
+    var config = defaultExpressApp.get('stormpathConfig');
+    request(defaultExpressApp)
+      .post(config.web.changePassword.uri)
+      .type('form')
+      .send({
+        password: 'a',
+        sptoken: passwordResetToken
+      })
+      .expect(200)
+      .end(function (err, res) {
+        assertPasswordNotConfirmedError(res);
+        done();
+      });
+
   });
 
   it('should allow me to change the password, with a valid token, and send me to the login page', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post(config.web.changePassword.uri)
-        .type('form')
-        .send({
-          password: newPassword,
-          passwordAgain: newPassword,
-          sptoken: passwordResetToken
-        })
-        .expect(302)
-        .expect('Location', config.web.login.uri + '?status=reset')
-        .end(function () {
-          // Assert that the password can be used to login.
-          stormpathApplication.authenticateAccount({
-            username: stormpathAccount.username,
-            password: newPassword
-          }, function (err) {
-            assert.ifError(err);
-            done();
-          });
+
+    var config = defaultExpressApp.get('stormpathConfig');
+    request(defaultExpressApp)
+      .post(config.web.changePassword.uri)
+      .type('form')
+      .send({
+        password: newPassword,
+        passwordAgain: newPassword,
+        sptoken: passwordResetToken
+      })
+      .expect(302)
+      .expect('Location', config.web.login.uri + '?status=reset')
+      .end(function () {
+        // Assert that the password can be used to login.
+        stormpathApplication.authenticateAccount({
+          username: stormpathAccount.username,
+          password: newPassword
+        }, function (err) {
+          assert.ifError(err);
+          done();
         });
-    });
+      });
+
   });
 
   it('should send me to the request-new-link page if i use and already consumed token', function (done) {
     // The token was consumed by the previous test, above.
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        resetPassword: {
-          enabled: true
-        }
-      }
-    });
 
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post(config.web.changePassword.uri)
-        .type('form')
-        .send({ sptoken: passwordResetToken })
-        .expect(302)
-        .expect('Location', config.web.forgotPassword.uri + '?status=invalid_sptoken')
-        .end(done);
-    });
+    var config = defaultExpressApp.get('stormpathConfig');
+    request(defaultExpressApp)
+      .post(config.web.changePassword.uri)
+      .type('form')
+      .send({ sptoken: passwordResetToken })
+      .expect(302)
+      .expect('Location', config.web.forgotPassword.uri + '?status=invalid_sptoken')
+      .end(done);
+
   });
 
   describe('if configured with a SPA root', function () {
@@ -357,5 +303,4 @@ describe('resetPassword', function () {
     });
   });
 
-  it.skip('should disable the password reset functionality if that is disabled in the directory configuration');
 });
