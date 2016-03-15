@@ -35,6 +35,9 @@ ProducesFixture.prototype.getEndpointWithAccept = function getEndpointWithAccept
     .get(stormpathConfig.web.login.uri)
     .set('Accept', acceptString);
 };
+ProducesFixture.prototype.requestAsBrowser = function requestAsBrowser() {
+  return this.getEndpointWithAccept('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8');
+};
 ProducesFixture.prototype.requestAsJson = function requestAsJson() {
   return this.getEndpointWithAccept('application/json');
 };

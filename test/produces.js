@@ -38,6 +38,11 @@ describe('produces option', function () {
         fixture.requestAsJson().end(fixture.assertJsonResponse(done));
       });
     });
+    describe('and Accept is a browser default', function () {
+      it('should respond with HTML', function (done) {
+        fixture.requestAsBrowser().end(fixture.assertHtmlResponse(done));
+      });
+    });
     describe('and request has no Accept header', function () {
       it('should respond with JSON (the first item in the produces list)', function (done) {
         fixture.requestWithoutAcceptHeader().end(fixture.assertJsonResponse(done));
@@ -87,6 +92,12 @@ describe('produces option', function () {
     describe('and request is Accept: application/json', function () {
       it('should respond with 406', function (done) {
         fixture.requestAsJson().end(fixture.assert406Response(done));
+      });
+    });
+
+    describe('and Accept is a browser default', function () {
+      it('should respond with HTML', function (done) {
+        fixture.requestAsBrowser().end(fixture.assertHtmlResponse(done));
       });
     });
 
