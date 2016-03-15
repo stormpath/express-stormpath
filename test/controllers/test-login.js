@@ -55,6 +55,7 @@ describe('login', function () {
 
     request(defaultExpressApp)
       .get('/login')
+      .set('Accept', 'text/html')
       .expect(200)
       .end(function (err, res) {
         var $ = cheerio.load(res.text);
@@ -164,6 +165,7 @@ describe('login', function () {
 
     request(defaultExpressApp)
       .get(protectedUri)
+      .set('Accept', 'text/html')
       .expect(302)
       .expect('Location', '/login?next=' + encodeURIComponent(protectedUri))
       .end(done);
@@ -176,6 +178,7 @@ describe('login', function () {
     var nextUri = uuid.v4();
     request(defaultExpressApp)
       .get('/login?next=' + encodeURIComponent(nextUri))
+      .set('Accept', 'text/html')
       .expect(200)
       .end(function (err, res) {
         var $ = cheerio.load(res.text);
@@ -192,6 +195,7 @@ describe('login', function () {
     var nextUri = 'http://stormpath.com/foo';
     request(defaultExpressApp)
       .post('/login?next=' + encodeURIComponent(nextUri))
+      .set('Accept', 'text/html')
       .send({ login: username, password: password })
       .expect(302)
       .expect('Location', '/foo')
@@ -204,6 +208,7 @@ describe('login', function () {
     var nextUri = uuid.v4();
     request(defaultExpressApp)
       .post('/login?next=' + encodeURIComponent(nextUri))
+      .set('Accept', 'text/html')
       .send({ login: username, password: password })
       .expect(302)
       .expect('Location', nextUri)
@@ -215,12 +220,14 @@ describe('login', function () {
       function (cb) {
         request(alternateUrlExpressApp)
           .get('/newlogin')
+          .set('Accept', 'text/html')
           .expect(200)
           .end(cb);
       },
       function (cb) {
         request(alternateUrlExpressApp)
           .get('/login')
+          .set('Accept', 'text/html')
           .expect(404)
           .end(cb);
       }

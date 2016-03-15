@@ -178,6 +178,7 @@ describe('Post-Registration Handler', function () {
       preparePostRegistrationExpansionTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
+          .set('Accept', 'text/html')
           .send(fixture.newAccountObject)
           .expect(200)
           .end(function (err, res) {
@@ -196,6 +197,7 @@ describe('Post-Registration Handler', function () {
       preparePostRegistrationPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
+          .set('Accept', 'text/html')
           .send(fixture.newAccountObject)
           .expect(302)
           .end(function (err) {
@@ -214,6 +216,7 @@ describe('Post-Registration Handler', function () {
       preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
+          .set('Accept', 'text/html')
           .send(fixture.newAccountObject)
           .expect('Set-Cookie', /access_token=[^;]+/)
           .expect(302)

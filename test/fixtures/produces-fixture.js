@@ -35,11 +35,20 @@ ProducesFixture.prototype.getEndpointWithAccept = function getEndpointWithAccept
     .get(stormpathConfig.web.login.uri)
     .set('Accept', acceptString);
 };
+ProducesFixture.prototype.requestAsBrowser = function requestAsBrowser() {
+  return this.getEndpointWithAccept('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8');
+};
 ProducesFixture.prototype.requestAsJson = function requestAsJson() {
   return this.getEndpointWithAccept('application/json');
 };
 ProducesFixture.prototype.requestAsHtml = function requestAsHtml() {
   return this.getEndpointWithAccept('text/html');
+};
+ProducesFixture.prototype.requestWithoutAcceptHeader = function requestWithoutAcceptHeader() {
+  var stormpathConfig = this.expressApp.get('stormpathConfig');
+
+  return request(this.expressApp)
+    .get(stormpathConfig.web.login.uri);
 };
 ProducesFixture.prototype.assertHtmlResponse = function assertHtmlResponse(done) {
   return function (err, res) {
@@ -59,12 +68,12 @@ ProducesFixture.prototype.assertJsonResponse = function assertJsonResponse(done)
     done();
   };
 };
-ProducesFixture.prototype.assert404Response = function assert404Response(done) {
+ProducesFixture.prototype.assert406Response = function assert406Response(done) {
   return function (err, res) {
     if (err) {
       return done(err);
     }
-    assert.equal(res.status, 404);
+    assert.equal(res.status, 406);
     done();
   };
 };

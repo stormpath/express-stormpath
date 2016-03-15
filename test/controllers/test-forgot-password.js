@@ -78,6 +78,7 @@ describe('forgotPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .get('/forgot')
+        .set('Accept', 'text/html')
         .expect(200)
         .end(function (err, res) {
           if (err) {
@@ -108,6 +109,7 @@ describe('forgotPassword', function () {
     app.on('stormpath.ready', function () {
       request(app)
         .post('/forgot')
+        .set('Accept', 'text/html')
         .type('form')
         .send({ email: 'not a real email' })
         .expect(200)
@@ -137,6 +139,7 @@ describe('forgotPassword', function () {
     app.on('stormpath.ready', function () {
       request(app)
         .get('/forgot?status=invalid_sptoken')
+        .set('Accept', 'text/html')
         .expect(200)
         .end(function (err, res) {
           assertInvalidSpTokenMessage(res);
@@ -161,6 +164,7 @@ describe('forgotPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post('/forgot')
+        .set('Accept', 'text/html')
         .type('form')
         .send({ email: uuid.v4() + '@stormpath.com' })
         .expect('Location', config.web.forgotPassword.nextUri)

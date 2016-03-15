@@ -259,6 +259,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -311,6 +312,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -369,6 +371,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -429,6 +432,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -483,6 +487,7 @@ describe('getUser', function () {
         function (callback) {
           agent
             .post('/login')
+            .set('Accept', 'text/html')
             .send({
               login: accountData.email,
               password: accountData.password
@@ -533,6 +538,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -629,6 +635,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -684,6 +691,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -734,6 +742,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password
@@ -790,6 +799,7 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'text/html')
           .send({
             login: accountData.email,
             password: accountData.password

@@ -64,6 +64,7 @@ describe('logout', function () {
   it('should bind to /logout by default', function (done) {
     request(app)
       .post(config.web.logout.uri)
+      .set('Accept', 'text/html')
       .expect(302)
       .end(done);
   });
@@ -103,6 +104,7 @@ describe('logout', function () {
   it('should follow the next param if present', function (done) {
     request(app)
       .post(config.web.logout.uri + '?next=/goodbye')
+      .set('Accept', 'text/html')
       .expect(302)
       .expect('Location', '/goodbye')
       .end(done);

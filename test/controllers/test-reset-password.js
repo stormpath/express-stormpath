@@ -11,7 +11,8 @@ var SpaRootFixture = require('../fixtures/spa-root-fixture');
 function requestResetPage(app, sptoken) {
   var config = app.get('stormpathConfig');
   return request(app)
-    .get(config.web.changePassword.uri + (sptoken ? ('?sptoken=' + sptoken) : ''));
+    .get(config.web.changePassword.uri + (sptoken ? ('?sptoken=' + sptoken) : ''))
+    .set('Accept', 'text/html');
 }
 
 function assertResetFormExists(res) {
@@ -186,6 +187,7 @@ describe('resetPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.changePassword.uri)
+        .set('Accept', 'text/html')
         .type('form')
         .send({
           password: 'a',
@@ -216,6 +218,7 @@ describe('resetPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.changePassword.uri)
+        .set('Accept', 'text/html')
         .type('form')
         .send({
           password: 'a',
@@ -246,6 +249,7 @@ describe('resetPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.changePassword.uri)
+        .set('Accept', 'text/html')
         .type('form')
         .send({
           password: 'a',
@@ -275,6 +279,7 @@ describe('resetPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.changePassword.uri)
+        .set('Accept', 'text/html')
         .type('form')
         .send({
           password: newPassword,
@@ -313,6 +318,7 @@ describe('resetPassword', function () {
       var config = app.get('stormpathConfig');
       request(app)
         .post(config.web.changePassword.uri)
+        .set('Accept', 'text/html')
         .type('form')
         .send({ sptoken: passwordResetToken })
         .expect(302)
