@@ -59,6 +59,7 @@ describe('resetPassword', function () {
       }
 
       stormpathApplication = app;
+
       app.createAccount(helpers.newUser(), function (err, account) {
         if (err) {
           return done(err);
@@ -66,16 +67,17 @@ describe('resetPassword', function () {
 
         stormpathAccount = account;
 
-
         app.sendPasswordResetEmail({ email: account.email }, function (err, tokenResource) {
           if (err) {
             return done(err);
           }
 
           passwordResetToken = tokenResource.href.match(/\/([^\/]+)$/)[1];
+
           defaultExpressApp = helpers.createStormpathExpressApp({
             application: stormpathApplication
           });
+
           defaultExpressApp.on('stormpath.ready', done);
         });
       });
@@ -158,20 +160,15 @@ describe('resetPassword', function () {
   });
 
   it('should render the password reset form if the token is valid', function (done) {
-
-
     requestResetPage(defaultExpressApp, passwordResetToken)
       .expect(200)
       .end(function (err, res) {
         assertResetFormExists(res);
         done();
       });
-
   });
 
   it('should error if the passwords do not match', function (done) {
-
-
     var config = defaultExpressApp.get('stormpathConfig');
     request(defaultExpressApp)
       .post(config.web.changePassword.uri)
@@ -186,11 +183,9 @@ describe('resetPassword', function () {
         assertPasswordMismatchError(res);
         done();
       });
-
   });
 
   it('should error if the password is too short (does not meet policy requirements)', function (done) {
-
     var config = defaultExpressApp.get('stormpathConfig');
     request(defaultExpressApp)
       .post(config.web.changePassword.uri)
@@ -205,11 +200,9 @@ describe('resetPassword', function () {
         assertPasswordPolicyError(res);
         done();
       });
-
   });
 
   it('should error if the the password is not entered twice', function (done) {
-
     var config = defaultExpressApp.get('stormpathConfig');
     request(defaultExpressApp)
       .post(config.web.changePassword.uri)
@@ -223,12 +216,9 @@ describe('resetPassword', function () {
         assertPasswordNotConfirmedError(res);
         done();
       });
-
   });
 
   it('should allow me to change the password, with a valid token, and send me to the login page', function (done) {
-
-
     var config = defaultExpressApp.get('stormpathConfig');
     request(defaultExpressApp)
       .post(config.web.changePassword.uri)
@@ -250,12 +240,10 @@ describe('resetPassword', function () {
           done();
         });
       });
-
   });
 
   it('should send me to the request-new-link page if i use and already consumed token', function (done) {
     // The token was consumed by the previous test, above.
-
     var config = defaultExpressApp.get('stormpathConfig');
     request(defaultExpressApp)
       .post(config.web.changePassword.uri)
@@ -264,11 +252,9 @@ describe('resetPassword', function () {
       .expect(302)
       .expect('Location', config.web.forgotPassword.uri + '?status=invalid_sptoken')
       .end(done);
-
   });
 
   describe('if configured with a SPA root', function () {
-
     var spaRootFixture;
 
     before(function (done) {
@@ -291,7 +277,6 @@ describe('resetPassword', function () {
 
 
     it('should return the SPA root', function (done) {
-
       var app = spaRootFixture.expressApp;
 
       app.on('stormpath.ready', function () {
@@ -299,8 +284,6 @@ describe('resetPassword', function () {
           .expect(200)
           .end(spaRootFixture.assertResponse(done));
       });
-
     });
   });
-
 });
