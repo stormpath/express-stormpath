@@ -98,6 +98,13 @@ about the Stormpath configuration from the Express application, like so:
 | req.app.get('stormpathApplication') | The Stormpath Application that is being used                     |
 +-------------------------------------+------------------------------------------------------------------+
 
+.. note::
+
+  The value ``stormpathApplication`` won't be available until the
+  ``app.on('stormpath.ready')`` event has been fired.  As such, you should wait
+  for this event or place the ``stormpath.getUser`` middleware in front of your
+  custom middlware, as it will also wait for this event to fire.
+
 
 Response Variables
 ------------------
