@@ -170,6 +170,33 @@ you can fetch it from the app object like this::
     });
 
 
+Stormpath Application
+---------------------
+
+When you configured Stormpath, you specified the Stormpath Application that you
+want to use (you did this by providing the HREF of the application).  This library
+will fetch the application and use it to perform all login, registration,
+verification and password reset functions.
+
+The Stormpath Application allows you to do a lot of other work, such as manually
+creating accounts and modifying your OAuth policy - plus much more!  If you want
+to work with the Stormpath Application, you can reference its object like this:
+
+.. code-block:: javascript
+
+    app.get('/home', stormpath.getUser, function (req, res) {
+      var stormpathApplication = req.app.get('stormpathApplication');
+    });
+
+This object is provided by the `Stormpath Node SDK`_ and is
+`documented here <http://docs.stormpath.com/nodejs/api/application>`_.
+
+.. note::
+
+  The value ``stormpathApplication`` won't be available until the
+  ``app.on('stormpath.ready')`` event has been fired.  As such, you should wait
+  for this event or place the ``stormpath.getUser`` middleware in front of your
+  custom middlware, as it will also wait for this event to fire.
 
 Single Page Applications
 ------------------------
