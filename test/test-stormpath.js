@@ -3,61 +3,79 @@
 var assert = require('assert');
 var express = require('express');
 var helpers = require('./helpers');
+var stormpath = require('../index');
 
-describe('#init()', function () {
-  it('should export stormpath.init when express-stormpath is required', function () {
-    assert.doesNotThrow(function () {
-      require('../index').init;
-    }, Error);
-  });
+var applicationConfigurationErrorRegExp = new RegExp(/Please specify your Stormpath Application in your configuration/);
 
-  it('should should emit a stormpath.ready event when ready', function (done) {
+describe('stormpath.init()', function () {
+  var stormpathApplication;
 
+
+  before(function (done) {
     helpers.createApplication(helpers.createClient(), function (err, application) {
       if (err) {
         return done(err);
       }
-
-      var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
-
-      app.on('stormpath.error', done);
-
-      app.on('stormpath.ready', function () {
-        helpers.destroyApplication(application, done);
-      });
+      stormpathApplication = application;
+      done();
     });
   });
 
-  // Can't figure out how to properly test an async throw...
-  it.skip('should throw an error when an invalid configuration is supplied', function (done) {
-    var stormpath = require('../index');
+
+  after(function (done) {
+    helpers.destroyApplication(stormpathApplication, done);
+  });
+
+
+  it('should export stormpath.init when express-stormpath is required', function () {
+
+    assert.doesNotThrow(function () {
+      require('../index').init;
+    }, Error);
+
+  });
+
+
+  it('should should emit a stormpath.ready event when ready', function (done) {
+
+    var app = helpers.createStormpathExpressApp({ application: stormpathApplication });
+
+    app.on('stormpath.ready', function () {
+      done();
+    });
+
+  });
+
+
+  it('should emit an error if an application is not defined', function (done) {
 
     var app = express();
 
     app.on('stormpath.error', function (err) {
-      assert.equal(err !== null);
+      assert(err && err.message.match(applicationConfigurationErrorRegExp));
       done();
     });
 
-    app.on('stormpath.ready', done);
+    app.use(stormpath.init(app, {
+      logger: helpers.noOpLogger
+    }));
 
-    app.use(stormpath.init(app, { application: {}, client: {} }));
   });
 
-  it('should not throw an error if a valid configuration is supplied', function (done) {
 
-    helpers.createApplication(helpers.createClient(), function (err, application) {
-      if (err) {
-        return done(err);
+  it('should allow me to define a custom logger', function (done) {
+
+    var app = express();
+
+    app.use(stormpath.init(app, {
+      logger: {
+        error: function (err) {
+          assert(err && err.message.match(applicationConfigurationErrorRegExp));
+          done();
+        }
       }
+    }));
 
-      var app = helpers.createStormpathExpressApp({ application: { href: application.href } });
-
-      app.on('stormpath.error', done);
-
-      app.on('stormpath.ready', function () {
-        helpers.destroyApplication(application, done);
-      });
-    });
   });
+
 });
