@@ -6,6 +6,78 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.1.0
+-------------
+
+**Released March 23, 2016.**
+
+This minor release includes several new features, and a handful of bug fixes.
+No changes are required from this change.
+
+**New Handlers!**
+
+We've added more handlers to the library, to make it easier for you to work
+with the login and registration flows.
+
+- The :ref:`post_logout_handler` allows you to run custom code after a user has
+  logged out.
+
+- The :ref:`pre_login_handler` will run before we perform the authentication
+  attempt, allowing you to make custom decisions about who can log in to your
+  site.
+
+- The :ref:`pre_registration_handler` allows you to read the posted
+  registration form, and run custom code or modify the data before we create the
+  new account.
+
+**Bug Fixes**
+
+- The ``logger`` option was not being observed, and your custom logger was not
+  used even it was passed in with this option.  This is now fixed.
+
+- The ``apiAutheneticationRequired`` middleware is now checking the Stormpath
+  REST API to ensure that access tokens have not been deleted.  As of 3.0.0, you
+  must use the ``stormpath`` option for
+  ``web.oauth2.password.validationStrategy`` to achieve this behavior.
+
+- The JSON API for the password reset workflow would not pro-actively error
+  if the ``sptoken`` was invalid, the user would have to submit the form to see
+  the error.  This is now fixed.
+
+
+- Custom registration fields were not included in the view model if they were
+  not also defined in ``web.register.form.fieldOrder``.  They will now appear in
+  the view model, at the end of the defined field order.
+
+
+**Other Improvements**
+
+- The confirm password field is now supported during registration, you can
+  require the user to confirm their new password by setting
+  ``web.register.form.fields.confirmPassword.enabled`` to ``true``.
+
+- The Facebook Login callback can now accept authorization codes, as well as
+  access tokens.  This allows you to perform both types of Facebook
+  authentication (pop-up based, or page-based) when a user is signing in with
+  Facebook.
+
+- The account object is now purged from the local cache (managed by the
+  `Stormpath Node SDK`_) when a user logs out.
+
+- Updated the documentation to explain all the default options, in the
+  Configuration section.
+
+- The view model cache, for the login and registration pages, is now
+  pre-warmed on startup.  This yields a faster load time for your front-end
+  applications that need to request these view models from the server.
+
+**Dependency Updates**
+
+- ``cookies@^0.5.0`` -> ``cookies@^0.6.1``
+- ``lodash@^4.1.0`` -> ``lodash@^4.6.1``
+- ``deep-extend@^0.4.0`` -> ``deep-extend@^0.4.1``
+- ``js-yaml@^3.4.3`` -> ``js-yaml@^3.5.4``
+
 Version 3.0.1
 -------------
 
@@ -18,8 +90,6 @@ Version 3.0.1
 
 Major Release 3.0.0
 -------------------
-
-**Major Release 3.0.0**
 
 This major release of our Express.js integration is introducing changes for
 better network performance and easier configuration.  We're also updating several
@@ -1253,5 +1323,5 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
-
+.. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
