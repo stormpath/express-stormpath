@@ -248,13 +248,13 @@ Logging
 By default, this library will create a `Winston`_ logger and use this for
 logging error messages to standard output.
 
-While actively developing your application, you may want to include the ``info``
-level for debugging purposes:
+While actively developing your application, you may want to increase to the
+``info`` level for debugging purposes:
 
 .. code-block:: javascript
 
     app.use(stormpath.init(app, {
-      debug: 'info, error'
+      debug: 'info'
     }));
 
 If you want to supply your own Winston logger, you can do that as well:

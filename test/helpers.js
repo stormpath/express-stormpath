@@ -192,3 +192,13 @@ module.exports.destroyApplication = function (application, callback) {
     });
   });
 };
+
+/**
+ * A logger implementation that does not do anything, useful for tests where you
+ * want to silence the default logger.
+ * @type {Object}
+ */
+module.exports.noOpLogger = {
+  info: function () {},
+  error: function () {}
+};
