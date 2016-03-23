@@ -212,17 +212,17 @@ The response from the endpoint looks like this:
 .. code-block:: javascript
 
   {
-    account: {
-      href: "https://api.stormpath.com/v1/accounts/4WvCtY0oCRDzQdYH3Q0qjz",
-      username: "foobar",
-      email: "foo@example.com",
-      givenName: "Foo",
-      middleName: null,
-      surname: "Bar",
-      fullName: "Foo Bar",
-      status: "ENABLED",
-      createdAt: "2015-10-13T20:54:22.215Z",
-      modifiedAt: "2016-03-17T16:40:17.631Z"
+    "account": {
+      "href": "https://api.stormpath.com/v1/accounts/4WvCtY0oCRDzQdYH3Q0qjz",
+      "username": "foobar",
+      "email": "foo@example.com",
+      "givenName": "Foo",
+      "middleName": null,
+      "surname": "Bar",
+      "fullName": "Foo Bar",
+      "status": "ENABLED",
+      "createdAt": "2015-10-13T20:54:22.215Z",
+      "modifiedAt": "2016-03-17T16:40:17.631Z"
     }
   }
 
