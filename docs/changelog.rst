@@ -33,9 +33,9 @@ with the login and registration flows.
 **Bug Fixes**
 
 - The ``logger`` option was not being observed, and your custom logger was not
-  used even it was passed in with this option.  This is now fixed.
+  used even if it was passed in with this option.  This is now fixed.
 
-- The ``apiAutheneticationRequired`` middleware is now checking the Stormpath
+- The ``apiAuthenticationRequired`` middleware is now checking the Stormpath
   REST API to ensure that access tokens have not been deleted.  As of 3.0.0, you
   must use the ``stormpath`` option for
   ``web.oauth2.password.validationStrategy`` to achieve this behavior.
@@ -44,11 +44,9 @@ with the login and registration flows.
   if the ``sptoken`` was invalid, the user would have to submit the form to see
   the error.  This is now fixed.
 
-
 - Custom registration fields were not included in the view model if they were
   not also defined in ``web.register.form.fieldOrder``.  They will now appear in
   the view model, at the end of the defined field order.
-
 
 **Other Improvements**
 
