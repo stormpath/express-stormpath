@@ -87,6 +87,8 @@ our module will automatically add the following routes to your application:
 +--------------+-------------------------------------------------------------+---------------------------+
 | /logout      | Accepts a POST request, and destroys the login session.     | :ref:`logout`             |
 +--------------+-------------------------------------------------------------+---------------------------+
+| /me          | Returns a JSON representation of the current user.          | :ref:`me_api`             |
++--------------+-------------------------------------------------------------+---------------------------+
 | /oauth/token | Issue OAuth2 access and refresh tokens.                     | :ref:`authentication`     |
 +--------------+-------------------------------------------------------------+---------------------------+
 | /register    | Create an account within your application.                  | :ref:`registration`       |

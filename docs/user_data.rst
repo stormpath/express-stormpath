@@ -197,5 +197,62 @@ user's ``apiKeys``::
     });
 
 
+.. _me_api:
+
+Current User JSON API
+---------------------
+
+If you are working with a front-end application, you can make a request to the
+``/me`` URL to get a JSON representation of the account that is currently
+logged in.  If the user is not logged in, this endpoint will return a 401
+response.
+
+The response from the endpoint looks like this:
+
+.. code-block:: javascript
+
+  {
+    "account": {
+      "href": "https://api.stormpath.com/v1/accounts/4WvCtY0oCRDzQdYH3Q0qjz",
+      "username": "foobar",
+      "email": "foo@example.com",
+      "givenName": "Foo",
+      "middleName": null,
+      "surname": "Bar",
+      "fullName": "Foo Bar",
+      "status": "ENABLED",
+      "createdAt": "2015-10-13T20:54:22.215Z",
+      "modifiedAt": "2016-03-17T16:40:17.631Z"
+    }
+  }
+
+By default we don't expand any data on the account, for security purposes.  But
+you can opt-in to account expansions with the following configuration:
+
+.. code-block:: javascript
+
+  app.use(stormpath.init(app, {
+    web: {
+      me: {
+        expand: {
+          customData: true
+        }
+      }
+    }
+  });
+
+If you wish to disable the ``/me`` route entirely, you can do that as well:
+
+.. code-block:: javascript
+
+  app.use(stormpath.init(app, {
+    web: {
+      me: {
+        enabled: false
+      }
+    }
+  });
+
+
 .. _Account Object: http://docs.stormpath.com/nodejs/api/account
 .. _Stormpath Node SDK: http://github.com/stormpath/stormpath-sdk-node
