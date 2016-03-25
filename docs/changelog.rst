@@ -6,6 +6,20 @@ Change Log
 
 All library changes, in descending order.
 
+
+Version 3.1.1
+-------------
+
+**Released March 24, 2016.**
+
+- Patch release for ``apiAuthenticationRequired``, it was not respecting the
+  ``local`` token validation option, ``stormpath`` would always be used.  This
+  is now fixed.
+
+- The following dependencies have been updated:
+
+  - ``stormpath@0.18.0`` -> ``stormpath@0.18.2``
+
 Version 3.1.0
 -------------
 
