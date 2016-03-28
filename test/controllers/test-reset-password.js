@@ -45,7 +45,7 @@ function assertPasswordNotConfirmedError(res) {
 
 describe('resetPassword', function () {
   var defaultExpressApp;
-  var newPassword = uuid() + uuid().toUpperCase();
+
   var passwordResetToken;
   var stormpathAccount;
   var stormpathApplication;
@@ -135,7 +135,7 @@ describe('resetPassword', function () {
 
   });
 
-  describe('with an invlaid token', function () {
+  describe('with an invalid token', function () {
     describe('as HTML', function () {
       it('should redirect me to /forgot?status=invalid_sptoken', function (done) {
         var config = defaultExpressApp.get('stormpathConfig');
@@ -159,13 +159,32 @@ describe('resetPassword', function () {
     });
   });
 
-  it('should render the password reset form if the token is valid', function (done) {
-    requestResetPage(defaultExpressApp, passwordResetToken)
-      .expect(200)
-      .end(function (err, res) {
-        assertResetFormExists(res);
+  describe('with a valid token', function () {
+    var passwordResetToken;
+    before(function (done) {
+      stormpathApplication.sendPasswordResetEmail({ email: stormpathAccount.email }, function (err, tokenResource) {
+        if (err) {
+          return done(err);
+        }
+        passwordResetToken = tokenResource.href.match(/\/([^\/]+)$/)[1];
         done();
       });
+    });
+    it('should render the password reset form if the token is valid', function (done) {
+      requestResetPage(defaultExpressApp, passwordResetToken)
+        .expect(200)
+        .end(function (err, res) {
+          assertResetFormExists(res);
+          done();
+        });
+    });
+    it('should allow me to verify the token with the JSON API', function (done) {
+      var config = defaultExpressApp.get('stormpathConfig');
+      request(defaultExpressApp)
+        .get(config.web.changePassword.uri + '?sptoken=' + passwordResetToken)
+        .set('Accept', 'application/json')
+        .expect(200, '', done);
+    });
   });
 
   it('should error if the passwords do not match', function (done) {
@@ -220,6 +239,7 @@ describe('resetPassword', function () {
 
   it('should allow me to change the password, with a valid token, and send me to the login page', function (done) {
     var config = defaultExpressApp.get('stormpathConfig');
+    var newPassword = uuid() + uuid().toUpperCase();
     request(defaultExpressApp)
       .post(config.web.changePassword.uri)
       .type('form')
@@ -240,6 +260,41 @@ describe('resetPassword', function () {
           done();
         });
       });
+  });
+
+  it('should allow me to change the password, with a valid token, via the JSON api', function (done) {
+
+    // Need to get another token because we consumed it in the last test
+    stormpathApplication.sendPasswordResetEmail({ email: stormpathAccount.email }, function (err, tokenResource) {
+      if (err) {
+        return done(err);
+      }
+
+      var passwordResetToken = tokenResource.href.match(/\/([^\/]+)$/)[1];
+
+      var config = defaultExpressApp.get('stormpathConfig');
+      var newPassword = uuid() + uuid().toUpperCase();
+
+      request(defaultExpressApp)
+        .post(config.web.changePassword.uri)
+        .set('Accept', 'application/json')
+        .send({
+          password: newPassword,
+          passwordAgain: newPassword,
+          sptoken: passwordResetToken
+        })
+        .expect(200)
+        .end(function () {
+          // Assert that the password can be used to login.
+          stormpathApplication.authenticateAccount({
+            username: stormpathAccount.username,
+            password: newPassword
+          }, function (err) {
+            assert.ifError(err);
+            done();
+          });
+        });
+    });
   });
 
   it('should send me to the request-new-link page if i use and already consumed token', function (done) {
