@@ -7,6 +7,15 @@ Change Log
 All library changes, in descending order.
 
 
+Version 3.1.2
+-------------
+
+**Released March 30, 2016.**
+
+- Fixed: the JSON API for the password reset workflow was not accepting valid
+  ``sptoken`` values.  This regression was introduced in 3.1.0 but is now fixed
+  in this release.
+
 Version 3.1.1
 -------------
 
