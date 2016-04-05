@@ -98,7 +98,7 @@ our module will automatically add the following routes to your application:
 | /verify      | Verify a new account, from a email verification link.       | :ref:`email_verification` |
 +--------------+-------------------------------------------------------------+---------------------------+
 
-Each featue has its own options, please refer to the documentation of each
+Each feature has its own options, please refer to the documentation of each
 feature. If you want to disable specific features, continue to the next
 section.
 
