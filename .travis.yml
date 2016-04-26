@@ -3,8 +3,8 @@ sudo: false
 node_js:
 - '0.10'
 - '0.12'
-- '4.0'
-- '6.0'
+- '4'
+- '6'
 install:
 - npm install
 - test -z "$BUILD_DOCS" || pip install --user sphinx
