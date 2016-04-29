@@ -122,7 +122,6 @@ like this::
             favoriteColor: {
               enabled: true,
               label: 'Favorite Color',
-              name: 'favoriteColor',
               placeholder: 'E.g. Red, Blue',
               required: true,
               type: 'text'
@@ -138,9 +137,6 @@ All field objects have the following properties, which must be defined:
 
 - **label** - The text label that is shown to the left of the input field.
 
-- **name** - The name of this field, in the form model that is posted to the
-  server.
-
 - **placeholder** - The help text that is shown inside the input field, if the
   input field is empty (HTML5 property).
 
@@ -150,6 +146,10 @@ All field objects have the following properties, which must be defined:
   returned if the field is empty.
 
 - **type** - the HTML type of the input, e.g. text, email, or password.
+
+When the form is rendered as HTML, the key for the field object
+(``favoriteColor`` in this example) will be used as the ``name`` attribute for
+the input element.
 
 
 Changing Field Order
