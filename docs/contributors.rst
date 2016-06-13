@@ -151,3 +151,11 @@ Martin Booth
 Martin Booth has contributed a patch to the project.
 
 https://github.com/martinbooth
+
+Harai Akihiro
+*************
+
+Harai Akihiro has contributed a patch to the project.
+
+https://github.com/harai
+
