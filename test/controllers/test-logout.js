@@ -32,6 +32,9 @@ describe('logout', function () {
         web: {
           logout: {
             enabled: true
+          },
+          accessTokenCookie: {
+            domain: 'example.com'
           }
         },
         postLogoutHandler: postLogoutHandlerSpy
@@ -73,6 +76,13 @@ describe('logout', function () {
       .post(config.web.logout.uri)
       .expect('Set-Cookie', /access_token=;/)
       .expect('Set-Cookie', /refresh_token=;/)
+      .end(done);
+  });
+
+  it('should apply cookie configuration when deleting cookies', function (done) {
+    request(app)
+      .post(config.web.logout.uri)
+      .expect('Set-Cookie', /domain=example.com;/)
       .end(done);
   });
 
