@@ -205,7 +205,7 @@ describe('groupsRequired', function () {
       });
     });
 
-    it('should show allow users through who pass group assertion checks', function (done) {
+    it('should show allow users through who pass any group assertion checks', function (done) {
       var app = createExpressTestApp(stormpathApplication.href, ['admins', 'developers'], false);
 
       app.on('stormpath.ready', function () {
@@ -234,6 +234,70 @@ describe('groupsRequired', function () {
           },
           function (callback) {
             stormpathAccount.addToGroup(developersGroup, function (err) {
+              callback(err);
+            });
+          }
+        ], function (err) {
+          if (err) {
+            return done(err);
+          }
+
+          agent
+            .post('/login')
+            .set('Accept', 'text/html')
+            .send({
+              login: stormpathAccountData.email,
+              password: stormpathAccountData.password
+            })
+            .expect(302)
+            .expect('Location', '/')
+            .end(function () {
+              agent
+                .get('/private')
+                .expect(200)
+                .expect('Ok!')
+                .end(done);
+            });
+        });
+      });
+    });
+
+    it('should show allow users through who pass all group assertion checks', function (done) {
+      var app = createExpressTestApp(stormpathApplication.href, ['groupA', 'groupB']);
+
+      app.on('stormpath.ready', function () {
+        var testGroupA = null;
+        var testGroupB = null;
+        var agent = request.agent(app);
+
+        async.series([
+          function (callback) {
+            app.get('stormpathApplication').createGroup({ name: 'groupA' }, function (err, group) {
+              if (err) {
+                return callback(err);
+              }
+
+              testGroupA = group;
+              callback();
+            });
+          },
+          function (callback) {
+            app.get('stormpathApplication').createGroup({ name: 'groupB' }, function (err, group) {
+              if (err) {
+                return callback(err);
+              }
+
+              testGroupB = group;
+              callback();
+            });
+          },
+          function (callback) {
+            stormpathAccount.addToGroup(testGroupA, function (err) {
+              callback(err);
+            });
+          },
+          function (callback) {
+            stormpathAccount.addToGroup(testGroupB, function (err) {
               callback(err);
             });
           }
