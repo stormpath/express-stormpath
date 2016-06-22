@@ -144,3 +144,18 @@ Benjamin Caldwell
 Benjamin Caldwell has contributed an enhancement to the project.
 
 - Github: https://github.com/benjamincaldwell
+
+Martin Booth
+************
+
+Martin Booth has contributed a patch to the project.
+
+https://github.com/martinbooth
+
+Harai Akihiro
+*************
+
+Harai Akihiro has contributed a patch to the project.
+
+https://github.com/harai
+

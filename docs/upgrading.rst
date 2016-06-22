@@ -7,6 +7,11 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 3.1.1 -> Version 3.1.2
+------------------------------
+
+**No changes needed!**
+
 Version 3.1.0 -> Version 3.1.1
 ------------------------------
 
