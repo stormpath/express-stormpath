@@ -15,7 +15,7 @@ The views that this library serves by default (if the features are enabled) are:
 * Registration Page
 * Forgot Password Page
 * Change Password Page
-* Email Verifiation Page
+* Email Verification Page
 
 If you want to customize these pages, there are two strategies.  You can copy
 our default templates and modify them, or you can supply your own
