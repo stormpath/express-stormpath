@@ -6,6 +6,30 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.1.3
+-------------
+
+**Released June 27, 2016.**
+
+- Fixed: The ``groupsRequired`` middleware would only render text/html responses
+  for error messages.  It now renders JSON error messages if the client has
+  requested JSON. (`#429 <https://github.com/stormpath/express-stormpath/pull/429>`_)
+
+- Fixed: When deleting cookies during logout, we did not send the cookie options
+  that were provided by the developer (e.g. the domain of the cookie).  These
+  options are now sent on the logout response.
+  (`#444 <https://github.com/stormpath/express-stormpath/pull/444>`_)
+
+- Fixed: The configurable cookie name for the access token and refresh token
+  cookies was not being used.
+  (`#422 <https://github.com/stormpath/express-stormpath/pull/422>`_)
+
+- The following dependencies have been updated:
+
+  - ``njwt@0.2.3`` -> ``njwt@0.3.0``
+  - ``stormpath-config@0.0.22`` -> ``stormpath-config@0.0.23``
+  - ``stormpath@0.18.2`` -> ``stormpath@0.18.3``
+
 
 Version 3.1.2
 -------------

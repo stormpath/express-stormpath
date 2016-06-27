@@ -61,3 +61,11 @@ before_install:
   -in deploy-key-stormpath-github-io-id-rsa.enc -out ~/.ssh/id_rsa
   -d
 - chmod 600 ~/.ssh/id_rsa
+deploy:
+  provider: npm
+  email: robert@robertjd.com
+  api_key:
+    secure: CGXnok9fZxVnAi3Gdx+Px4I9d5vCBsiPw3smMc2tcB4mFIcAVfEQeMjIq9eHO2ZBeZax1Sc6CVdRviN0t+sCvsiM29ncs4c2VlpePqRaa4Rc0JLOXz76pIYxGKh3sgd7VDBGIQJPaoIp0nZnG+6o9GAK03k2lMyEO8NgE/6ZcsM=
+  on:
+    tags: true
+    repo: stormpath/express-stormpath
