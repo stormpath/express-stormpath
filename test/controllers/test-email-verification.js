@@ -127,7 +127,7 @@ describe('email verification', function () {
           request(expressApp)
             .post(config.web.verifyEmail.uri)
             .set('Accept', 'application/json')
-            .expect(400, '{"status":400,"message":"login property cannot be null, empty, or blank."}', done);
+            .expect(400, '{"status":400,"message":"login property is required; it cannot be null, empty, or blank."}', done);
         });
       });
     });
