@@ -23,7 +23,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
 1. **Download Your Key File**
 
-  [Download your key file](https://support.stormpath.com/hc/en-us/articles/203697276-Where-do-I-find-my-API-key-) from the Stormpath Console.
+  Downlaod your API Key file by logging in to [https://api.stormpath.com/login](api.stormpath.com/login) and clicking the “Create API Key” button under the “Developer Tools” section.
 
 2. **Store Your Key As Environment Variables**
 
