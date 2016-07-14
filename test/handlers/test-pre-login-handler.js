@@ -38,18 +38,21 @@ function preLoginHandlerErrorTestFixture(application, respondWithError, callback
   app.on('stormpath.ready', callback.bind(null, fixture));
 }
 
-function preLoginHandlerInterceptResponseTestFixture(application, respondWith, callback) {
+function preLoginHandlerInterceptResponseTestFixture(application, callback) {
+  var fixture = {
+    expressApp: null,
+    preLoginHandlerFormData: null
+  };
+
   var app = helpers.createStormpathExpressApp({
     application: application,
-    preLoginHandler: function (formData, req, res) {
-      res.json(respondWith);
-      res.end();
+    preLoginHandler: function (formData, req, res, next) {
+      fixture.preLoginHandlerFormData = formData;
+      next();
     }
   });
 
-  var fixture = {
-    expressApp: app
-  };
+  fixture.expressApp = app;
 
   app.on('stormpath.ready', callback.bind(null, fixture));
 }
@@ -145,33 +148,29 @@ describe('Pre-Login Handler', function () {
         });
 
         describe('when providing your own response', function () {
-          var expressApp, customResponse;
-
-          before(function (done) {
-            customResponse = { test: '6ba109b3-2cdf-421c-8cc0-e22bc7550d0b' };
-            preLoginHandlerInterceptResponseTestFixture(application, customResponse, function (fixture) {
-              expressApp = fixture.expressApp;
-              done();
-            });
-          });
-
           it('should return that response', function (done) {
-            request(expressApp)
-              .post('/login')
-              .set('Accept', 'application/json')
-              .type('json')
-              .send(usernamePasswordBody)
-              .expect(200)
-              .end(function (err, res) {
-                if (err) {
-                  return done(err);
-                }
+            preLoginHandlerInterceptResponseTestFixture(application, function (fixture) {
+              request(fixture.expressApp)
+                .post('/login')
+                .set('Accept', 'application/json')
+                .type('json')
+                .send(usernamePasswordBody)
+                .expect(200)
+                .end(function (err) {
+                  if (err) {
+                    return done(err);
+                  }
 
-                assert(typeof res.body === 'object');
-                assert(res.body.test === customResponse.test);
+                  var preLoginHandlerFormData = fixture.preLoginHandlerFormData;
 
-                done();
-              });
+                  assert(typeof preLoginHandlerFormData === 'object');
+                  assert(preLoginHandlerFormData.grant_type === 'password');
+                  assert(preLoginHandlerFormData.username === usernamePasswordBody.username);
+                  assert(preLoginHandlerFormData.password === usernamePasswordBody.password);
+
+                  done();
+                });
+            });
           });
         });
 
