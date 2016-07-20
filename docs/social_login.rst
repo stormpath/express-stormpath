@@ -132,9 +132,11 @@ You can do this by visiting the `Google Developer Console`_ and clicking the "Cr
 Project" button.  You should see something like the following:
 
 .. image:: /_static/google-new-project.png
+**TODO: Image is out of date**
 
 Go ahead and pick a "Project Name" (usually the name of your app), and
-(*optionally*) a "Project ID".
+(*optionally*) a "Project ID". Optionally, click on "Show advanced options"
+to choose a hosting location. Click the "Create" button.
 
 
 Enable Google Login
@@ -145,46 +147,49 @@ Google Projects work is that you have to selectively enable what functionality
 each Project needs.
 
 From your `Google Developer Console`_ click on your new Project, then in the
-side panel click on the "APIs & auth" menu option.
+top-left "hamburger" menu, select the "API Manager" option.
 
-Now, scroll through the API list until you see "Google+ API", then click the
-"OFF" button next to it to enable it.  You should now see the "Google+ API" as
-"ON" in your API list:
+Now, scroll through the API list until you see "Google+ API". Click on it and 
+then click the "Enable" button. You will be told that you now need to create
+credentials.
 
 .. image:: /_static/google-enable-login.png
-
+**TODO: Image is out of date**
 
 Create OAuth Credentials
 ........................
 
-The next thing we need to do is create a new OAuth client ID.  This is what
-we'll use to handle user login with Google.
-
-From your project, click the "APIs & auth" menu, then click on the "Credentials"
-sub-menu.
-
-You should see a big red button labeled "Create New Client ID" near the top of
-the page -- click that.
+Click the "Go to Credentials" button.
 
 You'll want to do several things here:
 
-1. Select "Web application" for your "Application Type".
-2. Remove everything from the "Authorized Javascript Origins" box.
-3. Add the callback URI of your site (both publicly and locally) into the
-   "Authorized Redirect URI" box.  This tells Google where to
+1. "Google+ API" should already be selected under "Which API are you using?
+2. Under "Where will you be calling the API from?", select "Web Server (Javascript)"    **TODO: I don't know if this is correct, or "Web Server" -- needs review**
+3. For "What data will you be accessing?" selectg "User data".  **TODO: Yes? Is this always correct?**
+4. Click "What credentials do I need?"
+5. Give your id a name. The defaul "Web client 1" is fine.
+5. Remove everything from the "Authorized Javascript Origins" box.
+6. Add the callback URI of your site (both publicly and locally) into the
+   "Authorized Redirect URIs" box.  This tells Google where to
    redirect users after they've logged in with Google.  The default callback
    URI for this library is ``/callbacks/google``.
 
 In the end, your settings should look like this:
 
 .. image:: /_static/google-oauth-settings.png
+**TODO: Image is out of date**
 
-Once you've specified your settings, go ahead and click the "Create Client ID"
-button.
+Now specify the contact email address and product name that will be shown
+to users. Optionally, also fill in "More customization options" to refine
+the user experience.
 
-Lastly, you'll want to take note of your "Client ID" and "Client Secret"
-variables that should now be displayed on-screen.  We'll need these in the next
-step.
+Click "Continue"
+
+Save your new credentials. You can click "Download" to grab them as a .json file.
+Mostly, you will need the client_id and client_secret. Don't panic if you forget
+this step; the credentials are available later too, including on the next screen.
+
+Now, click "Done"
 
 
 Create a Google Directory
@@ -206,11 +211,11 @@ Google application:
   which you got in the previous steps.
 - For the "Google Authorized Redirect URI" field, insert your Google Redirect
   URL from the previous section. Be sure to *only enter the URI you're currently
-  using*.  EG: If you're running your app in development mode, set it to your
+  using*.  I.E: If you're running your app in development mode, set it to your
   local URL, if you're running your app in production mode, set it to your
   production URL.
 
-Lastly, be sure to click the "Save" button at the bottom of the page.
+Lastly, be sure to click the "Create Directory" button at the bottom of the page.
 
 Next, you need to hook your new Google Directory up to your Stormpath
 Application.  To do this, visit the Applications section and select your
@@ -218,7 +223,9 @@ application from the list.
 
 On your application page, click the "Account Stores" tab, then click the "Add
 Account Store" button.  From the drop down list, select your newly created
-Google Directory, then save your changes.
+Google Directory, and click "Create Mappings" to save your changes.
+
+**TODO: Does the priority order matter? Should be discussed here**
 
 That's it!
 
@@ -228,6 +235,10 @@ Test it Out
 
 Now that you've plugged your Google credentials into express-stormpath, social
 login should already be working!
+
+*However, note that the application reads the Stormpath configuration at startup.
+If you configured this Google connection while your app was running, you will
+need to restart it now.*
 
 Open your Express app in a browser, and try logging in by visiting the login page
 (``/login``).  If you're using the default login page included with this
