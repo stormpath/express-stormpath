@@ -10,12 +10,6 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
   var newAccount = helpers.newUser();
   newAccount.favoriteColor = uuid.v4();
 
-  var fixture = {
-    expressApp: null,
-    newAccountObject: newAccount,
-    postRegistrationHandlerAccount: null
-  };
-
   var app = helpers.createStormpathExpressApp({
     application: stormpathApplication,
     expand: {
@@ -34,13 +28,17 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
         }
       }
     },
-    postRegistrationHandler: function (account, req, res, next) {
-      fixture.postRegistrationHandlerAccount = account;
-      next();
+    postRegistrationHandler: function (account, req, res) {
+      // Simply return the user object, so that we can
+      // assert that the custom data was expanded
+      res.json(account);
     }
   });
 
-  fixture.expressApp = app;
+  var fixture = {
+    expressApp: app,
+    newAccountObject: newAccount
+  };
 
   app.on('stormpath.ready', cb.bind(null, fixture));
 }
@@ -88,6 +86,8 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication, cb) {
     }
   });
 
+
+
   fixture.expressApp.on('stormpath.ready', cb.bind(null, fixture));
 }
 
@@ -110,7 +110,9 @@ describe('Post-Registration Handler', function () {
   });
 
   describe('with a JSON post', function () {
+
     it('should be given the expanded account object', function (done) {
+
       preparePostRegistrationExpansionTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
@@ -118,18 +120,19 @@ describe('Post-Registration Handler', function () {
           .type('json')
           .send(fixture.newAccountObject)
           .expect(200)
-          .end(function (err) {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
-            assert(fixture.postRegistrationHandlerAccount.customData.favoriteColor === fixture.newAccountObject.favoriteColor);
+            assert(res.body.customData.favoriteColor === fixture.newAccountObject.favoriteColor);
             done();
           });
       });
     });
 
     it('should allow me to do work, then call next (let framework end the response)', function (done) {
+
       preparePostRegistrationPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
@@ -149,6 +152,7 @@ describe('Post-Registration Handler', function () {
     });
 
     it('shoud call the postRegistrationHandler, even if autoLogin is true', function (done) {
+
       preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
@@ -175,19 +179,20 @@ describe('Post-Registration Handler', function () {
         request(fixture.expressApp)
           .post('/register')
           .send(fixture.newAccountObject)
-          .expect(302)
-          .end(function (err) {
+          .expect(200)
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
-            assert(fixture.postRegistrationHandlerAccount.customData.favoriteColor === fixture.newAccountObject.favoriteColor);
+            assert(res.body.customData.favoriteColor === fixture.newAccountObject.favoriteColor);
             done();
           });
       });
     });
 
     it('should allow me to do work, then call next (let framework end the response)', function (done) {
+
       preparePostRegistrationPassThroughTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
@@ -205,6 +210,7 @@ describe('Post-Registration Handler', function () {
     });
 
     it('shoud call the postRegistrationHandler, even if autoLogin is true', function (done) {
+
       preparePostRegistrationAutoLoginTestFixture(stormpathApplication, function (fixture) {
         request(fixture.expressApp)
           .post('/register')
