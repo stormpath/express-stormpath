@@ -51,6 +51,6 @@
     "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.0.0",
     "sinon": "^1.17.3",
-    "supertest": "^1.1.0"
+    "supertest": "^2.0.0"
   }
 }
