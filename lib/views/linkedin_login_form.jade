@@ -35,7 +35,7 @@ script(type='text/javascript').
     var authorizationUrl = 'https://www.linkedin.com/uas/oauth2/authorization';
 
     var clientId = '#{linkedInProvider.clientId}';
-    var redirectUri = '#{url}#{linkedInProvider.uri}';
+    var redirectUri = '#{linkedInProvider.redirectUri}';
 
     var linkedinScope = '#{linkedInProvider.scope}';
 
