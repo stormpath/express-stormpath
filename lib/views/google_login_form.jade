@@ -16,7 +16,7 @@ script(type='text/javascript').
       clientId +
       '&scope=' + googleScope +
       '&include_granted_scopes=true&redirect_uri=' +
-      '#{url}#{stormpathConfig.web.social.google.uri}';
+      '#{stormpathConfig.web.social.google.redirectUri}';
 
     if (hd) {
       finalUrl = finalUrl + '&hd=' + hd;
