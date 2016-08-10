@@ -6,6 +6,33 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.1.4
+-------------
+
+**Released August 10, 2016.**
+
+- Fixed: Hostname was not resolved correctly if it included a port, and was
+  behind a reverse-proxy (`#498 <https://github.com/stormpath/express-stormpath/pull/498>`_).
+
+- Fixed: Pre/Post Login & Registration handlers were not called during a social
+  login flow (`#466 <https://github.com/stormpath/express-stormpath/pull/466>`_).
+
+- Fixed: Token cookies were not created after auto-login when resetting password
+  (`#465 <https://github.com/stormpath/express-stormpath/pull/465>`_).
+
+- Fixed: res.render() was not called with the full view path, causing "not found"
+  errors when the custom view filename had multiple periods.
+  (`#462 <https://github.com/stormpath/express-stormpath/pull/462>`_).
+
+- Added error logging for token exchange errors, to help debug ID Site callback
+  issues (`#474 <https://github.com/stormpath/express-stormpath/pull/474>`_).
+
+- The following dependencies have been updated:
+
+  - ``async@1.4.2`` -> ``async@2.0.1``
+  - ``njwt@0.3.0`` -> ``njwt@0.3.1``
+
+
 Version 3.1.3
 -------------
 
