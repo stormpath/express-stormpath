@@ -19,7 +19,7 @@ create the proper session cookies.
 Next URI
 --------
 
-The form will render with two fields for username and password, and this form
+The form will render with two fields for login and password, and this form
 will be posted to ``/login``.  If login is successful, we will redirect the user
 to ``/``.  If you wish to change this, use the ``nextUri`` config option::
 
@@ -47,7 +47,7 @@ field configuration:
         form: {
           fields: {
             login: {
-              label: 'Your Username or Password',
+              label: 'Your Username or Email',
               placeholder: 'email@trustyapp.com'
             },
             password: {
@@ -68,7 +68,7 @@ If you want to make a login attempt from a front-end application (Angular, React
 simply post a JSON body to the ``/login`` endpoint, with the following format::
 
     {
-      "username": "foo@bar.com",
+      "login": "foo@bar.com",
       "password": "myPassword"
     }
 
