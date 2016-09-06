@@ -111,7 +111,46 @@ prompted to accept the permissions requested:
 After accepting permissions, you'll be immediately redirected back to your
 website at the URL specified by ``redirectUrl`` in your app's config.
 
+.. note::
+
+  By default the configuration ``web.social.facebook.scope`` is set to ``email``. Change
+  this configuration value to request additional scopes.
+
 Simple, right?!
+
+Logging in using an Access Token
+................................
+
+If you want to use a Facebook SDK to login a user you can easily do so by grabbing the
+Access Token from the SDK login response and then POST it to the ``/login`` endpoint.
+
+To show you exactly what that means, let's say that you're using the JavaScript SDK and
+calling ``FB.login(...)``:
+
+.. code-block:: javascript
+
+  FB.login(function (response) {
+    if (!response.authResponse) {
+      return console.error('User cancelled login or did not fully authorize.');
+    }
+
+    // Login by making POST request to /login with the value from:
+    // response.authResponse.accessToken
+  });
+
+Now, using the Access Token received in the callback response (``response.authResponse.accessToken``) you can create a new ``POST`` request to the
+``/login`` endpoint with a JSON body as shown below:
+
+.. code-block:: javascript
+
+  {
+    providerData: {
+      providerId: 'facebook',
+      accessToken: '**your access token value**'
+    }
+  }
+
+When successful you'll receive a ``200 OK`` response. If the login fails a ``401 Unauthorized`` response will be returned.
 
 
 Google Login
@@ -135,24 +174,6 @@ Project" button.  You should see something like the following:
 
 Go ahead and pick a "Project Name" (usually the name of your app), and
 (*optionally*) a "Project ID".
-
-
-Enable Google Login
-...................
-
-Now that you've got a Google Project -- let's enable Google Login.  The way
-Google Projects work is that you have to selectively enable what functionality
-each Project needs.
-
-From your `Google Developer Console`_ click on your new Project, then in the
-side panel click on the "APIs & auth" menu option.
-
-Now, scroll through the API list until you see "Google+ API", then click the
-"OFF" button next to it to enable it.  You should now see the "Google+ API" as
-"ON" in your API list:
-
-.. image:: /_static/google-enable-login.png
-
 
 Create OAuth Credentials
 ........................
@@ -245,7 +266,84 @@ After selecting your account you'll then be prompted to accept any permissions,
 then immediately redirected back to your website at the URL specified by
 ``redirectUrl`` in your app's settings.
 
+.. note::
+
+  By default the configuration ``web.social.google.scope`` is set to ``email profile``. Change
+  this configuration value to request additional scopes.
+
 Simple, right?!
+
+
+Logging in using an Access Token
+................................
+
+Using the Access Token (implicit) workflow is preferable when you're logging in from a place where
+the storage can be trusted. E.g. from your back-end where only you have access to the Access Token.
+
+Now, in order to exchange your Access Token for a Stormpath session, make a ``POST`` request to the
+Stormpath ``/login`` endpoint using the Access Token as shown below:
+
+.. code-block:: javascript
+
+  {
+    providerData: {
+      providerId: 'google',
+      accessToken: '**your access token value**'
+    }
+  }
+
+When successful the request will return a ``200 OK`` HTTP response and a secure cookie session
+containing your Stormpath Access Token will be set. If the login fails a ``401 Unauthorized``
+response will be returned.
+
+
+Logging in using an Authorization Code
+......................................
+
+Using the Authorization Code workflow is preferable when logging in using a device from which the
+storage cannot be trusted. E.g. a browser where malicious JavaScript might try and steal the data
+stored.
+
+To illustrate how to login with an Authorization Code we'll use Google's JavaScript SDK to initiate
+a login request. Then once the login has been approved and we're redirected with an Authentication Code
+we'll take that code from the login response and send that to the Stormpath ``/login`` endpoint so that
+the Authorization Code can be exchanged for a new Stormpath session.
+
+To show you exactly what that means. When using Google's JavaScript SDK and calling ``auth2.grantOfflineAccess(...)``:
+
+.. code-block:: javascript
+
+  gapi.load('auth2', function() {
+    var auth2 = gapi.auth2.init({
+      client_id: 'YOUR CLIENT ID',
+      cookiepolicy: 'single_host_origin'
+    });
+
+    auth2.grantOfflineAccess({
+      redirect_uri: 'postmessage'
+    }).then(function (response) {
+      // Login by making a POST request to /login with the authorization code:
+      // response.code
+    }, function (err) {
+      console.error('User cancelled login or did not fully authorize.');
+    });
+  });
+
+Now, using the Authorization Code received in the callback response (``response.code``) you can create a new ``POST`` request to the
+``/login`` endpoint with a JSON body as shown below:
+
+.. code-block:: javascript
+
+  {
+    providerData: {
+      providerId: 'google',
+      code: '**your authorization code value**'
+    }
+  }
+
+When successful the request will return a ``200 OK`` HTTP response and a secure cookie session
+containing your Stormpath Access Token will be set. If the login fails a ``401 Unauthorized``
+response will be returned.
 
 
 LinkedIn Login
@@ -291,7 +389,6 @@ my site locally on port 3000, as well as under the "www.example.com" domain, I'd
 - https://www.example.com/callbacks/linkedin
 
 .. image:: /_static/linkedin-add-authorized-urls.gif
-
 
 Create a LinkedIn Directory
 ...........................
@@ -346,7 +443,86 @@ After selecting your account you'll then be prompted to accept any permissions,
 then immediately redirected back to your website at the URL specified by
 ``redirectUrl`` in your app's settings.
 
+.. note::
+
+  By default the configuration ``web.social.linkedin.scope`` is set to ``r_basicprofile r_emailaddress``. Change
+  this configuration value to request additional scopes.
+
 Simple, right?!
+
+
+Logging in using an Access Token
+................................
+
+Using the Access Token (implicit) workflow is prefered when you're logging in from a place where
+the storage can be trusted. E.g. from your back-end where only you have access to the Access Token.
+
+But in this case, to illustrate how to login with an Access Token we'll use LinkedIn's JavaScript SDK to
+initiate a login request. Then once the login has been approved and our callback is called with an Access Token
+we'll take that token and send it to the Stormpath ``/login`` endpoint so that the Access Token can be
+exchanged for a new Stormpath session.
+
+To show you exactly what that means. When using LinkedIn's JavaScript SDK and calling ``IN.User.authorize(...)``:
+
+.. code-block:: javascript
+
+  IN.User.authorize(function () {
+    // Login by making a POST request to /login with the access token:
+    // IN.ENV.auth.oauth_token
+  });
+
+Now, in order to exchange your Access Token for a Stormpath session, make a ``POST`` request to the
+Stormpath ``/login`` endpoint using the Access Token as shown below:
+
+.. code-block:: javascript
+
+  {
+    providerData: {
+      providerId: 'linkedin',
+      accessToken: '**your access token value**'
+    }
+  }
+
+When successful the request will return a ``200 OK`` HTTP response and a secure cookie session
+containing your Stormpath Access Token will be set. If the login fails a ``401 Unauthorized``
+response will be returned.
+
+
+Logging in using an Authorization Code
+......................................
+
+Using the Authorization Code workflow is preferable when logging in using a device from which the
+storage cannot be trusted. E.g. a browser where malicious JavaScript might try and steal the data
+stored.
+
+To illustrate how to login with an Authorization Code we'll redirect to LinkedIn's OAuth
+Authorization endpoint:
+
+.. code-block:: javascript
+
+  https://www.linkedin.com/oauth/v2/authorization?
+    response_type=code&
+    client_id=YOUR_LINKEDIN_CLIENT_ID&
+    redirect_uri=URI_TO_RECEIVE_AUTHORIZATION_CODE_ON&
+    scope=r_basicprofile%20r_emailaddress&
+    state=987654321
+
+Now, using the Authorization Code received on the redirect URI we'll create a new ``POST`` request to the
+``/login`` endpoint with a JSON body as shown below:
+
+.. code-block:: javascript
+
+  {
+    providerData: {
+      providerId: 'linkedin',
+      code: '**authorization code recieved on callback URI**'
+    }
+  }
+
+When successful the request will return a ``200 OK`` HTTP response and a secure cookie session
+containing your Stormpath Access Token will be set. If the login fails a ``401 Unauthorized``
+response will be returned.
+
 
 JSON API
 --------
