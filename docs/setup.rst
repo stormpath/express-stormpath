@@ -132,7 +132,7 @@ With this minimal configuration, our library will do the following:
 - Attach the :ref:`default_features` to your express application, such as the
   login page and registration page.
 
-- Hold any requests that require authentication, until Stormpath is ready.
+- Hold all requests until Stormpath is ready.
 
 That's it, you're ready to go! Try navigating to these URLs in your application:
 
