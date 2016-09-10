@@ -28,8 +28,8 @@ block body
                     - var value = form ? form[field.name] : '';
                     input.form-control(placeholder=field.placeholder, name=field.name, value=value, required=field.required, type=field.type, autocomplete='off')
 
-              p Passwords must be #[b 8+] characters and must include one of each of the following:
-              ul
+              p.pwd-requirements Passwords must be #[b 8+] characters and include one of each of the following:
+              ul.pwd-requirements
                 li digit (0-9)
                 li upper-case letter (A-Z)
                 li lower-case letter (a-z)
