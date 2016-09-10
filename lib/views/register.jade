@@ -26,7 +26,7 @@ block body
                   label.col-sm-4 #{field.label}
                   .col-sm-8
                     - var value = form ? form[field.name] : '';
-                    input.form-control(placeholder=field.placeholder, name=field.name, value=value, required=field.required, type=field.type)
+                    input.form-control(placeholder=field.placeholder, name=field.name, value=value, required=field.required, type=field.type, autocomplete='off')
 
               button.btn.btn-register.btn-sp-green(type='submit') Create Account
 
