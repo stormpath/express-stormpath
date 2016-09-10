@@ -28,6 +28,12 @@ block body
                     - var value = form ? form[field.name] : '';
                     input.form-control(placeholder=field.placeholder, name=field.name, value=value, required=field.required, type=field.type, autocomplete='off')
 
+              p Passwords must be #[b 8+] characters and must include one of each of the following:
+              ul
+                li digit (0-9)
+                li upper-case letter (A-Z)
+                li lower-case letter (a-z)
+
               button.btn.btn-register.btn-sp-green(type='submit') Create Account
 
         a.to-login(href=stormpathConfig.web.login.uri) Back to Log In
