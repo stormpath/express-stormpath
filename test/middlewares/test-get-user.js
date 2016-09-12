@@ -15,7 +15,7 @@ var uuid = require('uuid');
 var winston = require('winston');
 
 var getToken = require('../../lib/controllers/get-token');
-var getUser = require('../../lib/helpers/get-user');
+var getUser = require('../../lib/middleware/get-user');
 var helpers = require('../helpers');
 var login = require('../../lib/controllers/login');
 
