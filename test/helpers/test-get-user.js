@@ -84,7 +84,7 @@ describe('getUser', function () {
       ]
     }));
     app.set('stormpathConfig', config);
-    app.use(cookieParser());
+    app.use(cookieParser('mocksecret'));
 
     return function (req, res, next) {
       req.app = app;
