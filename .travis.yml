@@ -19,10 +19,6 @@ after_success:
 - test -z "$BUILD_DOCS" || RELEASE_VERSION=`git tag | xargs -I@ git log --format=format:"%ai @%n" -1 @ | sort | awk '{print $4}' | tail -n 1`
 - test -z "$BUILD_DOCS" || RELEASE_HASH=`git rev-list $RELEASE_VERSION -n 1`
 - test -z "$BUILD_DOCS" || if [ "$CURRENT_HASH" = "$RELEASE_HASH" ]; then DEPLOY_DOCS=true; fi
-- test -z "$BUILD_DOCS" || echo $RELEASE_VERSION
-- test -z "$BUILD_DOCS" || echo $CURRENT_HASH
-- test -z "$BUILD_DOCS" || echo $RELEASE_HASH
-- test -z "$BUILD_DOCS" || echo $DEPLOY_DOCS
 - test -z "$DEPLOY_DOCS" || git config --global user.email "evangelists@stormpath.com"
 - test -z "$DEPLOY_DOCS" || git config --global user.name "express-stormpath Auto Doc Build"
 - test -z "$DEPLOY_DOCS" || git clone git@github.com:stormpath/stormpath.github.io.git
@@ -34,20 +30,7 @@ after_success:
 - test -z "$DEPLOY_DOCS" || cp -r ../docs/_build/html source/nodejs/express/$RELEASE_VERSION
 - test -z "$DEPLOY_DOCS" || git add --all
 - test -z "$DEPLOY_DOCS" || git commit -m "express-stormpath release $RELEASE_VERSION"
-- test -z "$DEPLOY_DOCS" || ls -la source/nodejs/express
 - test -z "$DEPLOY_DOCS" || git push origin source
-- test -z "$DEPLOY_DOCS" || gem install bundler
-- test -z "$DEPLOY_DOCS" || bundle install
-- test -z "$DEPLOY_DOCS" || rake setup_github_pages[git@github.com:stormpath/stormpath.github.io.git]
-- test -z "$DEPLOY_DOCS" || cd _deploy
-- test -z "$DEPLOY_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-- test -z "$DEPLOY_DOCS" || cd ..
-- test -z "$DEPLOY_DOCS" || rake generate
-- test -z "$DEPLOY_DOCS" || cd _deploy
-- test -z "$DEPLOY_DOCS" || git pull --no-edit -s recursive -X theirs https://github.com/stormpath/stormpath.github.io.git
-- test -z "$DEPLOY_DOCS" || cd ..
-- test -z "$DEPLOY_DOCS" || rake deploy
-- test -z "$DEPLOY_DOCS" || cd ..
 env:
   global:
   - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
