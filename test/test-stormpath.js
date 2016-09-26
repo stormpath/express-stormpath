@@ -49,6 +49,10 @@ describe('stormpath.init()', function () {
 
   it('should emit an error if an application is not defined', function (done) {
 
+    /**
+     * NOTE: this test requires you to NOT define STORMPATH_APPLICATION_HREF in the environment.
+     */
+
     var app = express();
 
     app.on('stormpath.error', function (err) {
