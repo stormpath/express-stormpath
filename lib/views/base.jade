@@ -31,12 +31,23 @@ html(class='no-js', lang='en')
         margin-right: auto;
       }
 
+      @font-face {
+        font-family: MuseoSans;
+        src: url("../fonts/MuseoSans_0.otf") format("opentype");
+      }
+
+      @font-face {
+        font-family: MuseoSans;
+        font-weight: bold;
+        src: url("../fonts/MuseoSans.otf") format("opentype");
+      }
+
       body,
       div,
       p,
       a,
       label {
-        font-family: "Open Sans";
+        font-family: MuseoSans;
         font-size: 14px;
         font-weight: 400;
         color: #484848;
@@ -400,8 +411,7 @@ html(class='no-js', lang='en')
       }
 
       .login, .register { display: table; }
-      .va-wrapper { display: table-cell; width: 100%; padding-top: 85px; }
-      .custom-container { display: table-row; height: 100%; }
+      .va-wrapper { display: table-cell; width: 100% }
 
       .pwd-requirements { color: #aaa; margin-bottom: 0 }
       ul.pwd-requirements { padding-left: 30px }
@@ -422,6 +432,34 @@ html(class='no-js', lang='en')
         z-index: 5;
       }
 
+      .container {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      div.branding {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        width: 650px;
+        color: #79490C;
+        font-size: 30pt;
+        font-weight: 100;
+        margin-top: 20pt;
+        height: 47px;
+        letter-spacing: -2px;
+        z-index: 5;
+      }
+
+      div.branding span {
+        float: right;
+        font-size: 15pt;
+        color: #ccc;
+        font-style: italic;
+        margin-top: 19px;
+        letter-spacing: normal;
+      }
+
     | <!--[if lt IE 9]>
     |  <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
     |  <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
@@ -432,6 +470,9 @@ html(class='no-js', lang='en')
   body(class='#{bodytag}')
 
     img(src='android-chrome-256x256.png', width='125', id='logo')
+
+    div.branding Daycast
+      span Own Your Day
 
     block body
 
