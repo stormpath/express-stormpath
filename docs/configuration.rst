@@ -61,9 +61,11 @@ can do so like this:
 .. code-block:: javascript
 
   app.use(stormpath.init(app, {
-    apiKey: {
-      id: 'YOUR_ID_HERE',
-      secret: 'YOUR_SECRET_HERE'
+    client: {
+      apiKey: {
+        id: 'YOUR_ID_HERE',
+        secret: 'YOUR_SECRET_HERE'
+      }
     },
     application: {
       href: `YOUR_APP_HREF`

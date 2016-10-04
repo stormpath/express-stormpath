@@ -114,15 +114,27 @@ Express application, it shows the minimal code required to integrate Stormpath:
     var app = express();
 
     app.use(stormpath.init(app, {
-      // Optional configuration options.
+      // Specify if you don't have your API key configuration set in the
+      // apiKey.properties, stormpath.yml file or the environment.
+      client: {
+        apiKey: {
+          id: 'YOUR STORMPATH API KEY ID',
+          secret: 'YOUR STORMPATH API KEY SECRET'
+        }
+      },
+      // Specify if you don't have your application configuration
+      // set in either stormpath.yml or the environment.
+      application: {
+        href: 'YOUR STORMPATH APPLICATION HREF'
+      }
     }));
-
-    app.listen(3000);
 
     // Stormpath will let you know when it's ready to start authenticating users.
     app.on('stormpath.ready', function () {
       console.log('Stormpath Ready!');
     });
+
+    app.listen(3000);
 
 With this minimal configuration, our library will do the following:
 
