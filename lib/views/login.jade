@@ -94,9 +94,9 @@ block body
                 div(class='#{cls}')
                   - var value = form.data ? form.data.login : '';
                   if registerFields.username && registerFields.username.enabled
-                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
+                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value, autocomplete='off')
                   else
-                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
+                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value, autocomplete='off')
 
               if hasSocialProviders
                 - var cls = 'col-sm-12'
