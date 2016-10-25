@@ -72,56 +72,53 @@ block body
                 each error in formErrors
                   p #{error.error}
 
-            if needsApp == true
-              p Please download the Daycast application and login from there
-            else
-              form.login-form.form-horizontal(method='post', role='form',action=formActionUri)
-                input(name='_csrf', type='hidden', value=csrfToken)
+            form.login-form.form-horizontal(method='post', role='form',action=formActionUri)
+              input(name='_csrf', type='hidden', value=csrfToken)
 
-                .form-group.group-email
-                  if hasSocialProviders
-                    - var cls = 'col-sm-12'
-                  else
-                    - var cls = 'col-sm-4'
-
-                  if registerFields.username && registerFields.username.enabled
-                    label(class='#{cls}') Username or Email
-                  else
-                    label(class='#{cls}') Email
-
-                  if hasSocialProviders
-                    - var cls = 'col-sm-12'
-                  else
-                    - var cls = 'col-sm-8'
-
-                  div(class='#{cls}')
-                    - var value = form.data ? form.data.login : '';
-                    if registerFields.username && registerFields.username.enabled
-                      input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value, autocomplete='off')
-                    else
-                      input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value, autocomplete='off')
-
+              .form-group.group-email
                 if hasSocialProviders
                   - var cls = 'col-sm-12'
                 else
                   - var cls = 'col-sm-4'
 
-                .form-group.group-password
-                  label(class='#{cls}') Password
+                if registerFields.username && registerFields.username.enabled
+                  label(class='#{cls}') Username or Email
+                else
+                  label(class='#{cls}') Email
 
-                  if hasSocialProviders
-                    - var cls = 'col-sm-12'
+                if hasSocialProviders
+                  - var cls = 'col-sm-12'
+                else
+                  - var cls = 'col-sm-8'
+
+                div(class='#{cls}')
+                  - var value = form.data ? form.data.login : '';
+                  if registerFields.username && registerFields.username.enabled
+                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value, autocomplete='off')
                   else
-                    - var cls = 'col-sm-8'
+                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value, autocomplete='off')
 
-                  div(class='#{cls}')
-                    input.form-control(placeholder='Password', required=true, type='password', name='password')
+              if hasSocialProviders
+                - var cls = 'col-sm-12'
+              else
+                - var cls = 'col-sm-4'
 
-                p.tos
-                  label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='https://daycast.com/terms-of-service.html') Terms of Service]
+              .form-group.group-password
+                label(class='#{cls}') Password
 
-                div
-                  button.login.btn.btn-login.btn-sp-green(type='submit') Log In
+                if hasSocialProviders
+                  - var cls = 'col-sm-12'
+                else
+                  - var cls = 'col-sm-8'
+
+                div(class='#{cls}')
+                  input.form-control(placeholder='Password', required=true, type='password', name='password')
+
+              p.tos
+                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='https://daycast.com/terms-of-service.html') Terms of Service]
+
+              div
+                button.login.btn.btn-login.btn-sp-green(type='submit') Log In
 
           if hasSocialProviders
             .social-area.col-xs-12.col-sm-4
