@@ -36,7 +36,7 @@
     "parse-iso-duration": "^1.0.0",
     "qs": "^6.0.2",
     "request": "^2.63.0",
-    "stormpath": "git+https://github.com/CSNW/stormpath-sdk-node.git#short-circuit-dev-reqs-2",
+    "stormpath": "git+https://github.com/CSNW/stormpath-sdk-node.git#short-circuit-dev-reqs-5",
     "stormpath-config": "^0.0.24",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
