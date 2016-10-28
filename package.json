@@ -34,6 +34,7 @@
     "lodash": "^4.6.1",
     "njwt": "^0.3.1",
     "parse-iso-duration": "^1.0.0",
+    "psl": "^1.1.14",
     "qs": "^6.0.2",
     "request": "^2.63.0",
     "stormpath": "0.20.x",
