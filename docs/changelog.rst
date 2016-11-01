@@ -6,6 +6,14 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.1.6
+-------------
+
+**Released November 1, 2016.**
+
+* Fix for broken scope string for social login providers.  If you are getting errors about invalid scope configuration from Google, Facebook, etc, you should upgrade to this version. (`#539 <https://github.com/stormpath/express-stormpath/pull/539>`_).
+* Fixed so that login with social providers will support the ``?next`` query string parameter. (`#482 <https://github.com/stormpath/express-stormpath/pull/482>`_).
+
 Version 3.1.5
 -------------
 
