@@ -23,7 +23,7 @@ var SpaRootFixture = require('../fixtures/spa-root-fixture');
  *
  * @param {object} stormpathApplication
  */
-function DefaultRegistrationFixture(stormpathApplication) {
+function DefaultRegistrationFixture(stormpathApplication, callback) {
   this.expressApp = helpers.createStormpathExpressApp({
     application: {
       href: stormpathApplication.href
@@ -37,7 +37,9 @@ function DefaultRegistrationFixture(stormpathApplication) {
       }
     }
   });
-  return this;
+
+
+  this.expressApp.on('stormpath.ready', callback);
 }
 /**
  * Returns an object that has the default expected (and required) form fields of
@@ -70,14 +72,14 @@ DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
         'label': 'First Name',
         'name': 'givenName',
         'placeholder': 'First Name',
-        'required': true,
+        'required': false,
         'type': 'text'
       },
       {
         'label': 'Last Name',
         'name': 'surname',
         'placeholder': 'Last Name',
-        'required': true,
+        'required': false,
         'type': 'text'
       },
       {
@@ -107,7 +109,7 @@ DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
  *
  * @param {object} stormpathApplication
  */
-function NamesOptionalRegistrationFixture(stormpathApplication) {
+function NamesOptionalRegistrationFixture(stormpathApplication, callback) {
   this.expressApp = helpers.createStormpathExpressApp({
     application: {
       href: stormpathApplication.href
@@ -131,7 +133,8 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
       }
     }
   });
-  return this;
+
+  this.expressApp.on('stormpath.ready', callback);
 }
 /**
  * Returns an object that has the required form fields of email and password.
@@ -163,6 +166,175 @@ NamesOptionalRegistrationFixture.prototype.namesProvidedFormPost = function () {
 
 /**
  * Creates an Express application and configures the register feature with the
+ * surname and given name as required fields (remotely).
+ *
+ * Requires you to supply the stormpath application that should be
+ * used.  Assumes that tenant api key and secret are defined in the environment.
+ *
+ * @param {object} stormpathApplication
+ */
+function NamesRequiredRemotelyRegistrationFixture(stormpathApplication, callback) {
+  var self = this;
+
+  helpers.getApplicationDefaultSchemaFields(stormpathApplication, function (err, fields) {
+    if (err) {
+      return callback(err);
+    }
+
+    fields.each(function (field, next) {
+      if (field.name !== 'givenName' && field.name !== 'surname') {
+        return next();
+      }
+
+      field.required = true;
+
+      field.save(next);
+    }, function (err) {
+      if (err) {
+        return callback(err);
+      }
+
+      self.expressApp = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        cacheOptions: {
+          ttl: 0
+        },
+        web: {
+          register: {
+            enabled: true
+          }
+        }
+      });
+
+      self.expressApp.on('stormpath.ready', function () {
+        callback();
+      });
+    });
+  });
+}
+
+/**
+ * Returns an object that has the required form fields of email and password.
+ * This fixture does not require given name or surname
+ *
+ * @return {object} postable form data object
+ */
+NamesRequiredRemotelyRegistrationFixture.prototype.namesOmittedFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
+
+/**
+ * Returns an object that has the required form fields of email and password,
+ * and it supplies the first and last names as well.
+ *
+ * @return {object} postable form data object
+ */
+NamesRequiredRemotelyRegistrationFixture.prototype.namesProvidedFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!',
+    givenName: 'foo',
+    surname: 'bar'
+  };
+};
+
+
+/**
+ * Creates an Express application and configures the register feature with the
+ * surname and given name as required fields (locally).
+ *
+ * Requires you to supply the stormpath application that should be
+ * used.  Assumes that tenant api key and secret are defined in the environment.
+ *
+ * @param {object} stormpathApplication
+ */
+function NamesRequiredLocallyRegistrationFixture(stormpathApplication, callback) {
+  var self = this;
+
+  helpers.getApplicationDefaultSchemaFields(stormpathApplication, function (err, fields) {
+    if (err) {
+      return callback(err);
+    }
+
+    fields.each(function (field, next) {
+      if (field.name !== 'givenName' && field.name !== 'surname') {
+        return next();
+      }
+
+      field.required = false;
+
+      field.save(next);
+    }, function (err) {
+      if (err) {
+        return callback(err);
+      }
+
+      this.expressApp = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        cacheOptions: {
+          ttl: 0
+        },
+        web: {
+          register: {
+            enabled: true,
+            form: {
+              fields: {
+                surname: {
+                  required: true
+                },
+                givenName: {
+                  required: true
+                }
+              }
+            }
+          }
+        }
+      });
+
+      this.expressApp.on('stormpath.ready', function () {
+        callback();
+      });
+    });
+  });
+}
+
+/**
+ * Returns an object that has the required form fields of email and password.
+ * This fixture does not require given name or surname
+ *
+ * @return {object} postable form data object
+ */
+NamesRequiredLocallyRegistrationFixture.prototype.namesOmittedFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
+};
+
+/**
+ * Returns an object that has the required form fields of email and password,
+ * and it supplies the first and last names as well.
+ *
+ * @return {object} postable form data object
+ */
+NamesRequiredLocallyRegistrationFixture.prototype.namesProvidedFormPost = function () {
+  return {
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!',
+    givenName: 'foo',
+    surname: 'bar'
+  };
+};
+
+/**
+ * Creates an Express application and configures the register feature with the
  * surname and given name as disabled fields.
  *
  * Requires you to supply the stormpath application that should be
@@ -170,7 +342,7 @@ NamesOptionalRegistrationFixture.prototype.namesProvidedFormPost = function () {
  *
  * @param {object} stormpathApplication
  */
-function NamesDisabledRegistrationFixture(stormpathApplication) {
+function NamesDisabledRegistrationFixture(stormpathApplication, callback) {
   this.expressApp = helpers.createStormpathExpressApp({
     application: {
       href: stormpathApplication.href
@@ -194,7 +366,8 @@ function NamesDisabledRegistrationFixture(stormpathApplication) {
       }
     }
   });
-  return this;
+
+  this.expressApp.on('stormpath.ready', callback);
 }
 /**
  * Returns an object that has the required form fields of email and password.
@@ -217,7 +390,7 @@ NamesDisabledRegistrationFixture.prototype.defaultFormPost = function () {
  *
  * @param {object]} stormpathApplication
  */
-function CustomFieldRegistrationFixture(stormpathApplication) {
+function CustomFieldRegistrationFixture(stormpathApplication, callback) {
   this.expressApp = helpers.createStormpathExpressApp({
     application: {
       href: stormpathApplication.href
@@ -250,8 +423,10 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
       }
     }
   });
-  return this;
+
+  this.expressApp.on('stormpath.ready', callback);
 }
+
 /**
  * Returns an object that has the default expected (and required) form fields of
  * givenName, surname, email, and password.  Also populates the custom color
@@ -327,11 +502,14 @@ function assertCustomDataRegistration(fixture, formData, done) {
 
 describe('register', function () {
   var stormpathApplication;
+  var stormpathFieldsRequiredApplication;
   var stormpathClient;
   var customFieldRegistrationFixture;
   var defaultRegistrationFixture;
   var namesDisabledRegistrationFixture;
   var namesOptionalRegistrationFixture;
+  var namesRequiredLocallyRegistrationFixture;
+  var namesRequiredRemotelyRegistrationFixture;
 
   var existingUserData = {
     givenName: uuid.v4(),
@@ -349,15 +527,23 @@ describe('register', function () {
 
       stormpathApplication = app;
 
-      defaultRegistrationFixture = new DefaultRegistrationFixture(stormpathApplication);
-      defaultRegistrationFixture.expressApp.on('stormpath.ready', function () {
-        customFieldRegistrationFixture = new CustomFieldRegistrationFixture(stormpathApplication);
-        customFieldRegistrationFixture.expressApp.on('stormpath.ready', function () {
-          namesOptionalRegistrationFixture = new NamesOptionalRegistrationFixture(stormpathApplication);
-          namesOptionalRegistrationFixture.expressApp.on('stormpath.ready', function () {
-            namesDisabledRegistrationFixture = new NamesDisabledRegistrationFixture(stormpathApplication);
-            namesDisabledRegistrationFixture.expressApp.on('stormpath.ready', function () {
-              app.createAccount(existingUserData, done);
+      helpers.createApplication(stormpathClient, function (err, fieldsRequiredApp) {
+        if (err) {
+          return done(err);
+        }
+
+        stormpathFieldsRequiredApplication = fieldsRequiredApp;
+
+        defaultRegistrationFixture = new DefaultRegistrationFixture(stormpathApplication, function () {
+          customFieldRegistrationFixture = new CustomFieldRegistrationFixture(stormpathApplication, function () {
+            namesOptionalRegistrationFixture = new NamesOptionalRegistrationFixture(stormpathApplication, function () {
+              namesRequiredLocallyRegistrationFixture = new NamesRequiredLocallyRegistrationFixture(stormpathApplication, function () {
+                namesRequiredRemotelyRegistrationFixture = new NamesRequiredRemotelyRegistrationFixture(fieldsRequiredApp, function () {
+                  namesDisabledRegistrationFixture = new NamesDisabledRegistrationFixture(stormpathApplication, function () {
+                    app.createAccount(existingUserData, done);
+                  });
+                });
+              });
             });
           });
         });
@@ -366,7 +552,9 @@ describe('register', function () {
   });
 
   after(function (done) {
-    helpers.destroyApplication(stormpathApplication, done);
+    helpers.destroyApplication(stormpathApplication, function () {
+      helpers.destroyApplication(stormpathFieldsRequiredApplication, done);
+    });
   });
 
   describe('by default', function () {
@@ -435,8 +623,7 @@ describe('register', function () {
         if (err) {
           return done(err);
         }
-        fixture = new DefaultRegistrationFixture(stormpathApplication);
-        fixture.expressApp.on('stormpath.ready', done);
+        fixture = new DefaultRegistrationFixture(stormpathApplication, done);
       });
     });
 
@@ -499,9 +686,7 @@ describe('register', function () {
   });
 
   describe('with Accept: application/json requests', function () {
-
     describe('by default', function () {
-
       it('should return a JSON view model', function (done) {
         request(defaultRegistrationFixture.expressApp)
           .get('/register')
@@ -509,32 +694,7 @@ describe('register', function () {
           .expect(200, defaultRegistrationFixture.defaultJsonViewModel, done);
       });
 
-      it('should return a JSON error if the request is missing the givenName', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
-        delete formData.givenName;
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'application/json')
-          .type('json')
-          .send(formData)
-          .expect(400)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            assert.equal(res.body.message, 'First Name required.');
-
-            done();
-          });
-
-      });
-
-
       it('should create an account if the data is valid', function (done) {
-
         var formData = defaultRegistrationFixture.defaultFormPost();
 
         request(defaultRegistrationFixture.expressApp)
@@ -557,7 +717,6 @@ describe('register', function () {
 
             done();
           });
-
       });
 
       it('should reject fields that are not configured', function (done) {
@@ -594,7 +753,6 @@ describe('register', function () {
           .send(formData)
           .expect(200)
           .end(assertCustomDataRegistration(fixture, formData, done));
-
       });
     });
 
@@ -622,52 +780,51 @@ describe('register', function () {
           });
 
       });
-
-      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
-
-        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
-
-        request(namesOptionalRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'application/json')
-          .type('json')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            assert.equal(res.body.account.givenName, 'UNKNOWN');
-            assert.equal(res.body.account.surname, 'UNKNOWN');
-            assert.equal(res.body.account.email, formData.email);
-            done();
-          });
-
-      });
-
     });
 
-    describe('if givenName and surname are disabled', function () {
+    describe('if givenName and surname are locally required', function () {
+      it('should error if givenName and surname are not provided in request', function (done) {
+        var formData = namesRequiredLocallyRegistrationFixture.namesOmittedFormPost();
 
-      it('should set givenName and surname to \'UNKNOWN\'', function (done) {
-
-        var formData = namesDisabledRegistrationFixture.defaultFormPost();
-
-        request(namesDisabledRegistrationFixture.expressApp)
+        request(namesRequiredLocallyRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
           .type('json')
           .send(formData)
-          .expect(200)
+          .expect(400)
           .end(function (err, res) {
             if (err) {
               return done(err);
             }
 
-            assert.equal(res.body.account.givenName, 'UNKNOWN');
-            assert.equal(res.body.account.surname, 'UNKNOWN');
-            assert.equal(res.body.account.email, formData.email);
+            assert.equal(err, null);
+            assert.equal(res.body.status, 400);
+            assert.equal(res.body.message, 'First Name required.');
+
+            done();
+          });
+      });
+    });
+
+    describe('if givenName and surname are remotely required', function () {
+      it('should error if givenName and surname are not provided in request', function (done) {
+        var formData = namesRequiredRemotelyRegistrationFixture.namesOmittedFormPost();
+
+        request(namesRequiredRemotelyRegistrationFixture.expressApp)
+          .post('/register')
+          .set('Accept', 'application/json')
+          .type('json')
+          .send(formData)
+          .expect(400)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(err, null);
+            assert.equal(res.body.status, 400);
+            assert.equal(res.body.message, 'First Name required.');
+
             done();
           });
       });
@@ -728,33 +885,7 @@ describe('register', function () {
 
       });
 
-      it('should render an error if the givenName field is not supplied', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
-        delete formData.givenName;
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-            assert($('.alert.alert-danger p').length);
-            assert.notEqual($('.alert.alert-danger p').text().indexOf('First Name'), -1);
-
-            done();
-          });
-
-      });
-
       it('should re-render the submitted form data if the submission fails', function (done) {
-
         var formData = defaultRegistrationFixture.defaultFormPost();
         // cause password strength validation to fail
         formData.password = '1';
@@ -1001,44 +1132,6 @@ describe('register', function () {
       });
     });
 
-    describe('if givenName and surname are optional (not required)', function () {
-
-      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
-
-        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
-
-        request(namesOptionalRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
-              if (err) {
-                return done(err);
-              }
-
-              if (accounts.items.length === 0) {
-                return done(new Error('No account was created!'));
-              }
-
-              var account = accounts.items[0];
-              assert.equal(account.email, formData.email);
-              assert.equal(account.givenName, 'UNKNOWN');
-              assert.equal(account.surname, 'UNKNOWN');
-
-              done();
-            });
-          });
-
-      });
-    });
-
     describe('if givenName and surname are disabled', function () {
       it('should not show those fields', function (done) {
         request(namesDisabledRegistrationFixture.expressApp)
@@ -1061,43 +1154,6 @@ describe('register', function () {
             done();
           });
       });
-
-      it('should set givenName and surname to \'UNKNOWN\'', function (done) {
-
-        var formData = namesDisabledRegistrationFixture.defaultFormPost();
-
-        request(namesDisabledRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
-              if (err) {
-                return done(err);
-              }
-
-              if (accounts.items.length === 0) {
-                return done(new Error('No account was created!'));
-              }
-
-              var account = accounts.items[0];
-              assert.equal(account.email, formData.email);
-              assert.equal(account.givenName, 'UNKNOWN');
-              assert.equal(account.surname, 'UNKNOWN');
-
-              done();
-            });
-          });
-
-      });
-
     });
-
   });
 });
