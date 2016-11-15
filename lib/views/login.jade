@@ -5,7 +5,7 @@ block vars
   - var description = 'Log into your account!'
   - var bodytag = 'login'
   - var socialProviders = stormpathConfig.web.social
-  - var registerFields = stormpathConfig.web.register.form.fields
+  - var loginFields = stormpathConfig.web.login.form.fields
 
 block body
 
@@ -75,44 +75,25 @@ block body
             form.login-form.form-horizontal(method='post', role='form',action=formActionUri)
               input(name='_csrf', type='hidden', value=csrfToken)
 
-              .form-group.group-email
-                if hasSocialProviders
-                  - var cls = 'col-sm-12'
-                else
-                  - var cls = 'col-sm-4'
+              each field, fieldName in loginFields
+                if field.enabled
+                  div(class='form-group group-' + fieldName)
+                    label(
+                      class='col-sm-' + (hasSocialProviders ? 12 : 4),
+                      for='#{fieldName}'
+                    ) #{field.label}
 
-                if registerFields.username && registerFields.username.enabled
-                  label(class='#{cls}') Username or Email
-                else
-                  label(class='#{cls}') Email
-
-                if hasSocialProviders
-                  - var cls = 'col-sm-12'
-                else
-                  - var cls = 'col-sm-8'
-
-                div(class='#{cls}')
-                  - var value = form.data ? form.data.login : '';
-                  if registerFields.username && registerFields.username.enabled
-                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value)
-                  else
-                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value)
-
-              if hasSocialProviders
-                - var cls = 'col-sm-12'
-              else
-                - var cls = 'col-sm-4'
-
-              .form-group.group-password
-                label(class='#{cls}') Password
-
-                if hasSocialProviders
-                  - var cls = 'col-sm-12'
-                else
-                  - var cls = 'col-sm-8'
-
-                div(class='#{cls}')
-                  input.form-control(placeholder='Password', required=true, type='password', name='password')
+                    div(class='col-sm-' + (hasSocialProviders ? 12 : 8))
+                      - var isLoginField = fieldName === 'login';
+                      input.form-control(
+                        id=fieldName,
+                        name=fieldName,
+                        type=field.type,
+                        placeholder=field.placeholder,
+                        autofocus=isLoginField ? 'true' : 'false',
+                        required=field.required ? 'true' : 'false',
+                        value=form.data && isLoginField ? form.data[fieldName] : ''
+                      )
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
