@@ -143,10 +143,10 @@ takes in four parameters:
   request directly.
 - ``res``: The Express response object.  This can be used to modify the HTTP
   response directly.
-- ``next``: The callback to call after you have done your custom work.  If you
-  call this with an error then we immediately return this error to the user and
-  form processing stops.  But if you call it without an error, then our library
-  will continue to process the form and respond with the default behavior.
+- ``next``: The callback to call after you have done your custom work, this tells
+  our library to continue with the default response.  If you don't call this,
+  you're responsible for handling the response.  If you call this with an error
+  then we stop the login procedure and show the error to the user.
 
 In the example below, we'll use the ``preLoginHandler`` to validate that
 the user doesn't enter an email domain that is restricted::
@@ -191,16 +191,17 @@ takes in four parameters:
   request directly.
 - ``res``: The Express response object.  This can be used to modify the HTTP
   response directly.
-- ``next``: The callback to call when you're done doing whatever it is you want
-  to do.  If you call this, execution will continue on normally.  If you don't
-  call this, you're responsible for handling the response.
+- ``next``: The callback to call after you have done your custom work, this tells
+  our library to continue with the default response.  If you don't call this,
+  you're responsible for handling the response.  If you call this with an error
+  then we show this error to the user, but the token cookies are still created.
 
 In the example below, we'll use the ``postLoginHandler`` to redirect the
 user to a special page (*instead of the normal login flow*)::
 
     app.use(stormpath.init(app, {
       postLoginHandler: function (account, req, res, next) {
-        res.redirect(302, '/secretpage').end();
+        res.redirect(302, '/secretpage');
       }
     }));
 
