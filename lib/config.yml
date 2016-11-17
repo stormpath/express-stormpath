@@ -205,6 +205,11 @@ web:
       uri: "/callbacks/linkedin"
       scope: "r_basicprofile r_emailaddress"
 
+  # SAML stuff
+  saml:
+    enabled: true
+    uri: "/initiate-saml-auth"
+
   # The /me route is for front-end applications, it returns a JSON object with
   # the current user object.  The developer can opt-in to expanding account
   # resources on this enpdoint.
