@@ -209,6 +209,8 @@ web:
   saml:
     enabled: true
     uri: "/initiate-saml-auth"
+    verifyUri: "/verify-saml"
+    nextUri: "/"
 
   # The /me route is for front-end applications, it returns a JSON object with
   # the current user object.  The developer can opt-in to expanding account
