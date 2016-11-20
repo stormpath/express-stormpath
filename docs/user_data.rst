@@ -33,6 +33,14 @@ but we need to know if the user is logged in.  In this case we use the
       }
     });
 
+Alternatively, you can require the middleware like this if you want to access
+the current user on every route: ``app.use(stormpath.getUser);``
+
+.. note::
+  This will always make req.user available if the user is logged in. However,
+  this should not be added if you have routes (such as public asset routes)
+  that do not depend on this middleware.
+
 Forcing Authentication
 ......................
 
@@ -110,6 +118,10 @@ model::
       }
     });
 
+.. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
+
 As you can see above -- storing custom information on a ``user`` account is
 extremely simple!
 
@@ -135,6 +147,10 @@ they are statically available inside your handler::
       res.json(req.user.customData);
     });
 
+  .. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
+
 Without enabling this expansion, the response would only contain
 an object which has an href to the resource, that would look
 like this::
@@ -145,7 +161,7 @@ like this::
 
 .. note::
 
- Custom data is expanded automatically, but you can disable this
+ Custom data is expanded automatically, but you can disable this.
 
 You can expand any of these *"linked resources"*:
 
@@ -178,6 +194,10 @@ Below is an example which shows how you can iterate over a collection resource
         res.send('Finished logging all groups to the console!')
       });
     });
+
+.. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
 
 Each collection resource has an ``each`` method which takes in two functions
 with signature: ``function (data, callback), function ()``.  The first function

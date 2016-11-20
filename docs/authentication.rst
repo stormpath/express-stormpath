@@ -36,6 +36,10 @@ To use cookie authentication, simply use the ``loginRequired`` middleware::
       res.send('Hello, ' + req.user.fullname);
     });
 
+.. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
+
 Behind the scenes we are issuing a OAuth2 Access Token and Refresh Token for
 the user, and storing them in secure, HTTPS-Only cookies.  After the user has
 logged in, these cookies will be supplied on every request.  Our library will
@@ -185,6 +189,10 @@ of how you can create an API Key for the currently logged in user::
       });
     });
 
+.. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
+
 This is a naive example which simply prints out the API Keys for the user, but
 once they have the keys they will be able to authenticate with your API.
 
@@ -236,6 +244,10 @@ middleware::
         message: "Hello, " + req.user.fullname
       });
     });
+
+.. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
 
 
 OAuth2 Client Credentials
@@ -342,6 +354,10 @@ you need to use the ``apiAuthenticationRequired`` middleware::
         message: "Hello, " + req.user.fullname
       });
     });
+
+.. tip::
+    See :ref:`getUser` to learn how to use the getUser
+    middleware to access the current user account.
 
 By default the Access Tokens are valid for one hour.  If you want to change
 the expiration of these tokens you will need to configure it in the server
