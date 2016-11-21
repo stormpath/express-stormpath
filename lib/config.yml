@@ -207,7 +207,7 @@ web:
 
   # SAML stuff
   saml:
-    enabled: true
+    enabled: false
     uri: "/initiate-saml-auth"
     verifyUri: "/verify-saml"
     nextUri: "/"
