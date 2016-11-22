@@ -172,10 +172,9 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
       var passwordResetToken;
 
       before(function (done) {
-        var stormpathApplication = fixture.emailVerificationConfig.application;
-        var stormpathAccount = fixture.account;
+        var stormpathApplication = fixture.config.application;
 
-        stormpathApplication.sendPasswordResetEmail({ email: stormpathAccount.email }, function (err, tokenResource) {
+        stormpathApplication.sendPasswordResetEmail({ email: fixture.stormpathAccount.email }, function (err, tokenResource) {
           if (err) {
             return done(err);
           }
@@ -184,11 +183,11 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
         });
       });
 
-      it('Should persist the organization in the access token', function (done) {
+      it.only('Should persist the organization in the access token', function (done) {
         var newPassword = uuid() + uuid().toUpperCase();
 
-        request(fixture.emailVerificationApp)
-        .post('/register')
+        request(fixture.expressApp)
+        .post('/verify')
           .type('json')
           .set('Accept', 'application/json')
           .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)

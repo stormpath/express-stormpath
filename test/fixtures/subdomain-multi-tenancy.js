@@ -72,7 +72,14 @@ SubdomainMultiTenancyFixture.prototype.before = function before(done) {
 
     async.parallel({
       account: function (next) {
-        self.organization.createAccount(self.account, next);
+        self.organization.createAccount(self.account, function(err, account) {
+          if (err) {
+            next(err);
+          }
+
+          self.stormpathAccount = account;
+          next(null, account);
+        });
       },
       mapping: function (next) {
         resources.application.createAccountStoreMapping({accountStore: self.organization}, next);
@@ -127,6 +134,7 @@ SubdomainMultiTenancyFixture.prototype.assertTokenContainsOrg = function assertT
   if (err) {
     return done(err);
   }
+
   var token = (res.headers['set-cookie'] || []).join('').match(/access_token=([^;]+)/)[1];
   var jwt = njwt.verify(token, this.config.client.apiKey.secret);
   assert.equal(jwt.body.org, this.organization.href);
