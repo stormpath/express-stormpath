@@ -105,7 +105,22 @@ SubdomainMultiTenancyFixture.prototype.before = function before(done) {
 };
 
 SubdomainMultiTenancyFixture.prototype.after = function after(done) {
-  helpers.destroyApplication(this.config.application, done);
+  var self = this;
+
+  async.parallel({
+    basic: function (next) {
+      helpers.destroyApplication(self.config.application, next);
+    },
+    email: function (next) {
+      helpers.destroyApplication(self.emailVerificationConfig.application, next);
+    }
+  }, function (err) {
+    if (err) {
+      return done(err);
+    }
+
+    done();
+  });
 };
 
 SubdomainMultiTenancyFixture.prototype.assertTokenContainsOrg = function assertTokenContainsOrg(done, err, res) {
