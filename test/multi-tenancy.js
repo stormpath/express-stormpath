@@ -1,6 +1,5 @@
 'use strict';
 
-var assert = require('assert');
 var uuid = require('uuid');
 
 var request = require('supertest');
@@ -118,6 +117,7 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
         request(fixture.expressApp)
         .post('/register')
           .type('json')
+          .set('Accept', 'application/json')
           .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
           .send(user)
           .expect('Set-Cookie', /access_token=[^;]+/)
@@ -169,9 +169,36 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
     });
 
     describe('If I change my password on a valid subdomain, and autoLogin is enabled', function () {
+      var passwordResetToken;
 
-      it('Should persist the organization in the access token', function () {
+      before(function (done) {
+        var stormpathApplication = fixture.emailVerificationConfig.application;
+        var stormpathAccount = fixture.account;
 
+        stormpathApplication.sendPasswordResetEmail({ email: stormpathAccount.email }, function (err, tokenResource) {
+          if (err) {
+            return done(err);
+          }
+          passwordResetToken = tokenResource.href.match(/\/([^\/]+)$/)[1];
+          done();
+        });
+      });
+
+      it('Should persist the organization in the access token', function (done) {
+        var newPassword = uuid() + uuid().toUpperCase();
+
+        request(fixture.emailVerificationApp)
+        .post('/register')
+          .type('json')
+          .set('Accept', 'application/json')
+          .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
+          .send({
+            password: newPassword,
+            passwordAgain: newPassword,
+            sptoken: passwordResetToken
+          })
+          .expect('Set-Cookie', /access_token=[^;]+/)
+          .end(fixture.assertTokenContainsOrg.bind(fixture, done));
       });
 
     });
