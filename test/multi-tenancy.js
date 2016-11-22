@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-
+var uuid = require('uuid');
 
 var request = require('supertest');
 
@@ -18,66 +18,6 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
   after(function (done) {
     fixture.after(done);
   });
-
-  // describe('Login Feature', function () {
-
-  //   it('Should persist the organization in the token if I login through a subdomain', function (done) {
-  //     request(fixture.expressApp)
-  //       .post('/login')
-  //       .type('json')
-  //       .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
-  //       .send({
-  //         login: fixture.account.email,
-  //         password: fixture.account.password
-  //       })
-  //       .expect('Set-Cookie', /access_token=[^;]+/)
-  //       .end(function (err, res) {
-  //         if (err) {
-  //           return done(err);
-  //         }
-  //         var token = res.headers['set-cookie'].join('').match(/access_token=([^;]+)/)[1];
-  //         var jwt = njwt.verify(token, fixture.config.client.apiKey.secret);
-  //         assert.equal(jwt.body.org, fixture.organization.href);
-  //         done();
-  //       });
-  //   });
-
-  //   it.skip('Should show me the organization selection form when I visit the registration view on the parent domain', function (done) {
-  //     request(fixture.expressApp)
-  //       .get('/login')
-  //       .set('Host', fixture.config.web.domainName)
-  //       .end(function (err, res) {
-  //         if (err) {
-  //           return done(err);
-  //         }
-  //         var $ = cheerio.load(res.text);
-
-  //         // Assert that the form was rendered.
-  //         assert.equal($('input[name="organizationNameKey"]').length, 1);
-  //         done(err);
-  //       });
-  //   });
-
-  //   it.skip('Should error if I provide an invalid organizationNameKey at the parent domain', function (done) {
-
-  //   });
-
-  //   it.skip('Should redirect me to the subdomain if I provide a valid organizationNameKey at the parent domain', function (done) {
-  //     request(fixture.expressApp)
-  //       .post('/login')
-  //       .type('json')
-  //       .set('Host', fixture.config.web.domainName)
-  //       .send({
-  //         organizationNameKey: fixture.organization.nameKey
-  //       })
-  //       .expect('Location', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
-  //       .end(done);
-  //   });
-
-  //   it.skip('Should redirect me to the login view on the parent domain if I visit an invalid subdomain', function (done) {
-
-  //   });
-  // });
 
   describe('Login Workflow', function () {
 
@@ -167,11 +107,22 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
     });
 
     describe('If I register on a valid subdomain, and autoLogin is enabled', function () {
+      it('Should persist the organization in the access token', function (done) {
+        var user = {
+          givenName: uuid.v4(),
+          surname: uuid.v4(),
+          email: uuid.v4() + '@test.com',
+          password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+        };
 
-      it('Should persist the organization in the access token', function () {
-
+        request(fixture.expressApp)
+        .post('/register')
+          .type('json')
+          .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
+          .send(user)
+          .expect('Set-Cookie', /access_token=[^;]+/)
+          .end(fixture.assertTokenContainsOrg.bind(fixture, done));
       });
-
     });
   });
 
@@ -229,14 +180,14 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
   describe('Email Verification Workflow', function () {
     describe('If I visit /verify?sptoken=<token> on the parent domain', function () {
       it('should present the organization selection form', function (done) {
-        request(fixture.expressApp)
+        request(fixture.emailVerificationApp)
           .get('/verify?sptoken=tokenhere')
           .set('Host', fixture.config.web.domainName)
           .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
       it('should redirect me to <subdomain>/verify?sptoken=<token> when I submit a valid organization', function (done) {
-        request(fixture.expressApp)
+        request(fixture.emailVerificationApp)
           .post('/verify?sptoken=tokenhere')
           .set('Host', fixture.config.web.domainName)
           .send({
@@ -249,14 +200,14 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
 
     describe('If I visit /verify on the parent domain', function () {
       it('should present the organization selection form', function (done) {
-        request(fixture.expressApp)
+        request(fixture.emailVerificationApp)
           .get('/verify')
           .set('Host', fixture.config.web.domainName)
           .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
       it('should redirect me to <subdomain>/verify when I submit a valid organization', function (done) {
-        request(fixture.expressApp)
+        request(fixture.emailVerificationApp)
           .post('/verify')
           .set('Host', fixture.config.web.domainName)
           .send({
