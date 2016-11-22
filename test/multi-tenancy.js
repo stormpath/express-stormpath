@@ -137,33 +137,33 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
   describe('Registration Workflow', function () {
 
     describe('If I visit /register on an invalid subdomain', function () {
-
       it('Should redirect me to /register on the parent domain', function (done) {
-
         request(fixture.expressApp)
           .get('/register')
           .set('Host', 'foo.' + fixture.config.web.domainName)
           .expect('Location', 'http://' + fixture.config.web.domainName + '/register')
           .end(done);
-
       });
-
     });
 
     describe('If I visit /register on the parent domain', function () {
-
       it('should present the organization selection form', function (done) {
-
         request(fixture.expressApp)
           .get('/register')
           .set('Host', fixture.config.web.domainName)
           .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
-      it('should redirect me to <subdomain>/register when I submit a valid organization', function () {
-
+      it('should redirect me to <subdomain>/register when I submit a valid organization', function (done) {
+        request(fixture.expressApp)
+          .post('/register')
+          .set('Host', fixture.config.web.domainName)
+          .send({
+            organizationNameKey: fixture.organization.nameKey
+          })
+          .expect('Location', 'http://' + fixture.organization.nameKey + '.' + fixture.config.web.domainName + '/register')
+          .end(done);
       });
-
     });
 
     describe('If I register on a valid subdomain, and autoLogin is enabled', function () {
@@ -173,27 +173,47 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
       });
 
     });
-
   });
+
 
   describe('Password Reset Workflow', function () {
     describe('If I visit /change?sptoken=<token> on the parent domain', function () {
-      it('should present the organization selection form', function () {
-
+      it('should present the organization selection form', function (done) {
+        request(fixture.expressApp)
+          .get('/change?sptoken=tokenhere')
+          .set('Host', fixture.config.web.domainName)
+          .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
-      it('should redirect me to <subdomain>/change?sptoken=<token> when I submit a valid organization', function () {
-
+      it('should redirect me to <subdomain>/change?sptoken=<token> when I submit a valid organization', function (done) {
+        request(fixture.expressApp)
+          .post('/change?sptoken=tokenhere')
+          .set('Host', fixture.config.web.domainName)
+          .send({
+            organizationNameKey: fixture.organization.nameKey
+          })
+          .expect('Location', 'http://' + fixture.organization.nameKey + '.' + fixture.config.web.domainName + '/change?sptoken=tokenhere')
+          .end(done);
       });
     });
 
     describe('If I visit /forgot on the parent domain', function () {
-      it('should present the organization selection form', function () {
-
+      it('should present the organization selection form', function (done) {
+        request(fixture.expressApp)
+          .get('/forgot')
+          .set('Host', fixture.config.web.domainName)
+          .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
-      it('should redirect me to <subdomain>/forgot when I submit a valid organization', function () {
-
+      it('should redirect me to <subdomain>/forgot when I submit a valid organization', function (done) {
+        request(fixture.expressApp)
+          .post('/forgot')
+          .set('Host', fixture.config.web.domainName)
+          .send({
+            organizationNameKey: fixture.organization.nameKey
+          })
+          .expect('Location', 'http://' + fixture.organization.nameKey + '.' + fixture.config.web.domainName + '/forgot')
+          .end(done);
       });
     });
 
@@ -208,22 +228,42 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
 
   describe('Email Verification Workflow', function () {
     describe('If I visit /verify?sptoken=<token> on the parent domain', function () {
-      it('should present the organization selection form', function () {
-
+      it('should present the organization selection form', function (done) {
+        request(fixture.expressApp)
+          .get('/verify?sptoken=tokenhere')
+          .set('Host', fixture.config.web.domainName)
+          .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
-      it('should redirect me to <subdomain>/verify?sptoken=<token> when I submit a valid organization', function () {
-
+      it('should redirect me to <subdomain>/verify?sptoken=<token> when I submit a valid organization', function (done) {
+        request(fixture.expressApp)
+          .post('/verify?sptoken=tokenhere')
+          .set('Host', fixture.config.web.domainName)
+          .send({
+            organizationNameKey: fixture.organization.nameKey
+          })
+          .expect('Location', 'http://' + fixture.organization.nameKey + '.' + fixture.config.web.domainName + '/verify?sptoken=tokenhere')
+          .end(done);
       });
     });
 
     describe('If I visit /verify on the parent domain', function () {
-      it('should present the organization selection form', function () {
-
+      it('should present the organization selection form', function (done) {
+        request(fixture.expressApp)
+          .get('/verify')
+          .set('Host', fixture.config.web.domainName)
+          .end(fixture.assertOrganizationSelectForm.bind(fixture, done));
       });
 
-      it('should redirect me to <subdomain>/verify when I submit a valid organization', function () {
-
+      it('should redirect me to <subdomain>/verify when I submit a valid organization', function (done) {
+        request(fixture.expressApp)
+          .post('/verify')
+          .set('Host', fixture.config.web.domainName)
+          .send({
+            organizationNameKey: fixture.organization.nameKey
+          })
+          .expect('Location', 'http://' + fixture.organization.nameKey + '.' + fixture.config.web.domainName + '/verify')
+          .end(done);
       });
     });
   });

@@ -27,6 +27,9 @@ function SubdomainMultiTenancyFixture() {
       domainName: 'localhost.com',
       multiTenancy: {
         enabled: true
+      },
+      verifyEmail: {
+        enabled: true
       }
     }
   };
@@ -63,8 +66,13 @@ SubdomainMultiTenancyFixture.prototype.before = function before(done) {
         return done(err);
       }
 
-      self.expressApp = helpers.createStormpathExpressApp(self.config);
-      done();
+      helpers.setEmailVerificationStatus(resources.application, 'ENABLED', function (err) {
+        if (err) {
+          return done(err);
+        }
+        self.expressApp = helpers.createStormpathExpressApp(self.config);
+        done();
+      });
     });
   });
 };
