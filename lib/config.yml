@@ -17,16 +17,16 @@ web:
     # organization resolver is used.
     organizationResolver: null
 
-    # If useSubdomain=true, we attempt to resolve the organization context by
-    # looking at the subdomain, e.g. org-a.example.com.  Otherwise we will
-    # render a form field that requires the user to enter this value.  This
-    # automatic behavior can be disabled by explicitly disabling those form
-    # fields (see below).
+    # If the strategy is 'subdomain', we attempt to resolve the organization
+    # context by looking at the subdomain, e.g. org-a.example.com.  Otherwise
+    # we will (currently )render a form field that requires the user to enter
+    # this value.  This automatic behavior can be disabled by explicitly
+    # disabling those form fields (see below).
     #
-    # When useSubdomain is true, and the user is authenticating with an access
+    # When strategy is 'subdomain', and the user is authenticating with an access
     # token that contains an organization, we assert that this is the same
     # organization that is identified by the subdomain.
-    useSubdomain: true
+    strategy: 'subdomain'
 
   oauth2:
     enabled: true
@@ -87,16 +87,6 @@ web:
     autoLogin: false
     form:
       fields:
-        # Unless specifically set to false, the organizationNameKey field will
-        # automatically be shown when stormpath.web.multiTenancy.enabled=true,
-        # and an organization cannot be resolved.
-        organizationNameKey:
-          enabled: null
-          visible: true
-          label: "Organization"
-          placeholder: "E.g. my-company"
-          required: true
-          type: "text"
         givenName:
           enabled: true
           label: "First Name"
@@ -140,7 +130,6 @@ web:
           required: true
           type: "password"
       fieldOrder:
-        - "organizationNameKey"
         - "username"
         - "givenName"
         - "middleName"
@@ -167,16 +156,6 @@ web:
     view: "login"
     form:
       fields:
-        # Unless specifically set to false, the organizationNameKey field will
-        # automatically be shown when stormpath.web.multiTenancy.enabled=true,
-        # and an organization cannot be resolved.
-        organizationNameKey:
-          enabled: null
-          visible: true
-          label: "Organization"
-          placeholder: "E.g. my-company"
-          required: true
-          type: "text"
         login:
           enabled: true
           label: "Username or Email"
@@ -190,9 +169,16 @@ web:
           required: true
           type: "password"
       fieldOrder:
-        - "organizationNameKey"
         - "login"
         - "password"
+
+  organizationSelect:
+    view: "organization-select"
+    form:
+      fields:
+        organizationNameKey:
+          label: "Enter your organization name to continue"
+          placeholder: "e.g. my-company"
 
   logout:
     enabled: true

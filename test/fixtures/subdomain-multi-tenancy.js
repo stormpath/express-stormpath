@@ -2,7 +2,10 @@
 
 var helpers = require('../helpers');
 
+var assert = require('assert');
 var async = require('async');
+var cheerio = require('cheerio');
+var njwt = require('njwt');
 var uuid = require('uuid');
 
 /**
@@ -70,4 +73,24 @@ SubdomainMultiTenancyFixture.prototype.after = function after(done) {
   helpers.destroyApplication(this.config.application, done);
 };
 
+SubdomainMultiTenancyFixture.prototype.assertTokenContainsOrg = function assertTokenContainsOrg(done, err, res) {
+  if (err) {
+    return done(err);
+  }
+  var token = res.headers['set-cookie'].join('').match(/access_token=([^;]+)/)[1];
+  var jwt = njwt.verify(token, this.config.client.apiKey.secret);
+  assert.equal(jwt.body.org, this.organization.href);
+  done();
+
+};
+
+SubdomainMultiTenancyFixture.prototype.assertOrganizationSelectForm = function assertOrganizationSelectForm(done, err, res) {
+  if (err) {
+    return done(err);
+  }
+  var $ = cheerio.load(res.text);
+
+  assert.equal($('input[name="organizationNameKey"]').length, 1, 'Could not find organizationNameKey field in response HTML');
+  done();
+};
 module.exports = SubdomainMultiTenancyFixture;

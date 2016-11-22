@@ -12,6 +12,8 @@ block body
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if organization
+          .header.text-center #{organization.name}
         if status
           .box.row
             .email-password-area.col-xs-12.large.col-sm-12
