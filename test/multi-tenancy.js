@@ -152,7 +152,7 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
 
     describe('If I visit /register on the parent domain', function () {
 
-      it.only('should present the organization selection form', function (done) {
+      it('should present the organization selection form', function (done) {
 
         request(fixture.expressApp)
           .get('/register')
