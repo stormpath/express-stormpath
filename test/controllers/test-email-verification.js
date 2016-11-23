@@ -114,6 +114,7 @@ describe('email verification', function () {
           request(expressApp)
             .post(config.web.verifyEmail.uri)
             .send({ login: uuid() })
+            .type('json')
             .set('Accept', 'application/json')
             .expect(200, '', done);
         });
