@@ -30,6 +30,9 @@ function SubdomainMultiTenancyFixture() {
       },
       register: {
         autoLogin: true
+      },
+      changePassword: {
+        autoLogin: true
       }
     }
   };

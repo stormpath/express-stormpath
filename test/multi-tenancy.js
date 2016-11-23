@@ -117,7 +117,6 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
         request(fixture.expressApp)
         .post('/register')
           .type('json')
-          .set('Accept', 'application/json')
           .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
           .send(user)
           .expect('Set-Cookie', /access_token=[^;]+/)
@@ -183,13 +182,12 @@ describe('Subdomain-based Multi Tenancy (when enabled)', function () {
         });
       });
 
-      it.only('Should persist the organization in the access token', function (done) {
+      it('Should persist the organization in the access token', function (done) {
         var newPassword = uuid() + uuid().toUpperCase();
 
         request(fixture.expressApp)
-        .post('/verify')
+        .post('/change')
           .type('json')
-          .set('Accept', 'application/json')
           .set('Host', fixture.organization.nameKey + '.' + fixture.config.web.domainName)
           .send({
             password: newPassword,
