@@ -75,7 +75,7 @@ SubdomainMultiTenancyFixture.prototype.before = function before(done) {
 
     async.parallel({
       account: function (next) {
-        self.organization.createAccount(self.account, function(err, account) {
+        self.organization.createAccount(self.account, function (err, account) {
           if (err) {
             next(err);
           }
