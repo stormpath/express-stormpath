@@ -3,10 +3,12 @@
 var assert = require('assert');
 var request = require('supertest');
 var uuid = require('uuid');
+var nJwt = require('njwt');
 
 var DefaultExpressApplicationFixture = require('../fixtures/default-express-application');
 var helpers = require('../helpers');
 var Oauth2DisabledFixture = require('../fixtures/oauth2-disabled');
+var ScopeFactoryFixture = require('../fixtures/scope-factory');
 
 describe('getToken (OAuth2 token exchange endpoint)', function () {
   var username = uuid.v4() + '@stormpath.com';
@@ -22,20 +24,35 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
   var stormpathApplication;
   var enabledFixture;
   var disabledFixture;
+  var scopeFactoryFixture;
   var refreshToken;
+  var scopeFactory;
+  var requestScope;
+  var createScope;
 
   before(function (done) {
 
     /**
-     * Epic hack to observe two ready events and know when they are both done
+     * Epic hack to observe all ready events and know when they are both done
      */
     var readyCount = 0;
     function ready() {
       readyCount++;
-      if (readyCount === 2) {
-        setTimeout(done, 1000);
+      if (readyCount === 3) {
+        setTimeout(done, 1500); // HACK see what's up with this!
       }
     }
+
+    requestScope = 'admin';
+
+    createScope = function (scope) {
+      return scope + '-' + username;
+    };
+
+    scopeFactory = function (authenticationResult, requestedScope, callback) {
+      assert.equal(requestScope, requestedScope);
+      callback(null, createScope(requestedScope));
+    };
 
     helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
@@ -46,6 +63,7 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
       enabledFixture = new DefaultExpressApplicationFixture(stormpathApplication);
       disabledFixture = new Oauth2DisabledFixture(stormpathApplication);
+      scopeFactoryFixture = new ScopeFactoryFixture(stormpathApplication, scopeFactory);
 
       app.createAccount(accountData, function (err, account) {
         if (err) {
@@ -62,6 +80,7 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
           enabledFixture.expressApp.on('stormpath.ready', ready);
           disabledFixture.expressApp.on('stormpath.ready', ready);
+          scopeFactoryFixture.expressApp.on('stormpath.ready', ready);
         });
       });
     });
@@ -227,5 +246,56 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
         done();
       });
 
+  });
+
+  describe('scope factories', function () {
+    var secret;
+
+    before(function () {
+      var config = scopeFactoryFixture.expressApp.get('stormpathConfig');
+      secret = config.client.apiKey.secret;
+    });
+
+    it('should utilize the scope factory if defined for password grant type', function (done) {
+      request(scopeFactoryFixture.expressApp)
+        .post('/oauth/token')
+        .send('grant_type=password')
+        .send('username=' + accountData.email)
+        .send('password=' + accountData.password)
+        .send('scope=' + requestScope)
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          nJwt.verify(res.body.access_token, secret, function (err, token) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(token.body.scope, createScope(requestScope));
+            done();
+          });
+        });
+    });
+
+    it('should utilize the scope factory if defined for client_credentials grant type', function (done) {
+      request(scopeFactoryFixture.expressApp)
+        .post('/oauth/token')
+        .send('client_id=' + stormpathAccountApiKey.id)
+        .send('client_secret=' + stormpathAccountApiKey.secret)
+        .send('grant_type=client_credentials')
+        .send('scope=' + requestScope)
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          nJwt.verify(res.body.access_token, secret, function (err, token) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(token.body.scope, createScope(requestScope));
+            done();
+          });
+        });
+    });
   });
 });
