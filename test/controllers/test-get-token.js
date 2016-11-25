@@ -33,7 +33,7 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
     function ready() {
       readyCount++;
       if (readyCount === 2) {
-        done();
+        setTimeout(done, 1000);
       }
     }
 
@@ -62,7 +62,6 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
           enabledFixture.expressApp.on('stormpath.ready', ready);
           disabledFixture.expressApp.on('stormpath.ready', ready);
-
         });
       });
     });
@@ -103,11 +102,13 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
     request(enabledFixture.expressApp)
       .post('/oauth/token')
-      .auth('woot', 'woot')
+      .send('client_id=woot')
+      .send('client_secret=woot')
       .send('grant_type=client_credentials')
+      .auth('woot', 'woot')
       .expect(401)
       .end(function (err, res) {
-        assert.equal(res.body && res.body.message, 'Invalid Client Credentials');
+        assert.equal(res.body && res.body.message, 'API Key Authentication failed.');
         assert.equal(res.body && res.body.error, 'invalid_client');
         done();
       });
@@ -150,19 +151,35 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
   });
 
-  it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
+  describe('with Auth header', function () {
+    it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
+      request(enabledFixture.expressApp)
+        .post('/oauth/token')
+        .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
+        .send('grant_type=client_credentials')
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
+          done();
+        });
+    });
+  });
 
-    request(enabledFixture.expressApp)
-      .post('/oauth/token')
-      .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-      .send('grant_type=client_credentials')
-      .expect(200)
-      .end(function (err, res) {
-        assert(res.body && res.body.access_token);
-        assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
-        done();
-      });
-
+  describe('with data fields', function () {
+    it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
+      request(enabledFixture.expressApp)
+        .post('/oauth/token')
+        .send('client_id=' + stormpathAccountApiKey.id)
+        .send('client_secret=' + stormpathAccountApiKey.secret)
+        .send('grant_type=client_credentials')
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
+          done();
+        });
+    });
   });
 
   it('should return an access token & refresh token if grant_type=password and the username & password are valid', function (done) {
