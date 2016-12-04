@@ -115,7 +115,7 @@ block body
                   input.form-control(placeholder='Password', required=true, type='password', name='password')
 
               p.tos
-                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='https://daycast.com/terms-of-service.html') Terms of Service]
+                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='#{urls.tos}') Terms of Service]
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
