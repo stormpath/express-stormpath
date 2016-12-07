@@ -6,6 +6,17 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.1.7
+-------------
+
+**Released December 7, 2016.**
+
+* Fixed a regression with social login, whereby Linkedin login was not working, and our library would conflict with your own usage of ``cookieParser()``, causing an error about signed cookies, as described in `#542 <https://github.com/stormpath/express-stormpath/issues/542>`_.
+* The login form fields can now be customized with configuration (`#536 <https://github.com/stormpath/express-stormpath/issues/536>`_).
+* Pre and Post handlers can now be used with OAuth2 provider login flows (`#522 <https://github.com/stormpath/express-stormpath/issues/522>`_, `#515 <https://github.com/stormpath/express-stormpath/issues/515>`_).
+* Improved ID Site redirect flow when parsing the current host behind a proxy. (`#537 <https://github.com/stormpath/express-stormpath/issues/537>`_).
+* Improved documentation of ``stormpath.init()`` (`#520 <https://github.com/stormpath/express-stormpath/issues/520>`_).
+
 Version 3.1.6
 -------------
 
