@@ -3,10 +3,12 @@
 var assert = require('assert');
 var request = require('supertest');
 var uuid = require('uuid');
+var nJwt = require('njwt');
 
 var DefaultExpressApplicationFixture = require('../fixtures/default-express-application');
 var helpers = require('../helpers');
 var Oauth2DisabledFixture = require('../fixtures/oauth2-disabled');
+var ScopeFactoryFixture = require('../fixtures/scope-factory');
 
 describe('getToken (OAuth2 token exchange endpoint)', function () {
   var username = uuid.v4() + '@stormpath.com';
@@ -22,20 +24,35 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
   var stormpathApplication;
   var enabledFixture;
   var disabledFixture;
+  var scopeFactoryFixture;
   var refreshToken;
+  var scopeFactory;
+  var requestScope;
+  var createScope;
 
   before(function (done) {
 
     /**
-     * Epic hack to observe two ready events and know when they are both done
+     * Epic hack to observe all ready events and know when they are both done
      */
     var readyCount = 0;
     function ready() {
       readyCount++;
-      if (readyCount === 2) {
-        done();
+      if (readyCount === 3) {
+        setTimeout(done, 1500); // HACK see what's up with this!
       }
     }
+
+    requestScope = 'admin';
+
+    createScope = function (scope) {
+      return scope + '-' + username;
+    };
+
+    scopeFactory = function (authenticationResult, requestedScope, callback) {
+      assert.equal(requestScope, requestedScope);
+      callback(null, createScope(requestedScope));
+    };
 
     helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
@@ -46,6 +63,7 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
       enabledFixture = new DefaultExpressApplicationFixture(stormpathApplication);
       disabledFixture = new Oauth2DisabledFixture(stormpathApplication);
+      scopeFactoryFixture = new ScopeFactoryFixture(stormpathApplication, scopeFactory);
 
       app.createAccount(accountData, function (err, account) {
         if (err) {
@@ -62,7 +80,7 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
           enabledFixture.expressApp.on('stormpath.ready', ready);
           disabledFixture.expressApp.on('stormpath.ready', ready);
-
+          scopeFactoryFixture.expressApp.on('stormpath.ready', ready);
         });
       });
     });
@@ -103,11 +121,13 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
     request(enabledFixture.expressApp)
       .post('/oauth/token')
-      .auth('woot', 'woot')
+      .send('client_id=woot')
+      .send('client_secret=woot')
       .send('grant_type=client_credentials')
+      .auth('woot', 'woot')
       .expect(401)
       .end(function (err, res) {
-        assert.equal(res.body && res.body.message, 'Invalid Client Credentials');
+        assert.equal(res.body && res.body.message, 'API Key Authentication failed.');
         assert.equal(res.body && res.body.error, 'invalid_client');
         done();
       });
@@ -150,19 +170,35 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
   });
 
-  it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
+  describe('with Auth header', function () {
+    it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
+      request(enabledFixture.expressApp)
+        .post('/oauth/token')
+        .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
+        .send('grant_type=client_credentials')
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
+          done();
+        });
+    });
+  });
 
-    request(enabledFixture.expressApp)
-      .post('/oauth/token')
-      .auth(stormpathAccountApiKey.id, stormpathAccountApiKey.secret)
-      .send('grant_type=client_credentials')
-      .expect(200)
-      .end(function (err, res) {
-        assert(res.body && res.body.access_token);
-        assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
-        done();
-      });
-
+  describe('with data fields', function () {
+    it('should return an access token if grant_type=client_credentials and the credentials are valid', function (done) {
+      request(enabledFixture.expressApp)
+        .post('/oauth/token')
+        .send('client_id=' + stormpathAccountApiKey.id)
+        .send('client_secret=' + stormpathAccountApiKey.secret)
+        .send('grant_type=client_credentials')
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
+          done();
+        });
+    });
   });
 
   it('should return an access token & refresh token if grant_type=password and the username & password are valid', function (done) {
@@ -210,5 +246,56 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
         done();
       });
 
+  });
+
+  describe('scope factories', function () {
+    var secret;
+
+    before(function () {
+      var config = scopeFactoryFixture.expressApp.get('stormpathConfig');
+      secret = config.client.apiKey.secret;
+    });
+
+    it('should utilize the scope factory if defined for password grant type', function (done) {
+      request(scopeFactoryFixture.expressApp)
+        .post('/oauth/token')
+        .send('grant_type=password')
+        .send('username=' + accountData.email)
+        .send('password=' + accountData.password)
+        .send('scope=' + requestScope)
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          nJwt.verify(res.body.access_token, secret, function (err, token) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(token.body.scope, createScope(requestScope));
+            done();
+          });
+        });
+    });
+
+    it('should utilize the scope factory if defined for client_credentials grant type', function (done) {
+      request(scopeFactoryFixture.expressApp)
+        .post('/oauth/token')
+        .send('client_id=' + stormpathAccountApiKey.id)
+        .send('client_secret=' + stormpathAccountApiKey.secret)
+        .send('grant_type=client_credentials')
+        .send('scope=' + requestScope)
+        .expect(200)
+        .end(function (err, res) {
+          assert(res.body && res.body.access_token);
+          nJwt.verify(res.body.access_token, secret, function (err, token) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.equal(token.body.scope, createScope(requestScope));
+            done();
+          });
+        });
+    });
   });
 });
