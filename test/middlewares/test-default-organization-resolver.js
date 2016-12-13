@@ -20,7 +20,6 @@ var stormpathApplication;
 var stormpathOrganization;
 
 var fakeConfig;
-var fakeRequestHost;
 
 function createFakeExpressApp() {
   var app = express();
@@ -44,7 +43,8 @@ function createFakeExpressApp() {
     web: {
       domainName: 'localhost.com',
       multiTenancy: {
-        enabled: true
+        enabled: true,
+        strategy: 'subdomain'
       }
     }
   });
@@ -64,16 +64,6 @@ function createFakeExpressApp() {
   app.use(bodyParser.formOrJson());
   app.use(cookieParser('mocksecret'));
 
-  app.use(function (req, res, next) {
-    if (fakeRequestHost) {
-      req.headers.host = fakeRequestHost;
-    }
-
-    req.app = app;
-
-    next();
-  });
-
   app.use(middlewares.defaultOrganizationResolver);
 
   app.use('/', function (req, res) {
@@ -86,29 +76,32 @@ function createFakeExpressApp() {
 }
 
 describe('middlewares.defaultOrganizationResolver', function () {
-  describe('when organization is provided', function () {
-    before(function (done) {
-      stormpathClient = helpers.createClient();
 
-      helpers.createApplication(stormpathClient, function (err, application) {
+  before(function (done) {
+    stormpathClient = helpers.createClient();
+
+    helpers.createApplication(stormpathClient, function (err, application) {
+      if (err) {
+        return done(err);
+      }
+
+      stormpathApplication = application;
+
+      helpers.createOrganization(stormpathClient, function (err, organization) {
         if (err) {
           return done(err);
         }
 
-        stormpathApplication = application;
+        stormpathOrganization = organization;
+        expressApp = createFakeExpressApp();
+        done();
 
-        helpers.createOrganization(stormpathClient, function (err, organization) {
-          if (err) {
-            return done(err);
-          }
-
-          stormpathOrganization = organization;
-          expressApp = createFakeExpressApp();
-
-          done();
-        });
       });
     });
+  });
+
+  describe('when organization is provided', function () {
+
 
     after(function (done) {
       helpers.destroyApplication(stormpathApplication, done);
@@ -117,22 +110,15 @@ describe('middlewares.defaultOrganizationResolver', function () {
     describe('from sub domain', function () {
       it('should set req.organization', function (done) {
         fakeConfig.web.multiTenancy.useSubdomain = true;
-        fakeRequestHost = stormpathOrganization.nameKey + '.localhost.com';
-
-        function restoreConfig() {
-          fakeRequestHost = null;
-          fakeConfig.web.multiTenancy.useSubdomain = false;
-        }
 
         request(expressApp)
           .get('/')
+          .set('Host', stormpathOrganization.nameKey + '.localhost.com')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return done(err);
             }
-
-            restoreConfig();
 
             var result = JSON.parse(res.text);
 
@@ -146,8 +132,8 @@ describe('middlewares.defaultOrganizationResolver', function () {
     });
 
     describe('from access token in cookie', function () {
-      it('should set req.organization', function (done) {
-        fakeRequestHost = null;
+
+      it('should set req.organization from the access token value', function (done) {
 
         var apiKey = stormpathApplication.dataStore.requestExecutor.options.client.apiKey.secret;
         var cookieName = fakeConfig.web.accessTokenCookie.name;
@@ -161,8 +147,9 @@ describe('middlewares.defaultOrganizationResolver', function () {
 
         request(expressApp)
           .get('/')
-          .expect(200)
+          .set('Host', stormpathOrganization.nameKey + '.localhost.com')
           .set('Cookie', [cookieName + '=' + mockCookieJwt.toString()])
+          .expect(200)
           .end(function (err, res) {
             if (err) {
               return done(err);
@@ -177,6 +164,8 @@ describe('middlewares.defaultOrganizationResolver', function () {
             done();
           });
       });
+
     });
   });
+
 });
