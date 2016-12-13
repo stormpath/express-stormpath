@@ -7,7 +7,7 @@ var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function isSamlRedirect(res, config) {
+function isSamlRedirect(res) {
   var location = res && res.headers && res.headers.location;
   var error = new Error('Expected Location header with redirect to saml/sso, but got ' + location);
 
