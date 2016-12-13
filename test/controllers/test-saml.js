@@ -1,16 +1,18 @@
 'use strict';
 
+var assert = require('assert');
+var cheerio = require('cheerio');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
 
-function isSamlRedirect(res) {
+function isSamlRedirect(res, config) {
   var location = res && res.headers && res.headers.location;
-  var error = new Error('Expected Location header with redirect to api.stormpath.com/sso, but got ' + location);
+  var error = new Error('Expected Location header with redirect to saml/sso, but got ' + location);
 
   if (location) {
-    var match =  location.match(/api.stormpath.com\/sso/);
+    var match = location.match(/\/saml\/sso\/idpRedirect/);
     return match ? null : error;
   }
 
@@ -54,7 +56,7 @@ function initSamlApp(application, options, cb) {
 
   var app = helpers.createStormpathExpressApp({
     application: {
-      href: app.href
+      href: application.href
     },
     web: webOpts
   });
@@ -71,7 +73,7 @@ function initSamlApp(application, options, cb) {
           return cb(err);
         }
 
-        cb({
+        cb(null, {
           application: app,
           config: config,
           host: host
@@ -82,117 +84,69 @@ function initSamlApp(application, options, cb) {
 }
 
 describe('saml', function () {
-  describe('traditional website', function () {
-    var stormpathApplication, app, host, config, callbackUri;
+  var stormpathApplication, app, host, config, callbackUri;
 
-    var accountData = {
-      givenName: uuid.v4(),
-      surname: uuid.v4(),
-      email: uuid.v4() + '@test.com',
-      password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-    };
+  var accountData = {
+    givenName: uuid.v4(),
+    surname: uuid.v4(),
+    email: uuid.v4() + '@test.com',
+    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
+  };
 
-    before(function (done) {
-      var client = helpers.createClient().on('ready', function () {
-        helpers.createApplication(client, function (err, _app) {
+  before(function (done) {
+    var client = helpers.createClient().on('ready', function () {
+      helpers.createApplication(client, function (err, _app) {
+        if (err) {
+          return done(err);
+        }
+
+        stormpathApplication = _app;
+
+        stormpathApplication.createAccount(accountData, function (err) {
           if (err) {
             return done(err);
           }
 
-          stormpathApplication = _app;
-
-          stormpathApplication.createAccount(accountData, function (err) {
+          initSamlApp(stormpathApplication, {}, function (err, data) {
             if (err) {
               return done(err);
             }
 
-            initSamlApp(stormpathApplication, {}, function (err, data) {
-              if (err) {
-                return done(err);
-              }
+            app = data.application;
+            config = data.config;
+            host = data.host;
 
-              app = data.application;
-              config = data.config;
-              host = data.host;
-            });
+            done();
           });
         });
       });
-    });
-
-    after(function (done) {
-      revertSaml(app.get('stormpathApplication'), callbackUri, function () {
-        helpers.destroyApplication(stormpathApplication, done);
-      });
-    });
-
-    it('should redirect to idsite for login, if idsite is enabled', function (done) {
-      request(host).get(config.web.login.uri)
-        .expect(302)
-        .expect(isSamlRedirect)
-        .end(function (err, res) {
-          request(res.headers.location)
-            .get('')
-            .expect('Location', new RegExp(/\/?jwt=/))
-            .end(done);
-        });
     });
   });
 
-  describe('spa', function () {
-    var stormpathApplication, app, host, config, callbackUri;
+  after(function (done) {
+    revertSaml(app.get('stormpathApplication'), callbackUri, function () {
+      helpers.destroyApplication(stormpathApplication, done);
+    });
+  });
 
-    var accountData = {
-      givenName: uuid.v4(),
-      surname: uuid.v4(),
-      email: uuid.v4() + '@test.com',
-      password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-    };
+  it('should contain the saml link in the login form, if saml is enabled', function (done) {
+    request(host)
+      .get(config.web.login.uri)
+      .expect(200)
+      .end(function (err, res) {
+        var $ = cheerio.load(res.text);
+        assert.equal($('.social-area').length, 1);
+        assert.equal($('.btn-saml').length, 1);
 
-    before(function (done) {
-      var client = helpers.createClient().on('ready', function () {
-        helpers.createApplication(client, function (err, _app) {
-          if (err) {
-            return done(err);
-          }
-
-          stormpathApplication = _app;
-
-          stormpathApplication.createAccount(accountData, function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            initSamlApp(stormpathApplication, {}, function (err, data) {
-              if (err) {
-                return done(err);
-              }
-
-              app = data.application;
-              config = data.config;
-              host = data.host;
-            });
-          });
-        });
+        done(err);
       });
-    });
+  });
 
-    after(function (done) {
-      revertSaml(app.get('stormpathApplication'), callbackUri, function () {
-        helpers.destroyApplication(stormpathApplication, done);
-      });
-    });
-
-    it('should redirect to idsite for login, if idsite is enabled', function (done) {
-      request(host).get(config.web.login.uri)
-        .expect(302)
-        .expect(isSamlRedirect)
-        .end(function (err, res) {
-          request(res.headers.location)
-            .get('')
-            .expect('Location', new RegExp(/\/?jwt=/))
-            .end(done);
-        });
-    });
+  it('should perform a redirect in the SAML verification flow', function (done) {
+    request(host)
+      .get(config.web.saml.uri)
+      .expect(302)
+      .expect(isSamlRedirect)
+      .end(done);
   });
 });
