@@ -1,7 +1,5 @@
 button.btn.btn-saml(onclick='samlLogin()') SAML
 script(type='text/javascript').
   function samlLogin() {
-    var url = '#{stormpathConfig.web.saml.uri}';
-    console.log('going to', url);
-    window.location = url;
+    window.location = '#{stormpathConfig.web.saml.uri}';
   }
