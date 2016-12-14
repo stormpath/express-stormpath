@@ -11,7 +11,7 @@ var uuid = require('uuid');
 /**
  * This fixture creates a Stormpath application that has an organization mapped
  * to it.  It also creates an account in that organization, for testing
- * authenticatio against the organization.
+ * authentication against the organization.
  */
 function SubdomainMultiTenancyFixture() {
   this.client = helpers.createClient();
@@ -84,8 +84,11 @@ SubdomainMultiTenancyFixture.prototype.before = function before(done) {
           next(null, account);
         });
       },
-      mapping: function (next) {
+      mapOrgToApp: function (next) {
         resources.application.createAccountStoreMapping({accountStore: self.organization}, next);
+      },
+      mapOrgToVerificationApp: function (next) {
+        resources.emailVerificationApplication.createAccountStoreMapping({accountStore: self.organization}, next);
       }
     }, function (err) {
       if (err) {

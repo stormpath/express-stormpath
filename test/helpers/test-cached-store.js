@@ -18,7 +18,7 @@ describe('CachedStore', function () {
     cachedStore.setCachedItem('key', 'value');
   });
 
-  it('should be able to retrieve items if the ttl is small enough', function () {
+  it('should be able to retrieve items if the item has not expired', function () {
     cachedStore.setCachedItem('key', 'value');
 
     assert.ok(cachedStore.getCachedItem);

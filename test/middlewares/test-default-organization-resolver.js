@@ -169,9 +169,7 @@ describe('middlewares.defaultOrganizationResolver', function () {
       });
 
       after(function (done) {
-        otherOrg.delete(function (err) {
-          done(err);
-        });
+        otherOrg.delete(done);
       });
 
       it('should not set req.organization to this org', function (done) {
@@ -189,7 +187,7 @@ describe('middlewares.defaultOrganizationResolver', function () {
             var result = JSON.parse(res.text);
 
             assert(!!result);
-            assert(!result.organization || result.organization.href !== otherOrg.href);
+            assert(!result.organization);
             done();
           });
       });
