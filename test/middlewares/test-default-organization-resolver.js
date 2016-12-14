@@ -94,19 +94,23 @@ describe('middlewares.defaultOrganizationResolver', function () {
 
         stormpathOrganization = organization;
         expressApp = createFakeExpressApp();
-        done();
 
+        // Create a mapping, because unmapped orgs are rejected
+        stormpathApplication.createAccountStoreMapping(
+          {accountStore: stormpathOrganization},
+          function (err) {
+            done(err);
+          }
+        );
       });
     });
   });
 
+  after(function (done) {
+    helpers.destroyApplication(stormpathApplication, done);
+  });
+
   describe('when organization is provided', function () {
-
-
-    after(function (done) {
-      helpers.destroyApplication(stormpathApplication, done);
-    });
-
     describe('from sub domain', function () {
       it('should set req.organization', function (done) {
         fakeConfig.web.multiTenancy.useSubdomain = true;
@@ -126,6 +130,47 @@ describe('middlewares.defaultOrganizationResolver', function () {
             assert(!!result.organization);
             assert.equal(result.organization.href, stormpathOrganization.href);
 
+            done();
+          });
+      });
+    });
+
+    describe('with no application mapping', function () {
+      var otherOrg;
+
+      before(function (done) {
+        helpers.createOrganization(stormpathClient, function (err, org) {
+          if (err) {
+            return done(err);
+          }
+
+          otherOrg = org;
+          done();
+        });
+      });
+
+      after(function (done) {
+        otherOrg.delete(function (err) {
+          done(err);
+        });
+      });
+
+      it('should not set req.organization to this org', function (done) {
+        fakeConfig.web.multiTenancy.useSubdomain = true;
+
+        request(expressApp)
+          .get('/')
+          .set('Host', otherOrg.nameKey + '.localhost.com')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            var result = JSON.parse(res.text);
+
+            assert(!!result);
+            assert(!result.organization || result.organization.href !== otherOrg.href);
             done();
           });
       });
