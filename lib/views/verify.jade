@@ -9,6 +9,8 @@ block body
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if organization
+          .header.text-center #{organization.name}
         if invalid_sp_token
           .row
             .alert.alert-warning.invalid-sp-token-warning
