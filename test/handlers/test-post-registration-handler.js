@@ -26,7 +26,8 @@ function preparePostRegistrationExpansionTestFixture(stormpathApplication, cb) {
             }
           }
         }
-      }
+      },
+      produces: ['text/html', 'application/json']
     },
     postRegistrationHandler: function (account, req, res) {
       // Simply return the user object, so that we can
@@ -54,6 +55,9 @@ function preparePostRegistrationPassThroughTestFixture(stormpathApplication, cb)
 
   fixture.expressApp = helpers.createStormpathExpressApp({
     application: stormpathApplication,
+    web: {
+      produces: ['text/html', 'application/json']
+    },
     postRegistrationHandler: function (account, req, res, next) {
       fixture.sideEffect = fixture.sideEffectData;
       next();
@@ -78,7 +82,8 @@ function preparePostRegistrationAutoLoginTestFixture(stormpathApplication, cb) {
       register: {
         enabled: true,
         autoLogin: true
-      }
+      },
+      produces: ['text/html', 'application/json']
     },
     postRegistrationHandler: function (account, req, res, next) {
       fixture.sideEffect = fixture.sideEffectData;
