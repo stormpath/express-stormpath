@@ -69,7 +69,8 @@ describe('getUser', function () {
       web: {
         login: {
           enabled: true
-        }
+        },
+        produces: ['text/html', 'application/json']
       }
     });
 
@@ -463,7 +464,8 @@ describe('getUser', function () {
           password: {
             validationStrategy: 'local'
           }
-        }
+        },
+        produces: ['text/html', 'application/json']
       }
     });
 

@@ -33,14 +33,18 @@ describe('login', function () {
 
       stormpathApplication = app;
       defaultExpressApp = helpers.createStormpathExpressApp({
-        application: stormpathApplication
+        application: stormpathApplication,
+        web: {
+          produces: ['text/html', 'application/json']
+        }
       });
       alternateUrlExpressApp = helpers.createStormpathExpressApp({
         application: stormpathApplication,
         web: {
           login: {
             uri: '/newlogin'
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
       app.createAccount(accountData, done);
@@ -240,7 +244,8 @@ describe('login', function () {
         web: {
           login: {
             enabled: true
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
       spaRootFixture.before(done);

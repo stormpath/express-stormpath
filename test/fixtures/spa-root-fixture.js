@@ -21,7 +21,9 @@ function SpaRootFixture(stormpathConfig) {
   this.filename = '/tmp/' + uuid.v4();
 
   if (!stormpathConfig.web) {
-    stormpathConfig.web = {};
+    stormpathConfig.web = {
+      produces: ['text/html', 'application/json']
+    };
   }
 
   stormpathConfig.web.spa = {
