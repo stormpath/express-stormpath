@@ -223,7 +223,7 @@ web:
 
   application:
     expand:
-      customData: true
+      customData: false
 
   # If the developer wants our integration to serve their Single Page
   # Application (SPA) in response to HTML requests for our default routes,
