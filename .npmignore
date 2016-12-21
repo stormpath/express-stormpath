@@ -6,3 +6,4 @@ test
 .gitignore
 build-docs.sh
 README.md
+requirements.txt

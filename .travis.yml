@@ -7,7 +7,7 @@ node_js:
 - '6'
 install:
 - npm install
-- test -z "$BUILD_DOCS" || pip install --user sphinx
+- test -z "$BUILD_DOCS" || pip install -r requirements.txt
 script:
 - travis_retry npm run test-travis
 - test -z "$BUILD_DOCS" || cd docs
