@@ -6,6 +6,15 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.1.8
+-------------
+
+**Released December 22, 2016.**
+
+- The following production dependencies have been updated:
+
+  - ``stormpath@^0.18.5`` -> ``stormpath@0.19.x``
+
 Version 3.1.7
 -------------
 
