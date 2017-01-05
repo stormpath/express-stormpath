@@ -124,7 +124,7 @@ this configuration:
         },
         oauth2: {
           enabled: false
-        }
+        },
         register: {
           enabled: false
         }
