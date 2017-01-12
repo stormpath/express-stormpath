@@ -6,28 +6,17 @@ block vars
   - var bodytag = 'register'
 
 block body
-
   .container.custom-container
     .va-wrapper
-      .view.registration-view.container
-        .box.row
-          .col-sm-12
-            .header
-              span Create Account
+      .view.register-view
 
-            if errors
-              .alert.alert-danger
-                each error in errors
-                  p #{error.message}
+  script(type='text/javascript').
+    var previousOnLoad = window.onload;
 
-            form.registration-form.form-horizontal.sp-form(method='post', role='form')
-              each field in formModel.fields
-                div(form-group='true', class='form-group group-#{field.name}')
-                  label.col-sm-4 #{field.label}
-                  .col-sm-8
-                    - var value = form ? form[field.name] : '';
-                    input.form-control(placeholder=field.placeholder, name=field.name, value=value, required=field.required, type=field.type)
+    window.onload = function () {
+      previousOnLoad && previousOnLoad();
 
-              button.btn.btn-register.btn-sp-green(type='submit') Create Account
+      var containerElement = document.getElementsByClassName('register-view')[0];
 
-        a.to-login(href=stormpathConfig.web.login.uri) Back to Log In
+      stormpath.showRegistration(containerElement);
+    };
