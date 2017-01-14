@@ -1,22 +1,6 @@
-extends base
-
 block vars
   - var title = 'Resend Account Verification Email?'
   - var description = 'Didn\'t receive your account verification email? No worries!'
-  - var bodytag = 'verify-email'
+  - var widgetMethod = 'showEmailVerification'
 
-block body
-  .container.custom-container
-    .va-wrapper
-      .view.verify-email-view
-
-  script(type='text/javascript').
-    var previousOnLoad = window.onload;
-
-    window.onload = function () {
-      previousOnLoad && previousOnLoad();
-
-      var containerElement = document.getElementsByClassName('verify-email-view')[0];
-
-      stormpath.showEmailVerification(containerElement);
-    };
+extends widget

@@ -1,22 +1,6 @@
-extends base
-
 block vars
   - var title = 'Log In'
   - var description = 'Log into your account!'
-  - var bodytag = 'login'
+  - var widgetMethod = 'showLogin'
 
-block body
-  .container.custom-container
-    .va-wrapper
-      .view.login-view
-
-  script(type='text/javascript').
-    var previousOnLoad = window.onload;
-
-    window.onload = function () {
-      previousOnLoad && previousOnLoad();
-
-      var containerElement = document.getElementsByClassName('login-view')[0];
-
-      stormpath.showLogin(containerElement);
-    };
+extends widget

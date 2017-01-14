@@ -1,22 +1,6 @@
-extends base
-
 block vars
   - var title = 'Create an Account'
   - var description = 'Create a new account.'
-  - var bodytag = 'register'
+  - var widgetMethod = 'showRegistration'
 
-block body
-  .container.custom-container
-    .va-wrapper
-      .view.register-view
-
-  script(type='text/javascript').
-    var previousOnLoad = window.onload;
-
-    window.onload = function () {
-      previousOnLoad && previousOnLoad();
-
-      var containerElement = document.getElementsByClassName('register-view')[0];
-
-      stormpath.showRegistration(containerElement);
-    };
+extends widget

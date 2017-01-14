@@ -52,7 +52,6 @@ describe('login', function () {
   });
 
   it('should bind to /login by default', function (done) {
-
     request(defaultExpressApp)
       .get('/login')
       .expect(200)
@@ -63,7 +62,6 @@ describe('login', function () {
         assert.equal($('form[action="/login"]').length, 1);
         done(err);
       });
-
   });
 
   it('should set access token and refresh token cookies with default path, if HTML request', function (done) {
@@ -75,7 +73,10 @@ describe('login', function () {
     request(defaultExpressApp)
       .post('/login')
       .set('Accept', 'text/html')
-      .send({ login: username, password: password })
+      .send({
+        login: username,
+        password: password
+      })
       .expect('Set-Cookie', expr, done);
 
   });
@@ -97,7 +98,8 @@ describe('login', function () {
 
           if (typeof json !== 'object') {
             done(new Error('No JSON error returned.'));
-          } if (json.status !== 200 && json.message !== 'Invalid username or password.') {
+          }
+          if (json.status !== 200 && json.message !== 'Invalid username or password.') {
             done(new Error('Did not receive the expected error'));
           } else {
             done();
@@ -111,25 +113,21 @@ describe('login', function () {
         .get('/login')
         .set('Accept', 'application/json')
         .expect(200, {
-          'accountStores': [
-          ],
+          'accountStores': [],
           'form': {
-            'fields': [
-              {
-                'label': 'Username or Email',
-                'placeholder': 'Username or Email',
-                'required': true,
-                'type': 'text',
-                'name': 'login'
-              },
-              {
-                'label': 'Password',
-                'placeholder': 'Password',
-                'required': true,
-                'type': 'password',
-                'name': 'password'
-              }
-            ]
+            'fields': [{
+              'label': 'Username or Email',
+              'placeholder': 'Username or Email',
+              'required': true,
+              'type': 'text',
+              'name': 'login'
+            }, {
+              'label': 'Password',
+              'placeholder': 'Password',
+              'required': true,
+              'type': 'password',
+              'name': 'password'
+            }]
           }
         }, done);
     });
@@ -140,7 +138,10 @@ describe('login', function () {
       request(defaultExpressApp)
         .post('/login')
         .type('json')
-        .send({ username: username, password: password })
+        .send({
+          username: username,
+          password: password
+        })
         .set('Accept', 'application/json')
         .expect(200)
         .end(function (err, res) {
@@ -192,7 +193,10 @@ describe('login', function () {
     var nextUri = 'http://stormpath.com/foo';
     request(defaultExpressApp)
       .post('/login?next=' + encodeURIComponent(nextUri))
-      .send({ login: username, password: password })
+      .send({
+        login: username,
+        password: password
+      })
       .expect(302)
       .expect('Location', '/foo')
       .end(done);
@@ -204,7 +208,10 @@ describe('login', function () {
     var nextUri = uuid.v4();
     request(defaultExpressApp)
       .post('/login?next=' + encodeURIComponent(nextUri))
-      .send({ login: username, password: password })
+      .send({
+        login: username,
+        password: password
+      })
       .expect(302)
       .expect('Location', nextUri)
       .end(done);
@@ -229,7 +236,6 @@ describe('login', function () {
   });
 
   describe('if configured with a SPA root', function () {
-
     var spaRootFixture;
 
     before(function (done) {
@@ -250,9 +256,7 @@ describe('login', function () {
       spaRootFixture.after(done);
     });
 
-
     it('should return the SPA root', function (done) {
-
       var app = spaRootFixture.expressApp;
 
       app.on('stormpath.ready', function () {
@@ -263,7 +267,6 @@ describe('login', function () {
           .expect(200)
           .end(spaRootFixture.assertResponse(done));
       });
-
     });
   });
 });
