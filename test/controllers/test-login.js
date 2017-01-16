@@ -75,7 +75,7 @@ describe('login', function () {
         .get(config.web.login.uri)
         .set('Accept', 'text/html')
         .expect(200)
-        .end((err, res) => {
+        .end(function (err, res) {
           if (err) {
             return done(err);
           }

@@ -92,7 +92,7 @@ describe('email verification', function () {
         .get(config.web.verifyEmail.uri)
         .set('Accept', 'text/html')
         .expect(200)
-        .end((err, res) => {
+        .end(function (err, res) {
           if (err) {
             return done(err);
           }

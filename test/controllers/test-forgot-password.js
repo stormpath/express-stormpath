@@ -105,7 +105,7 @@ describe('forgotPassword', function () {
           .get(config.web.forgotPassword.uri)
           .set('Accept', 'text/html')
           .expect(200)
-          .end((err, res) => {
+          .end(function (err, res) {
             if (err) {
               return done(err);
             }
