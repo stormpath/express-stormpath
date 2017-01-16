@@ -79,7 +79,7 @@ describe('email verification', function () {
     });
   });
 
-  describe('GET /verify with accept text/html', () => {
+  describe('GET /verify with accept text/html', function () {
     var widgetFixture;
     var testResponse;
 
@@ -103,7 +103,7 @@ describe('email verification', function () {
         });
     });
 
-    it('should return a widget html response', () => {
+    it('should return a widget html response', function () {
       widgetFixture.assertResponse(testResponse);
     });
   });

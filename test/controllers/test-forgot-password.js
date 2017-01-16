@@ -81,7 +81,7 @@ describe('forgotPassword', function () {
     });
   });
 
-  describe('GET /verify with accept text/html', () => {
+  describe('GET /verify with accept text/html', function () {
     var widgetFixture;
     var testResponse;
 
@@ -99,7 +99,7 @@ describe('forgotPassword', function () {
         }
       });
 
-      expressApp.on('stormpath.ready', () => {
+      expressApp.on('stormpath.ready', function () {
         var config = expressApp.get('stormpathConfig');
         request(expressApp)
           .get(config.web.forgotPassword.uri)
@@ -117,7 +117,7 @@ describe('forgotPassword', function () {
       });
     });
 
-    it('should return a widget html response', () => {
+    it('should return a widget html response', function () {
       widgetFixture.assertResponse(testResponse);
     });
   });
