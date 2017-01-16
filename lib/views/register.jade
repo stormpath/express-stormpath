@@ -39,8 +39,15 @@ block body
               p.email-lists
                 span I would like to receive:
                 each group in email_groups
-                  label #[input(type='checkbox', name='email_interests', checked='checked', value='#{group.id}')] &nbsp; #{group.name} (#{group.desc})
-              div.privacy Your contact information stays with Daycast, you can opt-out any time - #[a(target='_blank' href='#{urls.privacy}') Privacy Policy]
+                  unless group.is_fellowship
+                    label #[input(type='checkbox', name='email_interests', checked='checked', value='#{group.id}')] &nbsp; #{group.name} (#{group.desc})
+              div.faded Your contact information stays with Daycast, you can opt-out any time - #[a(target='_blank' href='#{urls.privacy}') Privacy Policy]
+
+              p.email-lists
+                each group in email_groups
+                  if group.is_fellowship
+                    label #[input(type='checkbox', name='email_interests', checked='checked', value='#{group.id}')] &nbsp; #{group.name} (#{group.desc})*
+              div.faded * Membership in this group is limited and by invitation. Let us know you are interested, and we'll follow up with you.
 
               p.tos
                 label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank' href='#{urls.tos}') Terms of Service]
