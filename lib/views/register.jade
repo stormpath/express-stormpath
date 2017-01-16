@@ -4,6 +4,8 @@ block vars
   - var title = 'Create an Account'
   - var description = 'Create a new account.'
   - var bodytag = 'register'
+  - var urls = formModel.urls
+  - var email_groups = formModel.email_groups
 
 block body
 
@@ -33,6 +35,12 @@ block body
                 li a digit (0-9)
                 li an upper-case letter (A-Z)
                 li a lower-case letter (a-z)
+
+              p.email-lists
+                span I would like to receive:
+                each group in email_groups
+                  label #[input(type='checkbox', name='email_interests', checked='checked', value='#{group.id}')] &nbsp; #{group.name} (#{group.desc})
+              div.privacy Your contact information stays with Daycast, you can opt-out any time - #[a(target='_blank' href='#{urls.privacy}') Privacy Policy]
 
               p.tos
                 label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank' href='#{urls.tos}') Terms of Service]
