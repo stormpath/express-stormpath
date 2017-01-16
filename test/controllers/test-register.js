@@ -1,11 +1,11 @@
 'use strict';
 
 var assert = require('assert');
-var cheerio = require('cheerio');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
+var WidgetFixture = require('../fixtures/widget-fixture');
 var SpaRootFixture = require('../fixtures/spa-root-fixture');
 
 /*
@@ -45,7 +45,7 @@ function DefaultRegistrationFixture(stormpathApplication) {
  *
  * @return {object} postable form data object
  */
-DefaultRegistrationFixture.prototype.defaultFormPost = function () {
+DefaultRegistrationFixture.prototype.defaultJsonPost = function () {
   return {
     givenName: uuid.v4(),
     surname: uuid.v4(),
@@ -65,36 +65,31 @@ DefaultRegistrationFixture.prototype.defaultFormPost = function () {
 DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
   'accountStores': [],
   'form': {
-    'fields': [
-      {
-        'label': 'First Name',
-        'name': 'givenName',
-        'placeholder': 'First Name',
-        'required': true,
-        'type': 'text'
-      },
-      {
-        'label': 'Last Name',
-        'name': 'surname',
-        'placeholder': 'Last Name',
-        'required': true,
-        'type': 'text'
-      },
-      {
-        'label': 'Email',
-        'name': 'email',
-        'placeholder': 'Email',
-        'required': true,
-        'type': 'email'
-      },
-      {
-        'label': 'Password',
-        'name': 'password',
-        'placeholder': 'Password',
-        'required': true,
-        'type': 'password'
-      }
-    ]
+    'fields': [{
+      'label': 'First Name',
+      'name': 'givenName',
+      'placeholder': 'First Name',
+      'required': true,
+      'type': 'text'
+    }, {
+      'label': 'Last Name',
+      'name': 'surname',
+      'placeholder': 'Last Name',
+      'required': true,
+      'type': 'text'
+    }, {
+      'label': 'Email',
+      'name': 'email',
+      'placeholder': 'Email',
+      'required': true,
+      'type': 'email'
+    }, {
+      'label': 'Password',
+      'name': 'password',
+      'placeholder': 'Password',
+      'required': true,
+      'type': 'password'
+    }]
   }
 };
 
@@ -139,7 +134,7 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
  *
  * @return {object} postable form data object
  */
-NamesOptionalRegistrationFixture.prototype.namesOmittedFormPost = function () {
+NamesOptionalRegistrationFixture.prototype.namesOmittedJsonPost = function () {
   return {
     email: uuid.v4() + '@test.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
@@ -152,7 +147,7 @@ NamesOptionalRegistrationFixture.prototype.namesOmittedFormPost = function () {
  *
  * @return {object} postable form data object
  */
-NamesOptionalRegistrationFixture.prototype.namesProvidedFormPost = function () {
+NamesOptionalRegistrationFixture.prototype.namesProvidedJsonPost = function () {
   return {
     email: uuid.v4() + '@test.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!',
@@ -196,13 +191,14 @@ function NamesDisabledRegistrationFixture(stormpathApplication) {
   });
   return this;
 }
+
 /**
  * Returns an object that has the required form fields of email and password.
  * This fixture does not require given name or surname
  *
  * @return {object} postable form data object
  */
-NamesDisabledRegistrationFixture.prototype.defaultFormPost = function () {
+NamesDisabledRegistrationFixture.prototype.defaultJsonPost = function () {
   return {
     email: uuid.v4() + '@test.com',
     password: uuid.v4() + uuid.v4().toUpperCase() + '!'
@@ -265,8 +261,8 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
  *
  * @return {object} postable form data object
  */
-CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
-  var formData = DefaultRegistrationFixture.prototype.defaultFormPost();
+CustomFieldRegistrationFixture.prototype.defaultJsonPost = function () {
+  var formData = DefaultRegistrationFixture.prototype.defaultJsonPost();
   formData.color = uuid.v4();
   formData.customData = {
     music: uuid.v4()
@@ -274,33 +270,15 @@ CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
   return formData;
 };
 
-function assertDefaultFormResponse(done) {
-  return function (err, res) {
-    if (err) {
-      return done(err);
-    }
-
-    var $ = cheerio.load(res.text);
-
-    var formFields = $('form input');
-
-    assert.equal(formFields.length, 4);
-    assert.equal($(formFields[0]).attr('name'), 'givenName');
-    assert.equal($(formFields[1]).attr('name'), 'surname');
-    assert.equal($(formFields[2]).attr('name'), 'email');
-    assert.equal($(formFields[3]).attr('name'), 'password');
-
-    done();
-  };
-}
-
 function assertCustomDataRegistration(fixture, formData, done) {
   return function (err) {
     if (err) {
       return done(err);
     }
 
-    fixture.expressApp.get('stormpathApplication').getAccounts({ email: formData.email }, function (err, accounts) {
+    fixture.expressApp.get('stormpathApplication').getAccounts({
+      email: formData.email
+    }, function (err, accounts) {
       if (err) {
         return done(err);
       }
@@ -370,27 +348,22 @@ describe('register', function () {
   });
 
   describe('by default', function () {
-
     it('should bind to GET /register by default', function (done) {
-
       request(defaultRegistrationFixture.expressApp)
         .get('/register')
         .expect(200)
         .end(function (err) {
           done(err);
         });
-
     });
 
     it('should bind to POST /register if enabled', function (done) {
-
       request(defaultRegistrationFixture.expressApp)
         .post('/register')
         .end(function (err, res) {
           assert.notEqual(res.statusCode, 404);
           done(err);
         });
-
     });
   });
 
@@ -415,7 +388,7 @@ describe('register', function () {
       request(app)
         .get('/customRegistrationUri')
         .expect(200)
-        .end(assertDefaultFormResponse(done));
+        .end(done);
     });
 
     it('should not bind to the other uri', function (done) {
@@ -427,7 +400,6 @@ describe('register', function () {
   });
 
   describe('if email verification is enabled', function () {
-
     var fixture;
 
     before(function (done) {
@@ -444,31 +416,39 @@ describe('register', function () {
       helpers.setEmailVerificationStatus(stormpathApplication, 'DISABLED', done);
     });
 
-    it('should return the user to the login page with ?status=unverified', function (done) {
+    describe('GET /verify with accept text/html', () => {
+      var widgetFixture;
+      var testResponse;
 
-      var config = fixture.expressApp.get('stormpathConfig');
+      before(function (done) {
+        widgetFixture = new WidgetFixture('showRegistration');
 
-      request(fixture.expressApp)
-        .post('/register')
-        .set('Accept', 'text/html')
-        .type('form')
-        .send(fixture.defaultFormPost())
-        .expect(302)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
+        var expressApp = defaultRegistrationFixture.expressApp;
+        var config = expressApp.get('stormpathConfig');
 
-          assert.equal(res.headers.location, config.web.login.uri + '?status=unverified');
-          done();
-        });
+        request(expressApp)
+          .get(config.web.register.uri)
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end((err, res) => {
+            if (err) {
+              return done(err);
+            }
 
+            testResponse = res;
+
+            done();
+          });
+      });
+
+      it('should return a widget html response', () => {
+        widgetFixture.assertResponse(testResponse);
+      });
     });
 
     describe('with Accept: application/json requests', function () {
       it('should create an account if the data is valid, and not expose the email verification token', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
+        var formData = defaultRegistrationFixture.defaultJsonPost();
 
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
@@ -491,17 +471,10 @@ describe('register', function () {
 
             done();
           });
-
       });
     });
 
-    // it should do json the right way
-  });
-
-  describe('with Accept: application/json requests', function () {
-
     describe('by default', function () {
-
       it('should return a JSON view model', function (done) {
         request(defaultRegistrationFixture.expressApp)
           .get('/register')
@@ -510,8 +483,7 @@ describe('register', function () {
       });
 
       it('should return a JSON error if the request is missing the givenName', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
+        var formData = defaultRegistrationFixture.defaultJsonPost();
         delete formData.givenName;
 
         request(defaultRegistrationFixture.expressApp)
@@ -529,13 +501,10 @@ describe('register', function () {
 
             done();
           });
-
       });
 
-
       it('should create an account if the data is valid', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
+        var formData = defaultRegistrationFixture.defaultJsonPost();
 
         request(defaultRegistrationFixture.expressApp)
           .post('/register')
@@ -557,11 +526,10 @@ describe('register', function () {
 
             done();
           });
-
       });
 
       it('should reject fields that are not configured', function (done) {
-        var formData = defaultRegistrationFixture.defaultFormPost();
+        var formData = defaultRegistrationFixture.defaultJsonPost();
         formData.otherField = uuid.v4();
 
         request(defaultRegistrationFixture.expressApp)
@@ -580,13 +548,12 @@ describe('register', function () {
             done();
           });
       });
-
     });
 
     describe('if a custom field is configured', function () {
       it('should store the custom field data in customData', function (done) {
         var fixture = customFieldRegistrationFixture;
-        var formData = fixture.defaultFormPost();
+        var formData = fixture.defaultJsonPost();
         request(customFieldRegistrationFixture.expressApp)
           .post('/register')
           .set('Accept', 'application/json')
@@ -594,15 +561,12 @@ describe('register', function () {
           .send(formData)
           .expect(200)
           .end(assertCustomDataRegistration(fixture, formData, done));
-
       });
     });
 
     describe('if givenName and surname are optional (not required)', function () {
-
       it('should set givenName and surname to the user-provided values', function (done) {
-
-        var formData = namesOptionalRegistrationFixture.namesProvidedFormPost();
+        var formData = namesOptionalRegistrationFixture.namesProvidedJsonPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
@@ -620,12 +584,10 @@ describe('register', function () {
             assert.equal(res.body.account.email, formData.email);
             done();
           });
-
       });
 
       it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
-
-        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
+        var formData = namesOptionalRegistrationFixture.namesOmittedJsonPost();
 
         request(namesOptionalRegistrationFixture.expressApp)
           .post('/register')
@@ -643,16 +605,12 @@ describe('register', function () {
             assert.equal(res.body.account.email, formData.email);
             done();
           });
-
       });
-
     });
 
     describe('if givenName and surname are disabled', function () {
-
       it('should set givenName and surname to \'UNKNOWN\'', function (done) {
-
-        var formData = namesDisabledRegistrationFixture.defaultFormPost();
+        var formData = namesDisabledRegistrationFixture.defaultJsonPost();
 
         request(namesDisabledRegistrationFixture.expressApp)
           .post('/register')
@@ -674,9 +632,7 @@ describe('register', function () {
     });
   });
 
-
   describe('if configured with a SPA root', function () {
-
     var spaRootFixture;
 
     before(function (done) {
@@ -697,9 +653,7 @@ describe('register', function () {
       spaRootFixture.after(done);
     });
 
-
     it('should return the SPA root', function (done) {
-
       var app = spaRootFixture.expressApp;
 
       app.on('stormpath.ready', function () {
@@ -710,394 +664,6 @@ describe('register', function () {
           .expect(200)
           .end(spaRootFixture.assertResponse(done));
       });
-
     });
-  });
-
-  describe('with Accept: text/html requests', function () {
-
-    describe('by default', function () {
-
-      it('should render a form with ONLY first name, last name, email, and password fields by default', function (done) {
-
-        request(defaultRegistrationFixture.expressApp)
-          .get('/register')
-          .set('Accept', 'text/html')
-          .expect(200)
-          .end(assertDefaultFormResponse(done));
-
-      });
-
-      it('should render an error if the givenName field is not supplied', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
-        delete formData.givenName;
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-            assert($('.alert.alert-danger p').length);
-            assert.notEqual($('.alert.alert-danger p').text().indexOf('First Name'), -1);
-
-            done();
-          });
-
-      });
-
-      it('should re-render the submitted form data if the submission fails', function (done) {
-
-        var formData = defaultRegistrationFixture.defaultFormPost();
-        // cause password strength validation to fail
-        formData.password = '1';
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-
-            var formFields = $('form input');
-
-            assert(formFields.length, 5);
-
-            var givenNameField = $(formFields[0]);
-            var surnameField = $(formFields[1]);
-            var emailField = $(formFields[2]);
-            var passwordField = $(formFields[3]);
-
-            // The core account fields should be re-populated with the
-            // user-submited data:
-
-            assert.equal(givenNameField.attr('value'), formData.givenName);
-            assert.equal(surnameField.attr('value'), formData.surname);
-            assert.equal(emailField.attr('value'), formData.email);
-
-            // The password should not be re-populated (for security):
-            assert.equal(passwordField.attr('value'), undefined);
-
-            done();
-          });
-
-      });
-
-      it('should redirect the user to the login page with ?status=created', function (done) {
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(defaultRegistrationFixture.defaultFormPost())
-          .expect(302)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            assert.equal(res.headers.location, '/login?status=created');
-            done();
-          });
-
-      });
-
-      it('should reject fields that are not configured', function (done) {
-        var formData = defaultRegistrationFixture.defaultFormPost();
-        formData.otherField = uuid.v4();
-
-        request(defaultRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-            assert($('.alert.alert-danger p').length);
-            assert.notEqual($('.alert.alert-danger p').text().indexOf('otherField'), -1);
-
-            done();
-          });
-      });
-
-    });
-
-    describe('if a custom field is configured', function () {
-      it('should show the field in the correct order', function (done) {
-
-        var config = customFieldRegistrationFixture.expressApp.get('stormpathConfig');
-
-        request(customFieldRegistrationFixture.expressApp)
-          .get('/register')
-          .set('Accept', 'text/html')
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-
-            var formFields = $('form input');
-
-            assert(formFields.length, 5);
-
-            var givenNameField = $(formFields[0]);
-            var surnameField = $(formFields[1]);
-            var colorField = $(formFields[2]);
-            var musicField = $(formFields[3]);
-            var emailField = $(formFields[4]);
-            var passwordField = $(formFields[5]);
-
-            assert.equal(givenNameField.attr('placeholder'), config.web.register.form.fields.givenName.placeholder);
-            assert.equal(givenNameField.attr('required') === 'required', config.web.register.form.fields.givenName.required);
-            assert.equal(givenNameField.attr('type'), config.web.register.form.fields.givenName.type);
-
-            assert.equal(surnameField.attr('placeholder'), config.web.register.form.fields.surname.placeholder);
-            assert.equal(surnameField.attr('required') === 'required', config.web.register.form.fields.surname.required);
-            assert.equal(surnameField.attr('type'), config.web.register.form.fields.surname.type);
-
-            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.color.placeholder);
-            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.color.required);
-            assert.equal(colorField.attr('type'), config.web.register.form.fields.color.type);
-
-            assert.equal(musicField.attr('placeholder'), config.web.register.form.fields.music.placeholder);
-            assert.equal(musicField.attr('required') === 'required', config.web.register.form.fields.music.required);
-            assert.equal(musicField.attr('type'), config.web.register.form.fields.music.type);
-
-            assert.equal(emailField.attr('placeholder'), config.web.register.form.fields.email.placeholder);
-            assert.equal(emailField.attr('required') === 'required', config.web.register.form.fields.email.required);
-            assert.equal(emailField.attr('type'), config.web.register.form.fields.email.type);
-
-            assert.equal(passwordField.attr('placeholder'), config.web.register.form.fields.password.placeholder);
-            assert.equal(passwordField.attr('required') === 'required', config.web.register.form.fields.password.required);
-            assert.equal(passwordField.attr('type'), config.web.register.form.fields.password.type);
-
-            done();
-
-          });
-      });
-
-      it('should store the custom field data on the customData object', function (done) {
-        var fixture = customFieldRegistrationFixture;
-        var formData = fixture.defaultFormPost();
-
-        request(customFieldRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(302)
-          .end(assertCustomDataRegistration(fixture, formData, done));
-      });
-
-      it('should re-render the submitted custom field data if the submission fails', function (done) {
-
-        var formData = customFieldRegistrationFixture.defaultFormPost();
-        // cause password strength validation to fail
-        formData.password = '1';
-
-        request(customFieldRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-
-            var formFields = $('form input');
-
-            assert(formFields.length, 5);
-
-            var colorField = $(formFields[2]);
-
-            assert.equal(colorField.attr('value'), formData.color);
-
-            done();
-          });
-
-      });
-    });
-
-    describe('if autoLogin is enabled', function () {
-
-      var app;
-
-      before(function (done) {
-        app = helpers.createStormpathExpressApp({
-          application: {
-            href: stormpathApplication.href
-          },
-          web: {
-            register: {
-              autoLogin: true,
-              enabled: true,
-              nextUri: '/woot'
-            }
-          }
-        });
-        app.on('stormpath.ready', done);
-      });
-
-      it('should redirect the user to the dynamic nextUri', function (done) {
-
-        request(app)
-          .post('/register?next=%2Fyo')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(DefaultRegistrationFixture.prototype.defaultFormPost())
-          .expect(302)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            assert.equal(res.headers.location, '/yo');
-            done();
-          });
-
-      });
-
-      it('should redirect the user to the configured nextUri', function (done) {
-
-        request(app)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(DefaultRegistrationFixture.prototype.defaultFormPost())
-          .expect(302)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            assert.equal(res.headers.location, '/woot');
-            done();
-          });
-
-      });
-    });
-
-    describe('if givenName and surname are optional (not required)', function () {
-
-      it('should set givenName and surname to \'UNKNOWN\' if not provided', function (done) {
-
-        var formData = namesOptionalRegistrationFixture.namesOmittedFormPost();
-
-        request(namesOptionalRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
-              if (err) {
-                return done(err);
-              }
-
-              if (accounts.items.length === 0) {
-                return done(new Error('No account was created!'));
-              }
-
-              var account = accounts.items[0];
-              assert.equal(account.email, formData.email);
-              assert.equal(account.givenName, 'UNKNOWN');
-              assert.equal(account.surname, 'UNKNOWN');
-
-              done();
-            });
-          });
-
-      });
-    });
-
-    describe('if givenName and surname are disabled', function () {
-      it('should not show those fields', function (done) {
-        request(namesDisabledRegistrationFixture.expressApp)
-          .get('/register')
-          .set('Accept', 'text/html')
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            var $ = cheerio.load(res.text);
-
-            var formFields = $('form input');
-
-            assert.equal(formFields.length, 2);
-            assert.equal($(formFields[0]).attr('name'), 'email');
-            assert.equal($(formFields[1]).attr('name'), 'password');
-
-            done();
-          });
-      });
-
-      it('should set givenName and surname to \'UNKNOWN\'', function (done) {
-
-        var formData = namesDisabledRegistrationFixture.defaultFormPost();
-
-        request(namesDisabledRegistrationFixture.expressApp)
-          .post('/register')
-          .set('Accept', 'text/html')
-          .type('form')
-          .send(formData)
-          .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
-              if (err) {
-                return done(err);
-              }
-
-              if (accounts.items.length === 0) {
-                return done(new Error('No account was created!'));
-              }
-
-              var account = accounts.items[0];
-              assert.equal(account.email, formData.email);
-              assert.equal(account.givenName, 'UNKNOWN');
-              assert.equal(account.surname, 'UNKNOWN');
-
-              done();
-            });
-          });
-
-      });
-
-    });
-
   });
 });

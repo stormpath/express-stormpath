@@ -114,44 +114,4 @@ describe('Post-Login Handler', function () {
       });
     });
   });
-
-  describe('with a Form-Encoded post', function () {
-
-    it('should be given the expanded account object', function (done) {
-
-      preparePostLoginExpansionTestFixture(stormpathApplication, function (fixture) {
-        request(fixture.expressApp)
-          .post('/login')
-          .send({login: newUser.email, password: newUser.password})
-          .expect('Set-Cookie', /access_token=[^;]+/)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return done(err);
-            }
-
-            assert(res.body.customData.favoriteColor === newUser.customData.favoriteColor);
-            done();
-          });
-      });
-    });
-
-    it('should allow me to do work, then call next (let framework end the response)', function (done) {
-
-      preparePostLoginPassThroughTestFixture(stormpathApplication, function (fixture) {
-        request(fixture.expressApp)
-          .post('/login')
-          .send({login: newUser.email, password: newUser.password})
-          .expect('Set-Cookie', /access_token=[^;]+/)
-          .expect(302)
-          .end(function (err) {
-            if (err) {
-              return done(err);
-            }
-            assert(fixture.sideEffect === fixture.sideEffectData);
-            done();
-          });
-      });
-    });
-  });
 });

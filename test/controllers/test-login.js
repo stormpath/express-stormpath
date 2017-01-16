@@ -3,13 +3,12 @@
 var assert = require('assert');
 
 var async = require('async');
-var cheerio = require('cheerio');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
+var WidgetFixture = require('../fixtures/widget-fixture');
 var SpaRootFixture = require('../fixtures/spa-root-fixture');
-var stormpath = require('../../index');
 
 describe('login', function () {
   var username = 'test+' + uuid.v4() + '@stormpath.com';
@@ -32,9 +31,11 @@ describe('login', function () {
       }
 
       stormpathApplication = app;
+
       defaultExpressApp = helpers.createStormpathExpressApp({
         application: stormpathApplication
       });
+
       alternateUrlExpressApp = helpers.createStormpathExpressApp({
         application: stormpathApplication,
         web: {
@@ -43,7 +44,10 @@ describe('login', function () {
           }
         }
       });
-      app.createAccount(accountData, done);
+
+      defaultExpressApp.on('stormpath.ready', function () {
+        app.createAccount(accountData, done);
+      });
     });
   });
 
@@ -55,35 +59,40 @@ describe('login', function () {
     request(defaultExpressApp)
       .get('/login')
       .expect(200)
-      .end(function (err, res) {
-        var $ = cheerio.load(res.text);
-
-        // Assert that the form was rendered.
-        assert.equal($('form[action="/login"]').length, 1);
-        done(err);
-      });
+      .end(done);
   });
 
-  it('should set access token and refresh token cookies with default path, if HTML request', function (done) {
+  describe('GET /verify with accept text/html', () => {
+    var widgetFixture;
+    var testResponse;
 
-    // This expression asserts that both cookies are set, and with a default path of /
+    before(function (done) {
+      widgetFixture = new WidgetFixture('showLogin');
 
-    var expr = /access_token=.*path=\/.*refresh_token=.*path=\//;
+      var config = defaultExpressApp.get('stormpathConfig');
 
-    request(defaultExpressApp)
-      .post('/login')
-      .set('Accept', 'text/html')
-      .send({
-        login: username,
-        password: password
-      })
-      .expect('Set-Cookie', expr, done);
+      request(defaultExpressApp)
+        .get(config.web.login.uri)
+        .set('Accept', 'text/html')
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
 
+          testResponse = res;
+
+          done();
+        });
+    });
+
+    it('should return a widget html response', () => {
+      widgetFixture.assertResponse(testResponse);
+    });
   });
+
   describe('JSON API', function () {
-
     it('should return a json error if the accept header supports json and the content type we post is json', function (done) {
-
       request(defaultExpressApp)
         .post('/login')
         .type('json')
@@ -105,7 +114,6 @@ describe('login', function () {
             done();
           }
         });
-
     });
 
     it('should return the login view model for JSON requets', function (done) {
@@ -132,9 +140,7 @@ describe('login', function () {
         }, done);
     });
 
-
     it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function (done) {
-
       request(defaultExpressApp)
         .post('/login')
         .type('json')
@@ -158,65 +164,6 @@ describe('login', function () {
     });
   });
 
-  it('should retain the requested url when redirecting to the login page', function (done) {
-    var protectedUri = '/' + uuid.v4();
-
-    defaultExpressApp.get(protectedUri, stormpath.loginRequired);
-
-    request(defaultExpressApp)
-      .get(protectedUri)
-      .expect(302)
-      .expect('Location', '/login?next=' + encodeURIComponent(protectedUri))
-      .end(done);
-
-  });
-
-  it('should retain the requested url in the form action url', function (done) {
-
-    var config = defaultExpressApp.get('stormpathConfig');
-    var nextUri = uuid.v4();
-    request(defaultExpressApp)
-      .get('/login?next=' + encodeURIComponent(nextUri))
-      .expect(200)
-      .end(function (err, res) {
-        var $ = cheerio.load(res.text);
-
-        // Assert that the form was rendered.
-        assert.equal($('form[action="' + config.web.login.uri + '?next=' + nextUri + '"]').length, 1);
-        done(err);
-      });
-
-  });
-
-  it('should not allow an open redirect', function (done) {
-
-    var nextUri = 'http://stormpath.com/foo';
-    request(defaultExpressApp)
-      .post('/login?next=' + encodeURIComponent(nextUri))
-      .send({
-        login: username,
-        password: password
-      })
-      .expect(302)
-      .expect('Location', '/foo')
-      .end(done);
-
-  });
-
-  it('should redirect me to the next url if given', function (done) {
-
-    var nextUri = uuid.v4();
-    request(defaultExpressApp)
-      .post('/login?next=' + encodeURIComponent(nextUri))
-      .send({
-        login: username,
-        password: password
-      })
-      .expect(302)
-      .expect('Location', nextUri)
-      .end(done);
-  });
-
   it('should bind to another URL if specified', function (done) {
     async.parallel([
       function (cb) {
@@ -232,7 +179,6 @@ describe('login', function () {
           .end(cb);
       }
     ], done);
-
   });
 
   describe('if configured with a SPA root', function () {
