@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "v3.1.5-email-options-2",
+  "version": "3.1.5-invitee-emails",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
