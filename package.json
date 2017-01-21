@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "3.1.5-invitee-emails",
+  "version": "3.1.5-form-logic-exposed-2",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
