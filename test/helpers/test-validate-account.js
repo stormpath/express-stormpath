@@ -104,7 +104,7 @@ describe('validateAccount', function () {
 
     helpers.validateAccount(accountData, config, function (errors) {
       assert.equal(errors.length, 1);
-      assert.equal(errors[0].message, 'Color is required');
+      assert.equal(errors[0].message, 'Color required.');
       done();
     });
   });
