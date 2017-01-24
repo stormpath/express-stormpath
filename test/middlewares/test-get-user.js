@@ -406,7 +406,7 @@ describe('getUser', function () {
     });
   });
 
-  it('should set req.user and res.locals.user if an access_token cookie is present and valid', function (done) {
+  it('should set req.user, res.locals.user, res.authenticationResult, res.accessToken if an access_token cookie is present and valid', function (done) {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
@@ -415,7 +415,8 @@ describe('getUser', function () {
       assert.equal(req.user.givenName, accountData.givenName);
       assert.equal(req.user.surname, accountData.surname);
       assert.equal(req.user.email, accountData.email);
-
+      assert.equal(req.accessToken.body.sub, stormpathAccount.href);
+      assert.equal(req.authenticationResult.account.href, stormpathAccount.href);
       res.send('success');
     });
 
