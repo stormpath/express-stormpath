@@ -46,12 +46,12 @@ redirect the user to the login page for HTML requests, or send a 401 error for
 JSON requests.
 
 For example, if you've defined a simple view that should simply display a user's
-email address, we can use the ``loginRequired`` middleware to require them to be
+email address, we can use the ``authenticationRequired`` middleware to require them to be
 logged in, and show them their email if so:
 
     .. code-block:: javascript
 
-      app.get('/email', stormpath.loginRequired, function (req, res) {
+      app.get('/email', stormpath.authenticationRequired, function (req, res) {
         res.send('Your email address is: ' + req.user.email);
       });
 
@@ -131,7 +131,7 @@ user data for you.  Simply use the `expand` config option::
 Our library will pre-expand those resources for you, so that
 they are statically available inside your handler::
 
-    app.get('/', stormpath.loginRequired, function (req, res) {
+    app.get('/', stormpath.authenticationRequired, function (req, res) {
       res.json(req.user.customData);
     });
 
@@ -170,7 +170,7 @@ efficient*) -- so instead, you have to iterate over the collection.
 Below is an example which shows how you can iterate over a collection resource
 (*groups, in this case*)::
 
-    app.get('/', stormpath.loginRequired, function (req, res) {
+    app.get('/', stormpath.authenticationRequired, function (req, res) {
       req.user.groups.each(function iterator(group, cb) {
         console.log('group:', group);
         cb();
@@ -187,7 +187,7 @@ called when you've finished iterating through all of the available resources.
 So, given the example above, we could just as easily iterate over all of a
 user's ``apiKeys``::
 
-    app.get('/', stormpath.loginRequired, function (req, res) {
+    app.get('/', stormpath.authenticationRequired, function (req, res) {
       req.user.apiKeys.each(function (apiKey, callback) {
         console.log('apiKey:', apiKey);
         callback();

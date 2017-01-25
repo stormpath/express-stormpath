@@ -72,7 +72,7 @@ Here is an example of using the authentication result to determine which organiz
 
 .. code-block:: javascript
 
-  app.get('/dashboard', stormpath.loginRequired, function (req, res) {
+  app.get('/dashboard', stormpath.authenticationRequired, function (req, res) {
 
     var client = req.app.get('stormpathClient');
     var orgHref = req.authenticationResult.expandedJwt.claims.org;

@@ -333,7 +333,7 @@ of how you can create an API Key for the currently logged in user:
 
 .. code-block:: javascript
 
-  app.post('/apiKeys', stormpath.loginRequired, function (req, res) {
+  app.post('/apiKeys', stormpath.authenticationRequired, function (req, res) {
     req.user.createApiKey(function (err, apiKey) {
       if (err) {
         res.status(400).end('Oops!  There was an error: ' + err.userMessage);
