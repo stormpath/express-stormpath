@@ -98,7 +98,8 @@ describe('apiAuthenticationRequired', function () {
                 password: {
                   validationStrategy: 'stormpath'
                 }
-              }
+              },
+              produces: ['text/html', 'application/json']
             }
           });
 

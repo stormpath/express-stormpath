@@ -15,7 +15,8 @@ function createExpressTestApp(applicationHref, groupsToAssert, assertAll) {
     web: {
       login: {
         enabled: true
-      }
+      },
+      produces: ['text/html', 'application/json']
     }
   });
 

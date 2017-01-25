@@ -75,7 +75,10 @@ describe('resetPassword', function () {
           passwordResetToken = tokenResource.href.match(/\/([^\/]+)$/)[1];
 
           defaultExpressApp = helpers.createStormpathExpressApp({
-            application: stormpathApplication
+            application: stormpathApplication,
+            web: {
+              produces: ['text/html', 'application/json']
+            }
           });
 
           defaultExpressApp.on('stormpath.ready', done);
@@ -320,7 +323,8 @@ describe('resetPassword', function () {
         web: {
           changePassword: {
             enabled: true
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
       spaRootFixture.before(done);

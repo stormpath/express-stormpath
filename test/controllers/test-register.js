@@ -34,7 +34,8 @@ function DefaultRegistrationFixture(stormpathApplication) {
     web: {
       register: {
         enabled: true
-      }
+      },
+      produces: ['text/html', 'application/json']
     }
   });
   return this;
@@ -128,7 +129,8 @@ function NamesOptionalRegistrationFixture(stormpathApplication) {
             }
           }
         }
-      }
+      },
+      produces: ['text/html', 'application/json']
     }
   });
   return this;
@@ -191,7 +193,8 @@ function NamesDisabledRegistrationFixture(stormpathApplication) {
             }
           }
         }
-      }
+      },
+      produces: ['text/html', 'application/json']
     }
   });
   return this;
@@ -247,7 +250,8 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
           },
           fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
         }
-      }
+      },
+      produces: ['text/html', 'application/json']
     }
   });
   return this;
@@ -405,7 +409,8 @@ describe('register', function () {
           register: {
             enabled: true,
             uri: '/customRegistrationUri'
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
       app.on('stormpath.ready', done);
@@ -687,7 +692,8 @@ describe('register', function () {
         web: {
           register: {
             enabled: true
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
       spaRootFixture.before(done);
@@ -956,7 +962,8 @@ describe('register', function () {
               autoLogin: true,
               enabled: true,
               nextUri: '/woot'
-            }
+            },
+            produces: ['text/html', 'application/json']
           }
         });
         app.on('stormpath.ready', done);

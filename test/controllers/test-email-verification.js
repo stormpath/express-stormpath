@@ -54,7 +54,8 @@ describe('email verification', function () {
           web: {
             register: {
               enabled: true
-            }
+            },
+            produces: ['text/html', 'application/json']
           }
         });
         expressApp.on('stormpath.ready', done);
@@ -113,8 +114,8 @@ describe('email verification', function () {
           var config = expressApp.get('stormpathConfig');
           request(expressApp)
             .post(config.web.verifyEmail.uri)
-            .send({ login: uuid() })
             .set('Accept', 'application/json')
+            .send({ login: uuid() })
             .expect(200, '', done);
         });
       });
@@ -206,7 +207,8 @@ describe('email verification', function () {
       web:{
         verifyEmail:{
           uri: '/' + uuid()
-        }
+        },
+        produces: ['text/html']
       }
     });
 

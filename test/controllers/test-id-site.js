@@ -149,7 +149,8 @@ describe('id site', function () {
               },
               idSite: {
                 enabled: true
-              }
+              },
+              produces: ['text/html', 'application/json']
             }
           });
 

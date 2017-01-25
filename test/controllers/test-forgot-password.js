@@ -70,7 +70,8 @@ describe('forgotPassword', function () {
       web: {
         forgotPassword: {
           enabled: true
-        }
+        },
+        produces: ['text/html', 'application/json']
       }
     });
 
@@ -101,7 +102,8 @@ describe('forgotPassword', function () {
       web: {
         forgotPassword: {
           enabled: true
-        }
+        },
+        produces: ['text/html', 'application/json']
       }
     });
 
@@ -130,7 +132,8 @@ describe('forgotPassword', function () {
       web: {
         forgotPassword: {
           enabled: true
-        }
+        },
+        produces: ['text/html', 'application/json']
       }
     });
 
@@ -153,7 +156,8 @@ describe('forgotPassword', function () {
       web: {
         forgotPassword: {
           enabled: true
-        }
+        },
+        produces: ['text/html', 'application/json']
       }
     });
 
@@ -177,7 +181,8 @@ describe('forgotPassword', function () {
         web: {
           forgotPassword: {
             enabled: true
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
 
@@ -204,7 +209,8 @@ describe('forgotPassword', function () {
         web: {
           forgotPassword: {
             enabled: true
-          }
+          },
+          produces: ['text/html', 'application/json']
         }
       });
       spaRootFixture.before(done);

@@ -35,7 +35,8 @@ describe('logout', function () {
           },
           accessTokenCookie: {
             domain: 'example.com'
-          }
+          },
+          produces: ['text/html', 'application/json']
         },
         postLogoutHandler: postLogoutHandlerSpy
       });
