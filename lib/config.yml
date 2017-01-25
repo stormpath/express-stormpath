@@ -67,7 +67,7 @@ web:
           enabled: true
           label: "First Name"
           placeholder: "First Name"
-          required: true
+          required: null
           type: "text"
         middleName:
           enabled: false
@@ -79,7 +79,7 @@ web:
           enabled: true
           label: "Last Name"
           placeholder: "Last Name"
-          required: true
+          required: null
           type: "text"
         username:
           enabled: false

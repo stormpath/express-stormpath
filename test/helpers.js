@@ -40,6 +40,38 @@ module.exports.newUser = function () {
 };
 
 /**
+ * Retrieves the account schema fields for an Application's default account store.
+ *
+ * @function
+ *
+ * @param {Object} application Application to retrieve account schema fields for.
+ * @param {Function} callback Called when account schema fields are retrieved.
+ */
+module.exports.getApplicationDefaultSchemaFields = function (application, callback) {
+  application.getAccountStoreMappings(function (err, accountStoreMappings) {
+    if (err) {
+      return callback(err);
+    }
+
+    var defaultMapping = accountStoreMappings.items[0];
+
+    defaultMapping.getAccountStore(function (err, accountStore) {
+      if (err) {
+        return callback(err);
+      }
+
+      accountStore.getAccountSchema(function (err, accountSchema) {
+        if (err) {
+          return callback(err);
+        }
+
+        accountSchema.getFields(callback);
+      });
+    });
+  });
+};
+
+/**
  * Create a new Stormpath Application for usage in tests.
  *
  * @function
