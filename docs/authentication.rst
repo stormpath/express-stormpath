@@ -3,75 +3,82 @@
 Authentication
 ==============
 
-This library offers several options for securing your application and
-authenticating your users.  Which strategy should you use?  The answer depends
-on your use case, and we'll discuss each one in detail.  But at a high level,
-your choices look like this:
+When a user logs into your application, they are authenticating who they are.
+Stormpath provides several strategies for authenticating users, including
+simple passwords, social login, and organization-context authentication.
 
-  * If you are building a traditional web app or single page application, you
-    should use **Cookie Authentication**.
-
-  * If you are building a mobile application, you should use the **OAuth2
-    Password Grant**.
-
-  * If you are building an API service, you can use
-    **HTTP Basic Authentication** or **OAuth2 Client Credentials**.
-
-
-
-Cookie Authentication
----------------------
-
-If you are building a web application that serves traditional HTML pages, or a
-Single Page Application (Angular/React), this library will handle the cookie
-sessions for you.  No special configuration is necessary.
-
-To use cookie authentication, simply use the ``loginRequired`` middleware::
-
-    app.get('/secret', stormpath.loginRequired, function (req, res) {
-      /*
-        If we get here, the user is logged in.  Otherwise, they
-        were redirected to the login page
-       */
-      res.send('Hello, ' + req.user.fullname);
-    });
-
-Behind the scenes we are issuing a OAuth2 Access Token and Refresh Token for
-the user, and storing them in secure, HTTPS-Only cookies.  After the user has
-logged in, these cookies will be supplied on every request.  Our library will
-assert that the Access Token is valid.  If the Access Token is expired, we will
-attempt to refresh it with the Refresh Token.
-
-
-.. note::
-    Express-Stormpath's OAuth2 cookie feature will not interfere with any
-    existing cookie-based session middleware you might have.  The cookies that
-    Stormpath creates are used exclusively for Stormpath's purposes, so it's
-    safe to create your own separate sessions if needed.
+The common feature of all these flows is that an OAuth 2.0 access token and
+refresh token pair is created for the user when they authenticate.  In this
+section we will discuss the different ways that a user can authenticate, and how
+you can use the granted tokens to authenticate requests to your server.
 
 .. _setting_token_expiration_time:
 
-Setting Token Expiration Time
-.............................
+For all cases, we rely on the OAuth Policy of your Stormpath Application when
+deciding how long tokens should be good for.  If you need to change these values,
+please see `Managing an Application’s OAuth Policy <https://docs.stormpath.com/console/product-guide/latest/applications.html#managing-an-application-s-oauth-policy>`_
+in the Admin Console guide, or `Configuring Token Based Authentication <https://docs.stormpath.com/rest/product-guide/latest/auth_n.html#configuring-token-based-authentication>`_ in the REST Product Guide.
 
-If you need to change the expiration time of the Access Token or Refresh Token,
-please login to the Stormpath Admin Console and navigate to the OAuth policy of
-your Stormpath Application.  There you will find the settings for each token.
+
+This section will discuss strategies that are applicable to any front-end or
+mobile application.  While we recommend reading this section and understanding
+the flows, Stormpath also provides client SDKs that wrap most of these behavior,
+so that you don't have to build it yourself.
+
+Please visit https://docs.stormpath.com for more information on these libraries.
+
+Password Authentication
+-----------------------
+
+This is the most straightforward form of authentication that everyone is
+familiar with.  Stormpath provides several ways for a user to provide their
+username and password, in exchange for an access and refresh token.
+
+In this sub-section, we will cover the different authentication endpoints that
+Stormpath provides.
+
+Client API
+....................
+
+The `Stormpath Client API`_ is designed for front-end and mobile clients,
+it is a hosted API for your application that allows the user to post their
+credentials and receive an access token.  This API is useful when you want Stormpath
+to host the authentication API for you, so that your Express server is not
+responsible for authentication.
+
+When using the Client API, you will use the standard OAuth 2.0 Password Grant
+to obtain an access and refresh token.  Once the tokens have been obtained,
+you can use them to authenticate requests with your express server, and this is
+covered in the next sub-section, Token Authentication.
+
+Please see the `Stormpath Client API Product Guide`_ for complete information
+on authenticating the user and obtaining tokens.
+
+
+HTML Login Form
+...............
+
+If you have added the ``express-stormpath`` library to your server, we
+automatically serve a login form at ``/login``.  This is a simple form that allows
+the user to submit their username and password.
+
+If the user authenticates successfully, we create an access token and refresh
+token (same as all other flows), but in this case we will store those tokens
+for you in Http-Only cookies that are tied to the local domain of your Express
+server.  This is convenient because the browser will automatically supply those
+tokens on subsequent requests, you will not have to do extra work to send those
+tokens to your server.
 
 .. _configuring_cookie_flags:
 
-Configuring Cookie Flags
-........................
-
-This library creates two cookies, one for the Access Token and one for the
-Refresh Token.  There are several options available for controlling the flags
-that are set on these cookies.
-
-Here is an example configuration block, with the default settings:
+The feature is covered in detail in the :ref:`Login` section.  Depending on your
+use-case, you may need to change some of the properties that we set on the cookies
+that are automatically created by our ``/login`` endpoint, which can be done with
+the following configuration:
 
 .. code-block:: javascript
 
-  {
+  app.use(stormpath.init({
     web: {
       accessTokenCookie: {
         domain: null,
@@ -83,7 +90,7 @@ Here is an example configuration block, with the default settings:
         // same as the accessTokenCookie
       }
     }
-  }
+  }));
 
 This table describes each setting in detail:
 
@@ -102,20 +109,166 @@ This table describes each setting in detail:
 |             |         | ``false`` (not recommended!).                        |
 +-------------+---------+------------------------------------------------------+
 
-.. _token_validation_strategy:
 
-Token Validation Strategy
+JSON Login API
+..............
+
+Similar to the HTML Login Form approach, you can post the same data to the
+``/login`` endpoint, but as JSON data instead of a form POST.  The result is the
+same: an access and refresh token is created, and automatically stored for you
+in cookies.
+
+The feature is covered in detail in the :ref:`Login` section.
+
+
+Local OAuth2 API
+................
+
+As mentioned earlier, you can use the `Stormpath Client API`_ directly from your
+SPA or mobile client to authenticate the user and obtain access tokens, using
+the password grant flow.
+
+However, some developers need this OAuth2 API to exist on their server, likely
+because they want it to be on the same domain as the rest of their application.
+If you have added the ``express-stormpath`` library to your server, we
+automatically serve the OAuth 2.0 API at ``/oauth/token``.  This is the same API
+that you can use from the `Stormpath Client API`_, but in this case it is simply
+served by your Express server.  The result is the same: your client will receive
+tokens after a successful password authentication.
+
+Just like the `Stormpath Client API`_, the format of an authentication request should look like this:
+
+.. code-block:: text
+
+  POST http://localhost:3000/oauth/token HTTP/1.1
+  Content-Type: application/x-www-form-urlencoded
+
+  grant_type=password&username=user@gmail.com&password=theirPassword
+
+The response will be a standard OAuth 2.0 response, providing your client with
+the necessary tokens:
+
+.. code-block:: javascript
+
+  {
+    "refresh_token": "eyJraWQiOiI2...",
+    "stormpath_access_token_href": "https://api.stormpath.com/v1/accessTokens/3bBAHmSuTJ64DM574awVen",
+    "token_type": "Bearer",
+    "access_token": "eyJraWQiOiI2Nl...",
+    "expires_in": 3600
+  }
+
+
+Token Authentication
+--------------------
+
+So far we have discussed the various ways in which a user (and their client, e.g.
+your single-page app or mobile app) can obtain an access and refresh token.
+Once the client has tokens, they can use them to authenticate HTTP requests to
+your server.  In this section we will show you the various ways this is possible.
+
+Authorization Header
+....................
+
+In this scenario, the client adds the ``Authorization`` header to the HTTP
+request, and supplies the access token as the value of the header, using the
+``Bearer <access_token>`` scheme.  This scenario is typically used in the following
+situations:
+
+- Mobile applications, which prefer the ``Authorization`` approach over a cookie solution.  They typically do not have cookie store implementations.
+- Single Page Apps (SPAs), when the authentication API is not on the same domain as the API that requires authentication. This is true when using the `Stormpath Client API`_ as your authentication domain.
+
+An example header would look like this:
+
+.. code-block:: text
+
+  Authorization: Bearer eyJraWQiOiI2NldURFJVM1paSkNZVFJVVlZTUUw3WEJOIiwic3R0IjoiYWNjZXNzIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiIzV0llS3N1SmR6YWR5YzN4U1ltc1l6IiwiaWF0IjoxNDY5ODMzNzQ3LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy8yNGs3SG5ET3o0dFE5QVJzQnRQVU42Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8yRWRHb3htbGpuODBlRHZjM0JzS05EIiwiZXhwIjoxNDY5ODM0MzQ3LCJydGkiOiIzV0llS3BhRWpQSGZMbXk2R0l2Ynd2In0.9J7HvhgJZxvxuE-0PiarTDTFPCVVLR_nvRByULNA01Q
+
+
+Cookies
+.......
+
+While the ``Authorization`` header approach is becoming more common, cookies
+still offer some advantages and Stormpath supports cookies as a means for sending
+the access token to your server.  Cookies are useful for these scenarios:
+
+- Enhanced security for browser clients: HTTP-Only, Secure cookies (with a CSRF mitigation solution) can be more secure than using Local Storage, as the Local Storage API is vulnerable to XSS attacks.
+- Clients can be simpler, as they don't need to manually supply the token on every request (the browser does this for you).
+
+Stormpath provides an additional feature for cookie authentication: we will
+transparently refresh the access token for you, so that you client does not need
+to do this.
+
+If you would like to authenticate requests with cookies, the access token and
+refresh token should be supplied with as the ``access_token`` and ``refresh_token``
+values when creating the ``Cookie`` header of the request. For example:
+
+.. code-block:: text
+
+  Cookie: access_token=eyJraWQiOiIyMzhCSFRDQTlXUzhEMTJOUkdMMU5OMVNGIiwic3R0IjoiYWNjZXNzIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiI1Q1ExQldvdW5YS2NCZmpMMFltMXUwIiwiaWF0IjoxNDg1Mjk5NTg4LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy8yNGs3SG5ET3o0dFE5QVJzQnRQVU42Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy81dThCWVp0dTA5czN5ZDFYdERZUlNvIiwiZXhwIjoxNDg2MTYzNTg4LCJydGkiOiI1Q1ExQlRVcHN4MWRZcWRUb0l1bEh3In0.epnM3D-pMMoHYdYziQJt-m1Nibmdbr_qPuJOSrfoqAw; refresh_token=eyJraWQiOiIyMzhCSFRDQTlXUzhEMTJOUkdMMU5OMVNGIiwic3R0IjoicmVmcmVzaCIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiI1Q1ExQlRVcHN4MWRZcWRUb0l1bEh3IiwiaWF0IjoxNDg1Mjk5NTg4LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy8yNGs3SG5ET3o0dFE5QVJzQnRQVU42Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy81dThCWVp0dTA5czN5ZDFYdERZUlNvIiwiZXhwIjoxNDg3MDI3NTg4fQ.4BE4LtR7zakTfkWeA86TM1fsEM8bhv2SFYcVCkBNy3Y
+
+
+
+Requiring Authentication
 .........................
 
-When a request comes into your server, this library will use the Access Token
-and Refresh Token cookies to make an authentication decision.  The default
+
+You can protect APIs on your server by requiring authentication, using the
+``authenticationRequired`` middleware.  This middleware will look for an access token
+in the ``Authorization`` or ``Cookie`` header of the request.  If an access token
+is found, it will assert that the access token is not expired and that is was
+issued by the Stormpath Application that was specified by your configuration
+when initializing ``express-stormpath``.
+
+Here is an example of requiring authentication for a particular endpoint:
+
+.. code-block:: javascript
+
+  app.get('/secret', stormpath.authenticationRequired, function (req, res) {
+    res.json({
+      message: "Hello, " + req.user.fullname
+    });
+  });
+
+If the request failed authentication, the user will be redirected to the login page, or given an error response (depending on the ``Accept`` header of the request).
+
+
+Refreshing Tokens
+.................
+
+When the access token has expired, the client can use the refresh token to
+obtain a new token.  If you are using one of our front-end or mobile SDKs, this
+is done for you automatically.  If you need to manually get a new access token,
+you make a ``refresh_token`` grant type POST to the ``/oauth/token`` endpoint of
+your server, or the `Stormpath Client API`_. The client request looks like this:
+
+.. code-block:: text
+
+  POST http://localhost:3000/oauth/token HTTP/1.1
+  Content-Type: application/x-www-form-urlencoded
+
+  grant_type=refresh_token&refresh_token=eyJraWQiOiIyMzhCSFRDQTlXUzhEMTJOUkdMMU5OMVNGIiwic3R0IjoicmVmcmVzaCIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiI1Q1ExQlRVcHN4MWRZcWRUb0l1bEh3IiwiaWF0IjoxNDg1Mjk5NTg4LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy8yNGs3SG5ET3o0dFE5QVJzQnRQVU42Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy81dThCWVp0dTA5czN5ZDFYdERZUlNvIiwiZXhwIjoxNDg3MDI3NTg4fQ.4BE4LtR7zakTfkWeA86TM1fsEM8bhv2SFYcVCkBNy3Y
+
+The response will contain a new access token.  Once the refresh token expires,
+the user will have to re-authenticate with a username and password to get a new token pair.
+
+For full documentation on our OAuth2 Access Token features, please see
+`How Token-Based Authentication Works`_
+
+.. _token_validation_strategy:
+
+
+Validation Strategy
+...................
+
+When a request comes into your server, this library will use the access token,
+provided by the client, to make an authentication decision.  The default
 validation strategy (``local``) works like this:
 
-- If the Access Token signature is valid, and the token is not expired, accept
-  the request.
+- If the Access Token was issued by your Stormpath Application, and the token is not expired, the request is accepted.
 
 - If the Access Token is expired, attempt to get a new one from the Stormpath
-  REST API by using the Refresh Token.
+  REST API by using the Refresh Token (if the refresh token was presented as a cookie).
 
 - If a new Access Token cannot be obtained, deny the request.
 
@@ -163,36 +316,43 @@ Opt-in to ``stormpath`` validation with this configuration:
     a convenience feature in the future.
 
 
-Issuing API Keys
-----------------
+API Key Authentication
+----------------------
 
 If you are building an API service, you will need to distribute API keys to your
 developers.  They will then use these keys to authenticate with your API, either
 via HTTP Basic Auth or OAuth2 Access tokens.  We'll cover those strategies in
 the next sections, but we need to provision API keys for your developers first.
 
+Creating API Keys
+.................
+
 While your service may be an API service, you will still need to provide a
 basic website that developers can use to obtain their keys.  Here is an example
-of how you can create an API Key for the currently logged in user::
+of how you can create an API Key for the currently logged in user:
 
-    app.post('/apiKeys', stormpath.loginRequired, function (req, res) {
-      req.user.createApiKey(function (err, apiKey) {
-        if (err) {
-          res.status(400).end('Oops!  There was an error: ' + err.userMessage);
-        }else{
-          res.json(apiKey);
-        }
-      });
+.. code-block:: javascript
+
+  app.post('/apiKeys', stormpath.loginRequired, function (req, res) {
+    req.user.createApiKey(function (err, apiKey) {
+      if (err) {
+        res.status(400).end('Oops!  There was an error: ' + err.userMessage);
+      }else{
+        res.json(apiKey);
+      }
     });
+  });
 
 This is a naive example which simply prints out the API Keys for the user, but
-once they have the keys they will be able to authenticate with your API.
+once they have the keys they will be able to authenticate with your API.  For
+more information on API Keys, please see `Using Stormpath for API Authentication`_
 
-For more information on API Keys, please see
-`Using Stormpath for API Authentication`_
+The next sections will show you how a developer can use those keys to authenticate
+with your API.
 
 HTTP Basic Authentication
--------------------------
+.........................
+
 
 This strategy makes sense if you are building a simple API service that does
 not have complex needs around authorization and resource control.  This strategy
@@ -229,17 +389,19 @@ Or if you're using the ``request`` library:
 
 You will need to tell your application that you want to secure this endpoint and
 allow basic authentication.  This is done with the ``apiAuthenticationRequired``
-middleware::
+middleware:
 
-    app.get('/secret', stormpath.apiAuthenticationRequired, function (req, res) {
-      res.json({
-        message: "Hello, " + req.user.fullname
-      });
+.. code-block:: javascript
+
+  app.get('/secret', stormpath.apiAuthenticationRequired, function (req, res) {
+    res.json({
+      message: "Hello, " + req.user.fullname
     });
+  });
 
 
 OAuth2 Client Credentials
--------------------------
+.........................
 
 If you are building an API service and you have complex needs around
 authorization and security, this strategy should be used.  In this situation
@@ -253,15 +415,16 @@ Authentication. You can always switch to OAuth2 at a later time.
 
 Once a developer has an API Key pair (see above, *Issuing API Keys*), they will
 need to use the OAuth2 Token Endpoint to obtain an Access Token.  In simple
-HTTP terms, that request looks like this::
+HTTP terms, that request looks like this:
 
+.. code-block:: text
 
-    POST /oauth/token HTTP/1.1
-    Host: myapi.com
-    Content-Type: application/x-www-form-urlencoded
-    Authorization: Basic <Base64UrlSafe(apiKeyId:apiKeySecret)>
+  POST /oauth/token HTTP/1.1
+  Host: myapi.com
+  Content-Type: application/x-www-form-urlencoded
+  Authorization: Basic <Base64UrlSafe(apiKeyId:apiKeySecret)>
 
-    grant_type=client_credentials
+  grant_type=client_credentials
 
 How you construct this request will depend on your library or tool, but the key
 parts you need to know are:
@@ -334,8 +497,10 @@ Or if using the ``request`` library:
     console.log(res.body);
   });
 
-In order to protect your API endpoint and allow this form of authenetication,
-you need to use the ``apiAuthenticationRequired`` middleware::
+In order to protect your API endpoint and allow this form of authentication,
+you need to use the ``apiAuthenticationRequired`` middleware:
+
+.. code-block:: javascript
 
     app.get('/secret', stormpath.apiAuthenticationRequired, function (req, res) {
       res.json({
@@ -345,81 +510,26 @@ you need to use the ``apiAuthenticationRequired`` middleware::
 
 By default the Access Tokens are valid for one hour.  If you want to change
 the expiration of these tokens you will need to configure it in the server
-configuration, like this::
+configuration, like this:
 
+.. code-block:: javascript
 
-    app.use(stormpath.init(app, {
-      web: {
-        oauth2: {
-          client_credentials: {
-            accessToken: {
-              ttl: 3600 // your custom TTL, in seconds, goes here
-            }
+  app.use(stormpath.init(app, {
+    web: {
+      oauth2: {
+        client_credentials: {
+          accessToken: {
+            ttl: 3600 // your custom TTL, in seconds, goes here
           }
         }
       }
-    }));
+    }
+  }));
 
 
-OAuth2 Password Grant
----------------------
 
-This is the authentication strategy that you will want to use for mobile clients.
-In this situation the end-user supplies their username and password to your
-mobile application.  The mobile application sends that username and password to
-your Express application, which then verifies the password with Stormpath.
-
-If the account is valid and the password is correct, Stormpath will generate
-an Access Token for the user.  Your server gets this Access Token from Stormpath
-and then sends it back to your mobile application.
-
-The mobile application then stores the Access Token in a secure location, and
-uses it for future requests to your API.  Every time the mobile application uses
-this Access Token your server will verify that it's still valid, using Stormpath.
-
-When a user wants to login to your mobile application, the mobile application
-should make this request to your Express application::
-
-    POST /oauth/token HTTP/1.1
-    Host: myapi.com
-    Content-Type: application/x-www-form-urlencoded
-
-    grant_type=password
-    &username=user@gmail.com
-    &password=theirPassword
-
-If the authentication is successful, the Stormpath API will return an Access
-Token to your mobile application.  The response will look like this::
-
-    {
-      "refresh_token": "eyJraWQiOiI2...",
-      "stormpath_access_token_href": "https://api.stormpath.com/v1/accessTokens/3bBAHmSuTJ64DM574awVen",
-      "token_type": "Bearer",
-      "access_token": "eyJraWQiOiI2Nl...",
-      "expires_in": 3600
-
-Your mobile application should store the Access Token and Refresh Token.  By
-default the Access Token is valid for 1 hour and the Refresh Token for 60 days.
-When the Access Token expires you can get a new Access Token by using the
-Refresh Token, making this request to your Express application::
-
-    POST /oauth/token HTTP/1.1
-    Host: myapi.com
-    Content-Type: application/x-www-form-urlencoded
-
-    grant_type=refresh_token
-    &refresh_token=eyJraWQiOiI2...
-
-The response will contain a new Access Token.  Once the Refresh Token expires,
-the user will have to re-authenticate with a username and password.
-
-You can control the lifetime of the Access Token and Refresh Token by modifying
-the OAuth Policy of your Stormpath Application.  This can be found by logging
-into the Stormpath Admin Console and finding your Application.
-
-For full documentation on our OAuth2 Access Token features, please see
-`Using Stormpath for OAuth 2.0 and Access/Refresh Token Management`_
-
+.. _Stormpath Client API: https://docs.stormpath.com/client-api/product-guide/latest/
+.. _Stormpath Client API Product Guide: https://docs.stormpath.com/client-api/product-guide/latest/
 .. _Using Stormpath for API Authentication: https://docs.stormpath.com/guides/api-key-management/
-.. _Using Stormpath for OAuth 2.0 and Access/Refresh Token Management: http://docs.stormpath.com/guides/token-management/
+.. _How Token-Based Authentication Works: http://docs.stormpath.com/guides/token-management/
 .. _router: http://expressjs.com/api.html#router
