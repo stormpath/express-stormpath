@@ -1,19 +1,16 @@
-extends base
-
 block vars
   - var title = 'Unauthorized'
   - var description = "You aren't authorized to view this page!"
-  - var bodytag = 'login'
 
 block body
-  .container.custom-container
-    .va-wrapper
-      .view.login-view.container
-        .box.row
-          .email-password-area.col-xs-12.large.col-sm-12
-            .header
-              span.
-                Unauthorized
-              p.
-                You are not authorized to view this page. Please check with the
-                site administrator for help!
+  .container
+    .inner-container
+      #unauthorized-view
+        .header
+          span.
+            Unauthorized
+          p.
+            You are not authorized to view this page. Please check with the
+            site administrator for help!
+
+extends master

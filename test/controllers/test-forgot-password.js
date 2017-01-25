@@ -1,18 +1,11 @@
 'use strict';
 
-var assert = require('assert');
-var cheerio = require('cheerio');
 var request = require('supertest');
 var uuid = require('uuid');
 
 var helpers = require('../helpers');
+var WidgetFixture = require('../fixtures/widget-fixture');
 var SpaRootFixture = require('../fixtures/spa-root-fixture');
-
-function assertInvalidSpTokenMessage(res) {
-  var $ = cheerio.load(res.text);
-  // Assert that the warning was rendered
-  assert.equal($('.invalid-sp-token-warning').length, 1);
-}
 
 describe('forgotPassword', function () {
   var stormpathApplication;
@@ -62,112 +55,6 @@ describe('forgotPassword', function () {
     });
   });
 
-  it('should bind to /forgot if enabled', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        forgotPassword: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .get('/forgot')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          var $ = cheerio.load(res.text);
-
-          // Assert that the form was rendered.
-          assert.equal($('form[action="' + config.web.forgotPassword.uri + '"]').length, 1);
-          done();
-        });
-    });
-  });
-
-  it('should return an error if the posted email is not an email', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        forgotPassword: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function () {
-      request(app)
-        .post('/forgot')
-        .type('form')
-        .send({ email: 'not a real email' })
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            return done(err);
-          }
-
-          assert(/Please enter a valid email address/.test(res.text));
-          done();
-        });
-    });
-  });
-
-  it('should show an info message if the user is redirected here afer an invalid sptoken', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        forgotPassword: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function () {
-      request(app)
-        .get('/forgot?status=invalid_sptoken')
-        .expect(200)
-        .end(function (err, res) {
-          assertInvalidSpTokenMessage(res);
-          done();
-        });
-    });
-  });
-
-  it('should redirect to the next uri if an email is given', function (done) {
-    var app = helpers.createStormpathExpressApp({
-      application: {
-        href: stormpathApplication.href
-      },
-      web: {
-        forgotPassword: {
-          enabled: true
-        }
-      }
-    });
-
-    app.on('stormpath.ready', function () {
-      var config = app.get('stormpathConfig');
-      request(app)
-        .post('/forgot')
-        .type('form')
-        .send({ email: uuid.v4() + '@stormpath.com' })
-        .expect('Location', config.web.forgotPassword.nextUri)
-        .expect(302, done);
-    });
-  });
-
   describe('as json', function () {
     it('should respond with 200 if a valid email is given', function (done) {
       var app = helpers.createStormpathExpressApp({
@@ -186,14 +73,56 @@ describe('forgotPassword', function () {
           .post('/forgot')
           .set('Accept', 'application/json')
           .type('json')
-          .send({ email: uuid.v4() + '@stormpath.com' })
+          .send({
+            email: uuid.v4() + '@stormpath.com'
+          })
           .expect(200, done);
       });
     });
   });
 
-  describe('if configured with a SPA root', function () {
+  describe('GET /verify with accept text/html', function () {
+    var widgetFixture;
+    var testResponse;
 
+    before(function (done) {
+      widgetFixture = new WidgetFixture('showForgotPassword');
+
+      var expressApp = helpers.createStormpathExpressApp({
+        application: {
+          href: stormpathApplication.href
+        },
+        web: {
+          forgotPassword: {
+            enabled: true
+          }
+        }
+      });
+
+      expressApp.on('stormpath.ready', function () {
+        var config = expressApp.get('stormpathConfig');
+        request(expressApp)
+          .get(config.web.forgotPassword.uri)
+          .set('Accept', 'text/html')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            testResponse = res;
+
+            done();
+          });
+      });
+    });
+
+    it('should return a widget html response', function () {
+      widgetFixture.assertResponse(testResponse);
+    });
+  });
+
+  describe('if configured with a SPA root', function () {
     var spaRootFixture;
 
     before(function (done) {
@@ -214,9 +143,7 @@ describe('forgotPassword', function () {
       spaRootFixture.after(done);
     });
 
-
     it('should return the SPA root', function (done) {
-
       var app = spaRootFixture.expressApp;
 
       app.on('stormpath.ready', function () {
@@ -227,9 +154,6 @@ describe('forgotPassword', function () {
           .expect(200)
           .end(spaRootFixture.assertResponse(done));
       });
-
     });
   });
-
-
 });

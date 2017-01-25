@@ -18,6 +18,7 @@ var getToken = require('../../lib/controllers/get-token');
 var getUser = require('../../lib/middleware/get-user');
 var helpers = require('../helpers');
 var login = require('../../lib/controllers/login');
+var bodyParser = require('../../lib/helpers/body-parser');
 
 describe('getUser', function () {
   var username = 'test+' + uuid.v4() + '@stormpath.com';
@@ -243,7 +244,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user, undefined);
       res.send('success');
@@ -259,11 +260,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -294,7 +297,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/setCookie', createCookieRoute('access_token', 'hiii'));
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user, undefined);
@@ -311,11 +314,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -352,7 +357,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/setCookie', createCookieRoute('access_token', ''));
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user, undefined);
@@ -369,11 +374,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -410,7 +417,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
       assert.equal(req.user.surname, accountData.surname);
@@ -430,11 +437,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -484,11 +493,13 @@ describe('getUser', function () {
         function (callback) {
           agent
             .post('/login')
+            .set('Accept', 'application/json')
+            .type('json')
             .send({
               login: accountData.email,
               password: accountData.password
             })
-            .expect(302)
+            .expect(200)
             .end(callback);
         },
         function (callback) {
@@ -531,7 +542,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/setCookie', createCookieRoute('access_token', 'hiii'));
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
@@ -551,11 +562,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -627,7 +640,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/deleteCookie', createCookieRoute('access_token', ''));
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
@@ -647,11 +660,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -682,7 +697,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
       assert.equal(req.user.surname, accountData.surname);
@@ -702,11 +717,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -731,7 +748,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/deleteCookie', createCookieRoute('access_token', ''));
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
@@ -752,11 +769,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {
@@ -787,7 +806,7 @@ describe('getUser', function () {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
-    app.post('/login', login);
+    app.post('/login', bodyParser.formOrJson(), login);
     app.get('/deleteCookie', createCookieRoute('access_token', 'woot'));
     app.get('/', getUser, function (req, res) {
       assert.equal(req.user.givenName, accountData.givenName);
@@ -808,11 +827,13 @@ describe('getUser', function () {
       function (callback) {
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: accountData.email,
             password: accountData.password
           })
-          .expect(302)
+          .expect(200)
           .end(callback);
       },
       function (callback) {

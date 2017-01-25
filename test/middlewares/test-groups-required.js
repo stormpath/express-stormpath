@@ -87,11 +87,12 @@ describe('groupsRequired', function () {
 
         agent
           .post('/login')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: stormpathAccountData.email,
             password: stormpathAccountData.password
           })
-          .set('Accept', 'application/json')
           .expect(401)
           .expect('Content-Type', /json/)
           .end(function () {
@@ -148,12 +149,13 @@ describe('groupsRequired', function () {
 
           agent
             .post('/login')
+            .set('Accept', 'application/json')
+            .type('json')
             .send({
               login: stormpathAccountData.email,
               password: stormpathAccountData.password
             })
-            .expect(302)
-            .expect('Location', '/')
+            .expect(200)
             .end(function () {
               agent
                 .get('/private')
@@ -189,13 +191,13 @@ describe('groupsRequired', function () {
 
         agent
           .post('/login')
-          .set('Accept', 'text/html')
+          .set('Accept', 'application/json')
+          .type('json')
           .send({
             login: stormpathAccountData.email,
             password: stormpathAccountData.password
           })
-          .expect(302)
-          .expect('Location', '/')
+          .expect(200)
           .end(function () {
             agent
               .get('/private')
@@ -244,13 +246,13 @@ describe('groupsRequired', function () {
 
           agent
             .post('/login')
-            .set('Accept', 'text/html')
+            .set('Accept', 'application/json')
+            .type('json')
             .send({
               login: stormpathAccountData.email,
               password: stormpathAccountData.password
             })
-            .expect(302)
-            .expect('Location', '/')
+            .expect(200)
             .end(function () {
               agent
                 .get('/private')
@@ -308,13 +310,13 @@ describe('groupsRequired', function () {
 
           agent
             .post('/login')
-            .set('Accept', 'text/html')
+            .set('Accept', 'application/json')
+            .type('json')
             .send({
               login: stormpathAccountData.email,
               password: stormpathAccountData.password
             })
-            .expect(302)
-            .expect('Location', '/')
+            .expect(200)
             .end(function () {
               agent
                 .get('/private')

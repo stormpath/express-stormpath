@@ -1,0 +1,43 @@
+block head-js
+  script(src='/assets/stormpath.min.js')
+
+  script(type='text/javascript').
+    var stormpath = window.stormpath = new Stormpath({
+      authStrategy: 'cookie'
+    });
+
+    stormpath.once('emailVerificationRequired', function () {
+      console.log('Email verification required!');
+    });
+
+    stormpath.once('emailVerified', function () {
+      console.log('Email verified!');
+    });
+
+    stormpath.once('passwordChanged', function () {
+      window.location = '#{stormpathConfig.web.changePassword.nextUri}';
+    });
+
+    stormpath.once('registered', function () {
+      window.location = '#{stormpathConfig.web.register.nextUri}';
+    });
+
+    stormpath.once('loggedIn', function () {
+      window.location = '#{stormpathConfig.web.login.nextUri}';
+    });
+
+    var previousOnLoad = window.onload;
+    window.onload = function () {
+      previousOnLoad && previousOnLoad();
+
+      var containerElement = document.getElementById('widget-view');
+
+      stormpath.#{widgetMethod}(containerElement);
+    };
+
+block body
+  .container
+    .inner-container
+      #widget-view
+
+extends master
