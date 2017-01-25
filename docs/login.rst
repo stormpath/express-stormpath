@@ -247,9 +247,9 @@ Then you can enable ID Site in your express configuration::
 When ID Site is enabled, any request to ``/login`` or ``/register`` will cause a
 redirect to ID Site.  When the user is finished at ID Site, the user will be
 redirected to the ``/idSiteResult`` endpoint on your application with a secure JWT
-passed as a URL parameter. The job of ``/idSiteResult`` is to validate this JWT
-and return the Stormpath Account. After this is done, the authenticated user
-will be redirected to the ``nextUri``.
+passed as a URL parameter. The job of ``/idSiteResult`` is to validate this JWT and
+exchange it for an access and refresh token. These tokens are then stored in cookies
+as the authenticated user is redirected to the ``nextUri``.
 
 .. note::
     You can use the ``/idSiteResult`` endpoint to validate any Stormpath JWT.
