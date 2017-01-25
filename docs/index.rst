@@ -24,6 +24,7 @@ you're a new Express-Stormpath user, start here!
    social_login
    logout
    password_reset
+   multi_tenancy
    templates
    help
    contributors

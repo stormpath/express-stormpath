@@ -10,6 +10,8 @@ block body
   .container.custom-container
     .va-wrapper
       .view.registration-view.container
+        if organization
+          .header.text-center #{organization.name}
         .box.row
           .col-sm-12
             .header
