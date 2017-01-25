@@ -221,6 +221,10 @@ web:
       providerData: false
       tenant: false
 
+  application:
+    expand:
+      customData: false
+
   # If the developer wants our integration to serve their Single Page
   # Application (SPA) in response to HTML requests for our default routes,
   # such as /login, then they will need to enable this feature and tell us
