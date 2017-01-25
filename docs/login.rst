@@ -229,11 +229,10 @@ ID Site Configuration
 .....................
 
 If you wish to use the ID Site feature, you will need to log in to the
-`Stormpath Admin Console`_ and configure the settings.  You need to change the
-**Authorized Redirect Uri** setting and set it to
-``http://localhost:3000/idSiteResult``
+`Stormpath Admin Console`_ and configure the settings.  You will need to change the
+**Authorized Redirect Uri** setting to ``http://localhost:3000/idSiteResult``
 
-Then you want to enable ID Site in your express configuration::
+Then you can enable ID Site in your express configuration::
 
     {
       web: {
@@ -245,10 +244,17 @@ Then you want to enable ID Site in your express configuration::
       }
     }
 
-When ID Site is enabled, any request for ``/login`` or ``/register`` will cause a
-redirect to ID Site.  When the user is finished at ID Site they will be
-redirected to `/idSiteResult` on your application.  Our library will handle
-this request, and then redirect the user to the ``nextUri``.
+When ID Site is enabled, any request to ``/login`` or ``/register`` will cause a
+redirect to ID Site.  When the user is finished at ID Site, the user will be
+redirected to the ``/idSiteResult`` endpoint on your application with a secure JWT
+passed as a URL parameter. The job of ``/idSiteResult`` is to validate this JWT
+and return the Stormpath Account. After this is done, the authenticated user
+will be redirected to the ``nextUri``.
 
+.. note::
+    You can use the ``/idSiteResult`` endpoint to validate any Stormpath JWT.
+    For example, you can use this endpoint as the Authorized Callback URI in the
+    `Social Authentication flow <https://docs.stormpath.com/nodejs/express/latest/social_login.html#>`__
+    and in the `SAML Authentication flow <https://docs.stormpath.com/nodejs/product-guide/latest/auth_n.html#authenticating-against-a-saml-directory>`__.
 
 .. _Stormpath Admin Console: https://api.stormpath.com
