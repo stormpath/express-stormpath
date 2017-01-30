@@ -30,6 +30,9 @@ web:
     password:
       enabled: true
       validationStrategy: "local"
+    revoke:
+      enabled: true
+      uri: '/oauth/revoke'
 
   accessTokenCookie:
 
