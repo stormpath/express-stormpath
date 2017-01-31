@@ -5,6 +5,7 @@ block vars
   - var description = 'Log into your account!'
   - var bodytag = 'login'
   - var socialProviders = stormpathConfig.web.social
+  - var samlProvider = stormpathConfig.web.saml
   - var loginFields = stormpathConfig.web.login.form.fields
 
 block body
@@ -98,7 +99,7 @@ block body
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
 
-          if hasSocialProviders
+          if hasSocialProviders || hasSamlProvider
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
@@ -110,6 +111,8 @@ block body
                 include linkedin_login_form.jade
               if socialProviders.github && socialProviders.github.enabled
                 include github_login_form.jade
+              if samlProvider && samlProvider.enabled
+                include saml_login_form.jade
 
         if stormpathConfig.web.verifyEmail.enabled
           a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?

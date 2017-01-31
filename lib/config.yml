@@ -205,6 +205,17 @@ web:
       uri: "/callbacks/linkedin"
       scope: "r_basicprofile r_emailaddress"
 
+  # If SAML is enabled, the user should be served a SAML button in the login
+  # form in traditional websites, and the SAML provider in SPA application
+  # /login requests. Traditional applications should route login requests
+  # through the redirect uri, and these requests should automatically be
+  # verified or rejected through the verification uri.
+  saml:
+    enabled: false
+    uri: "/saml-redirect"
+    verifyUri: "/saml-verify"
+    nextUri: "/"
+
   # The /me route is for front-end applications, it returns a JSON object with
   # the current user object.  The developer can opt-in to expanding account
   # resources on this enpdoint.
