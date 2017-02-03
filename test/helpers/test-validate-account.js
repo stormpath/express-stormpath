@@ -59,6 +59,22 @@ describe('validateAccount', function () {
     });
   });
 
+  it('should support custom data properties on the root object', function (done) {
+    var accountData = {
+      givenName: 'Randall',
+      surname: 'Degges',
+      email: 'randall@stormpath.com',
+      password: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX',
+      confirmPassword: 'FASRbaBjkrqJSNVlUrV2ZyUy5iUX8UEZ3TW3nejX',
+      color: 'purple'
+    };
+
+    helpers.validateAccount(accountData, config, function (errors) {
+      assert.equal(errors, null);
+      done();
+    });
+  });
+
   it('should return errors if errors are present', function (done) {
     var accountData = {
       givenName: 'Randall',
