@@ -126,7 +126,7 @@ user data for you.  Simply use the `expand` config option::
       expand: {
         customData: true,
       }
-    });
+    }));
 
 Our library will pre-expand those resources for you, so that
 they are statically available inside your handler::
