@@ -101,13 +101,13 @@ block body
             .social-area.col-xs-12.col-sm-4
               .header &nbsp;
               label Easy 1-click login:
-              if socialProviders.facebook && socialProviders.facebook.enabled
+              if socialProviders.facebook
                 include facebook_login_form.jade
-              if socialProviders.google && socialProviders.google.enabled
+              if socialProviders.google
                 include google_login_form.jade
-              if socialProviders.linkedin && socialProviders.linkedin.enabled
+              if socialProviders.linkedin
                 include linkedin_login_form.jade
-              if socialProviders.github && socialProviders.github.enabled
+              if socialProviders.github
                 include github_login_form.jade
 
         if stormpathConfig.web.verifyEmail.enabled

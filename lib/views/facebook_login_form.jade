@@ -2,7 +2,7 @@ button.btn.btn-social.btn-facebook(onclick='facebookLogin()') Facebook
 script(type='text/javascript').
   function facebookLogin() {
     var FB = window.FB;
-    var facebookScope = '#{stormpathConfig.web.social.facebook.scope}';
+    var facebookScope = '#{socialProviders.facebook.scope}';
 
     FB.login(function (response) {
       if (response.status === 'connected') {
@@ -23,7 +23,7 @@ script(type='text/javascript').
 
   window.fbAsyncInit = function () {
     FB.init({
-      appId      : '#{stormpathConfig.web.social.facebook.clientId}',
+      appId      : '#{socialProviders.facebook.clientId}',
       cookie     : true,
       xfbml      : true,
       version    : 'v2.3'
