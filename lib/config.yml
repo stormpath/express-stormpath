@@ -207,6 +207,7 @@ web:
     loginUri: ""
     forgotUri: "/#/forgot"
     registerUri: "/#/register"
+    verifyUri: "/#/verify"
 
   # Social login configuration.  This defines the callback URIs for OAuth
   # flows, and the scope that is requested of each provider.  Some providers
