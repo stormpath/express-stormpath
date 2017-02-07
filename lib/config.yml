@@ -198,8 +198,8 @@ web:
     errorUri: "/forgot?status=invalid_sptoken"
 
   # If idSite.enabled is true, the user should be redirected to ID site for
-  # login, registration, and password reset.  They should also be redirected
-  # through ID Site on logout.
+  # login, registration, and password reset/verification.  They should also be
+  # redirected through ID Site on logout.
   idSite:
     enabled: false
     uri: "/idSiteResult"
