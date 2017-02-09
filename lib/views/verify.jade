@@ -52,8 +52,11 @@ block body
                   div.col-sm-8
                     input.form-control(placeholder='Email', required='true', name='email', type='text')
 
-                div
-                  button.login.btn.btn-login.btn-sp-green(type='submit') Submit
+              p.tos
+                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='#{urls.tos}') Terms of Service]
+
+              div
+                button.login.btn.btn-login.btn-sp-green(type='submit') Submit
 
           if stormpathConfig.web.login.enabled
             a.forgot(href="#{stormpathConfig.web.login.uri}") Back to Log In
