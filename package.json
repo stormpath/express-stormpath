@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "3.1.5-form-logic-exposed-3",
+  "version": "3.1.5-tos-change-password",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
