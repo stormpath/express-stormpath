@@ -57,6 +57,27 @@ module.exports.createApplication = function (client, callback) {
 };
 
 /**
+ * Create a new Stormpath Organization for usage in tests.
+ *
+ * @function
+ *
+ * @param {Object} client - The Stormpath Client to use.
+ * @param {Function} callback - A callback to run when done.
+ * @param {Error} err - An error (if there was one).
+ * @param {Object} application - The initialized Stormpath Application object.
+ */
+module.exports.createOrganization = function (client, callback) {
+  var name = pkg.name + ':' + testRunId + ':' + uuid.v4();
+
+  var organizationData = {
+    name: name,
+    nameKey: name.replace(/\:/g, '-')
+  };
+
+  client.createOrganization(organizationData, callback);
+};
+
+/**
  * Set the status (enabled or disabled) of the email verification property
  * on the account creation policy, for the default account store of the
  * given directory

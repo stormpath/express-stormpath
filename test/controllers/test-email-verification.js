@@ -113,7 +113,8 @@ describe('email verification', function () {
           var config = expressApp.get('stormpathConfig');
           request(expressApp)
             .post(config.web.verifyEmail.uri)
-            .send({ login: uuid() })
+            .send({ email: uuid() })
+            .type('json')
             .set('Accept', 'application/json')
             .expect(200, '', done);
         });

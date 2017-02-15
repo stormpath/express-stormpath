@@ -7,6 +7,17 @@ Upgrade Guide
 This page contains specific upgrading instructions to help you migrate between
 Express-Stormpath releases.
 
+Version 3.1.9 -> Version 3.2.0
+------------------------------
+
+The ``loginRequired`` middleware has been deprecated, please use ``authenticationRequired`` instead.
+
+
+Version 3.1.8 -> Version 3.1.9
+------------------------------
+
+**No changes needed!**
+
 Version 3.1.7 -> Version 3.1.8
 ------------------------------
 

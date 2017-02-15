@@ -109,16 +109,16 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
 
 9. **Protect Your Routes**
 
-  For websites and Single-Page Apps, use `stormpath.loginRequired` as a
+  For websites and Single-Page Apps, use `stormpath.authenticationRequired` as a
   middleware to protect your routes:
 
   ```javascript
-  app.get('/secret', stormpath.loginRequired, function (req, res) {
+  app.get('/secret', stormpath.authenticationRequired, function (req, res) {
     //...
   });
   ```
 
-  For API services that use HTTP Basic Auth or OAuth2, use
+  For API services that use HTTP Basic Auth, use
   `stormpath.apiAuthenticationRequired`:
 
   ```javascript
