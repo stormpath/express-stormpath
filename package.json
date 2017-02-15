@@ -1,5 +1,5 @@
 {
-  "name": "express-stormpath",
+  "name": "@cityburke/express-stormpath",
   "version": "3.1.8",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
