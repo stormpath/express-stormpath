@@ -219,7 +219,6 @@ html(class='no-js', lang='en')
       .view a.forgot,
       .view a.to-login {
         float: right;
-        padding: 17px 0;
         font-size: 13px;
       }
 
@@ -296,11 +295,22 @@ html(class='no-js', lang='en')
         margin-top: 2em;
       }
 
+      .login-view .forgot-password-area {
+        padding: 17px 15px;
+      }
+
+      @media (min-width: 767px) {
+        .login-view .forgot-password-area {
+          padding: 17px 50px;
+        }
+      }
+
       .login-view .email-password-area {
         background-color: white;
         border-top-left-radius: 3px;
         border-bottom-left-radius: 3px;
       }
+
 
       @media (min-width: 767px) {
         .login-view .email-password-area {
