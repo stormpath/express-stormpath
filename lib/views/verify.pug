@@ -1,6 +1,6 @@
 extends base
 
-block vars
+block prepend vars
   - var title = 'Resend Account Verification Email?'
   - var description = 'Didn\'t receive your account verification email? No worries!'
   - var bodytag = 'login'
@@ -59,4 +59,4 @@ block body
 
           if stormpathConfig.web.login.enabled
             div.forgot-password-area.col-xs-12
-              a.forgot(href="#{stormpathConfig.web.login.uri}") Back to Log In
+              a.forgot(href=stormpathConfig.web.login.uri) Back to Log In

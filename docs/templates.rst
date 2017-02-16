@@ -42,8 +42,8 @@ in the source code: https://github.com/stormpath/stormpath-express/tree/master/l
 
 .. note::
 
-  Our library includes Jade and our default templates are written in Jade.  If you
-  are using custom templates that are not written in Jade, you must enable a
+  Our library includes Pug and our default templates are written in Pug.  If you
+  are using custom templates that are not written in Pug, you must enable a
   view renderer in your Express application.  Please see
   `Using template engines with Express`_.
 
