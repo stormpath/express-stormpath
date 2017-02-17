@@ -49,7 +49,7 @@
     "coveralls": "^2.11.2",
     "eslint": "^2.13.1",
     "istanbul": "^0.4.0",
-    "js-yaml": "^3.5.4",
+    "js-yaml": "^3.8.1",
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.0.0",
     "sinon": "^1.17.3",
