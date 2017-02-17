@@ -228,11 +228,65 @@ describe('configuration loading', function () {
   });
 
   describe('loading configuration from the environment', function () {
+    var client;
 
+    beforeEach(function (done) {
+      process.env.STORMPATH_CLIENT_APIKEY_ID = homeConfig.client.apiKey.id;
+      process.env.STORMPATH_CLIENT_APIKEY_SECRET = homeConfig.client.apiKey.secret;
+      process.env.STORMPATH_APPLICATION_HREF = application.href;
+
+      var config = extend({}, {skipRemoteConfig: true});
+      mockCommonPaths(fakeFs);
+
+      fakeFs.patch();
+
+      client = getClient(config, done);
+    });
+
+    afterEach(function () {
+      fakeFs.unpatch();
+    });
+
+    it('should load the configuration from the environment', function () {
+      assert('client' in client.config);
+      assert('apiKey' in client.config.client);
+      assert.equal(client.config.client.apiKey.id, homeConfig.client.apiKey.id);
+      assert.equal(client.config.client.apiKey.secret, homeConfig.client.apiKey.secret);
+
+      assert('application' in client.config);
+      assert.equal(client.config.application.href, homeConfig.application.href);
+    });
   });
 
   describe('loading configuration from .init()', function () {
+    var client;
+    var extraInitConfig;
 
+    beforeEach(function (done) {
+      extraInitConfig = {
+        web: {
+          initStuff: {
+            name: 'some very good name'
+          }
+        }
+      };
+
+      var config = extend(extraInitConfig, homeConfig, {skipRemoteConfig: true});
+      mockCommonPaths(fakeFs);
+
+      fakeFs.patch();
+
+      client = getClient(config, done);
+    });
+
+    afterEach(function () {
+      fakeFs.unpatch();
+    });
+
+    it('should load the configuration from the config init object', function () {
+      assert('initStuff' in client.config.web);
+      assert.equal(client.config.web.initStuff.name, extraInitConfig.web.initStuff.name);
+    });
   });
 
   describe('loading configuration that is resolved at runtime', function () {
