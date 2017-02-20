@@ -82,7 +82,7 @@ function getClient(options, done) {
   return client;
 }
 
-function mockCommonPaths(fakeFs) {
+function mockCommonPaths(fakeFs, yamlConfig) {
   var dynamicRequires = [
     '/resource/Application.js',
     '/resource/ApplicationAccountStoreMapping.js',
@@ -104,6 +104,12 @@ function mockCommonPaths(fakeFs) {
       content: fs.readFileSync(process.cwd() + '/node_modules/stormpath/lib' + filePath)
     });
   });
+
+  if (yamlConfig) {
+    fakeFs.file(process.cwd() + '/stormpath.yml', {
+      content: yaml.dump(yamlConfig)
+    });
+  }
 }
 
 describe('configuration loading', function () {
@@ -142,7 +148,7 @@ describe('configuration loading', function () {
     restoreEnv();
   });
 
-  describe('loading of default YAML configuration', function () {
+  describe('loading the default YAML configuration', function () {
     var yamlData;
     var client;
 
@@ -234,6 +240,7 @@ describe('configuration loading', function () {
       process.env.STORMPATH_CLIENT_APIKEY_ID = homeConfig.client.apiKey.id;
       process.env.STORMPATH_CLIENT_APIKEY_SECRET = homeConfig.client.apiKey.secret;
       process.env.STORMPATH_APPLICATION_HREF = application.href;
+      process.env.STORMPATH_WEB_DOMAINNAME = 'envDomainName';
 
       var config = extend({}, {skipRemoteConfig: true});
       mockCommonPaths(fakeFs);
@@ -255,6 +262,8 @@ describe('configuration loading', function () {
 
       assert('application' in client.config);
       assert.equal(client.config.application.href, homeConfig.application.href);
+
+      assert.equal(client.config.web.domainName, 'envDomainName');
     });
   });
 
@@ -289,21 +298,124 @@ describe('configuration loading', function () {
     });
   });
 
-  describe('loading configuration that is resolved at runtime', function () {
+  describe('overriding configuration', function () {
+    var fileConfig;
+    var initConfig;
+    var client;
 
+    beforeEach(function (done) {
+      fileConfig = {
+        web: {
+          basePath: 'filePath',
+          domainName: 'fileDomainName'
+        },
+        client: {
+          apiKey: {
+            id: 'fileKey',
+            secret: 'fileSecret'
+          }
+        }
+      };
+
+      initConfig = {
+        web: {
+          domainName: 'initDomainName'
+        },
+        skipRemoteConfig: true
+      };
+
+      mockCommonPaths(fakeFs, fileConfig);
+      fakeFs.patch();
+
+      process.env.STORMPATH_CLIENT_APIKEY_ID = 'envKeyId';
+      process.env.STORMPATH_WEB_DOMAINNAME = 'envDomainName';
+      client = getClient(initConfig, done);
+    });
+
+    afterEach(function () {
+      fakeFs.unpatch();
+    });
+
+    it('should load configuration in order default files -> files -> environment -> init function', function () {
+      assert.equal(client.config.web.basePath, 'filePath');
+      assert.equal(client.config.web.domainName, 'initDomainName');
+      assert.equal(client.config.client.apiKey.id, 'envKeyId');
+      assert.equal(client.config.client.apiKey.secret, 'fileSecret');
+    });
   });
 
   describe('detecting invalid configurations', function () {
-    it('should abort if the stormpath id is not specified', function () {
+    it('should abort if the stormpath id is not specified', function (done) {
+      var config = {
+        client: {
+          apiKey: {
+            id: homeConfig.client.apiKey.id
+          }
+        },
+        application: {
+          href: application.href
+        }
+      };
 
+      mockCommonPaths(fakeFs, config);
+      fakeFs.patch();
+
+      getClient(null, function (err) {
+        assert(err);
+        assert(err.message);
+        assert.equal(err.message, 'API key ID and secret is required.');
+        fakeFs.unpatch();
+        done();
+      });
     });
 
-    it('should abort if the stormpath secret is not specified', function () {
+    it('should abort if the stormpath secret is not specified', function (done) {
+      var config = {
+        client: {
+          apiKey: {
+            secret: homeConfig.client.apiKey.secret
+          }
+        },
+        application: {
+          href: application.href
+        }
+      };
 
+      mockCommonPaths(fakeFs, config);
+      fakeFs.patch();
+
+      getClient(null, function (err) {
+        assert(err);
+        assert(err.message);
+        assert.equal(err.message, 'API key ID and secret is required.');
+        fakeFs.unpatch();
+        done();
+      });
     });
 
-    it('should abort if the application id is not specified', function () {
+    it('should abort if the application id is not specified', function (done) {
+      // TODO fix, there seems to be an issue with API keys
+      var apiKey = {
+        id: homeConfig.client.apiKey.id,
+        secret: homeConfig.client.apiKey.secret
+      };
+      var config = {
+        // skipRemoteConfig: true,
+        client: {
+          apiKey: apiKey
+        }
+      };
 
+      mockCommonPaths(fakeFs, config);
+      fakeFs.patch();
+
+      getClient(null, function (err) {
+        assert(err);
+        assert(err.message);
+        // assert.equal(err.message, 'API key ID and secret is required.');
+        fakeFs.unpatch();
+        done();
+      });
     });
   });
 });
