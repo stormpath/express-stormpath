@@ -117,6 +117,25 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
     //...
   });
   ```
+  
+  The `stormpath.authenticationRequired` middleware depends on the `cookie-parser` middleware, make sure that you are including the `cookie-parser` prior to all of your secured routes:
+
+  ```javascript
+  var express = require('express');
+  var stormpath = require('express-stormpath');
+  var cookieParser = require('cookie-parser');
+
+  var app = express();
+
+  // Include the cookier-parser middleware prior to securing the route with 'stormpath.authenticationRequired'
+  app.use(cookieParser());
+  app.use(stormpath.init(application, stormpathConfiguration));
+
+
+  app.get('/secret', stormpath.authenticationRequired, function(req, res){ 
+    //...
+  });
+  ```
 
   For API services that use HTTP Basic Auth, use
   `stormpath.apiAuthenticationRequired`:

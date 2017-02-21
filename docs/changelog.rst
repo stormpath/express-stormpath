@@ -6,6 +6,11 @@ Change Log
 
 All library changes, in descending order.
 
+Version 3.2.1
+-------------
+
+- Updated documentation to reference cookie-parser dependency when using `stormpath.authenticationRequired` middleware
+
 Version 3.2.0
 -------------
 
