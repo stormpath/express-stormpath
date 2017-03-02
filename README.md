@@ -144,7 +144,7 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   ```javascript
   {
     "username": "foo@bar.com",
-    "password": "myPassword"
+    "password": "myPassword",
   }
   ```
 
@@ -184,7 +184,9 @@ Follow these steps to add Stormpath user authentication to your Express.js app.
   ```javascript
   {
     "email": "foo@bar.com",
-    "password": "mySuper3ecretPAssw0rd"
+    "password": "mySuper3ecretPAssw0rd",
+    "givenName": "baz",
+    "surname": "qux"
   }
   ```
 
