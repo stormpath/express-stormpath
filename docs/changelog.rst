@@ -6,6 +6,57 @@ Change Log
 
 All library changes, in descending order.
 
+Version 4.0.0
+-------------
+
+**Release Date TBD**
+
+This major version will help you migrate to the Okta platform.  We have strived
+to preserve the functionality that you have come to depend on through Stormpath,
+while transparently switching you to the Okta platform.  This version assumes
+that you are using the data migration tool to export your data from your Stormpath
+Tenant, and import it into your Okta organization.
+
+**Important Breaking Changes**
+
+- We have dropped support for older versions of Node.js, now you must use 6.4.0 or greater.
+
+**Configuration Changes**
+
+Since you will be using the Okta platform, the Stormpath API Key configuration
+can be removed.  In it's place you will need to configure the following properties:
+
+- **API Token**: similar to the Stormpath API Key, this is a secret that is used
+  to secure the communication with the Okta platorm.
+- **Application Id**: This is the Okta Application that is connected to yuor
+  Okta Authorization Sever (where OAuth flows happen). The migration tool should
+  have created this automatically for you.
+- **Authorization Server Id**: The ID of the Authorization Server that is
+  connected to your Application.
+- **Authorization Server Client Id**:  This can be found on the Application, as
+  the Application is a Client for your Authorization Server.
+- **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
+  Org has it's own distinct URL.
+
+These new properties should be provided like so:
+
+.. code-block:: javascript
+  app.use(stormpath.init(app, {
+    okta: {
+      org: 'https://dev-613050.oktapreview.com/',
+      appId: '0oa9o95v7ac2OQs9Z0h7',
+      authorizationServerClientId: '68GpITTmEbgpfxnLQ5JH',
+      authorizationServerId: 'aus9o8wviqVtrcq7D0h7',
+      apiToken: '00pb8uO5C4Q-4r04YHOmFVBQdRDJOCGkZXW7I9XN6t'
+    }
+  }));
+
+Or through the following environment variables:
+
+TODO
+
+
+
 Version 3.2.0
 -------------
 
