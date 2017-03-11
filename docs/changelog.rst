@@ -17,10 +17,6 @@ while transparently switching you to the Okta platform.  This version assumes
 that you are using the data migration tool to export your data from your Stormpath
 Tenant, and import it into your Okta organization.
 
-**Important Breaking Changes**
-
-- We have dropped support for older versions of Node.js, now you must use 6.4.0 or greater.
-
 **Configuration Changes**
 
 Since you will be using the Okta platform, the Stormpath API Key configuration
@@ -43,7 +39,7 @@ These new properties should be provided like so:
 .. code-block:: javascript
   app.use(stormpath.init(app, {
     okta: {
-      org: 'https://dev-613050.oktapreview.com/',
+      org: 'https://dev-YOUR-ID.oktapreview.com/',
       appId: '0oa9o95v7ac2OQs9Z0h7',
       authorizationServerClientId: '68GpITTmEbgpfxnLQ5JH',
       authorizationServerId: 'aus9o8wviqVtrcq7D0h7',

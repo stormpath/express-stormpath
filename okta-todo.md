@@ -31,7 +31,3 @@ Todo tasks (discovered while implemented Primary goals):
 - If you added custom scope using a Stormpath Scope Factory Strategy, those values aren't going to be preserved, "grantedScopes".
 - Refresh token logic in get-user.js
 - Expanding groups, and deciding if we should transform that shape into the current shape
-
-# Breaking changes
-
-- No support for node < 6.4
