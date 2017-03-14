@@ -19,29 +19,36 @@ Tenant, and import it into your Okta organization.
 
 **Configuration Changes**
 
-Since you will be using the Okta platform, the Stormpath API Key configuration
-can be removed.  In it's place you will need to configure the following properties:
+Since you will be using the Okta platform, the Stormpath API Key and application
+configuration must be removed.  In it's place you will need to configure the
+following properties:
 
 - **API Token**: similar to the Stormpath API Key, this is a secret that is used
   to secure the communication with the Okta platorm.
-- **Application Id**: This is the Okta Application that is connected to yuor
-  Okta Authorization Sever (where OAuth flows happen). The migration tool should
-  have created this automatically for you.
+- **Application Id**: This is the Okta Application that represents your application.
+  The migration tool should have created this automatically for you.
 - **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
   Org has it's own distinct URL.
 
 These new properties should be provided like so:
 
 .. code-block:: javascript
+
   app.use(stormpath.init(app, {
     org: 'https://dev-YOUR-ID.oktapreview.com/',
-    appId: 'your-okta-applicaton-id',
+    application: {
+      id: 'your-okta-applicaton-id'
+    },
     apiToken: 'your-okta-api-token'
   }));
 
 Or through the following environment variables:
 
-TODO
+.. code-block:: sh
+
+  OKTA_APITOKEN
+  OKTA_APPLICATION_ID
+  OKTA_ORG
 
 **Breaking Changes**
 
