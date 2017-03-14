@@ -27,10 +27,6 @@ can be removed.  In it's place you will need to configure the following properti
 - **Application Id**: This is the Okta Application that is connected to yuor
   Okta Authorization Sever (where OAuth flows happen). The migration tool should
   have created this automatically for you.
-- **Authorization Server Id**: The ID of the Authorization Server that is
-  connected to your Application.
-- **Authorization Server Client Id**:  This can be found on the Application, as
-  the Application is a Client for your Authorization Server.
 - **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
   Org has it's own distinct URL.
 
@@ -38,19 +34,18 @@ These new properties should be provided like so:
 
 .. code-block:: javascript
   app.use(stormpath.init(app, {
-    okta: {
-      org: 'https://dev-YOUR-ID.oktapreview.com/',
-      appId: '0oa9o95v7ac2OQs9Z0h7',
-      authorizationServerClientId: '68GpITTmEbgpfxnLQ5JH',
-      authorizationServerId: 'aus9o8wviqVtrcq7D0h7',
-      apiToken: '00pb8uO5C4Q-4r04YHOmFVBQdRDJOCGkZXW7I9XN6t'
-    }
+    org: 'https://dev-YOUR-ID.oktapreview.com/',
+    appId: 'your-okta-applicaton-id',
+    apiToken: 'your-okta-api-token'
   }));
 
 Or through the following environment variables:
 
 TODO
 
+**Breaking Changes**
+
+- ``req.app.get('stormpathApplication')`` will be undefined.
 
 
 Version 3.2.0

@@ -8,12 +8,13 @@ Primary feature goals:
 [ ] Group authorization
 [ ] Email verification
 [ ] Password reset
-[ ] Client credentials authentication w/ keys as app user credentials
+[ ] Client credentials authentication w/ keys as app user credentials (Basic Auth)
 [ ] Remove dependencies on Stormpath configuration
 [ ] Try to get current tests working, or rely on TCK?
 
 Todo tasks (discovered while implemented Primary goals):
 
+[ ] Implement a strategy for discovering IDP configuration, so that we can render social buttons
 [ ] ensure that the migrated AS configuration will have the right settings for access token timeouts
 [ ] caching of jwks (can use HTTP response from .well-known)
 [ ] Caching of user resources.  Note: need to invalidate this cache on logout (this has been removed and needs to be re-implemented)
