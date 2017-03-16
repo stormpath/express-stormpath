@@ -11,15 +11,10 @@ var helpers = require('../helpers');
 var SpaRootFixture = require('../fixtures/spa-root-fixture');
 var stormpath = require('../../index');
 
-describe('login', function () {
-  var username = 'test+' + uuid.v4() + '@stormpath.com';
-  var password = uuid.v4() + uuid.v4().toUpperCase();
-  var accountData = {
-    email: username,
-    password: password,
-    givenName: uuid.v4(),
-    surname: uuid.v4()
-  };
+describe.only('login', function () {
+
+  var username = process.env.OKTA_TEST_LOGIN_USERNAME;
+  var password = process.env.OKTA_TEST_LOGIN_PASSWORD;
 
   var defaultExpressApp;
   var stormpathApplication;
@@ -32,10 +27,10 @@ describe('login', function () {
       }
 
       stormpathApplication = app;
-      defaultExpressApp = helpers.createStormpathExpressApp({
+      defaultExpressApp = helpers.createOktaExpressApp({
         application: stormpathApplication
       });
-      alternateUrlExpressApp = helpers.createStormpathExpressApp({
+      alternateUrlExpressApp = helpers.createOktaExpressApp({
         application: stormpathApplication,
         web: {
           login: {
@@ -43,12 +38,8 @@ describe('login', function () {
           }
         }
       });
-      app.createAccount(accountData, done);
+      done();
     });
-  });
-
-  after(function (done) {
-    helpers.destroyApplication(stormpathApplication, done);
   });
 
   it('should bind to /login by default', function (done) {
@@ -135,7 +126,7 @@ describe('login', function () {
     });
 
 
-    it('should return a successful json response with a status field if the accept header supports json and the content type we post is json and we supply all user data fields', function (done) {
+    it('should return a successful json account representation if we supply valid credentials', function (done) {
 
       request(defaultExpressApp)
         .post('/login')
@@ -148,7 +139,7 @@ describe('login', function () {
             return done(err);
           }
           // The account data should be returned on the account object
-          assert.equal(res.body.account.email, accountData.email);
+          assert.equal(res.body.account.email, username);
           // But linked resources should not be returned
           assert.equal(res.body.account.customDta, undefined);
           done();

@@ -54,6 +54,18 @@ Or through the following environment variables:
 
 - ``req.app.get('stormpathApplication')`` will be undefined.
 
+**Potentially Breaking Changes**
+
+- ``req.user.emailVerificationStatus`` is now derived from the Okta User status.
+  If an account has reached the `ACTIVE` state, we consider `emailVerificationStatus`
+  to be ``VERIFIED``.  This may not match any custom logic you had around Stormpath's
+  email verification feature.  Please see the `Okta User Status`_ documentation for
+  more information about then new status scheme.
+
+- ``req.user.customData`` is now populated from the Okta User profile, which
+  will contain a new set of default properties that Stormpath did not have.  Please
+  evaluate how you are using custom data to see if these new properties will
+  cause a problem.
 
 Version 3.2.0
 -------------
@@ -1500,5 +1512,6 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
+.. _Okta User Status: http://developer.okta.com/docs/api/resources/users.html#user-status
 .. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
