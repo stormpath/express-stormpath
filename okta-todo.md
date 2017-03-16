@@ -9,7 +9,7 @@ Primary feature goals:
 [ ] Email verification
 [ ] Password reset
 [ ] Client credentials authentication w/ keys as app user credentials (Basic Auth)
-[ ] Remove dependencies on Stormpath configuration
+[X] Remove dependencies on Stormpath configuration
 [ ] Try to get current tests working, or rely on TCK?
 
 Todo tasks (discovered while implemented Primary goals):
@@ -20,7 +20,7 @@ Todo tasks (discovered while implemented Primary goals):
 [ ] Caching of user resources.  Note: need to invalidate this cache on logout (this has been removed and needs to be re-implemented)
 [ ] Remote token validation, in AccessTokenAuthenticator (right now it only does local validation)
 [ ] authenticationResult should preserved, as much as possible
-[ ] Transform the okta user object to the existing Stormpath account object, so that req.user.foo references will not break
+[X] Transform the okta user object to the existing Stormpath account object, so that req.user.foo references will not break
 [ ] Invalid grant needs to be presented as "username or password"
 
 # Configuration assumptions
