@@ -56,16 +56,18 @@ Or through the following environment variables:
 
 **Potentially Breaking Changes**
 
+- ``req.user`` is now populated from the Okta User, which will contain a new set
+  of default properties that Stormpath did not have.  We've copied the relevent
+  Okta properties onto their Stormpath counterparts (e.g. firstNamae, lastName,
+  and customData), however there will be new properties that did not exist before.
+  Please evaluate how you are using ``req.user`` to ensure that the new properties
+  won't break your code.
+
 - ``req.user.emailVerificationStatus`` is now derived from the Okta User status.
-  If an account has reached the `ACTIVE` state, we consider `emailVerificationStatus`
+  If an account has reached the ``ACTIVE`` state, we consider `emailVerificationStatus`
   to be ``VERIFIED``.  This may not match any custom logic you had around Stormpath's
   email verification feature.  Please see the `Okta User Status`_ documentation for
   more information about then new status scheme.
-
-- ``req.user.customData`` is now populated from the Okta User profile, which
-  will contain a new set of default properties that Stormpath did not have.  Please
-  evaluate how you are using custom data to see if these new properties will
-  cause a problem.
 
 Version 3.2.0
 -------------
