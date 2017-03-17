@@ -29,7 +29,7 @@ function SpaRootFixture(stormpathConfig) {
     view: this.filename
   };
 
-  this.expressApp = helpers.createStormpathExpressApp(stormpathConfig);
+  this.expressApp = helpers.createOktaExpressApp(stormpathConfig);
 }
 
 SpaRootFixture.prototype.before = function before(done) {

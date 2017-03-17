@@ -6,6 +6,69 @@ Change Log
 
 All library changes, in descending order.
 
+Version 4.0.0
+-------------
+
+**Release Date TBD**
+
+This major version will help you migrate to the Okta platform.  We have strived
+to preserve the functionality that you have come to depend on through Stormpath,
+while transparently switching you to the Okta platform.  This version assumes
+that you are using the data migration tool to export your data from your Stormpath
+Tenant, and import it into your Okta organization.
+
+**Configuration Changes**
+
+Since you will be using the Okta platform, the Stormpath API Key and application
+configuration must be removed.  In it's place you will need to configure the
+following properties:
+
+- **API Token**: similar to the Stormpath API Key, this is a secret that is used
+  to secure the communication with the Okta platorm.
+- **Application Id**: This is the Okta Application that represents your application.
+  The migration tool should have created this automatically for you.
+- **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
+  Org has it's own distinct URL.
+
+These new properties should be provided like so:
+
+.. code-block:: javascript
+
+  app.use(stormpath.init(app, {
+    org: 'https://dev-YOUR-ID.oktapreview.com/',
+    application: {
+      id: 'your-okta-applicaton-id'
+    },
+    apiToken: 'your-okta-api-token'
+  }));
+
+Or through the following environment variables:
+
+.. code-block:: sh
+
+  OKTA_APITOKEN
+  OKTA_APPLICATION_ID
+  OKTA_ORG
+
+**Breaking Changes**
+
+- ``req.app.get('stormpathApplication')`` will be undefined.
+
+**Potentially Breaking Changes**
+
+- ``req.user`` is now populated from the Okta User, which will contain a new set
+  of default properties that Stormpath did not have.  We've copied the relevent
+  Okta properties onto their Stormpath counterparts (e.g. firstNamae, lastName,
+  and customData), however there will be new properties that did not exist before.
+  Please evaluate how you are using ``req.user`` to ensure that the new properties
+  won't break your code.
+
+- ``req.user.emailVerificationStatus`` is now derived from the Okta User status.
+  If an account has reached the ``ACTIVE`` state, we consider `emailVerificationStatus`
+  to be ``VERIFIED``.  This may not match any custom logic you had around Stormpath's
+  email verification feature.  Please see the `Okta User Status`_ documentation for
+  more information about then new status scheme.
+
 Version 3.2.0
 -------------
 
@@ -1451,5 +1514,6 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
+.. _Okta User Status: http://developer.okta.com/docs/api/resources/users.html#user-status
 .. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
