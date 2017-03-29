@@ -54,6 +54,7 @@
     "mocha": "^3.0.2",
     "mocha-lcov-reporter": "^1.0.0",
     "sinon": "^1.17.3",
-    "supertest": "^2.0.0"
+    "supertest": "^2.0.0",
+    "yargs": "^7.0.2"
   }
 }

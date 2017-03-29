@@ -53,7 +53,7 @@ module.exports.createApplication = function (client, callback) {
 
   // TODO - have this create new apps
 
-  client.getApplication(process.env.OKTA_APPLICATION_ID, callback);
+  client.getApplication('/apps/' + process.env.OKTA_APPLICATION_ID, callback);
 
 };
 
