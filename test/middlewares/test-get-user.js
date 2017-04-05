@@ -406,7 +406,7 @@ describe('getUser', function () {
     });
   });
 
-  it('should set req.user and res.locals.user if an access_token cookie is present and valid', function (done) {
+  it('should set req.user, res.locals.user, res.authenticationResult, res.accessToken if an access_token cookie is present and valid', function (done) {
     var app = createFakeExpressApp();
     var agent = request.agent(app);
 
@@ -415,7 +415,8 @@ describe('getUser', function () {
       assert.equal(req.user.givenName, accountData.givenName);
       assert.equal(req.user.surname, accountData.surname);
       assert.equal(req.user.email, accountData.email);
-
+      assert.equal(req.accessToken.body.sub, stormpathAccount.href);
+      assert.equal(req.authenticationResult.account.href, stormpathAccount.href);
       res.send('success');
     });
 
@@ -489,6 +490,23 @@ describe('getUser', function () {
             })
             .expect(302)
             .end(callback);
+        },
+        function (callback) {
+          // The first authentication attempt will take longer, because we have to fetch the
+          // access token resources
+          var a = new Date();
+          agent
+            .get('/')
+            .expect(200)
+            .end(function (err, res) {
+              if (err) {
+                return callback(err);
+              }
+              var b = new Date();
+              assert((b - a) > 100, 'Expected first validation attempt to take some time, due to fetching access token resource');
+              assert.equal(res.body.email, accountData.email);
+              callback();
+            });
         },
         function (callback) {
           var a = new Date();

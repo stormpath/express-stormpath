@@ -13,6 +13,8 @@ block body
   .container.custom-container
     .va-wrapper
       .view.login-view.container
+        if organization
+          .header.text-center #{organization.name}
         if status
           .box.row
             .email-password-area.col-xs-12.large.col-sm-12
@@ -73,28 +75,27 @@ block body
                 each error in formErrors
                   p #{error.error}
 
-            form.login-form.form-horizontal(method='post', role='form',action=formActionUri)
+            form.login-form.form-horizontal(method='post', role='form', action=formActionUri)
               input(name='_csrf', type='hidden', value=csrfToken)
 
-              each field, fieldName in loginFields
-                if field.enabled
-                  div(class='form-group group-' + fieldName)
-                    label(
-                      class='col-sm-' + (hasSocialProviders ? 12 : 4),
-                      for='#{fieldName}'
-                    ) #{field.label}
+              each field, fieldName in formModel.fields
+                div(class='form-group group-' + field.name)
+                  label(
+                    class='col-sm-' + (hasSocialProviders ? 12 : 4),
+                    for='#{field.name}'
+                  ) #{field.label}
 
-                    div(class='col-sm-' + (hasSocialProviders ? 12 : 8))
-                      - var isLoginField = fieldName === 'login';
-                      input.form-control(
-                        id=fieldName,
-                        name=fieldName,
-                        type=field.type,
-                        placeholder=field.placeholder,
-                        autofocus=isLoginField ? 'true' : 'false',
-                        required=field.required ? 'true' : 'false',
-                        value=form.data && isLoginField ? form.data[fieldName] : ''
-                      )
+                  div(class='col-sm-' + (hasSocialProviders ? 12 : 8))
+                    - var isLoginField = field.name === 'login';
+                    input.form-control(
+                      id=field.name,
+                      name=field.name,
+                      type=field.type,
+                      placeholder=field.placeholder,
+                      autofocus=isLoginField ? 'true' : 'false',
+                      required=field.required ? 'true' : 'false',
+                      value=form.data && isLoginField ? form.data[field.name] : ''
+                    )
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In

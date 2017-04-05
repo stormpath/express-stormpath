@@ -4,6 +4,22 @@ web:
   # this library.  If not defined, we will default to /
   basePath: null
 
+  domainName: null  # Required if using subdomain-based multi-tenancy
+
+  multiTenancy:
+
+    # When enabled, the framework will require the user to authenticate against
+    # a specific Organization.  The authenticated organization is persisted in
+    # the access token that is issued.
+    #
+    # At the moment we only support a sub-domain based strategy, wherby the
+    # user must arrive on the subdomain that correlates with their tenant in
+    # order to authenticate.  If they visit the parent domain, they will be
+    # required to identify the organization they wish to use.
+
+    enabled: false
+    strategy: "subdomain"
+
   oauth2:
     enabled: true
     uri: "/oauth/token"
@@ -147,6 +163,14 @@ web:
       fieldOrder:
         - "login"
         - "password"
+
+  organizationSelect:
+    view: "organization-select"
+    form:
+      fields:
+        organizationNameKey:
+          label: "Enter your organization name to continue"
+          placeholder: "e.g. my-company"
 
   logout:
     enabled: true
