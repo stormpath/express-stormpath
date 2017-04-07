@@ -3,14 +3,13 @@ Primary feature goals:
 [X] Get login working
 [X] Get token verification working
 [X] Get logout working
-[ ] Get registration working
+[X] Get registration working
 [ ] Social Login
 [ ] Group authorization
-[ ] Email verification
+[X] Email verification
 [ ] Password reset
 [ ] Client credentials authentication w/ keys as app user credentials (Basic Auth)
 [X] Remove dependencies on Stormpath configuration
-[ ] Try to get current tests working, or rely on TCK?
 
 Todo tasks (discovered while implemented Primary goals):
 
@@ -19,9 +18,11 @@ Todo tasks (discovered while implemented Primary goals):
 [ ] caching of jwks (can use HTTP response from .well-known)
 [ ] Caching of user resources.  Note: need to invalidate this cache on logout (this has been removed and needs to be re-implemented)
 [ ] Remote token validation, in AccessTokenAuthenticator (right now it only does local validation)
-[ ] authenticationResult should preserved, as much as possible
 [X] Transform the okta user object to the existing Stormpath account object, so that req.user.foo references will not break
 [ ] Invalid grant needs to be presented as "username or password"
+[ ] Ensure that the two custom data import strategies will be populated onto the same custom data models and interfaces that we already have
+[ ] Ensure that cache regions are still working
+[ ] Ensure that account.save() and account.customData.save() will work like before
 
 # Configuration assumptions
 

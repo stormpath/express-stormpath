@@ -24,7 +24,7 @@ configuration must be removed.  In it's place you will need to configure the
 following properties:
 
 - **API Token**: similar to the Stormpath API Key, this is a secret that is used
-  to secure the communication with the Okta platorm.
+  to secure the communication with the Okta platform.
 - **Application Id**: This is the Okta Application that represents your application.
   The migration tool should have created this automatically for you.
 - **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
@@ -52,22 +52,60 @@ Or through the following environment variables:
 
 **Breaking Changes**
 
-- ``req.app.get('stormpathApplication')`` will be undefined.
+- Subdomain-based multi-tenancy, as introduced by version 3.2.0, will not be supported.  If you are using this feature please contact support@stormpath.com so that we can help you find a solution.
+
+- ``req.app.get('stormpathApplication')`` will now be an Okta application, which does not have the same capabilities as a Stormpath application.  We will provide more information on this in the future, likely as a changelog to the underlying Node SDK.
+
+- Custom data properties must be declared on the Okta User Schema.  If you have used the `web.register.form.fields` configuration to add custom properties to your registration form, you will need to use the Okta Admin Console to add these to the user schema.  This can be found under Directory -> Profile Editor.
+
+- Email verification has several major changes:
+
+  - You will have to send the email verification message to your users. Stormpath was able to send this email for you, but this is not yet available in Okta.  We've provided a new option for you to pass an ``emailVerificationHandler``, this handler will be called when a new user registers, or when a user is asking for the verification email to be re-sent.  This function is passed the account, which will have the email verification token that you need to send to the user.  See example below.
+
+  - Email verification is now a global configuration, rather than a per-directory option.  It must be enabled with the ``web.register.emailVerificationRequired`` option.
+
+  - The email verification token is still found on the ``account.emailVerificationToken.href`` property like before, but it no longer has a full URL in front of it.  We've retained an initial forward slash in case you were using this as part of a Regular Expression when looking for the token.
+
+    Here is how the configuration for email verification should now look:
+
+    .. code-block:: javascript
+
+      app.use(stormpath.init(app, {
+        web: {
+          register: {
+            emailVerificationRequired: true
+          }
+        },
+        emailVerificationHandler: function(account) {
+          /**
+           * Drop the initial slash from the token, then append it to the verification URL
+           * of your application.  Then send this link the user by email.
+           */
+
+          var token = account.emailVerificationToken.href.slice(1);
+
+          var verificationUrl = 'http://www.example.com/verify?sptoken=' + token;
+
+          var userEmail = account.email;
+
+          var message = 'To verify you account please visit: ' + verificationUrl;
+
+          sendEmail(userEmail, message); // pseudo code, sendEmail must be provided by you
+        },
+
+      }));
 
 **Potentially Breaking Changes**
 
+- Okta uses an API Token to authenticate its API, similar to Stormpath's API Key ID/Secret.  However the Okta API Tokens will expire in 30 days if they are not used.  This means that if your application is not used for 30 days it will fail because the API Token will no longer be valid.
+
 - ``req.user`` is now populated from the Okta User, which will contain a new set
-  of default properties that Stormpath did not have.  We've copied the relevent
-  Okta properties onto their Stormpath counterparts (e.g. firstNamae, lastName,
-  and customData), however there will be new properties that did not exist before.
+  of default properties that Stormpath did not have.  We've copied the relevant
+  Okta properties onto their Stormpath counterparts (e.g. ``firstName``, ``lastName``,
+  and ``customData``), however there will be new properties that did not exist before.
   Please evaluate how you are using ``req.user`` to ensure that the new properties
   won't break your code.
 
-- ``req.user.emailVerificationStatus`` is now derived from the Okta User status.
-  If an account has reached the ``ACTIVE`` state, we consider `emailVerificationStatus`
-  to be ``VERIFIED``.  This may not match any custom logic you had around Stormpath's
-  email verification feature.  Please see the `Okta User Status`_ documentation for
-  more information about then new status scheme.
 
 Version 3.2.0
 -------------

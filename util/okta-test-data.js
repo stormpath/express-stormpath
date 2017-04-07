@@ -135,6 +135,54 @@ var authorizationPolicy = {
   }
 };
 
+var userSchemaProperties = {
+  definitions: {
+    custom: {
+      id: '#Custom',
+      type: 'object',
+      properties: {
+        color: {
+          title: 'Favorite Color',
+          description: 'Used by registration tests',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength: 64,
+          permissions: []
+        },
+        emailVerificationToken: {
+          title: 'Email Verification Token',
+          description: 'Can be sent to the user to verify their email address',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength: 64,
+          permissions: []
+        },
+        emailVerificationStatus: {
+          title: 'Email Verification Status',
+          description: 'Indicates if the user has verified their email address',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength: 32,
+          permissions: []
+        },
+        music: {
+          title: 'Music Preference',
+          description: 'Used by registration tests',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength: 64,
+          permissions: []
+        }
+      },
+      required: []
+    }
+  }
+};
+
 function findAuthorizationServer(collection, next) {
   next(null, collection.items.filter(function (authorizationServer) {
     return authorizationServer.name === testAuthorizationServer.name;
@@ -259,7 +307,8 @@ function main(client) {
     async.parallel({
       authorizationServer: resolveAuthorizationServer.bind(null, client),
       application: resolveApplication.bind(null, client),
-      users: client.getResource.bind(client, '/users/', { filter: 'profile.email eq "' + testUser.profile.email + '"' })
+      users: client.getResource.bind(client, '/users/', { filter: 'profile.email eq "' + testUser.profile.email + '"' }),
+      schema: client.createResource.bind(client, '/meta/schemas/user/default', userSchemaProperties)
     }, function (err, results) {
       if (err) {
         return exit(err);
