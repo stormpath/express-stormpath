@@ -3,6 +3,7 @@
 var argv = require('yargs').argv;
 var async = require('async');
 var stormpath = require('stormpath');
+var uuid = require('uuid');
 
 /**
  * Creates test data in Okta, so that you can begin playing with the 4.0.0 branch.
@@ -68,16 +69,23 @@ var testOAuthClient = {
   application_type: 'web'
 };
 
+var recoveryAnswer = uuid.v4();
+
 var testUser = {
   profile: {
     firstName: 'Test',
     lastName: 'User',
     email: 'test@example.com',
-    login: 'test@example.com'
+    login: 'test@example.com',
+    stormpathMigrationRecoveryAnswer: recoveryAnswer
   },
   credentials: {
     password: {
       value: 'PasswordAbc1234'
+    },
+    recovery_question: {
+      question: 'stormpathMigrationRecoveryAnswer',
+      answer: recoveryAnswer
     }
   }
 };
@@ -171,6 +179,15 @@ var userSchemaProperties = {
         music: {
           title: 'Music Preference',
           description: 'Used by registration tests',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength: 64,
+          permissions: []
+        },
+        stormpathMigrationRecoveryAnswer: {
+          title: 'Security Answer Placeholder',
+          description: 'Auto-Generated',
           type: 'string',
           required: false,
           minLength: 1,

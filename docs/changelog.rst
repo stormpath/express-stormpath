@@ -56,13 +56,14 @@ Or through the following environment variables:
 
 - ``req.app.get('stormpathApplication')`` will now be an Okta application, which does not have the same capabilities as a Stormpath application.  We will provide more information on this in the future, likely as a changelog to the underlying Node SDK.
 
-- Custom data properties must be declared on the Okta User Schema.  If you have used the `web.register.form.fields` configuration to add custom properties to your registration form, you will need to use the Okta Admin Console to add these to the user schema.  This can be found under Directory -> Profile Editor.
+- Custom data properties must be declared on the Okta User Schema.  If you have used the ``web.register.form.fields`` configuration to add custom properties to your registration form, you will need to use the Okta Admin Console to add these to the user schema.  This can be found under Directory -> Profile Editor.
 
 - Email verification has several major changes:
 
+  - This feature is no loner available on a per-directory basis, and you must configure it locally in your server configuration.  It will now be disabled by default unless explicitly enabled with the ``web.register.emailVerificationRequired`` option (see example below).
+
   - You will have to send the email verification message to your users. Stormpath was able to send this email for you, but this is not yet available in Okta.  We've provided a new option for you to pass an ``emailVerificationHandler``, this handler will be called when a new user registers, or when a user is asking for the verification email to be re-sent.  This function is passed the account, which will have the email verification token that you need to send to the user.  See example below.
 
-  - Email verification is now a global configuration, rather than a per-directory option.  It must be enabled with the ``web.register.emailVerificationRequired`` option.
 
   - The email verification token is still found on the ``account.emailVerificationToken.href`` property like before, but it no longer has a full URL in front of it.  We've retained an initial forward slash in case you were using this as part of a Regular Expression when looking for the token.
 
@@ -79,7 +80,7 @@ Or through the following environment variables:
         emailVerificationHandler: function(account) {
           /**
            * Drop the initial slash from the token, then append it to the verification URL
-           * of your application.  Then send this link the user by email.
+           * of your application.  Then send this link to the user by email.
            */
 
           var token = account.emailVerificationToken.href.slice(1);
@@ -90,10 +91,34 @@ Or through the following environment variables:
 
           var message = 'To verify you account please visit: ' + verificationUrl;
 
-          sendEmail(userEmail, message); // pseudo code, sendEmail must be provided by you
+          sendEmail({        // pseudo code, sendEmail must be provided by you
+            to: userEmail,
+            message: message
+          });
         },
 
       }));
+
+- Forgot password flow has several changes:
+
+  - This feature is no loner available on a per-directory basis, and you must configure it locally in your server configuration.  This feature will now be disabled by default, unless you manually enable it with these options:
+
+    .. code-block:: javascript
+
+      app.use(stormpath.init(app, {
+        web: {
+          changePassword: {
+            enabled: true
+          },
+          forgotPassword: {
+            enabled: true
+          }
+        }
+      }));
+
+  - You will need to re-create the email template for the password reset email.  You can copy the current template from the Stormpath Admin Console, then in the Okta console you can paste it into the template found at Settings > Email & SMS > Forgot Password.  You'll want to use the ``${recoveryToken}`` variable to create a link that points the user to the verification endpoint on your application, for example: ``http://localhost:3000/verify?sptoken=${recoveryToken}``.
+
+  - Password recovery confirmation emails will not be sent, this type of email template is currently not available.  Please let us know if you need this feature and we can provide a hook in this library that will let you send this message manually.
 
 **Potentially Breaking Changes**
 
