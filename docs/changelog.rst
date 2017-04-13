@@ -6,29 +6,68 @@ Change Log
 
 All library changes, in descending order.
 
-Version 4.0.0
+Version 4.0.0-rc1
 -------------
 
-**Release Date TBD**
+**Released April 13, 2017**
 
 This major version will help you migrate to the Okta platform.  We have strived
 to preserve the functionality that you have come to depend on through Stormpath,
 while transparently switching you to the Okta platform.  This version assumes
 that you are using the data migration tool to export your data from your Stormpath
-Tenant, and import it into your Okta organization.
+Tenant, and import it into your Okta organization (this tool will be public soon,
+please contact us for early access).  You can also use the `Test Data Script`_
+to create some test data in your Okta tenant, allowing you to test basic
+functionality against before working on your data import.
+
+**Features available in this RC**
+
+These features have been patched and should be working in this RC, although some require changes to your code:
+
+* Login with password.
+* Registration of new accounts.
+* Email verification workflow (see changes below).
+* Password reset workflow (see changes below).
+* Get and save custom data for account resources.
+* Logout.
+
+**Features NOT available in this RC**
+
+These features will be coming in the next RC:
+
+* Group-based authorization with the ``groupsRequired`` middleware.
+* Social login.
+* Client-credentials authentication for Account API Keys.
+
+**Features NOT being migrated**
+
+Please see the "Compatibility Matrix" on the `Stormpath-Okta Customer FAQ`_ for a complete list of features that are not being migrated.  The relevent points for this library are:
+
+* Subdomain-based multi-tenancy, as introduced by version 3.2.0, will not be migrated.  If you are using this feature please contact support@stormpath.com so that we can help you find a solution.
+* ID Site as a feature will not be migrated, so you will not be able to use this library to log users in with ID Site.
+* Custom data will only be available on account resources.
+
 
 **Configuration Changes**
+
+To use this version, please sign up for a developer account at http://developer.okta.com.
+You will be walked through the setup of an Okta Organization, which is similar to
+a Stormpath Tenant.
 
 Since you will be using the Okta platform, the Stormpath API Key and application
 configuration must be removed.  In it's place you will need to configure the
 following properties:
 
 - **API Token**: similar to the Stormpath API Key, this is a secret that is used
-  to secure the communication with the Okta platform.
+  to secure the communication with the Okta platform.  You can create an API token
+  from the Admin Console of your Okta organization.
 - **Application Id**: This is the Okta Application that represents your application.
-  The migration tool should have created this automatically for you.
+  The test data script will create an application for you.  The data migration tool
+  will create an application for each of your Stormpath applications.
 - **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
-  Org has it's own distinct URL.
+  Org has it's own distinct URL.  This URL is sent to you when you sign up for
+  your developer account, and it is also used to login to the Admin Console for
+  your organization.
 
 These new properties should be provided like so:
 
@@ -52,15 +91,13 @@ Or through the following environment variables:
 
 **Breaking Changes**
 
-- Subdomain-based multi-tenancy, as introduced by version 3.2.0, will not be supported.  If you are using this feature please contact support@stormpath.com so that we can help you find a solution.
+- The underlying `Stormpath Node SDK`_ is undergoing major changes and is being used as the primary adapter between the Stormpath and Okta data models.  It is currently in a release candidate state as well, but we do not yet have a robust changelog.  If your Express application is reaching down into the Node SDK, e.g. using ``req.app.get('stormpathApplication')`` or ``req.app.get('stormpathClient')``, please know that the returned objects are now unstable.  We will have more clarity around this soon.  Please contact us if you run into errors, it will be helpful to know which areas are causing problems.
 
-- ``req.app.get('stormpathApplication')`` will now be an Okta application, which does not have the same capabilities as a Stormpath application.  We will provide more information on this in the future, likely as a changelog to the underlying Node SDK.
-
-- Custom data properties must be declared on the Okta User Schema.  If you have used the ``web.register.form.fields`` configuration to add custom properties to your registration form, you will need to use the Okta Admin Console to add these to the user schema.  This can be found under Directory -> Profile Editor.
+- Custom data properties must be declared on the Okta User Schema.  If you have used the ``web.register.form.fields`` configuration to add custom properties to your registration form, you will need to use the Okta Admin Console to add these to the user schema.  This can be found under Directory -> Profile Editor.  The data migration tool will inspect your existing accounts and attempt to create these schema properties for you.
 
 - Email verification has several major changes:
 
-  - This feature is no loner available on a per-directory basis, and you must configure it locally in your server configuration.  It will now be disabled by default unless explicitly enabled with the ``web.register.emailVerificationRequired`` option (see example below).
+  - This feature is no longer available on a per-directory basis, and you must configure it locally in your server configuration.  It will now be disabled by default unless explicitly enabled with the ``web.register.emailVerificationRequired`` option (see example below).
 
   - You will have to send the email verification message to your users. Stormpath was able to send this email for you, but this is not yet available in Okta.  We've provided a new option for you to pass an ``emailVerificationHandler``, this handler will be called when a new user registers, or when a user is asking for the verification email to be re-sent.  This function is passed the account, which will have the email verification token that you need to send to the user.  See example below.
 
@@ -101,7 +138,7 @@ Or through the following environment variables:
 
 - Forgot password flow has several changes:
 
-  - This feature is no loner available on a per-directory basis, and you must configure it locally in your server configuration.  This feature will now be disabled by default, unless you manually enable it with these options:
+  - This feature is no longer available on a per-directory basis, and you must configure it locally in your server configuration.  This feature will now be disabled by default, unless you manually enable it with these options:
 
     .. code-block:: javascript
 
@@ -344,7 +381,6 @@ Version 3.0.1
 
 Major Release 3.0.0
 -------------------
-
 This major release of our Express.js integration is introducing changes for
 better network performance and easier configuration.  We're also updating several
 configuration options and view models to conform with our framework
@@ -1577,6 +1613,8 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
+.. _Stormpath-Okta Customer FAQ: https://stormpath.com/oktaplusstormpath
 .. _Okta User Status: http://developer.okta.com/docs/api/resources/users.html#user-status
 .. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
+.. _Test Data Script: https://github.com/stormpath/express-stormpath/blob/4.0.0/util/okta-test-data.js
