@@ -77,7 +77,8 @@ var testUser = {
     lastName: 'User',
     email: 'test@example.com',
     login: 'test@example.com',
-    stormpathMigrationRecoveryAnswer: recoveryAnswer
+    stormpathMigrationRecoveryAnswer: recoveryAnswer,
+    stormpathApiKey_1: '6T7N8RH4R168UF4MLRv1SYIT1:w0qxffEwie3Tf+eqdxpD7Ad5bp4uYbRlrkX/kcMs1Ag'
   },
   credentials: {
     password: {
@@ -192,6 +193,15 @@ var userSchemaProperties = {
           required: false,
           minLength: 1,
           maxLength: 64,
+          permissions: []
+        },
+        stormpathApiKey_1: {
+          title: 'Account Api Key 1',
+          description: 'From the account\'s API Keys collection',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength:  128,
           permissions: []
         },
         stormpathMigrationRecoveryAnswer: {
@@ -406,9 +416,11 @@ function main(client) {
 
             console.log('\nData ready! Here are the settings you need for your application:\n');
             console.log('============================================================');
-            console.log('Okta Application ID: ' + application.id);
-            console.log('Test user login:     ' + testUser.profile.login);
-            console.log('Test user password:  ' + testUser.credentials.password.value);
+            console.log('Okta Application ID:       ' + application.id);
+            console.log('Test user login:           ' + testUser.profile.login);
+            console.log('Test user password:        ' + testUser.credentials.password.value);
+            console.log('Test user API Key ID:      ' + testUser.profile.stormpathApiKey_1.split(':')[0]);
+            console.log('Test user API Key Secret:  ' + testUser.profile.stormpathApiKey_1.split(':')[1]);
             console.log('============================================================');
             console.log('\n');
           });
