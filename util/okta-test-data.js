@@ -149,7 +149,16 @@ var userSchemaProperties = {
       id: '#Custom',
       type: 'object',
       properties: {
-        color: {
+        birthday: {
+          title: 'Birthday',
+          description: 'Used by express-stormpath sample project',
+          type: 'string',
+          required: false,
+          minLength: 1,
+          maxLength: 64,
+          permissions: []
+        },
+        favoriteColor: {
           title: 'Favorite Color',
           description: 'Used by registration tests',
           type: 'string',

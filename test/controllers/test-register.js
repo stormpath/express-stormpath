@@ -235,9 +235,9 @@ function CustomFieldRegistrationFixture() {
         enabled: true,
         form: {
           fields: {
-            color: {
+            favoriteColor: {
               enabled: true,
-              name: 'color',
+              name: 'favoriteColor',
               placeholder: 'Favorite Color',
               required: true,
               type: 'text'
@@ -250,7 +250,7 @@ function CustomFieldRegistrationFixture() {
               type: 'text'
             }
           },
-          fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
+          fieldOrder: ['givenName', 'surname', 'favoriteColor', 'music', 'email', 'password']
         }
       }
     }
@@ -272,7 +272,7 @@ function CustomFieldRegistrationFixture() {
  */
 CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
   var formData = DefaultRegistrationFixture.prototype.defaultFormPost();
-  formData.color = uuid.v4();
+  formData.favoriteColor = uuid.v4();
   formData.customData = {
     music: uuid.v4()
   };
@@ -321,7 +321,7 @@ function assertCustomDataRegistration(fixture, formData, done) {
         }
 
         assert.equal(account.email, formData.email);
-        assert.equal(data.color, formData.color);
+        assert.equal(data.favoriteColor, formData.favoriteColor);
         assert.equal(data.music, formData.customData.music);
 
         done();
@@ -864,9 +864,9 @@ describe.only('register', function () {
             assert.equal(surnameField.attr('required') === 'required', config.web.register.form.fields.surname.required);
             assert.equal(surnameField.attr('type'), config.web.register.form.fields.surname.type);
 
-            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.color.placeholder);
-            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.color.required);
-            assert.equal(colorField.attr('type'), config.web.register.form.fields.color.type);
+            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.favoriteColor.placeholder);
+            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.favoriteColor.required);
+            assert.equal(colorField.attr('type'), config.web.register.form.fields.favoriteColor.type);
 
             assert.equal(musicField.attr('placeholder'), config.web.register.form.fields.music.placeholder);
             assert.equal(musicField.attr('required') === 'required', config.web.register.form.fields.music.required);
@@ -923,7 +923,7 @@ describe.only('register', function () {
 
             var colorField = $(formFields[2]);
 
-            assert.equal(colorField.attr('value'), formData.color);
+            assert.equal(colorField.attr('value'), formData.favoriteColor);
 
             done();
           });
