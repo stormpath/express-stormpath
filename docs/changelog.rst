@@ -6,6 +6,38 @@ Change Log
 
 All library changes, in descending order.
 
+Version 4.0.0-rc3
+-----------------
+
+**Released May 1, 2017**
+
+This release candidate builds on top of the prior release candidate, 4.0.0-rc2 and 4.0.0-rc1, by adding support for the following features, using the Okta platform:
+
+- Social login for page-based redirect flows.  Popup/implicit flows will be supported in a future release.
+
+Please read the changelog for the previous 4.0.0-rc2 and 4.0.0-rc1 release (below) for a full list of breaking changes on the 4.x series.
+
+**Social Login Changelog**
+
+- The data import tool will copy the metadata about your social providers into Okta, and create them as Identify Provider (IdP) resources.  The following providers are supported:
+
+  - Facebook
+  - Google
+  - Linkedin
+
+  Unfortunately, Github and generic Oauth2 providers are not supported at this time.
+
+- After the data import tool runs, you will need to do the following:
+
+  - Visit Admin -> Security -> Identity Providers in the Okta Admin Console.  Each IdP has an Okta-specific redirect URI.  In the Okta flow, the user is sent through Okta before coming back to your application.  As such, you will need to add this redirect URI as an allowed URI with the provider. For example you will need to login to the Google Apps console, or Facebook Developer site, and add this redirect URI to your application.
+  - Visit Applications in the Okta Admin Console, and find the Application that was created for your Stormpath application.  You will need to add the following redirect URIs to the whitelist, one for each provider that you are using.  These are the final redirect handlers on your server that are provided by the ``express-stormpath`` library:
+
+    - ``http://<your-app-domain>/callbacks/facebook``
+    - ``http://<your-app-domain>/callbacks/google``
+    - ``http://<your-app-domain>/callbacks/linkedin``
+
+- This new flow is using OpenID Connect under the hood, as such we've added the ``email openid profile`` scope as a default scope.  If you are providing scopes manually you may need to add that scope to your list.
+
 Version 4.0.0-rc2
 -----------------
 

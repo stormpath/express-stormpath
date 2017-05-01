@@ -218,13 +218,10 @@ web:
   social:
     facebook:
       uri: "/callbacks/facebook"
-      scope: "email"
-    github:
-      uri: "/callbacks/github"
-      scope: "user:email"
+      scope: "email openid profile"
     google:
       uri: "/callbacks/google"
-      scope: "email profile"
+      scope: "email profile openid"
     linkedin:
       uri: "/callbacks/linkedin"
       scope: "r_basicprofile r_emailaddress"
