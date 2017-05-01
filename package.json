@@ -39,7 +39,7 @@
     "psl": "^1.1.14",
     "qs": "^6.0.2",
     "request": "^2.63.0",
-    "stormpath": "stormpath/stormpath-sdk-node#1.0.0-rc2",
+    "stormpath": "stormpath/stormpath-sdk-node#1.0.0-rc3",
     "stormpath-config": "stormpath/stormpath-node-config#okta",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
