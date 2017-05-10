@@ -123,9 +123,10 @@ following properties:
 - **API Token**: similar to the Stormpath API Key, this is a secret that is used
   to secure the communication with the Okta platform.  You can create an API token
   from the Admin Console of your Okta organization.
-- **Application Id**: This is the Okta Application that represents your application.
-  The test data script will create an application for you.  The data migration tool
-  will create an application for each of your Stormpath applications.
+- **Application Id**: This is the ID of the Okta Application that represents your application.
+  If using the test data script, and application is created for you and the ID is logged in the console.
+  If using the `stormpath-migration tool`_ it will create an application for each of your Stormpath applications.
+  You can discover the ID of the application by finding the application in the Okta Admin Console, and looking in the URL bar when viewing the application.
 - **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
   Org has it's own distinct URL.  This URL is sent to you when you sign up for
   your developer account, and it is also used to login to the Admin Console for
@@ -1677,6 +1678,7 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
+.. _stormpath-migration tool: https://github.com/okta/stormpath-migration
 .. _Stormpath-Okta Customer FAQ: https://stormpath.com/oktaplusstormpath
 .. _Okta Schema API:  http://developer.okta.com/docs/api/resources/schemas.html
 .. _Okta User Status: http://developer.okta.com/docs/api/resources/users.html#user-status
