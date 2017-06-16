@@ -14,7 +14,7 @@ var helpers = require('../helpers');
  * @param {object} stormpathApplication
  */
 function Oauth2DisabledFixture(stormpathApplication) {
-  this.expressApp = helpers.createStormpathExpressApp({
+  this.expressApp = helpers.createOktaExpressApp({
     application: stormpathApplication,
     web: {
       oauth2: {

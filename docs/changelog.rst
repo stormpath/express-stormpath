@@ -6,6 +6,29 @@ Change Log
 
 All library changes, in descending order.
 
+Version 4.0.0-rc4
+-----------------
+
+**Released June 16, 2017**
+
+This release candidate builds on top of the prior release candidates, 4.0.0-rc3, 4.0.0-rc2, and 4.0.0-rc1, by adding support for the following features, using the Okta platform:
+
+**Informative: OAuth Server Migration**
+
+The Stormpath API provided an OAuth server for each Stormpath application, and this library provides an ``/oauth/token`` endpoint, which proxied the request to the OAuth server of the configured Stormpath application.  This proxy behavior is now patched to work with Okta's `Authorization Servers`_.  The `stormpath-migration tool`_ will create one authorization server for each application that is migrated.
+
+**Breaking Changes for the /oauth/token endpoint**
+
+* Access token requests must now be an OpenID Connect (OIDC) request, as such the ``openid`` scope must be added to the request if you want an access token.  Internally we add this for you if no scope has been added to the request.
+* It is no longer possible to make use of the `scope factory feature`_ to add custom scopes to the issued tokens.  The scope claim of access tokens will reflect what you requested of the authorization server.
+* Refresh tokens are no longer supplied automatically.  If you want to get a refresh token while doing ``grant_type=password``, you need to add the ``offline_access`` scope to the request.
+* Refresh tokens are now opaque, and do not contain references to the authenticated subject.  However the `Introspection Request`_ endpoint can be used to get information about the subject.
+* Pre and Post Login handlers have not been implemented in this version for this route.  Please contact us if you need this feature.
+
+**Fixes for API Keys**
+
+In 4.0.0-rc2 we introduced patches to allow users to continue using their Stormpath API Keys for API authentication.  There were some bugs in the patch that prevented this form working.  We've also patched ``account.createApiKey()`` in the underlying 1.0.0-rc4 version of the Stormpath Node SDK.  It will add new API keys by creating secure random values that are stored on the user's profile object.
+
 Version 4.0.0-rc3
 -----------------
 
@@ -1678,10 +1701,14 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
-.. _stormpath-migration tool: https://github.com/okta/stormpath-migration
-.. _Stormpath-Okta Customer FAQ: https://stormpath.com/oktaplusstormpath
-.. _Okta Schema API:  http://developer.okta.com/docs/api/resources/schemas.html
+.. _Authorization Servers: https://developer.okta.com/use_cases/api_access_management/
+.. _Introspection Request: https://developer.okta.com/docs/api/resources/oidc.html#introspection-request
 .. _Okta User Status: http://developer.okta.com/docs/api/resources/users.html#user-status
+.. _Okta Schema API:  http://developer.okta.com/docs/api/resources/schemas.html
+.. _scope factory feature: https://docs.stormpath.com/nodejs/jsdoc/ScopeFactoryAuthenticator.html
+.. _stormpath-migration tool: https://github.com/okta/stormpath-migration
 .. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
+.. _Stormpath-Okta Customer FAQ: https://stormpath.com/oktaplusstormpath
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 .. _Test Data Script: https://github.com/stormpath/express-stormpath/blob/4.0.0/util/okta-test-data.js
+

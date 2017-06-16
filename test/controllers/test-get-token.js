@@ -8,7 +8,7 @@ var DefaultExpressApplicationFixture = require('../fixtures/default-express-appl
 var helpers = require('../helpers');
 var Oauth2DisabledFixture = require('../fixtures/oauth2-disabled');
 
-describe('getToken (OAuth2 token exchange endpoint)', function () {
+describe.only('getToken (OAuth2 token exchange endpoint)', function () {
   var username = uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var accountData = {
@@ -25,17 +25,6 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
   var refreshToken;
 
   before(function (done) {
-
-    /**
-     * Epic hack to observe two ready events and know when they are both done
-     */
-    var readyCount = 0;
-    function ready() {
-      readyCount++;
-      if (readyCount === 2) {
-        done();
-      }
-    }
 
     helpers.createApplication(helpers.createClient(), function (err, app) {
       if (err) {
@@ -60,16 +49,19 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
           stormpathAccountApiKey = key;
 
-          enabledFixture.expressApp.on('stormpath.ready', ready);
-          disabledFixture.expressApp.on('stormpath.ready', ready);
-
+          done();
         });
       });
     });
   });
 
   after(function (done) {
-    helpers.destroyApplication(stormpathApplication, done);
+    stormpathAccount.delete(function (err) {
+      if (err) {
+        return done(err);
+      }
+      stormpathAccount.delete(done);
+    });
   });
 
   it('should return 405 if <config.web.oauth2.uri> is enabled and a non-POST request is made', function (done) {
@@ -165,17 +157,33 @@ describe('getToken (OAuth2 token exchange endpoint)', function () {
 
   });
 
-  it('should return an access token & refresh token if grant_type=password and the username & password are valid', function (done) {
+  it('should return an access token if grant_type=password and the username & password are valid', function (done) {
 
     request(enabledFixture.expressApp)
       .post('/oauth/token')
       .send('grant_type=password')
       .send('username=' + accountData.email)
       .send('password=' + accountData.password)
+      .send('scope=offline_access')
       .expect(200)
       .end(function (err, res) {
         assert(res.body && res.body.access_token);
         assert.equal(res.body && res.body.expires_in && res.body.expires_in, 3600);
+        done();
+      });
+
+  });
+
+  it('should return a refresh token if grant_type=password and scope=offline_access', function (done) {
+
+    request(enabledFixture.expressApp)
+      .post('/oauth/token')
+      .send('grant_type=password')
+      .send('username=' + accountData.email)
+      .send('password=' + accountData.password)
+      .send('scope=offline_access')
+      .expect(200)
+      .end(function (err, res) {
         assert(res.body && res.body.refresh_token);
         refreshToken = res.body.refresh_token;
         done();
