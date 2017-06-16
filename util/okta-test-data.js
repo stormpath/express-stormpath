@@ -29,9 +29,9 @@ function exit(err) {
 }
 
 var testAuthorizationServer = {
-  defaultResourceUri: 'https://okta.com',
   description: 'Created by okta-test-data.js, for migration testing purposes only',
-  name: 'Test AS for express-stormpath 4.0.0'
+  name: 'Test AS for express-stormpath 4.0.0',
+  audiences: ['https://okta.com']
 };
 
 var testApplication = {
@@ -113,15 +113,12 @@ var accessPolicy = {
       'include': [
         'password'
       ]
+    },
+    scopes: {
+      include: ['*']
     }
   },
   actions: {
-    scopes: {
-      include: [{
-        name: '*',
-        access: 'ALLOW'
-      }]
-    },
     token: {
       accessTokenLifetimeMinutes: 60,
       refreshTokenLifetimeMinutes: 0,
@@ -232,16 +229,11 @@ function findApplication(collection, next) {
 }
 
 function createAuthorizationPolicy(client, authorizationServer, next) {
-  client.getResource(authorizationServer._links.resources.href, function (err, resources) {
-    if (err) {
-      return next(err);
-    }
-    client.createResource(resources.items[0]._links.policies.href, authorizationPolicy, next);
-  });
+  client.createResource(authorizationServer._links.policies.href, authorizationPolicy, next);
 }
 
 function createAuthorizationServer(client, next) {
-  client.createResource('/as', testAuthorizationServer, function (err, authorizationServer) {
+  client.createResource('/authorizationServers', testAuthorizationServer, function (err, authorizationServer) {
     if (err) {
       return next(err);
     }
@@ -262,7 +254,7 @@ function createApplication(client, next) {
 
 function resolveAuthorizationServer(client, next) {
   async.waterfall([
-    client.getResource.bind(client, '/as'),
+    client.getResource.bind(client, '/authorizationServers'),
     findAuthorizationServer
   ], function (err, authorizationServer) {
 
@@ -294,25 +286,19 @@ function resolveApplication(client, next) {
 }
 
 function getAuthorizationServerOAuthPolicy(client, authorizationServer, next) {
-  client.getResource(authorizationServer._links.resources.href, function (err, resources) {
+  client.getResource(authorizationServer._links.policies.href, { type: 'OAUTH_AUTHORIZATION_POLICY' }, function (err, policies) {
     if (err) {
       return next(err);
     }
-    client.getResource(resources.items[0]._links.policies.href, function (err, policies) {
-      if (err) {
-        return next(err);
-      }
-      var policy = policies.items.filter(function (policy) {
-        return policy.type === 'OAUTH_AUTHORIZATION_POLICY';
-      })[0];
 
-      if (policy) {
-        policy.href = authorizationServer.href + '/resources/' + resources[0].id + '/policies/' + policy.id;
-      }
+    var policy = policies.items.filter(function (policy) {
+      return policy.name === 'Default Policy';
+    })[0];
 
-      next(policy ? null : 'OAUTH_AUTHORIZATION_POLICY not found for authorizationServer ' + authorizationServer.id, policy);
 
-    });
+    next(policy ? null : 'OAUTH_AUTHORIZATION_POLICY not found for authorizationServer ' + authorizationServer.id, policy);
+
+
   });
 }
 
