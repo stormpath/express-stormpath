@@ -239,7 +239,7 @@ Or through the following environment variables:
         }
       }));
 
-  - You will need to re-create the email template for the password reset email.  You can copy the current template from the Stormpath Admin Console, then in the Okta console you can paste it into the template found at Settings > Email & SMS > Forgot Password.  You'll want to use the ``${recoveryToken}`` variable to create a link that points the user to the verification endpoint on your application, for example: ``http://localhost:3000/verify?sptoken=${recoveryToken}``.
+  - You will need to re-create the email template for the password reset email.  You can copy the current template from the Stormpath Admin Console, then in the Okta console you can paste it into the template found at Settings > Email & SMS > Forgot Password.  You'll want to use the ``${recoveryToken}`` variable to create a link that points the user to the verification endpoint on your application, for example: ``http://localhost:3000/change?sptoken=${recoveryToken}``.
 
   - The expiration time for password reset tokens is now 59 minutes, this can be configured through the Okta Admin Console, see Security -> Policies -> Default Policy.
 
