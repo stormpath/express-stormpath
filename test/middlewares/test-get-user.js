@@ -3,35 +3,31 @@
 var Cookies = require('cookies');
 
 var assert = require('assert');
-var fs = require('fs');
-var yaml = require('js-yaml');
-var path = require('path');
 var async = require('async');
-var cookieParser = require('cookie-parser');
-var deepExtend = require('deep-extend');
-var express = require('express');
 var request = require('supertest');
 var uuid = require('uuid');
-var winston = require('winston');
 
-var getToken = require('../../lib/controllers/get-token');
 var getUser = require('../../lib/middleware/get-user');
 var helpers = require('../helpers');
 var login = require('../../lib/controllers/login');
 
-describe('getUser', function () {
+describe.only('getUser', function () {
   var username = 'test+' + uuid.v4() + '@stormpath.com';
   var password = uuid.v4() + uuid.v4().toUpperCase();
   var accountData = {
     email: username,
     password: password,
     givenName: uuid.v4(),
-    surname: uuid.v4()
+    surname: uuid.v4(),
+    customData: {
+      favoriteColor: 'blue'
+    }
   };
   var stormpathAccount;
   var stormpathApiKey;
   var stormpathApplication;
   var stormpathClient;
+  var defaultExpressApp;
 
   /**
    * This callback, when called, will continue processing the http request.
@@ -42,67 +38,6 @@ describe('getUser', function () {
    * @param {Object} res - The http response.
    * @param {Function} [next] - The next middleware to run.
    */
-
-  /**
-   * Fakes initializing the stormpath.init middleware -- it attaches some objects
-   * to req.app, which helps us test our middlewares in a more isolated
-   * environment.
-   *
-   * @param {Object} app - The Express application object.
-   * @returns {middlewareCallback} - The Express middleware which runs when
-   *    used.
-   */
-  function fakeInit(app) {
-    var defaultSdkConfig = yaml.load(fs.readFileSync(path.join(path.dirname(require.resolve('stormpath')), 'config.yml'), 'utf8'));
-    var defaultIntegrationConfig = yaml.load(fs.readFileSync('./lib/config.yml', 'utf8'));
-
-    var config = deepExtend({}, defaultSdkConfig);
-    config = deepExtend(config, defaultIntegrationConfig);
-
-    deepExtend(config, {
-      application: {
-        href: stormpathApplication.href
-      },
-      expand: {
-        customData: true
-      },
-      web: {
-        login: {
-          enabled: true
-        }
-      }
-    });
-
-    app.set('stormpathApplication', stormpathApplication);
-    app.set('stormpathClient', stormpathClient);
-    app.set('stormpathLogger', new winston.Logger({
-      transports: [
-        new winston.transports.Console({
-          colorize: true,
-          level: 'error'
-        })
-      ]
-    }));
-    app.set('stormpathConfig', config);
-    app.use(cookieParser('mocksecret'));
-
-    return function (req, res, next) {
-      req.app = app;
-      next();
-    };
-  }
-
-  /**
-   * Create and return a fake Express app in an isolated environment.
-   *
-   * @returns {Object} - An initialized Express application object.
-   */
-  function createFakeExpressApp() {
-    var app = express();
-
-    app.use(fakeInit(app));
-    return app;
-  }
 
   /**
    * This route creates a cookie, then returns a 200.  Used for testing auth in
@@ -129,6 +64,14 @@ describe('getUser', function () {
       }
 
       stormpathApplication = app;
+      defaultExpressApp = helpers.createOktaExpressApp({
+        application: stormpathApplication
+      });
+
+      defaultExpressApp.get('/user', getUser, function (req, res) {
+        res.json({ user: req.user, accessToken: req.accessToken, authenticationResult: req.authenticationResult });
+      });
+
       app.createAccount(accountData, function (err, account) {
         if (err) {
           return done(err);
@@ -147,24 +90,19 @@ describe('getUser', function () {
     });
   });
 
-  after(function (done) {
-    helpers.destroyApplication(stormpathApplication, done);
-  });
-
-  it('should continue immediately if req.user is already defined', function (done) {
-    var app = createFakeExpressApp();
+  it('should not overwrite req.user if req.user is already defined', function (done) {
 
     function fakeReqUser(req, res, next) {
       req.user = 'blah';
       next();
     }
 
-    app.get('/', fakeReqUser, getUser, function (req, res) {
+    defaultExpressApp.get('/blah', fakeReqUser, getUser, function (req, res) {
       res.json({ user: req.user });
     });
 
-    request(app)
-      .get('/')
+    request(defaultExpressApp)
+      .get('/blah')
       .expect(200)
       .end(function (err, res) {
         if (err) {
@@ -177,15 +115,10 @@ describe('getUser', function () {
       });
   });
 
-  it('should continue immediately if no cookies are present', function (done) {
-    var app = createFakeExpressApp();
+  it('should not set req.user if no cookies are present', function (done) {
 
-    app.get('/', getUser, function (req, res) {
-      res.json({ user: req.user });
-    });
-
-    request(app)
-      .get('/')
+    request(defaultExpressApp)
+      .get('/user')
       .expect(200)
       .end(function (err, res) {
         if (err) {
@@ -198,15 +131,10 @@ describe('getUser', function () {
       });
   });
 
-  it('should continue immediately if an invalid access_token cookie is present, and no refresh_token cookie is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it('should not set req.user if an invalid access_token cookie is present, and no refresh_token cookie is present', function (done) {
+    var agent = request.agent(defaultExpressApp);
 
-    app.get('/setCookie', createCookieRoute('access_token', 'blah'));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    defaultExpressApp.get('/setCookie', createCookieRoute('access_token', 'blah'));
 
     async.series([
       function (callback) {
@@ -223,14 +151,16 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+            assert.equal(json.user, null);
+
             callback();
           });
       }
@@ -239,15 +169,10 @@ describe('getUser', function () {
     });
   });
 
-  it('should continue immediately if a disabled account\'s access_token cookie is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it.skip('should continue immediately if a disabled account\'s access_token cookie is present', function (done) {
+    var agent = request.agent(defaultExpressApp);
 
-    app.post('/login', login);
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    defaultExpressApp.post('/login', login);
 
     async.series([
       function (callback) {
@@ -274,14 +199,16 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+            assert.equal(json.user, null);
+
             callback();
           });
       }
@@ -290,16 +217,11 @@ describe('getUser', function () {
     });
   });
 
-  it('should continue immediately if a disabled account\'s access_token cookie is invalid but who\'s refresh_token cookie is valid', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it.skip('should continue immediately if a disabled account\'s access_token cookie is invalid but who\'s refresh_token cookie is valid', function (done) {
 
-    app.post('/login', login);
-    app.get('/setCookie', createCookieRoute('access_token', 'hiii'));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
+
+    defaultExpressApp.get('/setCookie', createCookieRoute('access_token', 'hiii'));
 
     async.series([
       function (callback) {
@@ -339,7 +261,8 @@ describe('getUser', function () {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+            assert.equal(json.user, null);
             callback();
           });
       }
@@ -348,16 +271,11 @@ describe('getUser', function () {
     });
   });
 
-  it('should continue immediately if a disabled account\'s refresh_token cookie is valid', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it.skip('should continue immediately if a disabled account\'s refresh_token cookie is valid', function (done) {
 
-    app.post('/login', login);
-    app.get('/setCookie', createCookieRoute('access_token', ''));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
+
+    defaultExpressApp.get('/setCookie', createCookieRoute('access_token', ''));
 
     async.series([
       function (callback) {
@@ -390,14 +308,15 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+            assert.equal(json.user, null);
             callback();
           });
       }
@@ -407,18 +326,8 @@ describe('getUser', function () {
   });
 
   it('should set req.user, res.locals.user, res.authenticationResult, res.accessToken if an access_token cookie is present and valid', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
 
-    app.post('/login', login);
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-      assert.equal(req.accessToken.body.sub, stormpathAccount.href);
-      assert.equal(req.authenticationResult.account.href, stormpathAccount.href);
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
 
     async.series([
       function (callback) {
@@ -439,14 +348,20 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+            assert.equal(json.accessToken.body.sub, stormpathAccount.email);
+            assert.equal(json.authenticationResult.expandedJwt.body.sub, stormpathAccount.email);
             callback();
           });
       }
@@ -455,7 +370,7 @@ describe('getUser', function () {
     });
   });
 
-  it('should use local validation, if specified by configuration', function (done) {
+  it.skip('should use local validation, if specified by configuration', function (done) {
 
     var app = helpers.createStormpathExpressApp({
       application: stormpathApplication,
@@ -527,19 +442,11 @@ describe('getUser', function () {
     });
   });
 
-  it('should set req.user and res.locals.user if an invalid access_token cookie is present with a valid refresh_token cookie', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it('should set req.user and res.locals.user if an invalid access_token cookie is present but a valid refresh_token is present', function (done) {
 
-    app.post('/login', login);
-    app.get('/setCookie', createCookieRoute('access_token', 'hiii'));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
+    var agent = request.agent(defaultExpressApp);
 
-      res.send('success');
-    });
+    defaultExpressApp.get('/setCookie', createCookieRoute('access_token', 'hiii'));
 
     async.series([
       function (callback) {
@@ -566,14 +473,19 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+
             callback();
           });
       }
@@ -582,15 +494,11 @@ describe('getUser', function () {
     });
   });
 
-  it('should continue immediately if an invalid refresh_token cookie is present, and no access_token cookie is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it('should not set req.user if an invalid refresh_token cookie is present, and no access_token cookie is present', function (done) {
 
-    app.get('/setCookie', createCookieRoute('refresh_token', 'blah'));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
+
+    defaultExpressApp.get('/setCookie', createCookieRoute('refresh_token', 'blah'));
 
     async.series([
       function (callback) {
@@ -607,14 +515,15 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+            assert.equal(json.user, null);
             callback();
           });
       }
@@ -624,18 +533,10 @@ describe('getUser', function () {
   });
 
   it('should set req.user and res.locals.user if a valid refresh_token cookie is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
 
-    app.post('/login', login);
-    app.get('/deleteCookie', createCookieRoute('access_token', ''));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
+    var agent = request.agent(defaultExpressApp);
 
-      res.send('success');
-    });
+    defaultExpressApp.get('/deleteCookie', createCookieRoute('access_token', ''));
 
     async.series([
       function (callback) {
@@ -662,14 +563,18 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+
             callback();
           });
       }
@@ -679,18 +584,9 @@ describe('getUser', function () {
   });
 
   it('should expand customData if a valid access_token cookie is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+    var agent = request.agent(defaultExpressApp);
 
-    app.post('/login', login);
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-      assert(req.user.customData.createdAt);
-
-      res.send('success');
-    });
+    defaultExpressApp.post('/login', login);
 
     async.series([
       function (callback) {
@@ -711,14 +607,20 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+            assert.equal(json.user.customData.favoriteColor, accountData.customData.favoriteColor);
+
             callback();
           });
       }
@@ -728,19 +630,9 @@ describe('getUser', function () {
   });
 
   it('should expand customData if a valid refresh_token cookie is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+    var agent = request.agent(defaultExpressApp);
 
-    app.post('/login', login);
-    app.get('/deleteCookie', createCookieRoute('access_token', ''));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-      assert(req.user.customData.createdAt);
-
-      res.send('success');
-    });
+    defaultExpressApp.get('/deleteCookie', createCookieRoute('access_token', ''));
 
     async.series([
       function (callback) {
@@ -767,14 +659,20 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+            assert.equal(json.user.customData.favoriteColor, accountData.customData.favoriteColor);
+
             callback();
           });
       }
@@ -784,19 +682,9 @@ describe('getUser', function () {
   });
 
   it('should expand customData if an invalid access_token cookie is present along with a valid refresh_token cookie', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+    var agent = request.agent(defaultExpressApp);
 
-    app.post('/login', login);
-    app.get('/deleteCookie', createCookieRoute('access_token', 'woot'));
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-      assert(req.user.customData.createdAt);
-
-      res.send('success');
-    });
+    defaultExpressApp.get('/deleteCookie', createCookieRoute('access_token', 'woot'));
 
     async.series([
       function (callback) {
@@ -823,14 +711,20 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+            assert.equal(json.user.customData.favoriteColor, accountData.customData.favoriteColor);
+
             callback();
           });
       }
@@ -839,14 +733,9 @@ describe('getUser', function () {
     });
   });
 
-  it('should continue immediately if an invalid basic auth header is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it('should not set req.user if an invalid basic auth header is present', function (done) {
 
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
 
     async.series([
       function (callback) {
@@ -857,7 +746,7 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .auth('invalid', 'auth')
           .expect(200)
           .end(function (err, res) {
@@ -865,7 +754,9 @@ describe('getUser', function () {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user, null);
             callback();
           });
       }
@@ -874,14 +765,9 @@ describe('getUser', function () {
     });
   });
 
-  it('should continue immediately if an invalid bearer header is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it('should not set req.user if an invalid bearer header is present', function (done) {
 
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user, undefined);
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
 
     async.series([
       function (callback) {
@@ -892,7 +778,7 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .set('Authorization', 'Bearer: SOME_INVALID_TOKEN')
           .expect(200)
           .end(function (err, res) {
@@ -900,7 +786,9 @@ describe('getUser', function () {
               return callback(err);
             }
 
-            assert.equal(res.text, 'success');
+            var json = JSON.parse(res.text);
+
+            assert.equal(json.user, null);
             callback();
           });
       }
@@ -909,17 +797,9 @@ describe('getUser', function () {
     });
   });
 
-  it('should set req.user if a valid basic auth header is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it.skip('should set req.user if a valid basic auth header is present', function (done) {
 
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-
-      res.send('success');
-    });
+    var agent = request.agent(defaultExpressApp);
 
     async.series([
       function (callback) {
@@ -930,88 +810,8 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .get('/')
+          .get('/user')
           .auth(stormpathApiKey.id, stormpathApiKey.secret)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return callback(err);
-            }
-
-            assert.equal(res.text, 'success');
-            callback();
-          });
-      }
-    ], function (err) {
-      done(err);
-    });
-  });
-
-  it('should expand customData if a valid basic auth header is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
-
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-      assert(req.user.customData.createdAt);
-
-      res.send('success');
-    });
-
-    async.series([
-      function (callback) {
-        stormpathAccount.status = 'ENABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
-        });
-      },
-      function (callback) {
-        agent
-          .get('/')
-          .auth(stormpathApiKey.id, stormpathApiKey.secret)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return callback(err);
-            }
-
-            assert.equal(res.text, 'success');
-            callback();
-          });
-      }
-    ], function (err) {
-      done(err);
-    });
-  });
-
-  it.skip('should set req.user if a valid bearer header is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
-
-    app.post('/oauth/token', getToken);
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-
-      res.send('success');
-    });
-
-    var accessToken;
-    async.series([
-      function (callback) {
-        stormpathAccount.status = 'ENABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
-        });
-      },
-      function (callback) {
-        agent
-          .post('/oauth/token?grant_type=client_credentials')
-          .auth(stormpathApiKey.id, stormpathApiKey.secret)
-          .set('Content-Type', 'x-www-form-urlencoded')
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -1019,22 +819,10 @@ describe('getUser', function () {
             }
 
             var json = JSON.parse(res.text);
-            accessToken = json.access_token;
 
-            callback();
-          });
-      },
-      function (callback) {
-        agent
-          .get('/')
-          .set('Authorization', 'Bearer: ' + accessToken)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return callback(err);
-            }
-
-            assert.equal(res.text, 'success');
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
             callback();
           });
       }
@@ -1043,21 +831,9 @@ describe('getUser', function () {
     });
   });
 
-  it.skip('should expand customData if a valid bearer header is present', function (done) {
-    var app = createFakeExpressApp();
-    var agent = request.agent(app);
+  it.skip('should expand customData if a valid basic auth header is present', function (done) {
+    var agent = request.agent(defaultExpressApp);
 
-    app.post('/oauth/token', getToken);
-    app.get('/', getUser, function (req, res) {
-      assert.equal(req.user.givenName, accountData.givenName);
-      assert.equal(req.user.surname, accountData.surname);
-      assert.equal(req.user.email, accountData.email);
-      assert(req.user.customData.createdAt);
-
-      res.send('success');
-    });
-
-    var accessToken;
     async.series([
       function (callback) {
         stormpathAccount.status = 'ENABLED';
@@ -1067,9 +843,8 @@ describe('getUser', function () {
       },
       function (callback) {
         agent
-          .post('/oauth/token?grant_type=client_credentials')
+          .get('/user')
           .auth(stormpathApiKey.id, stormpathApiKey.secret)
-          .set('Content-Type', 'x-www-form-urlencoded')
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -1077,22 +852,12 @@ describe('getUser', function () {
             }
 
             var json = JSON.parse(res.text);
-            accessToken = json.access_token;
 
-            callback();
-          });
-      },
-      function (callback) {
-        agent
-          .get('/')
-          .set('Authorization', 'Bearer: ' + accessToken)
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              return callback(err);
-            }
+            assert.equal(json.user.givenName, accountData.givenName);
+            assert.equal(json.user.surname, accountData.surname);
+            assert.equal(json.user.email, accountData.email);
+            assert.equal(json.user.customData.favoriteColor, accountData.customData.favoriteColor);
 
-            assert.equal(res.text, 'success');
             callback();
           });
       }
@@ -1100,4 +865,5 @@ describe('getUser', function () {
       done(err);
     });
   });
+
 });

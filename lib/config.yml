@@ -55,7 +55,10 @@ web:
     domain: null
 
   # Refresh Token Cookie has same options as the Access Token Cookie (above).
+  # Use the maxAge value to set the expiration time of this cookie.  If not
+  # specified the cookie will become a session cookie
   refreshTokenCookie:
+    maxAge: null #milliseconds
     name: "refresh_token"
     httpOnly: true
     secure: null
