@@ -28,6 +28,7 @@ describe.only('getUser', function () {
   var stormpathApplication;
   var stormpathClient;
   var defaultExpressApp;
+  var remoteValidationExpressApp;
 
   /**
    * This callback, when called, will continue processing the http request.
@@ -68,9 +69,23 @@ describe.only('getUser', function () {
         application: stormpathApplication
       });
 
-      defaultExpressApp.get('/user', getUser, function (req, res) {
-        res.json({ user: req.user, accessToken: req.accessToken, authenticationResult: req.authenticationResult });
+      remoteValidationExpressApp = helpers.createOktaExpressApp({
+        application: stormpathApplication,
+        web: {
+          oauth2: {
+            password: {
+              validationStrategy: 'remote'
+            }
+          }
+        }
       });
+
+      function contextResponder(req, res) {
+        res.json({ user: req.user, accessToken: req.accessToken, authenticationResult: req.authenticationResult });
+      }
+
+      defaultExpressApp.get('/user', getUser, contextResponder);
+      remoteValidationExpressApp.get('/user', getUser, contextResponder);
 
       app.createAccount(accountData, function (err, account) {
         if (err) {
@@ -169,19 +184,23 @@ describe.only('getUser', function () {
     });
   });
 
-  it.skip('should continue immediately if a disabled account\'s access_token cookie is present', function (done) {
-    var agent = request.agent(defaultExpressApp);
+  it('should not set req.user if a DEPROVISIONED account\'s access_token cookie is present (requires remote validation configuration)', function (done) {
 
-    defaultExpressApp.post('/login', login);
+    var account;
+    var accountData = helpers.newUser();
+    var agent = request.agent(remoteValidationExpressApp);
 
     async.series([
-      function (callback) {
-        stormpathAccount.status = 'ENABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
+      function (next) {
+        stormpathApplication.createAccount(accountData, function (err, _account) {
+          if (err) {
+            return next(err);
+          }
+          account = _account;
+          next();
         });
       },
-      function (callback) {
+      function (next) {
         agent
           .post('/login')
           .send({
@@ -189,13 +208,11 @@ describe.only('getUser', function () {
             password: accountData.password
           })
           .expect(302)
-          .end(callback);
+          .end(next);
       },
-      function (callback) {
-        stormpathAccount.status = 'DISABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
-        });
+      function (next) {
+        // First call to delete() will deprovision the user
+        account.delete(next);
       },
       function (callback) {
         agent
@@ -217,20 +234,18 @@ describe.only('getUser', function () {
     });
   });
 
-  it.skip('should continue immediately if a disabled account\'s access_token cookie is invalid but who\'s refresh_token cookie is valid', function (done) {
+  it('should not set req.user if the user\'s refresh token is revoked (requires remote validation configuration)', function (done) {
 
-    var agent = request.agent(defaultExpressApp);
-
-    defaultExpressApp.get('/setCookie', createCookieRoute('access_token', 'hiii'));
+    var acessToken;
+    var accountData = helpers.newUser();
+    var agent = request.agent(remoteValidationExpressApp);
+    var config = remoteValidationExpressApp.get('stormpathClient').config;
 
     async.series([
-      function (callback) {
-        stormpathAccount.status = 'ENABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
-        });
+      function (next) {
+        stormpathApplication.createAccount(accountData, next);
       },
-      function (callback) {
+      function (next) {
         agent
           .post('/login')
           .send({
@@ -238,23 +253,23 @@ describe.only('getUser', function () {
             password: accountData.password
           })
           .expect(302)
-          .end(callback);
+          .end(function (err, res) {
+            acessToken = (res.headers['set-cookie'] || []).join('').match(/refresh_token=([^;]+)/)[1];
+            next(err);
+          });
+      },
+      function (next) {
+        request(config.org)
+          .post('oauth2/' + config.authorizationServerId + '/v1/revoke')
+          .set('Accept', 'application/json')
+          .send('token=' + acessToken)
+          .send('token_type_hint=refresh_token')
+          .auth(config.authorizationServerClientId, config.authorizationServerClientSecret)
+          .end(next);
       },
       function (callback) {
         agent
-          .get('/setCookie')
-          .expect(200)
-          .end(callback);
-      },
-      function (callback) {
-        stormpathAccount.status = 'DISABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
-        });
-      },
-      function (callback) {
-        agent
-          .get('/')
+          .get('/user')
           .expect(200)
           .end(function (err, res) {
             if (err) {
@@ -263,6 +278,7 @@ describe.only('getUser', function () {
 
             var json = JSON.parse(res.text);
             assert.equal(json.user, null);
+
             callback();
           });
       }
@@ -271,17 +287,20 @@ describe.only('getUser', function () {
     });
   });
 
-  it.skip('should continue immediately if a disabled account\'s refresh_token cookie is valid', function (done) {
+  it('should not set req.user if a DEPROVISIONED account\'s access_token cookie is invalid but who\'s refresh_token cookie is valid', function (done) {
 
-    var agent = request.agent(defaultExpressApp);
-
-    defaultExpressApp.get('/setCookie', createCookieRoute('access_token', ''));
+    var account;
+    var accountData = helpers.newUser();
+    var agent = request.agent(remoteValidationExpressApp);
 
     async.series([
-      function (callback) {
-        stormpathAccount.status = 'ENABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
+      function (next) {
+        stormpathApplication.createAccount(accountData, function (err, _account) {
+          if (err) {
+            return next(err);
+          }
+          account = _account;
+          next();
         });
       },
       function (callback) {
@@ -295,16 +314,12 @@ describe.only('getUser', function () {
           .end(callback);
       },
       function (callback) {
-        agent
-          .get('/setCookie')
-          .expect(200)
-          .end(callback);
+        agent.jar.setCookie('access_token=foo');
+        callback();
       },
-      function (callback) {
-        stormpathAccount.status = 'DISABLED';
-        stormpathAccount.save(function (err) {
-          callback(err);
-        });
+      function (next) {
+        // First call to delete() will deprovision the user
+        account.delete(next);
       },
       function (callback) {
         agent
