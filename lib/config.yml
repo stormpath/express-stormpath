@@ -4,6 +4,10 @@ web:
   # this library.  If not defined, we will default to /
   basePath: null
 
+  # Determines how long Jwks (used for password-grant access token validation) should be cached
+  defaultJwksCacheManagerConfig:
+    ttl: 60000 # milliseconds
+
   domainName: null  # Required if using subdomain-based multi-tenancy
 
   multiTenancy:

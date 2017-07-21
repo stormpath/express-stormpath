@@ -4,6 +4,7 @@ var Cookies = require('cookies');
 
 var assert = require('assert');
 var async = require('async');
+var bodyParser = require('body-parser');
 var request = require('supertest');
 var uuid = require('uuid');
 
@@ -84,8 +85,40 @@ describe.only('getUser', function () {
         res.json({ user: req.user, accessToken: req.accessToken, authenticationResult: req.authenticationResult });
       }
 
+      function customDataSaverA(req, res) {
+        for (var key in req.body) {
+          req.user.customData[key] = req.body[key];
+        }
+        req.user.customData.save(function (err) {
+          if (err) {
+            res.status(400).json(err);
+          } else {
+            res.end();
+          }
+        });
+      }
+
+      function customDataSaverB(req, res) {
+        for (var key in req.body) {
+          req.user.customData[key] = req.body[key];
+        }
+        req.user.save(function (err) {
+          if (err) {
+            res.status(400).json(err);
+          } else {
+            res.end();
+          }
+        });
+      }
+
+
       defaultExpressApp.get('/user', getUser, contextResponder);
+      defaultExpressApp.post('/profileA', getUser, bodyParser.json(), customDataSaverA);
+      defaultExpressApp.post('/profileB', getUser, bodyParser.json(), customDataSaverB);
+
       remoteValidationExpressApp.get('/user', getUser, contextResponder);
+      remoteValidationExpressApp.post('/profileA', getUser, bodyParser.json(), customDataSaverA);
+      remoteValidationExpressApp.post('/profileB', getUser, bodyParser.json(), customDataSaverB);
 
       app.createAccount(accountData, function (err, account) {
         if (err) {
@@ -385,76 +418,66 @@ describe.only('getUser', function () {
     });
   });
 
-  it.skip('should use local validation, if specified by configuration', function (done) {
+  it('should have faster validation with local validation (default)', function (done) {
 
-    var app = helpers.createStormpathExpressApp({
-      application: stormpathApplication,
-      web: {
-        oauth2: {
-          password: {
-            validationStrategy: 'local'
-          }
-        }
+    var agentA = request.agent(defaultExpressApp);
+    var agentB = request.agent(remoteValidationExpressApp);
+
+    async.series([
+      function (callback) {
+        agentA
+          .post('/login')
+          .send({
+            login: accountData.email,
+            password: accountData.password
+          })
+          .expect(302)
+          .end(callback);
+      },
+      function (callback) {
+        agentB
+          .post('/login')
+          .send({
+            login: accountData.email,
+            password: accountData.password
+          })
+          .expect(302)
+          .end(callback);
+      },
+      function (callback) {
+        var a = new Date();
+        agentA
+          .get('/user')
+          .accept('application/json')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return callback(err);
+            }
+            var delta = new Date() - a;
+            assert(delta < 20, 'Validation took ' + delta + 'ms, does not appear to be local validation');
+            assert.equal(res.body.user.email, accountData.email);
+            callback();
+          });
+      },
+      function (callback) {
+        var a = new Date();
+        agentB
+          .get('/user')
+          .accept('application/json')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return callback(err);
+            }
+            var b = new Date();
+            assert((b - a) > 100, 'Validation was too quick, doesnt appear to be remote validation');
+            assert.equal(res.body.user.email, accountData.email);
+            callback();
+          });
       }
-    });
+    ], done);
 
-    app.get('/', getUser, function (req, res) {
-      res.json(req.user);
-    });
-
-    app.on('stormpath.ready', function () {
-
-      var agent = request.agent(app);
-
-      async.series([
-        function (callback) {
-          stormpathAccount.status = 'ENABLED';
-          stormpathAccount.save(callback);
-        },
-        function (callback) {
-          agent
-            .post('/login')
-            .send({
-              login: accountData.email,
-              password: accountData.password
-            })
-            .expect(302)
-            .end(callback);
-        },
-        function (callback) {
-          // The first authentication attempt will take longer, because we have to fetch the
-          // access token resources
-          var a = new Date();
-          agent
-            .get('/')
-            .expect(200)
-            .end(function (err, res) {
-              if (err) {
-                return callback(err);
-              }
-              var b = new Date();
-              assert((b - a) > 100, 'Expected first validation attempt to take some time, due to fetching access token resource');
-              assert.equal(res.body.email, accountData.email);
-              callback();
-            });
-        },
-        function (callback) {
-          var a = new Date();
-          agent
-            .get('/')
-            .expect(200)
-            .end(function (err, res) {
-              if (err) {
-                return callback(err);
-              }
-              var b = new Date();
-              assert((b - a) < 20, 'Validation took too long - does not appear to be local validation');
-              assert.equal(res.body.email, accountData.email);
-              callback();
-            });
-        }
-      ], done);
-    });
   });
 
   it('should set req.user and res.locals.user if an invalid access_token cookie is present but a valid refresh_token is present', function (done) {
@@ -879,6 +902,78 @@ describe.only('getUser', function () {
     ], function (err) {
       done(err);
     });
+  });
+
+  it.only('should allow me to save custom data with req.user.customData.save()', function (done) {
+
+    function testWithAgent(agent, next) {
+      var accountData = helpers.newUser();
+      async.series([
+        function (next) {
+          stormpathApplication.createAccount(accountData, next);
+        },
+        function (callback) {
+          agent
+            .post('/login')
+            .send({
+              login: accountData.email,
+              password: accountData.password
+            })
+            .expect(302)
+            .end(callback);
+        },
+        function (callback) {
+          agent
+            .post('/profileA')
+            .send({
+              favoriteColor: 'bar'
+            })
+            .expect(200)
+            .end(callback);
+        },
+        function (callback) {
+          agent
+            .get('/user')
+            .expect(200)
+            .end(function (err, res) {
+              if (err) {
+                return callback(err);
+              }
+
+              var json = JSON.parse(res.text);
+              assert.equal(json.user.customData.favoriteColor, 'bar');
+              callback();
+            });
+        },
+        function (callback) {
+          agent
+            .post('/profileB')
+            .send({
+              favoriteColor: 'baz'
+            })
+            .expect(200)
+            .end(callback);
+        },
+        function (callback) {
+          agent
+            .get('/user')
+            .expect(200)
+            .end(function (err, res) {
+              if (err) {
+                return callback(err);
+              }
+
+              var json = JSON.parse(res.text);
+              assert.equal(json.user.customData.favoriteColor, 'baz');
+              callback();
+            });
+        }
+      ], next);
+    }
+    async.parallel([
+      testWithAgent.bind(null, request.agent(defaultExpressApp)),
+      testWithAgent.bind(null, request.agent(remoteValidationExpressApp))
+    ], done);
   });
 
 });
