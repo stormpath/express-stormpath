@@ -76,6 +76,13 @@ web:
     - application/json
     - text/html
 
+  # The order of locations that getUser() will search for an access token when
+  # attempting to resolve the user for the request
+  getUser:
+    accessTokenSearchLocations:
+      - header
+      - cookie
+
   register:
     enabled: true
     uri: "/register"
