@@ -16,7 +16,7 @@ var helpers = require('../helpers');
  * @param {object} stormpathApplication
  */
 function DefaultExpressApplicationFixtureFixture(stormpathApplication) {
-  this.expressApp = helpers.createStormpathExpressApp({
+  this.expressApp = helpers.createOktaExpressApp({
     application: stormpathApplication
   });
 }

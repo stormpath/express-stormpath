@@ -4,3 +4,5 @@ node_modules
 .coveralls.yml
 *.log
 .env
+.vscode
+.DS_Store

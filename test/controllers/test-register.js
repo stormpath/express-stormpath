@@ -23,11 +23,8 @@ var SpaRootFixture = require('../fixtures/spa-root-fixture');
  *
  * @param {object} stormpathApplication
  */
-function DefaultRegistrationFixture(stormpathApplication) {
-  this.expressApp = helpers.createStormpathExpressApp({
-    application: {
-      href: stormpathApplication.href
-    },
+function DefaultRegistrationFixture() {
+  this.expressApp = helpers.createOktaExpressApp({
     cacheOptions: {
       ttl: 0
     },
@@ -98,6 +95,23 @@ DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
   }
 };
 
+function VerificationRequiredFixture() {
+  this.expressApp = helpers.createOktaExpressApp({
+    cacheOptions: {
+      ttl: 0
+    },
+    web: {
+      register: {
+        enabled: true,
+        emailVerificationRequired: true
+      }
+    }
+  });
+  return this;
+}
+
+VerificationRequiredFixture.prototype.defaultFormPost = DefaultRegistrationFixture.prototype.defaultFormPost;
+
 /**
  * Creates an Express application and configures the register feature with the
  * surname and given name as optional (not required) fields.
@@ -107,11 +121,8 @@ DefaultRegistrationFixture.prototype.defaultJsonViewModel = {
  *
  * @param {object} stormpathApplication
  */
-function NamesOptionalRegistrationFixture(stormpathApplication) {
-  this.expressApp = helpers.createStormpathExpressApp({
-    application: {
-      href: stormpathApplication.href
-    },
+function NamesOptionalRegistrationFixture() {
+  this.expressApp = helpers.createOktaExpressApp({
     cacheOptions: {
       ttl: 0
     },
@@ -170,11 +181,8 @@ NamesOptionalRegistrationFixture.prototype.namesProvidedFormPost = function () {
  *
  * @param {object} stormpathApplication
  */
-function NamesDisabledRegistrationFixture(stormpathApplication) {
-  this.expressApp = helpers.createStormpathExpressApp({
-    application: {
-      href: stormpathApplication.href
-    },
+function NamesDisabledRegistrationFixture() {
+  this.expressApp = helpers.createOktaExpressApp({
     cacheOptions: {
       ttl: 0
     },
@@ -217,11 +225,8 @@ NamesDisabledRegistrationFixture.prototype.defaultFormPost = function () {
  *
  * @param {object]} stormpathApplication
  */
-function CustomFieldRegistrationFixture(stormpathApplication) {
-  this.expressApp = helpers.createStormpathExpressApp({
-    application: {
-      href: stormpathApplication.href
-    },
+function CustomFieldRegistrationFixture() {
+  this.expressApp = helpers.createOktaExpressApp({
     cacheOptions: {
       ttl: 0
     },
@@ -230,9 +235,9 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
         enabled: true,
         form: {
           fields: {
-            color: {
+            favoriteColor: {
               enabled: true,
-              name: 'color',
+              name: 'favoriteColor',
               placeholder: 'Favorite Color',
               required: true,
               type: 'text'
@@ -245,7 +250,7 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
               type: 'text'
             }
           },
-          fieldOrder: ['givenName', 'surname', 'color', 'music', 'email', 'password']
+          fieldOrder: ['givenName', 'surname', 'favoriteColor', 'music', 'email', 'password']
         }
       }
     }
@@ -267,7 +272,7 @@ function CustomFieldRegistrationFixture(stormpathApplication) {
  */
 CustomFieldRegistrationFixture.prototype.defaultFormPost = function () {
   var formData = DefaultRegistrationFixture.prototype.defaultFormPost();
-  formData.color = uuid.v4();
+  formData.favoriteColor = uuid.v4();
   formData.customData = {
     music: uuid.v4()
   };
@@ -300,7 +305,7 @@ function assertCustomDataRegistration(fixture, formData, done) {
       return done(err);
     }
 
-    fixture.expressApp.get('stormpathApplication').getAccounts({ email: formData.email }, function (err, accounts) {
+    fixture.expressApp.get('stormpathClient').getAccounts({ q: formData.email }, function (err, accounts) {
       if (err) {
         return done(err);
       }
@@ -316,7 +321,7 @@ function assertCustomDataRegistration(fixture, formData, done) {
         }
 
         assert.equal(account.email, formData.email);
-        assert.equal(data.color, formData.color);
+        assert.equal(data.favoriteColor, formData.favoriteColor);
         assert.equal(data.music, formData.customData.music);
 
         done();
@@ -325,20 +330,13 @@ function assertCustomDataRegistration(fixture, formData, done) {
   };
 }
 
-describe('register', function () {
+describe.only('register', function () {
   var stormpathApplication;
   var stormpathClient;
   var customFieldRegistrationFixture;
   var defaultRegistrationFixture;
   var namesDisabledRegistrationFixture;
   var namesOptionalRegistrationFixture;
-
-  var existingUserData = {
-    givenName: uuid.v4(),
-    surname: uuid.v4(),
-    email: 'robert+' + uuid.v4() + '@stormpath.com',
-    password: uuid.v4() + uuid.v4().toUpperCase() + '!'
-  };
 
   before(function (done) {
     stormpathClient = helpers.createClient();
@@ -357,16 +355,14 @@ describe('register', function () {
           namesOptionalRegistrationFixture.expressApp.on('stormpath.ready', function () {
             namesDisabledRegistrationFixture = new NamesDisabledRegistrationFixture(stormpathApplication);
             namesDisabledRegistrationFixture.expressApp.on('stormpath.ready', function () {
-              app.createAccount(existingUserData, done);
+              // debugger
+              // app.createAccount(existingUserData, done);
+              done();
             });
           });
         });
       });
     });
-  });
-
-  after(function (done) {
-    helpers.destroyApplication(stormpathApplication, done);
   });
 
   describe('by default', function () {
@@ -397,7 +393,7 @@ describe('register', function () {
   describe('with a custom uri', function () {
     var app;
     before(function (done) {
-      app = helpers.createStormpathExpressApp({
+      app = helpers.createOktaExpressApp({
         application: {
           href: stormpathApplication.href
         },
@@ -426,23 +422,15 @@ describe('register', function () {
     });
   });
 
+  // need to add a case for when verification is disabled
+
   describe('if email verification is enabled', function () {
 
-    var fixture;
+    var fixture = new VerificationRequiredFixture(stormpathApplication);
 
-    before(function (done) {
-      helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', function (err) {
-        if (err) {
-          return done(err);
-        }
-        fixture = new DefaultRegistrationFixture(stormpathApplication);
-        fixture.expressApp.on('stormpath.ready', done);
-      });
-    });
-
-    after(function (done) {
-      helpers.setEmailVerificationStatus(stormpathApplication, 'DISABLED', done);
-    });
+    // before(function (done) {
+    //   fixture.expressApp.on('stormpath.ready', done);
+    // });
 
     it('should return the user to the login page with ?status=unverified', function (done) {
 
@@ -488,6 +476,7 @@ describe('register', function () {
             assert.equal(json.account.surname, formData.surname);
             assert.equal(json.account.email, formData.email);
             assert.equal(json.account.emailVerificationToken, undefined);
+            assert.equal(json.account.emailVerificationStatus, 'UNVERIFIED');
 
             done();
           });
@@ -875,9 +864,9 @@ describe('register', function () {
             assert.equal(surnameField.attr('required') === 'required', config.web.register.form.fields.surname.required);
             assert.equal(surnameField.attr('type'), config.web.register.form.fields.surname.type);
 
-            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.color.placeholder);
-            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.color.required);
-            assert.equal(colorField.attr('type'), config.web.register.form.fields.color.type);
+            assert.equal(colorField.attr('placeholder'), config.web.register.form.fields.favoriteColor.placeholder);
+            assert.equal(colorField.attr('required') === 'required', config.web.register.form.fields.favoriteColor.required);
+            assert.equal(colorField.attr('type'), config.web.register.form.fields.favoriteColor.type);
 
             assert.equal(musicField.attr('placeholder'), config.web.register.form.fields.music.placeholder);
             assert.equal(musicField.attr('required') === 'required', config.web.register.form.fields.music.required);
@@ -934,7 +923,7 @@ describe('register', function () {
 
             var colorField = $(formFields[2]);
 
-            assert.equal(colorField.attr('value'), formData.color);
+            assert.equal(colorField.attr('value'), formData.favoriteColor);
 
             done();
           });
@@ -947,7 +936,7 @@ describe('register', function () {
       var app;
 
       before(function (done) {
-        app = helpers.createStormpathExpressApp({
+        app = helpers.createOktaExpressApp({
           application: {
             href: stormpathApplication.href
           },
@@ -1018,7 +1007,7 @@ describe('register', function () {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
+            stormpathClient.getAccounts({ q: formData.email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }
@@ -1077,7 +1066,7 @@ describe('register', function () {
               return done(err);
             }
 
-            stormpathApplication.getAccounts({ email: formData.email }, function (err, accounts) {
+            stormpathClient.getAccounts({ q: formData.email }, function (err, accounts) {
               if (err) {
                 return done(err);
               }

@@ -6,6 +6,324 @@ Change Log
 
 All library changes, in descending order.
 
+Version 4.0.0
+-----------------
+
+**Released July 21, 2017**
+
+This major version is meant to be used if:
+
+ - You are a Stormpath customer that is migrating to Okta `(learn more) <https://stormpath.com/oktaplusstormpath>`_.
+ - You have successfully exported your tenant data from Stormpath `(learn more) <https://stormpath.com/export>`_.
+ - You plan to imported your data into Okta `(learn more) <https://developer.okta.com/documentation/stormpath-import>`_.
+
+We suggest following the instructions in the `Express Stormpath Sample Project <https://github.com/stormpath/express-stormpath-sample-project/>`_
+to setup a sample project with this version and your Okta org.  This will help give you confidence that everything is working before embarking on your data import.
+
+This 4.0.0 release includes all the changes in the 4.0.0-rc releases, as well as some fixes since RC4.  If you are trying this version for the first time,
+please read down through each RC to learn about the breaking changes that will affect your code.
+
+
+New changes since RC4:
+
+* **Caching of JWKs.**  Similar to Stormpath, we validate access tokens when a request presents them for authentication.
+  At Okta we now use RSA keys and the JWKs endpoint to do this validation, for more information please see `Validating Access Tokens`_.
+  In this release, we have included a JWKS cache manager, to allow you to control how long the JWKs are cached for, and the default is 1 hour.
+  To configure the TTL of the JWKS cache manager:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        defaultJwksCacheManagerConfig: {
+          ttl: 60000 // milliseconds, one hour
+        }
+      }
+    }));
+* **Configurable access token location search**.  The default behavior of this library has been to search for an access token in the Authorization header, then in cookies.
+  If you need to change this ordering, you can now pass this configuration:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        authentication: {
+          accessTokenSearchLocations: ['cookie', 'header']
+        }
+      }
+    }));
+* **Improved authentication error messages**.  Previous RC releases would give opaque error messages during authentication.  We now attempt to pass down as much error information as possible.
+* **Refresh token cookies are being set**.  Previous RC releases were not setting the refresh token cookie, like was done with Stormpath.
+  This has been fixed, however you will need to tell the library how long the refresh token should exist in the browser for.
+  By default we now create it as a session cookie.  If you wish for the cookie to persist after browser close, you will need to set the max-age of the cookie with this configuration:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        refreshTokenCookie: {
+          maxAge: 60000 // milliseconds, one hour
+        }
+      }
+    }));
+
+* **Remote validation option**.  Previous RC releases would not use a remote ("stormpath") validation option if configured, this is now fixed.  Please see the
+  `Token Validation Strategy`_ for a description of the remote validation behavior.
+* **User caching is re-implemented**.  Previous RC releases did not have a working cache for user resources.  This version has a working cache for user resources.
+* **Test data script fixes**.  The test data script has been fixed to match the new API for managing authorization servers.
+
+
+Version 4.0.0-rc4
+-----------------
+
+**Released June 16, 2017**
+
+This release candidate builds on top of the prior release candidates, 4.0.0-rc3, 4.0.0-rc2, and 4.0.0-rc1, by adding support for the following features, using the Okta platform:
+
+**Informative: OAuth Server Migration**
+
+The Stormpath API provided an OAuth server for each Stormpath application, and this library provides an ``/oauth/token`` endpoint, which proxied the request to the OAuth server of the configured Stormpath application.  This proxy behavior is now patched to work with Okta's `Authorization Servers`_.  The `stormpath-migration tool`_ will create one authorization server for each application that is migrated.
+
+**Breaking Changes for the /oauth/token endpoint**
+
+* Access token requests must now be an OpenID Connect (OIDC) request, as such the ``openid`` scope must be added to the request if you want an access token.  Internally we add this for you if no scope has been added to the request.
+* It is no longer possible to make use of the `scope factory feature`_ to add custom scopes to the issued tokens.  The scope claim of access tokens will reflect what you requested of the authorization server.
+* Refresh tokens are no longer issued automatically.  If you want to get a refresh token while doing ``grant_type=password``, you need to add the ``offline_access`` scope to the request.
+* Refresh tokens are now opaque, and do not contain references to the authenticated subject.  However the `Introspection Request`_ endpoint can be used to get information about the subject.
+* Pre and Post Login handlers have not been implemented in this version for this route.  Please contact us if you need this feature.
+
+**Fixes for API Keys**
+
+In 4.0.0-rc2 we introduced patches to allow users to continue using their Stormpath API Keys for API authentication.  There were some bugs in the patch that prevented this form working.  We've also patched ``account.createApiKey()`` in the underlying 1.0.0-rc4 version of the Stormpath Node SDK.  It will add new API keys by creating secure random values that are stored on the user's profile object.
+
+Version 4.0.0-rc3
+-----------------
+
+**Released May 1, 2017**
+
+This release candidate builds on top of the prior release candidate, 4.0.0-rc2 and 4.0.0-rc1, by adding support for the following features, using the Okta platform:
+
+- Social login for page-based redirect flows.  Popup/implicit flows will be supported in a future release.
+
+Please read the changelog for the previous 4.0.0-rc2 and 4.0.0-rc1 release (below) for a full list of breaking changes on the 4.x series.
+
+**Social Login Changelog**
+
+- The data import tool will copy the metadata about your social providers into Okta, and create them as Identify Provider (IdP) resources.  The following providers are supported:
+
+  - Facebook
+  - Google
+  - Linkedin
+
+  Unfortunately, Github and generic Oauth2 providers are not supported at this time.
+
+- After the data import tool runs, you will need to do the following:
+
+  - Visit Admin -> Security -> Identity Providers in the Okta Admin Console.  Each IdP has an Okta-specific redirect URI.  In the Okta flow, the user is sent through Okta before coming back to your application.  As such, you will need to add this redirect URI as an allowed URI with the provider. For example you will need to login to the Google Apps console, or Facebook Developer site, and add this redirect URI to your application.
+  - Visit Applications in the Okta Admin Console, and find the Application that was created for your Stormpath application.  You will need to add the following redirect URIs to the whitelist, one for each provider that you are using.  These are the final redirect handlers on your server that are provided by the ``express-stormpath`` library:
+
+    - ``http://<your-app-domain>/callbacks/facebook``
+    - ``http://<your-app-domain>/callbacks/google``
+    - ``http://<your-app-domain>/callbacks/linkedin``
+
+- This new flow is using OpenID Connect under the hood, as such we've added the ``email openid profile`` scope as a default scope.  If you are providing scopes manually you may need to add that scope to your list.
+
+Version 4.0.0-rc2
+-----------------
+
+**Released April 20, 2017**
+
+This release candidate builds on top of the prior release candidate, 4.0.0-rc1, by adding support for the following features, using the Okta platform:
+
+- Group authorization, using the ``groupsRequired`` middleware.
+- API Key Authentication (Client Credentials Grant Flow).
+
+Please read the changelog for the 4.0.0-rc1 release (below) for a full list of breaking changes on the 4.x series.
+
+**How API Keys Are Being Migrated**
+
+Okta does not provide API Keys on a per-account basis.  As such, the data import tool (available by end of April) will migrate API Keys onto the user's profile as custom attributes.  For example, if a user has multiple API Keys you will see this in their profile data, where the API Key is encoded as an ``id:secret`` string:
+
+  .. code-block:: javascript
+
+    "stormpathApiKey_1": "6T7N8RH4R168UF4MLRv1SYIT1:w0qxffEwie3Tf+eqdxpD7Ad5bp4uYbRlrkX/kcMs1Ag",
+    "stormpathApiKey_2": "4ZTYOE6IJ6RQEEYDZ2NX4WM1Y:xSD4C3AENM2gAHKNcT5mXGdfT/8nF4Wfl0FBwe4gTg8"
+
+We've patched ``application.authenticateApiRequest()`` in the Stormpath Node SDK to look for the API keys in their new location, so the Client Credentials grant flow should continue to work as-is for you.
+
+**Breaking Changes for API Keys**
+
+- By default, this library will start using your Okta API Token as the secret that is used to verify and sign access tokens that are generated by the Client Credentials grant type.  This means that existing tokens, issued by Stormpath, won't validate.  If you want to validate those tokens, please add the ``STORMPATH_CLIENT_APIKEY_SECRET`` back to your configuration, and provide the API Key secret that you are currently using.  If we see this option provided, we will use that key for signing an verification.
+- API Keys will lose their metadata (name and custom data), only the ID and Secret will be preserved by the import tool.
+- Stormpath provided the ability to encrypt the API Key resource in transit from the Stormpath REST API, and we would store the encrypted values in the local cache.  This is no longer possible, as the values are now stored as plaintext values on the user profile.
+- Disabled api keys will not be imported.
+
+Version 4.0.0-rc1
+-----------------
+
+**Released April 13, 2017**
+
+This major version will help you migrate to the Okta platform.  We have strived
+to preserve the functionality that you have come to depend on through Stormpath,
+while transparently switching you to the Okta platform.  This version assumes
+that you are using the data migration tool to export your data from your Stormpath
+Tenant, and import it into your Okta organization (this tool will be public soon,
+please contact us for early access).  You can also use the `Test Data Script`_
+to create some test data in your Okta tenant, allowing you to test basic
+functionality against before working on your data import.
+
+**Features available in this RC**
+
+These features have been patched and should be working in this RC, although some require changes to your code:
+
+* Login with password.
+* Registration of new accounts.
+* Email verification workflow (see changes below).
+* Password reset workflow (see changes below).
+* Get and save custom data for account resources.
+* Logout.
+
+**Features NOT available in this RC**
+
+These features will be coming in the next RC:
+
+* Group-based authorization with the ``groupsRequired`` middleware.
+* Social login.
+* Client-credentials authentication for Account API Keys.
+
+**Features NOT being migrated**
+
+Please see the "Compatibility Matrix" on the `Stormpath-Okta Customer FAQ`_ for a complete list of features that are not being migrated.  The relevant points for this library are:
+
+* Subdomain-based multi-tenancy, as introduced by version 3.2.0, will not be migrated.  If you are using this feature please contact support@stormpath.com so that we can help you find a solution.
+* ID Site as a feature will not be migrated, so you will not be able to use this library to log users in with ID Site.
+* Custom data will only be available on account resources.  If you are storing custom data on a group, directory, organization or application, you will need to move that data into your own persistence layer.
+
+
+**Configuration Changes**
+
+To use this version, please sign up for a developer account at http://developer.okta.com.
+You will be walked through the setup of an Okta Organization, which is similar to
+a Stormpath Tenant.
+
+Since you will be using the Okta platform, the Stormpath API Key and application
+configuration must be removed.  In it's place you will need to configure the
+following properties:
+
+- **API Token**: similar to the Stormpath API Key, this is a secret that is used
+  to secure the communication with the Okta platform.  You can create an API token
+  from the Admin Console of your Okta organization.
+- **Application Id**: This is the ID of the Okta Application that represents your application.
+  If using the test data script, and application is created for you and the ID is logged in the console.
+  If using the `stormpath-migration tool`_ it will create an application for each of your Stormpath applications.
+  You can discover the ID of the application by finding the application in the Okta Admin Console, and looking in the URL bar when viewing the application.
+- **Org**:  In Stormpath you had a Tenant, and in Okta you have an Org.  Every
+  Org has it's own distinct URL.  This URL is sent to you when you sign up for
+  your developer account, and it is also used to login to the Admin Console for
+  your organization.
+
+These new properties should be provided like so:
+
+.. code-block:: javascript
+
+  app.use(stormpath.init(app, {
+    org: 'https://dev-YOUR-ID.oktapreview.com/',
+    application: {
+      id: 'your-okta-applicaton-id'
+    },
+    apiToken: 'your-okta-api-token'
+  }));
+
+Or through the following environment variables:
+
+.. code-block:: sh
+
+  OKTA_APITOKEN
+  OKTA_APPLICATION_ID
+  OKTA_ORG
+
+**Breaking Changes**
+
+- The underlying `Stormpath Node SDK`_ is undergoing major changes and is being used as the primary adapter between the Stormpath and Okta data models.  It is currently in a release candidate state as well, but we do not yet have a robust changelog.  If your Express application is reaching down into the Node SDK, e.g. using ``req.app.get('stormpathApplication')`` or ``req.app.get('stormpathClient')``, please know that the returned objects are now unstable.  We will have more clarity around this soon.  Please contact us if you run into errors, it will be helpful to know which areas are causing problems.
+
+- Custom data properties must be declared on the Okta User Schema.  If you have used the ``web.register.form.fields`` configuration to add custom properties to your registration form, you will need to use the Okta Admin Console to add these to the user schema.  This can be found under Directory -> Profile Editor.  The data migration tool will inspect your existing accounts and attempt to create these schema properties for you.  You can also use the `Okta Schema API`_ to do this programmatically.
+
+- Email verification has several major changes:
+
+  - This feature is no longer available on a per-directory basis, and you must configure it locally in your server configuration.  It will now be disabled by default unless explicitly enabled with the ``web.register.emailVerificationRequired`` option (see example below).
+
+  - You will have to send the email verification message to your users. Stormpath was able to send this email for you, but this is not yet available in Okta.  We've provided a new option for you to pass an ``emailVerificationHandler``, this handler will be called when a new user registers, or when a user is asking for the verification email to be re-sent.  This function is passed the account, which will have the email verification token that you need to send to the user.  See example below.
+
+
+  - The email verification token is still found on the ``account.emailVerificationToken.href`` property like before, but it no longer has a full URL in front of it.  We've retained an initial forward slash in case you were using this as part of a Regular Expression when looking for the token.
+
+    Here is how the configuration for email verification should now look:
+
+    .. code-block:: javascript
+
+      app.use(stormpath.init(app, {
+        web: {
+          register: {
+            emailVerificationRequired: true
+          }
+        },
+        emailVerificationHandler: function(account) {
+          /**
+           * Drop the initial slash from the token, then append it to the verification URL
+           * of your application.  Then send this link to the user by email.
+           */
+
+          var token = account.emailVerificationToken.href.slice(1);
+
+          var verificationUrl = 'http://www.example.com/verify?sptoken=' + token;
+
+          var userEmail = account.email;
+
+          var message = 'To verify you account please visit: ' + verificationUrl;
+
+          sendEmail({        // pseudo code, sendEmail must be provided by you
+            to: userEmail,
+            message: message
+          });
+        },
+
+      }));
+
+- Forgot password flow has several changes:
+
+  - This feature is no longer available on a per-directory basis, and you must configure it locally in your server configuration.  This feature will now be disabled by default, unless you manually enable it with these options:
+
+    .. code-block:: javascript
+
+      app.use(stormpath.init(app, {
+        web: {
+          changePassword: {
+            enabled: true
+          },
+          forgotPassword: {
+            enabled: true
+          }
+        }
+      }));
+
+  - You will need to re-create the email template for the password reset email.  You can copy the current template from the Stormpath Admin Console, then in the Okta console you can paste it into the template found at Settings > Email & SMS > Forgot Password.  You'll want to use the ``${recoveryToken}`` variable to create a link that points the user to the verification endpoint on your application, for example: ``http://localhost:3000/change?sptoken=${recoveryToken}``.
+
+  - The expiration time for password reset tokens is now 59 minutes, this can be configured through the Okta Admin Console, see Security -> Policies -> Default Policy.
+
+  - Password recovery confirmation emails will not be sent, this type of email template is currently not available.  Please let us know if you need this feature and we can provide a hook in this library that will let you send this message manually.
+
+**Potentially Breaking Changes**
+
+- Okta uses an API Token to authenticate its API, similar to Stormpath's API Key ID/Secret.  However the Okta API Tokens will expire in 30 days if they are not used.  This means that if your application is not used for 30 days it will fail because the API Token will no longer be valid.
+
+- ``req.user`` is now populated from the Okta User, which will contain a new set
+  of default properties that Stormpath did not have.  We've copied the relevant
+  Okta properties onto their Stormpath counterparts (e.g. ``firstName``, ``lastName``,
+  and ``customData``), however there will be new properties that did not exist before.
+  Please evaluate how you are using ``req.user`` to ensure that the new properties
+  won't break your code.
+
+
 Version 3.2.0
 -------------
 
@@ -218,7 +536,6 @@ Version 3.0.1
 
 Major Release 3.0.0
 -------------------
-
 This major release of our Express.js integration is introducing changes for
 better network performance and easier configuration.  We're also updating several
 configuration options and view models to conform with our framework
@@ -1451,5 +1768,15 @@ Version 0.1.0
 - Basic docs.
 - Lots to do!
 
+.. _Authorization Servers: https://developer.okta.com/use_cases/api_access_management/
+.. _Introspection Request: https://developer.okta.com/docs/api/resources/oidc.html#introspection-request
+.. _Okta User Status: http://developer.okta.com/docs/api/resources/users.html#user-status
+.. _Okta Schema API:  http://developer.okta.com/docs/api/resources/schemas.html
+.. _scope factory feature: https://docs.stormpath.com/nodejs/jsdoc/ScopeFactoryAuthenticator.html
+.. _stormpath-migration tool: https://github.com/okta/stormpath-migration
 .. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
+.. _Stormpath-Okta Customer FAQ: https://stormpath.com/oktaplusstormpath
+.. _Validating Access Tokens: https://developer.okta.com/standards/OAuth/index.html#validating-access-tokens
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
+.. _Test Data Script: https://github.com/stormpath/express-stormpath/blob/4.0.0/util/okta-test-data.js
+.. _Token Validation Strategy: http://localhost:3333/authentication.html#validation-strategy

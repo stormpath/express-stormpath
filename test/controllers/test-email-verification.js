@@ -32,7 +32,7 @@ function assertInvalidEmailError(res) {
   assert($('.alert-danger').html().match(/Please enter a valid email address/));
 }
 
-describe('email verification', function () {
+describe.only('email verification', function () {
   var expressApp;
   var stormpathApplication;
 
@@ -45,26 +45,19 @@ describe('email verification', function () {
 
       stormpathApplication = app;
 
-      helpers.setEmailVerificationStatus(stormpathApplication, 'ENABLED', function (err) {
-        if (err) {
-          return done(err);
-        }
-        expressApp = helpers.createStormpathExpressApp({
-          application: stormpathApplication,
-          web: {
-            register: {
-              enabled: true
-            }
+      expressApp = helpers.createOktaExpressApp({
+        application: stormpathApplication,
+        web: {
+          register: {
+            enabled: true,
+            emailVerificationRequired: true
           }
-        });
-        expressApp.on('stormpath.ready', done);
+        }
       });
+      expressApp.on('stormpath.ready', done);
+
     });
 
-  });
-
-  after(function (done) {
-    helpers.destroyApplication(stormpathApplication, done);
   });
 
   it('should show an "unverified" message after registration', function (done) {
@@ -80,7 +73,7 @@ describe('email verification', function () {
   });
 
   it('should allow me to re-send an email verification message and show the success on the login page', function (done) {
-
+    // this will need to invoke an alternate handler
     var config = expressApp.get('stormpathConfig');
     request(expressApp)
       .post(config.web.verifyEmail.uri)
@@ -173,7 +166,7 @@ describe('email verification', function () {
     var client = expressApp.get('stormpathClient');
     var config = expressApp.get('stormpathConfig');
 
-    application.createAccount(helpers.newUser(), function (err, account) {
+    application.createAccount(helpers.newUser(), { activate: false }, function (err, account) {
       if (err) {
         return done(err);
       }
@@ -189,10 +182,15 @@ describe('email verification', function () {
           }
 
           var token = account.emailVerificationToken.href.match(/\/([^\/]+)$/)[1];
-          requestVerifyPage(expressApp, token)
-            .expect(302)
-            .expect('Location', config.web.login.uri + '?status=verified')
-            .end(done);
+
+          setTimeout(function () {
+            // The search API, used to find an account with the given token, is not
+            // immediately consistent, so give it a moment to settle.
+            requestVerifyPage(expressApp, token)
+              .expect(302)
+              .expect('Location', config.web.login.uri + '?status=verified')
+              .end(done);
+          }, 1000);
         });
       });
     });
@@ -200,13 +198,16 @@ describe('email verification', function () {
   });
 
   it('should be able to serve the form at a different uri', function (done) {
-    var app = helpers.createStormpathExpressApp({
+    var app = helpers.createOktaExpressApp({
       application: {
         href: stormpathApplication.href
       },
       web:{
         verifyEmail:{
           uri: '/' + uuid()
+        },
+        register: {
+          emailVerificationRequired: true
         }
       }
     });
@@ -227,8 +228,10 @@ describe('email verification', function () {
 
     before(function (done) {
       spaRootFixture = new SpaRootFixture({
-        application: {
-          href: stormpathApplication.href
+        web: {
+          register: {
+            emailVerificationRequired: true
+          }
         }
       });
       spaRootFixture.before(done);

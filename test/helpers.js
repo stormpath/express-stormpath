@@ -50,10 +50,11 @@ module.exports.newUser = function () {
  * @param {Object} application - The initialized Stormpath Application object.
  */
 module.exports.createApplication = function (client, callback) {
-  var appData = { name: pkg.name + ':' + testRunId + ':' + uuid.v4() };
-  var opts = { createDirectory: true };
 
-  client.createApplication(appData, opts, callback);
+  // TODO - have this create new apps
+
+  client.getApplication('/apps/' + process.env.OKTA_APPLICATION_ID, callback);
+
 };
 
 /**
@@ -157,12 +158,13 @@ module.exports.setPasswordResetStatus = function (application, status, cb) {
   });
 };
 
-module.exports.createStormpathExpressApp = function (config, preHandler) {
+module.exports.createOktaExpressApp = function (config, preHandler) {
   config.client = {
-    apiKey: {
-      id: process.env.STORMPATH_CLIENT_APIKEY_ID,
-      secret: process.env.STORMPATH_CLIENT_APIKEY_SECRET
-    }
+    apiToken: process.env.OKTA_APITOKEN,
+    application: {
+      id: process.env.OKTA_APPLICATION_ID
+    },
+    org: process.env.OKTA_ORG
   };
 
   var app = express();
