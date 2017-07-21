@@ -904,7 +904,7 @@ describe.only('getUser', function () {
     });
   });
 
-  it.only('should allow me to save custom data with req.user.customData.save()', function (done) {
+  it('should allow me to save custom data with req.user.customData.save()', function (done) {
 
     function testWithAgent(agent, next) {
       var accountData = helpers.newUser();
