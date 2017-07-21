@@ -248,7 +248,7 @@ function createApplication(client, next) {
     if (err) {
       return next(err);
     }
-    client.getApplication(oAuthClient.client_id, next);
+    client.getApplication('apps/' + oAuthClient.client_id, next);
   });
 }
 
