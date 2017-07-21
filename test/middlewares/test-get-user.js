@@ -75,7 +75,7 @@ describe.only('getUser', function () {
         web: {
           oauth2: {
             password: {
-              validationStrategy: 'remote'
+              validationStrategy: 'stormpath'
             }
           }
         }
@@ -470,8 +470,8 @@ describe.only('getUser', function () {
             if (err) {
               return callback(err);
             }
-            var b = new Date();
-            assert((b - a) > 100, 'Validation was too quick, doesnt appear to be remote validation');
+            var delta = new Date() - a;
+            assert(delta > 50, 'Validation was too quick, ' + delta + 'ms, doesnt appear to be remote validation');
             assert.equal(res.body.user.email, accountData.email);
             callback();
           });
