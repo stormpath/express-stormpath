@@ -225,3 +225,66 @@ module.exports.noOpLogger = {
   info: function () {},
   error: function () {}
 };
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function isObject(target) {
+  return Object.prototype.toString.call(target) === '[object Object]';
+}
+
+function isArray(target) {
+  return Object.prototype.toString.call(target) === '[object Array]';
+}
+
+/**
+ * Takes a snapshot of the current state of the env variables, and Returns
+ * a function that can be used to restore it.
+ */
+module.exports.snapshotEnv = function snapshotEnv() {
+  var originalEnv = clone(process.env);
+  return function restore() {
+    var key;
+    for (key in process.env) {
+      if (!(key in originalEnv)) {
+        delete process.env[key];
+      }
+    }
+    for (key in originalEnv) {
+      process.env[key] = originalEnv[key];
+    }
+  };
+};
+
+module.exports.contains = function contains(container, containee) {
+  if ((!containee || !container) && containee !== container) {
+    return false;
+  }
+
+  if (isArray(containee)) {
+    return containee.reduce(function (acc, value) {
+      return acc && container.indexOf && container.indexOf(value) !== -1;
+    }, true);
+  }
+
+  if (isObject(containee)) {
+    for (var key in containee) {
+      var doesContain;
+
+      if (isObject(containee[key]) || isArray(containee[key])) {
+        doesContain = contains(container[key], containee[key]);
+      } else {
+        doesContain = container[key] === containee[key];
+      }
+
+      if (!doesContain) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  return container === containee;
+};
