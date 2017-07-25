@@ -34,7 +34,7 @@
     "jade": "^1.11.0",
     "jwk-to-pem": "^1.2.6",
     "lodash": "^4.6.1",
-    "njwt": "^0.4.0",
+    "njwt": "git+https://github.com/CSNW/njwt.git#0.4.0-parser",
     "parse-iso-duration": "^1.0.0",
     "psl": "^1.1.14",
     "qs": "^6.0.2",
