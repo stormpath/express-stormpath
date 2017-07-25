@@ -94,45 +94,6 @@ block body
                       value=form.data && isLoginField ? form.data[field.name] : ''
                     )
 
-//-              .form-group.group-email
-//-                if hasSocialProviders
-//-                  - var cls = 'col-sm-12'
-//-                else
-//-                  - var cls = 'col-sm-4'
-//-
-//-                if registerFields.username && registerFields.username.enabled
-//-                  label(class='#{cls}') Username or Email
-//-                else
-//-                  label(class='#{cls}') Email
-//-
-//-                if hasSocialProviders
-//-                  - var cls = 'col-sm-12'
-//-                else
-//-                  - var cls = 'col-sm-8'
-//-
-//-                div(class='#{cls}')
-//-                  - var value = form.data ? form.data.login : '';
-//-                  if registerFields.username && registerFields.username.enabled
-//-                    input.form-control(autofocus='true', placeholder='Username or Email', required=true, name='login', type='text', value=value, autocomplete='off')
-//-                  else
-//-                    input.form-control(autofocus='true', placeholder='Email', required=true, name='login', type='text', value=value, autocomplete='off')
-//-
-//-              if hasSocialProviders
-//-                - var cls = 'col-sm-12'
-//-              else
-//-                - var cls = 'col-sm-4'
-//-
-//-              .form-group.group-password
-//-                label(class='#{cls}') Password
-//-
-//-                if hasSocialProviders
-//-                  - var cls = 'col-sm-12'
-//-                else
-//-                  - var cls = 'col-sm-8'
-//-
-//-                div(class='#{cls}')
-//-                  input.form-control(placeholder='Password', required=true, type='password', name='password')
-
               p.tos
                 label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='#{urls.tos}') Terms of Service]
 
