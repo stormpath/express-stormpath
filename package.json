@@ -41,6 +41,7 @@
     "request": "^2.63.0",
     "stormpath": "git+https://github.com/CSNW/stormpath-sdk-node.git#1.0.0-rc5-auto-caching",
     "stormpath-config": "stormpath/stormpath-node-config#okta",
+    "underscore": "^1.8.3",
     "utils-merge": "^1.0.0",
     "uuid": "^2.0.1",
     "winston": "^2.1.1",
