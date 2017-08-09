@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "4.0.0-rc4-tos-change-password",
+  "version": "4.0.0-tos-change-password",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
