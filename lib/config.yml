@@ -4,6 +4,10 @@ web:
   # this library.  If not defined, we will default to /
   basePath: null
 
+  # Determines how long Jwks (used for password-grant access token validation) should be cached
+  defaultJwksCacheManagerConfig:
+    ttl: 60000 # milliseconds
+
   domainName: null  # Required if using subdomain-based multi-tenancy
 
   multiTenancy:
@@ -55,7 +59,10 @@ web:
     domain: null
 
   # Refresh Token Cookie has same options as the Access Token Cookie (above).
+  # Use the maxAge value to set the expiration time of this cookie.  If not
+  # specified the cookie will become a session cookie
   refreshTokenCookie:
+    maxAge: null #milliseconds
     name: "refresh_token"
     httpOnly: true
     secure: null
@@ -68,6 +75,13 @@ web:
   produces:
     - application/json
     - text/html
+
+  # The order of locations that getUser() will search for an access token when
+  # attempting to resolve the user for the request
+  getUser:
+    accessTokenSearchLocations:
+      - header
+      - cookie
 
   register:
     enabled: true

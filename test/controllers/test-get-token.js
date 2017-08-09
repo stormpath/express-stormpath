@@ -49,7 +49,8 @@ describe.only('getToken (OAuth2 token exchange endpoint)', function () {
 
           stormpathAccountApiKey = key;
 
-          done();
+          // Give the user profile some time to update before we read it in later tests
+          setTimeout(done, 2000);
         });
       });
     });
