@@ -91,7 +91,8 @@ block body
                       placeholder=field.placeholder,
                       autofocus=isLoginField ? 'true' : 'false',
                       required=field.required ? 'true' : 'false',
-                      value=form.data && isLoginField ? form.data[field.name] : ''
+                      value=form.data && isLoginField ? form.data[field.name] : '',
+                      autocomplete='off'
                     )
 
               p.tos
