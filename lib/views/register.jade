@@ -49,8 +49,11 @@ block body
                     label #[input(type='checkbox', name='email_interests', checked='checked', value='#{group.id}')] &nbsp; #{group.name} (#{group.desc})*
               div.faded * Membership in this group is limited and by invitation. Let us know you are interested, and we'll follow up with you.
 
-              p.tos
-                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank' href='#{urls.tos}') Terms of Service]
+              .form-group.group-tos
+                div(class='col-sm-4')
+
+                div(class='col-sm-8 tos')
+                  label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank' href='#{urls.tos}') Terms of Service]
 
               button.btn.btn-register.btn-sp-green(type='submit') Create Account
 
