@@ -1,8 +1,6 @@
 language: node_js
 sudo: false
 node_js:
-- '0.10'
-- '0.12'
 - '4'
 - '6'
 install:
@@ -35,6 +33,11 @@ env:
   global:
   - secure: M4UcXsvhjYXupsD0D+bAWdopk9JjOxKnHi5OcqCSZ4lCn6XZ3KlxMQC/VM8Ryhe3Y5dAcNnJOJSE0eeK+ojZERY2UcozYSjEIdTZjGDI1L4HM538GeRz8wLEIG18gRdSjsyVGjAOed+eZ/MQwo2xyIjVPjJBFJuy2Djtt4fi1sw=
   - secure: LC2v9W0Nx8oviv+AajnXV1DOaiht+/1Hy92loa4a4Lbwz/NW0DmM9k1ollBFHpBhWVai3HaZKPl0XqdHqdq1fA2HppdJv8YbT/Hwkj1WdX+LRE/VUNevVc+MszlDJq1FOrgaEjiKyBqQP07RkZl4tg2kwpIET2Q0zmCubE7pezo=
+  - secure: Uiqmlmp4O9noUngjFvl7hws+LpaHvy3lcwAAg4ecEotyE0T4b+kd1tvN5zSA2VEohPy/ynQK8zjevHqNoQzc4rUxTUsCijk1fnyOqrowvYrnSC0jwjkp4FaDaPk6HyEhGA6N37hl3km38iD09eqLwa4qA7SYgZEi5qRXLhnQxjo=
+  - secure: h85DxO0pgB+tnszJIwfd/BDtmi1NKVfNuZertF3jitdPFFktlqF2ecDiAqgINpI4lNiJYac8eF8isTZn2Unh2K2SyElkZZfmhifz8n5MHqywidNYQKDz8BMBGELOxNQVkPgevPR5VU1eZoYUMDRgetC6hCp3iaRGoF6Xv+kAXl4=
+  - secure: mBl0PWZag9Ji9jAYOEhCc9uORN9sGbbHD1IBkJD3kZ++tpMJO33ZUDHQix5BRSohhPgVqDm79XHpJiJ8PSIkQfvyMZNlWjGKqd/J9bdZbxSfO6+PdcSwS38Sr4hQsZyhYXhmragKzJI10vWBVJ/eDchYNLZfDaTjrPk7cSn9iPo=
+  - secure: OlgbFdpSfZsyNN2utPJ3NUOUDjfx3gnrfmnYxJ/6LCB3Dp3Rfh+hrijWnHbg+GRhmaVjWYSd5iR419bn24hQToRmDaxwtfFreOdcx24D6Tak8tXWNo7I5B+lGpTG1lIdGWrOPW8w4MvcQY76HbbaHBZoA7dDiYtLI30uu8LgZ2Y=
+  - secure: Z2+1Ln/B3LcuYgrF05qwF32BZzypRwCMgEXZPNtPbI7vL6qYbn5MCg2uv023OjvDd58LPwtwwaBxggLomoexiq1YHafadMXPiT6zGCeY72jHTQlVQN17WHYLfJ/1qzyKKsoFhN5Aqcved8cC1cOl8LoaqFUxswVLNdCXEGAbEhc=
 matrix:
   include:
   - env: BUILD_DOCS=true

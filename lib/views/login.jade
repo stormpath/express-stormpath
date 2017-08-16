@@ -46,7 +46,7 @@ block body
                     Password Reset Requested
                   p.
                     If an account exists for the email provided, you will
-                    receive an email shortly.
+                    receive an email shortly. Once you have reset your password, please enter your new password below to login.
           br
         .box.row
           if hasSocialProviders
@@ -91,8 +91,12 @@ block body
                       placeholder=field.placeholder,
                       autofocus=isLoginField ? 'true' : 'false',
                       required=field.required ? 'true' : 'false',
-                      value=form.data && isLoginField ? form.data[field.name] : ''
+                      value=form.data && isLoginField ? form.data[field.name] : '',
+                      autocomplete='off'
                     )
+
+              p.tos
+                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='#{urls.tos}') Terms of Service]
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
@@ -102,11 +106,11 @@ block body
               .header &nbsp;
               label Easy 1-click login:
               if socialProviders.facebook
-                a.btn.btn-social.btn-facebook(href='#{socialProviders.facebook.authorizeUri}') Facebook
+                button.btn.btn-social.btn-facebook(href='#{socialProviders.facebook.authorizeUri}') Facebook
               if socialProviders.google
-                a.btn-large.btn.btn-social.btn-google(href='#{socialProviders.google.authorizeUri}') Google
+                button.btn-large.btn.btn-social.btn-google(href='#{socialProviders.google.authorizeUri}') Google
               if socialProviders.linkedin
-                a.btn.btn-social.btn-linkedin(href='#{socialProviders.linkedin.authorizeUri}') LinkedIn
+                button.btn.btn-social.btn-linkedin(href='#{socialProviders.linkedin.authorizeUri}') LinkedIn
 
         if stormpathConfig.web.verifyEmail.enabled
           a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?

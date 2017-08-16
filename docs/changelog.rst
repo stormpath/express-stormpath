@@ -6,6 +6,73 @@ Change Log
 
 All library changes, in descending order.
 
+Version 4.0.0
+-----------------
+
+**Released July 21, 2017**
+
+This major version is meant to be used if:
+
+ - You are a Stormpath customer that is migrating to Okta `(learn more) <https://stormpath.com/oktaplusstormpath>`_.
+ - You have successfully exported your tenant data from Stormpath `(learn more) <https://stormpath.com/export>`_.
+ - You plan to imported your data into Okta `(learn more) <https://developer.okta.com/documentation/stormpath-import>`_.
+
+We suggest following the instructions in the `Express Stormpath Sample Project <https://github.com/stormpath/express-stormpath-sample-project/>`_
+to setup a sample project with this version and your Okta org.  This will help give you confidence that everything is working before embarking on your data import.
+
+This 4.0.0 release includes all the changes in the 4.0.0-rc releases, as well as some fixes since RC4.  If you are trying this version for the first time,
+please read down through each RC to learn about the breaking changes that will affect your code.
+
+
+New changes since RC4:
+
+* **Caching of JWKs.**  Similar to Stormpath, we validate access tokens when a request presents them for authentication.
+  At Okta we now use RSA keys and the JWKs endpoint to do this validation, for more information please see `Validating Access Tokens`_.
+  In this release, we have included a JWKS cache manager, to allow you to control how long the JWKs are cached for, and the default is 1 hour.
+  To configure the TTL of the JWKS cache manager:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        defaultJwksCacheManagerConfig: {
+          ttl: 60000 // milliseconds, one hour
+        }
+      }
+    }));
+* **Configurable access token location search**.  The default behavior of this library has been to search for an access token in the Authorization header, then in cookies.
+  If you need to change this ordering, you can now pass this configuration:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        authentication: {
+          accessTokenSearchLocations: ['cookie', 'header']
+        }
+      }
+    }));
+* **Improved authentication error messages**.  Previous RC releases would give opaque error messages during authentication.  We now attempt to pass down as much error information as possible.
+* **Refresh token cookies are being set**.  Previous RC releases were not setting the refresh token cookie, like was done with Stormpath.
+  This has been fixed, however you will need to tell the library how long the refresh token should exist in the browser for.
+  By default we now create it as a session cookie.  If you wish for the cookie to persist after browser close, you will need to set the max-age of the cookie with this configuration:
+
+  .. code-block:: javascript
+
+    app.use(stormpath.init(app, {
+      web: {
+        refreshTokenCookie: {
+          maxAge: 60000 // milliseconds, one hour
+        }
+      }
+    }));
+
+* **Remote validation option**.  Previous RC releases would not use a remote ("stormpath") validation option if configured, this is now fixed.  Please see the
+  `Token Validation Strategy`_ for a description of the remote validation behavior.
+* **User caching is re-implemented**.  Previous RC releases did not have a working cache for user resources.  This version has a working cache for user resources.
+* **Test data script fixes**.  The test data script has been fixed to match the new API for managing authorization servers.
+
+
 Version 4.0.0-rc4
 -----------------
 
@@ -21,7 +88,7 @@ The Stormpath API provided an OAuth server for each Stormpath application, and t
 
 * Access token requests must now be an OpenID Connect (OIDC) request, as such the ``openid`` scope must be added to the request if you want an access token.  Internally we add this for you if no scope has been added to the request.
 * It is no longer possible to make use of the `scope factory feature`_ to add custom scopes to the issued tokens.  The scope claim of access tokens will reflect what you requested of the authorization server.
-* Refresh tokens are no longer supplied automatically.  If you want to get a refresh token while doing ``grant_type=password``, you need to add the ``offline_access`` scope to the request.
+* Refresh tokens are no longer issued automatically.  If you want to get a refresh token while doing ``grant_type=password``, you need to add the ``offline_access`` scope to the request.
 * Refresh tokens are now opaque, and do not contain references to the authenticated subject.  However the `Introspection Request`_ endpoint can be used to get information about the subject.
 * Pre and Post Login handlers have not been implemented in this version for this route.  Please contact us if you need this feature.
 
@@ -239,7 +306,7 @@ Or through the following environment variables:
         }
       }));
 
-  - You will need to re-create the email template for the password reset email.  You can copy the current template from the Stormpath Admin Console, then in the Okta console you can paste it into the template found at Settings > Email & SMS > Forgot Password.  You'll want to use the ``${recoveryToken}`` variable to create a link that points the user to the verification endpoint on your application, for example: ``http://localhost:3000/verify?sptoken=${recoveryToken}``.
+  - You will need to re-create the email template for the password reset email.  You can copy the current template from the Stormpath Admin Console, then in the Okta console you can paste it into the template found at Settings > Email & SMS > Forgot Password.  You'll want to use the ``${recoveryToken}`` variable to create a link that points the user to the verification endpoint on your application, for example: ``http://localhost:3000/change?sptoken=${recoveryToken}``.
 
   - The expiration time for password reset tokens is now 59 minutes, this can be configured through the Okta Admin Console, see Security -> Policies -> Default Policy.
 
@@ -1709,6 +1776,7 @@ Version 0.1.0
 .. _stormpath-migration tool: https://github.com/okta/stormpath-migration
 .. _Stormpath Node SDK: https://github.com/stormpath/stormpath-sdk-node
 .. _Stormpath-Okta Customer FAQ: https://stormpath.com/oktaplusstormpath
+.. _Validating Access Tokens: https://developer.okta.com/standards/OAuth/index.html#validating-access-tokens
 .. _Web Configuration Defaults: https://github.com/stormpath/express-stormpath/blob/master/lib/config.yml
 .. _Test Data Script: https://github.com/stormpath/express-stormpath/blob/4.0.0/util/okta-test-data.js
-
+.. _Token Validation Strategy: http://localhost:3333/authentication.html#validation-strategy
