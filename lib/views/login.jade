@@ -95,8 +95,12 @@ block body
                       autocomplete='off'
                     )
 
-              p.tos
-                label #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='#{urls.tos}') Terms of Service]
+              .form-group.group-tos
+
+                div(class='col-sm-4')
+
+                div(class='col-sm-8 tos')
+                  #[input(type='checkbox', name='tos', id='tos', value='true')] &nbsp; I agree to the #[a(target='_blank', href='#{urls.tos}') Terms of Service]
 
               div
                 button.login.btn.btn-login.btn-sp-green(type='submit') Log In
