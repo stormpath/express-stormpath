@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "4.0.0-tos-col-fix",
+  "version": "4.0.0-fix-auto-login",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
