@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "4.0.0-forgot-password-cleanup-tag",
+  "version": "4.0.0-forgot-password-cleanup",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
