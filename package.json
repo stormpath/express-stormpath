@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "4.0.0-forgot-password-cleanup-2",
+  "version": "4.0.0-mailchimp-pwd",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
