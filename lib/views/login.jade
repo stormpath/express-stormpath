@@ -48,9 +48,9 @@ block body
                     If an account exists for the email provided, you will
                     receive an email shortly. Once you have reset your password, please enter your new password below to login.
 
-        if isApp || (!isApp && status !== 'forgot')
+        if isApp || status != 'forgot'
           br
-        if isApp || (!isApp && status !== 'forgot')
+        if isApp || status != 'forgot'
           .box.row
             if hasSocialProviders
               - var cls = 'small col-sm-8'
