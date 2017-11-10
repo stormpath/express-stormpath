@@ -1,6 +1,6 @@
 {
   "name": "express-stormpath",
-  "version": "4.0.0-mailchimp-pwd.20",
+  "version": "4.0.0-mailchimp-pwd.21",
   "description": "Build simple, secure web applications with Stormpath and Express!",
   "keywords": [
     "express",
