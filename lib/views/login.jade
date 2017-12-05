@@ -48,9 +48,7 @@ block body
                     If an account exists for the email provided, you will
                     receive an email shortly. Once you have reset your password, please enter your new password below to login.
 
-        if isApp || status != 'forgot'
-          br
-        if isApp || status != 'forgot'
+        if status != 'forgot'
           .box.row
             if hasSocialProviders
               - var cls = 'small col-sm-8'
@@ -121,5 +119,7 @@ block body
 
         if stormpathConfig.web.verifyEmail.enabled
           a.forgot(style="float:left", href="#{stormpathConfig.web.verifyEmail.uri}") Resend Verification Email?
-        if stormpathConfig.web.forgotPassword.enabled
+        if stormpathConfig.web.forgotPassword.enabled && status != 'forgot'
           a.forgot(style="float:right", href="#{stormpathConfig.web.forgotPassword.uri}") Forgot Password?
+        if isApp && status == 'forgot'
+          a.forgot(style="float:right", href="#{stormpathConfig.web.login.uri}") Ok, I'm ready to try again

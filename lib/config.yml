@@ -164,8 +164,8 @@ web:
       fields:
         login:
           enabled: true
-          label: "Username or Email"
-          placeholder: "Username or Email"
+          label: "Email"
+          placeholder: "Email"
           required: true
           type: "text"
         password:

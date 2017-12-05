@@ -88,7 +88,7 @@ describe.only('login', function () {
 
           if (typeof json !== 'object') {
             done(new Error('No JSON error returned.'));
-          } if (json.status !== 200 && json.message !== 'Invalid username or password.') {
+          } if (json.status !== 200 && json.message !== 'Invalid email or password.') {
             done(new Error('Did not receive the expected error'));
           } else {
             done();
@@ -107,8 +107,8 @@ describe.only('login', function () {
           'form': {
             'fields': [
               {
-                'label': 'Username or Email',
-                'placeholder': 'Username or Email',
+                'label': 'Email',
+                'placeholder': 'Email',
                 'required': true,
                 'type': 'text',
                 'name': 'login'
