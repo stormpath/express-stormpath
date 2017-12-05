@@ -47,7 +47,7 @@ field configuration:
         form: {
           fields: {
             login: {
-              label: 'Your Username or Email',
+              label: 'Your Email',
               placeholder: 'email@trustyapp.com'
             },
             password: {
@@ -100,8 +100,8 @@ has a default login form, and a mapped Google directory:
     "form": {
       "fields": [
         {
-          "label": "Username or Email",
-          "placeholder": "Username or Email",
+          "label": "Email",
+          "placeholder": "Email",
           "required": true,
           "type": "text",
           "name": "login"
